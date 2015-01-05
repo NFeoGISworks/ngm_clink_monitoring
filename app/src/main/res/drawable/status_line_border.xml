@@ -1,9 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+
 <!--****************************************************************************
   * Project:  NextGIS mobile apps for Compulink
   * Purpose:  Mobile GIS for Android
   * Authors:  Dmitry Baryshnikov (aka Bishop), polimax@mail.ru
   *           NikitaFeodonit, nfeodonit@yandex.com
-  * ****************************************************************************
+  * *****************************************************************************
   * Copyright (C) 2014-2015 NextGIS
   *
   * This program is free software: you can redistribute it and/or modify
@@ -20,12 +22,19 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ***************************************************************************-->
 
-<FrameLayout
+<shape
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/container"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    tools:context=".MainActivity"
-    tools:ignore="MergeRootFrame"
-    />
+    android:shape="rectangle"
+    >
+
+    <!--
+        <solid
+            android:color="#ffffff" />
+    -->
+
+    <stroke
+        android:color="#ffa0a0a0"
+        android:width="1dip"
+        />
+
+</shape>

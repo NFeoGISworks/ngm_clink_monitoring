@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <!--****************************************************************************
   * Project:  NextGIS mobile apps for Compulink
   * Purpose:  Mobile GIS for Android
@@ -21,32 +22,17 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ***************************************************************************-->
 
-<resources>
+<shape
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle"
+    >
 
-    <string name="app_name">Compulink Monitoring</string>
+    <solid
+        android:color="#ff9ecfd9"/>
 
-    <string name="action_settings">Settings</string>
+    <stroke
+        android:color="#ffa0a0a0"
+        android:width="1dip"
+        />
 
-    <string name="latitude_text">Lat: %1$s</string>
-    <string name="longitude_text">Long: %1$s</string>
-    <string name="altitude_text">Altitude: %1$s m</string>
-    <string name="accuracy_text">Accuracy: %1$s m</string>
-
-    <string name="select_work_type">Select work type:</string>
-
-    <string name="construction_length_laying">Laying construction length</string>
-    <string name="clutch_or_cross_mounting">Clutch/cross mounting</string>
-    <string name="line_measuring">Line measuring</string>
-
-    <string name="line">Line:</string>
-    <string name="construction_length">Construction length:</string>
-    <string name="clutch_or_cross">Clutch/cross:</string>
-
-    <string name="make_photos_to_confirm">Make photos to confirm the execution of works.</string>
-    <string name="make_photos_to_confirm_clutch">Make photos of clutch on a pole to confirm the execution of works.</string>
-
-    <string name="make_photo">Make photo</string>
-    <string name="save">Save</string>
-    <string name="cancel">Cancel</string>
-
-</resources>
+</shape>

@@ -20,29 +20,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-apply plugin: 'com.android.application'
+package com.nextgis.ngm_clink_monitoring;
 
-android {
-    compileSdkVersion 21
-    buildToolsVersion "21.1.2"
-    defaultConfig {
-        applicationId 'com.nextgis.ngm_clink_monitoring'
-        minSdkVersion 8
-        targetSdkVersion 21
-        versionCode 1
-        versionName "1.0"
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-    productFlavors {
-    }
-}
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
-dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:20.0.0'
+
+public class StatusBarFragment
+        extends Fragment
+{
+    @Override
+    public View onCreateView(
+            LayoutInflater inflater,
+            ViewGroup container,
+            Bundle savedInstanceState)
+    {
+        return inflater.inflate(R.layout.status_bar_fragment, null);
+    }
 }

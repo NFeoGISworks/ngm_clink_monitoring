@@ -23,29 +23,61 @@
 package com.nextgis.ngm_clink_monitoring;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 
 
 public class MainActivity
         extends ActionBarActivity
 {
+    public static final int UNKNOWN_WORK   = 0;
+    public static final int LAYING_WORK    = 1;
+    public static final int MOUNTING_WORK  = 2;
+    public static final int MEASURING_WORK = 3;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                                       .add(R.id.container, new PlaceholderFragment())
-                                       .commit();
+        setContentView(R.layout.main_activity);
+
+        TypeWorkFragment typeWorkFragment =
+                (TypeWorkFragment) getSupportFragmentManager().findFragmentByTag("TypeWork");
+
+        if (typeWorkFragment == null) {
+            typeWorkFragment = new TypeWorkFragment();
+
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.add(R.id.work_fragment, typeWorkFragment, "TypeWork");
+            ft.commit();
         }
+
+        typeWorkFragment.setOnButtonsClickListener(new TypeWorkFragment.OnButtonsClickListener()
+        {
+            @Override
+            public void OnButtonsClick(int workType)
+            {
+                FragmentTransaction frTr = getSupportFragmentManager().beginTransaction();
+
+                LineWorkFragment lineWorkFragment =
+                        (LineWorkFragment) getSupportFragmentManager().findFragmentByTag(
+                                "LineWork");
+
+                if (lineWorkFragment == null) {
+                    lineWorkFragment = new LineWorkFragment();
+                }
+
+                lineWorkFragment.setParams(workType);
+
+                frTr.replace(R.id.work_fragment, lineWorkFragment, "LineWork");
+                frTr.addToBackStack(null);
+                frTr.commit();
+                getSupportFragmentManager().executePendingTransactions();
+            }
+        });
     }
 
 
@@ -72,29 +104,5 @@ public class MainActivity
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment
-            extends Fragment
-    {
-
-        public PlaceholderFragment()
-        {
-        }
-
-
-        @Override
-        public View onCreateView(
-                LayoutInflater inflater,
-                ViewGroup container,
-                Bundle savedInstanceState)
-        {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            return rootView;
-        }
     }
 }
