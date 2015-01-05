@@ -83,14 +83,22 @@
         android:background="#ffe4c2b4"
         android:id="@+id/photo_hint_text"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:layout_width="match_parent"
         android:paddingBottom="5dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:paddingTop="5dp"
-        android:text="@string/make_photos_to_confirm"
+        android:text="@string/take_photos_to_confirm"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="#ff000000"
+        />
+
+    <Gallery
+        android:id="@+id/photo_gallery"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
         />
 
     <LinearLayout

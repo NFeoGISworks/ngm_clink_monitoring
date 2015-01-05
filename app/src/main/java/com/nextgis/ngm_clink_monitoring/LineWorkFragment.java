@@ -22,25 +22,83 @@
 
 package com.nextgis.ngm_clink_monitoring;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Gallery;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 
 public class LineWorkFragment
         extends Fragment
 {
+    private static final int REQUEST_TAKE_PHOTO = 1;
+
     protected TextView mWorkTypeName;
-    protected Spinner  mLineName;
     protected TextView mObjectCaption;
-    protected Spinner  mObjectName;
     protected TextView mPhotoHintText;
 
-    protected int mWorkType = MainActivity.UNKNOWN_WORK;
+    protected Spinner mLineName;
+    protected Spinner mObjectName;
+
+    @SuppressWarnings("deprecation")
+    protected Gallery mPhotoGallery;
+
+    protected Button mMakePhotoButton;
+    protected Button mSaveButton;
+    protected Button mCancelButton;
+
+    protected String mCurrentPhotoPath = null;
+    protected int    mWorkType         = MainActivity.UNKNOWN_WORK;
+
+    protected List<String> mPhotoList;
+    protected ImageAdapter mImageAdapter;
+
+
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+
+        mPhotoList = new ArrayList<String>();
+
+        if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            Toast.makeText(getActivity(), "SDCard is not mounted", Toast.LENGTH_LONG).show();
+
+        } else {
+            File dataDir = new File(MainActivity.PHOTO_DIR_PATH);
+
+            if (!dataDir.exists()) {
+                dataDir.mkdirs();
+            }
+
+            File[] files = dataDir.listFiles();
+
+            for (File file : files) {
+                mPhotoList.add(file.getAbsolutePath());
+            }
+        }
+
+        mImageAdapter = new ImageAdapter(getActivity(), mPhotoList);
+    }
 
 
     @Override
@@ -49,36 +107,114 @@ public class LineWorkFragment
             ViewGroup container,
             Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.ine_work_fragment, null);
+        View view = inflater.inflate(R.layout.line_work_fragment, null);
 
         mWorkTypeName = (TextView) view.findViewById(R.id.work_type_name);
-        mLineName = (Spinner) view.findViewById(R.id.line_name);
         mObjectCaption = (TextView) view.findViewById(R.id.object_caption);
-        mObjectName = (Spinner) view.findViewById(R.id.object_name);
         mPhotoHintText = (TextView) view.findViewById(R.id.photo_hint_text);
+
+        mLineName = (Spinner) view.findViewById(R.id.line_name);
+        mObjectName = (Spinner) view.findViewById(R.id.object_name);
+
+        mPhotoGallery = (Gallery) view.findViewById(R.id.photo_gallery);
+        mPhotoGallery.setAdapter(mImageAdapter);
+
+        mMakePhotoButton = (Button) view.findViewById(R.id.btn_make_photo);
+        mSaveButton = (Button) view.findViewById(R.id.btn_save);
+        mCancelButton = (Button) view.findViewById(R.id.btn_cancel);
 
         switch (mWorkType) {
             case MainActivity.LAYING_WORK:
                 mWorkTypeName.setText(R.string.construction_length_laying);
                 mObjectCaption.setText(R.string.construction_length);
-                mPhotoHintText.setText(R.string.make_photos_to_confirm);
+                mPhotoHintText.setText(R.string.take_photos_to_confirm);
                 break;
 
             case MainActivity.MOUNTING_WORK:
                 mWorkTypeName.setText(R.string.clutch_or_cross_mounting);
                 mObjectCaption.setText(R.string.clutch_or_cross);
-                mPhotoHintText.setText(R.string.make_photos_to_confirm_clutch);
+                mPhotoHintText.setText(R.string.take_photos_to_confirm_clutch);
                 break;
 
             case MainActivity.MEASURING_WORK:
                 mWorkTypeName.setText(R.string.construction_length_laying);
                 mObjectCaption.setVisibility(View.INVISIBLE);
                 mObjectName.setVisibility(View.INVISIBLE);
-                mPhotoHintText.setText(R.string.make_photos_to_confirm);
+                mPhotoHintText.setText(R.string.take_photos_to_confirm);
                 break;
         }
 
+        mMakePhotoButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+                // Ensure that there's a camera activity to handle the intent
+                if (cameraIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                    File photoFile = null;
+
+                    try {
+                        photoFile = createImageFile();
+                    } catch (IOException e) {
+                        Toast.makeText(getActivity(), e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                    }
+
+                    if (photoFile != null) {
+                        mCurrentPhotoPath = photoFile.getAbsolutePath();
+
+                        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+                        startActivityForResult(cameraIntent, REQUEST_TAKE_PHOTO);
+                    }
+                }
+
+            }
+        });
+
         return view;
+    }
+
+
+    @Override
+    public void onActivityResult(
+            int requestCode,
+            int resultCode,
+            Intent data)
+    {
+        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
+            mPhotoList.add(mCurrentPhotoPath);
+            mImageAdapter.notifyDataSetChanged();
+        }
+    }
+
+
+    private File createImageFile()
+            throws IOException
+    {
+        String prefix = "";
+
+        switch (mWorkType) {
+            case MainActivity.LAYING_WORK:
+                prefix = "Laying_";
+                break;
+
+            case MainActivity.MOUNTING_WORK:
+                prefix = "Mounting_";
+                break;
+
+            case MainActivity.MEASURING_WORK:
+                prefix = "Measuring_";
+                break;
+        }
+
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = prefix + timeStamp + ".jpg";
+
+        File emptyFile = new File(MainActivity.PHOTO_DIR_PATH, imageFileName);
+        emptyFile.createNewFile();
+
+        return emptyFile;
     }
 
 

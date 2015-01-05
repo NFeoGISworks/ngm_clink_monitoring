@@ -42,8 +42,8 @@
     <string name="construction_length">Строительная длина:</string>
     <string name="clutch_or_cross">Муфта/кросс:</string>
 
-    <string name="make_photos_to_confirm">Сделайте фотографии для подтверждения выполнения работ.</string>
-    <string name="make_photos_to_confirm_clutch">Для подтверждения выполнения работ сфотографируйте муфту, подвешенную на опоре.</string>
+    <string name="take_photos_to_confirm">Сделайте фотографии для подтверждения выполнения работ.</string>
+    <string name="take_photos_to_confirm_clutch">Для подтверждения выполнения работ сфотографируйте муфту, подвешенную на опоре.</string>
 
     <string name="make_photo">Сделать фото</string>
     <string name="save">Сохранить</string>

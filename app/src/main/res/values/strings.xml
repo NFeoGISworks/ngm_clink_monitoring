@@ -42,8 +42,8 @@
     <string name="construction_length">Construction length:</string>
     <string name="clutch_or_cross">Clutch/cross:</string>
 
-    <string name="make_photos_to_confirm">Make photos to confirm the execution of works.</string>
-    <string name="make_photos_to_confirm_clutch">Make photos of clutch on a pole to confirm the execution of works.</string>
+    <string name="take_photos_to_confirm">Take photos to confirm the execution of works.</string>
+    <string name="take_photos_to_confirm_clutch">Take photos of clutch on a pole to confirm the execution of works.</string>
 
     <string name="make_photo">Make photo</string>
     <string name="save">Save</string>
