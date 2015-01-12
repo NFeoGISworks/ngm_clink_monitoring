@@ -22,22 +22,197 @@
 
 package com.nextgis.ngm_clink_monitoring;
 
+import android.content.SharedPreferences;
+import android.location.GpsStatus;
+import android.location.Location;
 import android.os.Bundle;
+import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import com.nextgis.maplib.api.GpsEventListener;
+import com.nextgis.ngm_clink_monitoring.util.LocationUtil;
+import com.nextgis.ngm_clink_monitoring.util.SettingsConstants;
+
+import java.text.DecimalFormat;
 
 
 public class StatusBarFragment
         extends Fragment
+        implements GpsEventListener
 {
+    protected TextView mStatusLine;
+    protected TextView mLatView;
+    protected TextView mLongView;
+    protected TextView mAltView;
+    protected TextView mAccView;
+
+    protected String mStatusLineText;
+    protected String mLatText;
+    protected String mLongText;
+    protected String mAltText;
+    protected String mAccText;
+
+    protected long mLastLocationMillis;
+
+    protected boolean mIsGPSFix = false;
+
+
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+
+        setLocationDefaultText();
+    }
+
+
     @Override
     public View onCreateView(
             LayoutInflater inflater,
             ViewGroup container,
             Bundle savedInstanceState)
     {
-        return inflater.inflate(R.layout.status_bar_fragment, null);
+        View view = inflater.inflate(R.layout.status_bar_fragment, null);
+
+        mStatusLine = (TextView) view.findViewById(R.id.status_line);
+        mLatView = (TextView) view.findViewById(R.id.latitude_view);
+        mLongView = (TextView) view.findViewById(R.id.longitude_view);
+        mAltView = (TextView) view.findViewById(R.id.altitude_view);
+        mAccView = (TextView) view.findViewById(R.id.accuracy_view);
+
+        mStatusLine.setText(mStatusLineText);
+        setLocationViewsText();
+
+        return view;
+    }
+
+
+    protected void setLocationDefaultText()
+    {
+        mLatText = getString(R.string.latitude_caption) + " --";
+        mLongText = getString(R.string.longitude_caption) + " --";
+        mAltText = getString(R.string.altitude_caption) + " --";
+        mAccText = getString(R.string.accuracy_caption) + " --";
+    }
+
+
+    protected void setLocationViewsText()
+    {
+        mLatView.setText(mLatText);
+        mLongView.setText(mLongText);
+        mAltView.setText(mAltText);
+        mAccView.setText(mAccText);
+    }
+
+
+    @Override
+    public void onLocationChanged(Location location)
+    {
+        if (location == null) {
+            return;
+        }
+
+        GISApplication app = (GISApplication) getActivity().getApplication();
+        app.setCurrentLocation(location);
+        mLastLocationMillis = SystemClock.elapsedRealtime();
+
+        SharedPreferences prefs;
+        prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+        int nFormat = prefs.getInt(SettingsConstants.KEY_PREF_COORD_FORMAT + "_int",
+                                   Location.FORMAT_SECONDS);
+        DecimalFormat df = new DecimalFormat("0.0");
+
+        mLatText = getString(R.string.latitude_caption) + " " +
+                   LocationUtil.formatLatitude(location.getLatitude(), nFormat, getResources()) +
+                   getString(R.string.coord_lat);
+
+        mLongText = getString(R.string.longitude_caption) + " " +
+                    LocationUtil.formatLongitude(location.getLongitude(), nFormat, getResources()) +
+                    getString(R.string.coord_lon);
+
+        double altitude = location.getAltitude();
+        mAltText = getString(R.string.altitude_caption) + " " + df.format(altitude) + " " +
+                   getString(R.string.altitude_unit);
+
+        float accuracy = location.getAccuracy();
+        mAccText = getString(R.string.accuracy_caption) + " " + df.format(accuracy) + " " +
+                   getString(R.string.accuracy_unit);
+
+        if (isVisible()) {
+            setLocationViewsText();
+        }
+    }
+
+
+    @Override
+    public void onGpsStatusChanged(int event)
+    {
+        switch (event) {
+            case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
+
+                GISApplication app = (GISApplication) getActivity().getApplication();
+
+                if (app.getCurrentLocation() != null) {
+                    mIsGPSFix = (SystemClock.elapsedRealtime() - mLastLocationMillis) < 10000;
+                }
+
+                if (mIsGPSFix) { // A fix has been acquired.
+                    mStatusLineText = getString(R.string.coordinates_defined);
+
+                    if (isVisible()) {
+                        mStatusLine.setText(mStatusLineText);
+                    }
+
+                } else { // The fix has been lost.
+                    mStatusLineText = getString(R.string.coordinates_not_defined);
+                    setLocationDefaultText();
+
+                    if (isVisible()) {
+                        mStatusLine.setText(mStatusLineText);
+                        setLocationViewsText();
+                    }
+                }
+
+                break;
+
+            case GpsStatus.GPS_EVENT_FIRST_FIX:
+                mIsGPSFix = true;
+                mStatusLineText = getString(R.string.coordinates_defined);
+
+                if (isVisible()) {
+                    mStatusLine.setText(mStatusLineText);
+                }
+
+                break;
+        }
+    }
+
+
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+
+        GISApplication app = (GISApplication) getActivity().getApplication();
+        app.getGpsEventSource().addListener(this);
+
+        mStatusLine.setText(mStatusLineText);
+        setLocationViewsText();
+    }
+
+
+    @Override
+    public void onStop()
+    {
+        GISApplication app = (GISApplication) getActivity().getApplication();
+        app.getGpsEventSource().removeListener(this);
+
+        super.onStop();
     }
 }

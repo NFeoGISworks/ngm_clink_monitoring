@@ -20,34 +20,44 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-apply plugin: 'com.android.application'
+package com.nextgis.ngm_clink_monitoring;
 
-android {
-    compileSdkVersion 21
-    buildToolsVersion '21.1.0'
-    defaultConfig {
-        applicationId 'com.nextgis.ngm_clink_monitoring'
-        minSdkVersion 8
-        targetSdkVersion 21
-        versionCode 1
-        versionName "1.0"
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-    productFlavors {
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_6
-        targetCompatibility JavaVersion.VERSION_1_6
-    }
-}
+import android.app.Application;
+import android.location.Location;
+import com.nextgis.maplib.location.GpsEventSource;
 
-dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:21.0.3'
-    compile project(':maplibui')
+
+public class GISApplication
+        extends Application
+{
+    protected GpsEventSource mGpsEventSource;
+
+    protected Location mCurrentLocation = null;
+
+
+    @Override
+    public void onCreate()
+    {
+        super.onCreate();
+
+        mGpsEventSource = new GpsEventSource(this);
+    }
+
+
+    public GpsEventSource getGpsEventSource()
+    {
+        return mGpsEventSource;
+    }
+
+
+    public Location getCurrentLocation()
+    {
+        return mCurrentLocation;
+    }
+
+
+    public void setCurrentLocation(Location currentLocation)
+    {
+        mCurrentLocation = currentLocation;
+    }
 }

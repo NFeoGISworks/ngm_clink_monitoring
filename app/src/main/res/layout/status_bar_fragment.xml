@@ -37,7 +37,6 @@
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:paddingTop="5dp"
-        android:text="----"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="#ff000000"
         />
@@ -60,7 +59,6 @@
                 android:layout_gravity="start"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:text="@string/latitude_text"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="#ff000000"
                 />
@@ -70,7 +68,6 @@
                 android:layout_gravity="start"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:text="@string/longitude_text"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="#ff000000"
                 />
@@ -87,7 +84,6 @@
                 android:layout_gravity="start"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:text="@string/altitude_text"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="#ff000000"
                 />
@@ -97,7 +93,6 @@
                 android:layout_gravity="start"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:text="@string/accuracy_text"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="#ff000000"
                 />

@@ -26,7 +26,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -37,6 +36,7 @@ import android.widget.Gallery;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.nextgis.ngm_clink_monitoring.util.LocationUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -80,6 +80,8 @@ public class LineWorkFragment
 
         mPhotoList = new ArrayList<String>();
 
+        // TODO
+/*
         if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             Toast.makeText(getActivity(), "SDCard is not mounted", Toast.LENGTH_LONG).show();
 
@@ -96,6 +98,7 @@ public class LineWorkFragment
                 mPhotoList.add(file.getAbsolutePath());
             }
         }
+*/
 
         mImageAdapter = new ImageAdapter(getActivity(), mPhotoList);
     }
@@ -158,7 +161,8 @@ public class LineWorkFragment
                     try {
                         photoFile = createImageFile();
                     } catch (IOException e) {
-                        Toast.makeText(getActivity(), e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), e.getLocalizedMessage(), Toast.LENGTH_LONG)
+                             .show();
                     }
 
                     if (photoFile != null) {
@@ -183,6 +187,15 @@ public class LineWorkFragment
             Intent data)
     {
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
+            GISApplication app = (GISApplication) getActivity().getApplication();
+
+            try {
+                LocationUtil.writeLocationToExif(new File(mCurrentPhotoPath),
+                                                 app.getCurrentLocation());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
             mPhotoList.add(mCurrentPhotoPath);
             mImageAdapter.notifyDataSetChanged();
         }
@@ -208,10 +221,16 @@ public class LineWorkFragment
                 break;
         }
 
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = prefix + timeStamp + ".jpg";
+        String timeStamp = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+        File dataDir = new File(MainActivity.PHOTO_DIR_PATH + File.separator + timeStamp);
 
-        File emptyFile = new File(MainActivity.PHOTO_DIR_PATH, imageFileName);
+        if (!dataDir.exists()) {
+            dataDir.mkdirs();
+        }
+
+        timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = prefix + timeStamp + ".jpg";
+        File emptyFile = new File(dataDir, imageFileName);
         emptyFile.createNewFile();
 
         return emptyFile;

@@ -40,11 +40,11 @@ public class MainActivity
     public static final int MOUNTING_WORK  = 2;
     public static final int MEASURING_WORK = 3;
 
-    public static final String DATA_DIR_PATH  =
+    public static final String DATA_DIR_PATH =
             Environment.getExternalStorageDirectory().getAbsolutePath() +
             File.separator + "ngm_clink_monitoring";
 
-    public static final String PHOTO_DIR_PATH = DATA_DIR_PATH + File.separator + "photo";
+    public static final String PHOTO_DIR_PATH = DATA_DIR_PATH + File.separator + "foto";
 
 
     @Override

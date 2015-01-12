@@ -27,10 +27,13 @@
 
     <string name="action_settings">Настройки</string>
 
-    <string name="latitude_text">Шир: %1$s</string>
-    <string name="longitude_text">Долг: %1$s</string>
-    <string name="altitude_text">Высота: %1$s м</string>
-    <string name="accuracy_text">Точность: %1$s м</string>
+    <string name="latitude_caption">Шир:</string>
+    <string name="longitude_caption">Долг:</string>
+    <string name="altitude_caption">Высота:</string>
+    <string name="accuracy_caption">Точность:</string>
+
+    <string name="altitude_unit">м н.у. моря</string>
+    <string name="accuracy_unit">м</string>
 
     <string name="select_work_type">Выберите вид работ:</string>
 
@@ -48,5 +51,20 @@
     <string name="make_photo">Сделать фото</string>
     <string name="save">Сохранить</string>
     <string name="cancel">Отмена</string>
+
+    <string name="compas_N">С</string>
+    <string name="compas_NE">СВ</string>
+    <string name="compas_E">В</string>
+    <string name="compas_SE">ЮВ</string>
+    <string name="compas_S">Ю</string>
+    <string name="compas_SW">ЮЗ</string>
+    <string name="compas_W">З</string>
+    <string name="compas_NW">СЗ</string>
+    `
+    <string name="coord_lat">Ш</string>
+    <string name="coord_lon">Д</string>
+
+    <string name="coordinates_defined">Координаты определены</string>
+    <string name="coordinates_not_defined">Координаты не определены</string>
 
 </resources>
