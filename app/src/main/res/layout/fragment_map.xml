@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--****************************************************************************
   * Project:  NextGIS mobile apps for Compulink
   * Purpose:  Mobile GIS for Android
@@ -22,17 +21,19 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ***************************************************************************-->
 
-<shape
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:id="@+id/mapholder"
+             android:layout_height="match_parent"
+             android:layout_width="match_parent"
+             tools:context="com.nextgis.maplibui.MapFragment"
     >
 
-    <solid
-        android:color="#ff9ecfd9"/>
+    <RelativeLayout
+        android:id="@+id/maprl"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        >
+    </RelativeLayout>
 
-    <stroke
-        android:color="#ffa0a0a0"
-        android:width="1dip"
-        />
-
-</shape>
+</FrameLayout>

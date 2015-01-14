@@ -29,7 +29,7 @@
     >
 
     <TextView
-        android:background="@drawable/status_line_border"
+        android:background="@drawable/border_status_line"
         android:id="@+id/status_line"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"

@@ -78,7 +78,7 @@ public class LineWorkFragment
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
 
-        mPhotoList = new ArrayList<String>();
+        mPhotoList = new ArrayList<>();
 
         // TODO
 /*
@@ -110,7 +110,7 @@ public class LineWorkFragment
             ViewGroup container,
             Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.line_work_fragment, null);
+        View view = inflater.inflate(R.layout.fragment_line_work, null);
 
         mWorkTypeName = (TextView) view.findViewById(R.id.work_type_name);
         mObjectCaption = (TextView) view.findViewById(R.id.object_caption);

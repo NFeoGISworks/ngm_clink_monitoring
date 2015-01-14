@@ -22,6 +22,7 @@
 
 package com.nextgis.ngm_clink_monitoring;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.FragmentTransaction;
@@ -51,7 +52,7 @@ public class MainActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main_activity);
+        setContentView(R.layout.activity_main);
 
         TypeWorkFragment typeWorkFragment =
                 (TypeWorkFragment) getSupportFragmentManager().findFragmentByTag("TypeWork");
@@ -102,16 +103,21 @@ public class MainActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                return true;
+            case R.id.menu_map:
+                onMenuMapClick();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
+    }
 
-        return super.onOptionsItemSelected(item);
+
+    public void onMenuMapClick()
+    {
+        Intent intent = new Intent(this, MapActivity.class);
+        startActivity(intent);
     }
 }

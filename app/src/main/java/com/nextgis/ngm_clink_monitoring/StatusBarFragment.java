@@ -77,7 +77,7 @@ public class StatusBarFragment
             ViewGroup container,
             Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.status_bar_fragment, null);
+        View view = inflater.inflate(R.layout.fragment_status_bar, null);
 
         mStatusLine = (TextView) view.findViewById(R.id.status_line);
         mLatView = (TextView) view.findViewById(R.id.latitude_view);

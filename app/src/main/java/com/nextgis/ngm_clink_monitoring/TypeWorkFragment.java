@@ -42,7 +42,7 @@ public class TypeWorkFragment
             ViewGroup container,
             Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.type_works_fragment, null);
+        View view = inflater.inflate(R.layout.fragment_type_works, null);
 
         Button btnLaying = (Button) view.findViewById(R.id.btn_laying);
         Button btnMounting = (Button) view.findViewById(R.id.btn_mounting);

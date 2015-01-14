@@ -1,0 +1,92 @@
+/*******************************************************************************
+ * Project:  NextGIS mobile apps for Compulink
+ * Purpose:  Mobile GIS for Android
+ * Authors:  Dmitry Baryshnikov (aka Bishop), polimax@mail.ru
+ *           NikitaFeodonit, nfeodonit@yandex.com
+ * *****************************************************************************
+ * Copyright (C) 2014-2015 NextGIS
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
+
+package com.nextgis.ngm_clink_monitoring;
+
+import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBarActivity;
+import android.view.Menu;
+import android.view.MenuItem;
+import com.nextgis.maplibui.MapView;
+
+
+public class MapActivity
+        extends ActionBarActivity
+{
+    protected MapFragment mMapFragment;
+    protected MapView     mMap;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+
+        GISApplication app = (GISApplication) getApplication();
+        mMap = new MapView(this, app.getMap());
+
+        setContentView(R.layout.activity_map);
+
+        mMapFragment = (MapFragment) getSupportFragmentManager().findFragmentByTag("MAP");
+
+        if (mMapFragment == null) {
+            mMapFragment = new MapFragment();
+
+            if (mMapFragment.onInit(mMap)) {
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.add(R.id.map_fragment, mMapFragment, "MAP").commit();
+            }
+
+        } else {
+            mMapFragment.onInit(mMap);
+        }
+
+        getSupportFragmentManager().executePendingTransactions();
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    protected void addNGWLayer()
+    {
+        mMap.addNGWLayer();
+    }
+
+
+    protected void addRemoteLayer()
+    {
+        mMap.addRemoteLayer();
+    }
+}

@@ -28,7 +28,7 @@
     >
 
     <TextView
-        android:background="@drawable/work_type_name_border"
+        android:background="@drawable/border_work_type_name"
         android:id="@+id/work_type_name"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
