@@ -59,16 +59,43 @@
                 />
 
             <Button
-                android:id="@+id/btn_mounting"
+                android:id="@+id/btn_clutch_mounting"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_width="match_parent"
-                android:text="@string/clutch_or_cross_mounting"
+                android:text="@string/clutch_mounting"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 />
 
             <Button
-                android:id="@+id/btn_measuring"
+                android:id="@+id/btn_cross_mounting"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_width="match_parent"
+                android:text="@string/cross_mounting"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                />
+
+            <Button
+                android:id="@+id/btn_closet_mounting"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_width="match_parent"
+                android:text="@string/closet_mounting"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                />
+
+            <Button
+                android:id="@+id/btn_pole_mounting"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_width="match_parent"
+                android:text="@string/pole_mounting"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                />
+
+            <Button
+                android:id="@+id/btn_line_measuring"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_width="match_parent"

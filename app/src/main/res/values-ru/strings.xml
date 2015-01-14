@@ -48,12 +48,19 @@
     <string name="select_work_type">Выберите вид работ:</string>
 
     <string name="construction_length_laying">Прокладка строительной длины</string>
-    <string name="clutch_or_cross_mounting">Разварка муфты/кросса</string>
+    <string name="clutch_mounting">Разварка муфты</string>
+    <string name="cross_mounting">Разварка кросса</string>
+    <string name="closet_mounting">Установка телеком. шкафа</string>
+    <string name="pole_mounting">Установка столба/оконеч. опоры</string>
     <string name="line_measuring">Измерения линии</string>
 
     <string name="line">Линия:</string>
+
     <string name="construction_length">Строительная длина:</string>
-    <string name="clutch_or_cross">Муфта/кросс:</string>
+    <string name="clutch">Муфта:</string>
+    <string name="cross">Кросс:</string>
+    <string name="closet">Телеком. шкаф:</string>
+    <string name="pole">Столб/оконеч. опора:</string>
 
     <string name="take_photos_to_confirm">Сделайте фотографии для подтверждения выполнения работ.</string>
     <string name="take_photos_to_confirm_clutch">Для подтверждения выполнения работ сфотографируйте муфту, подвешенную на опоре.</string>
@@ -75,6 +82,6 @@
     <string name="coord_lon">Д</string>
 
     <string name="coordinates_defined">Координаты определены</string>
-    <string name="coordinates_not_defined">Координаты не определены</string>
+    <string name="coordinates_not_defined">Координаты НЕ определены</string>
 
 </resources>

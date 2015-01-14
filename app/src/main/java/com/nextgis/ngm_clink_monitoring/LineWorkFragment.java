@@ -133,13 +133,31 @@ public class LineWorkFragment
                 mPhotoHintText.setText(R.string.take_photos_to_confirm);
                 break;
 
-            case MainActivity.MOUNTING_WORK:
-                mWorkTypeName.setText(R.string.clutch_or_cross_mounting);
-                mObjectCaption.setText(R.string.clutch_or_cross);
+            case MainActivity.CLUTCH_MOUNTING_WORK:
+                mWorkTypeName.setText(R.string.clutch_mounting);
+                mObjectCaption.setText(R.string.clutch);
                 mPhotoHintText.setText(R.string.take_photos_to_confirm_clutch);
                 break;
 
-            case MainActivity.MEASURING_WORK:
+            case MainActivity.CROSS_MOUNTING_WORK:
+                mWorkTypeName.setText(R.string.cross_mounting);
+                mObjectCaption.setText(R.string.cross);
+                mPhotoHintText.setText(R.string.take_photos_to_confirm);
+                break;
+
+            case MainActivity.CLOSET_MOUNTING_WORK:
+                mWorkTypeName.setText(R.string.closet_mounting);
+                mObjectCaption.setText(R.string.closet);
+                mPhotoHintText.setText(R.string.take_photos_to_confirm);
+                break;
+
+            case MainActivity.POLE_MOUNTING_WORK:
+                mWorkTypeName.setText(R.string.pole_mounting);
+                mObjectCaption.setText(R.string.pole);
+                mPhotoHintText.setText(R.string.take_photos_to_confirm);
+                break;
+
+            case MainActivity.LINE_MEASURING_WORK:
                 mWorkTypeName.setText(R.string.construction_length_laying);
                 mObjectCaption.setVisibility(View.INVISIBLE);
                 mObjectName.setVisibility(View.INVISIBLE);
@@ -212,12 +230,24 @@ public class LineWorkFragment
                 prefix = "Laying_";
                 break;
 
-            case MainActivity.MOUNTING_WORK:
-                prefix = "Mounting_";
+            case MainActivity.CLUTCH_MOUNTING_WORK:
+                prefix = "Clutch_Mounting_";
                 break;
 
-            case MainActivity.MEASURING_WORK:
-                prefix = "Measuring_";
+            case MainActivity.CROSS_MOUNTING_WORK:
+                prefix = "Cross_Mounting_";
+                break;
+
+            case MainActivity.CLOSET_MOUNTING_WORK:
+                prefix = "Closet_Mounting_";
+                break;
+
+            case MainActivity.POLE_MOUNTING_WORK:
+                prefix = "Pole_Mounting_";
+                break;
+
+            case MainActivity.LINE_MEASURING_WORK:
+                prefix = "Line_Measuring_";
                 break;
         }
 

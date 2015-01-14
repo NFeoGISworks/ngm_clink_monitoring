@@ -45,8 +45,11 @@ public class TypeWorkFragment
         View view = inflater.inflate(R.layout.fragment_type_works, null);
 
         Button btnLaying = (Button) view.findViewById(R.id.btn_laying);
-        Button btnMounting = (Button) view.findViewById(R.id.btn_mounting);
-        Button btnMeasuring = (Button) view.findViewById(R.id.btn_measuring);
+        Button btnClutchMounting = (Button) view.findViewById(R.id.btn_clutch_mounting);
+        Button btnCrossMounting = (Button) view.findViewById(R.id.btn_cross_mounting);
+        Button btnClosetMounting = (Button) view.findViewById(R.id.btn_closet_mounting);
+        Button btnPoleMounting = (Button) view.findViewById(R.id.btn_pole_mounting);
+        Button btnLineMeasuring = (Button) view.findViewById(R.id.btn_line_measuring);
 
         btnLaying.setOnClickListener(new View.OnClickListener()
         {
@@ -59,24 +62,57 @@ public class TypeWorkFragment
             }
         });
 
-        btnMounting.setOnClickListener(new View.OnClickListener()
+        btnClutchMounting.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
                 if (mOnButtonsClickListener != null) {
-                    mOnButtonsClickListener.OnButtonsClick(MainActivity.MOUNTING_WORK);
+                    mOnButtonsClickListener.OnButtonsClick(MainActivity.CLUTCH_MOUNTING_WORK);
                 }
             }
         });
 
-        btnMeasuring.setOnClickListener(new View.OnClickListener()
+        btnCrossMounting.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
                 if (mOnButtonsClickListener != null) {
-                    mOnButtonsClickListener.OnButtonsClick(MainActivity.MEASURING_WORK);
+                    mOnButtonsClickListener.OnButtonsClick(MainActivity.CROSS_MOUNTING_WORK);
+                }
+            }
+        });
+
+        btnClosetMounting.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                if (mOnButtonsClickListener != null) {
+                    mOnButtonsClickListener.OnButtonsClick(MainActivity.CLOSET_MOUNTING_WORK);
+                }
+            }
+        });
+
+        btnPoleMounting.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                if (mOnButtonsClickListener != null) {
+                    mOnButtonsClickListener.OnButtonsClick(MainActivity.POLE_MOUNTING_WORK);
+                }
+            }
+        });
+
+        btnLineMeasuring.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                if (mOnButtonsClickListener != null) {
+                    mOnButtonsClickListener.OnButtonsClick(MainActivity.LINE_MEASURING_WORK);
                 }
             }
         });
