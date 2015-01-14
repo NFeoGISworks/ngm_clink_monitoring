@@ -36,38 +36,31 @@
         layout="@layout/actionbar"
         />
 
-    <ScrollView
+    <LinearLayout
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
         android:layout_width="match_parent"
+        android:orientation="vertical"
         >
 
-        <LinearLayout
+        <FrameLayout
+            android:id="@+id/status_bar_fragment"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
             android:layout_width="match_parent"
-            android:orientation="vertical"
-            >
+            tools:layout="@layout/fragment_status_bar"
+            />
 
-            <FrameLayout
-                android:id="@+id/status_bar_fragment"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                tools:layout="@layout/fragment_status_bar"
-                />
+        <FrameLayout
+            android:id="@+id/work_fragment"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            />
 
-            <FrameLayout
-                android:id="@+id/work_fragment"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_width="match_parent"
-                />
-
-        </LinearLayout>
-
-    </ScrollView>
+    </LinearLayout>
 
 </LinearLayout>
 
