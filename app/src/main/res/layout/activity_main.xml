@@ -26,13 +26,15 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity"
     tools:ignore="MergeRootFrame"
     >
+
+    <include
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        layout="@layout/actionbar"
+        />
 
     <ScrollView
         android:layout_height="wrap_content"
@@ -41,15 +43,18 @@
 
         <LinearLayout
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
             android:layout_width="match_parent"
             android:orientation="vertical"
             >
 
-            <fragment
+            <FrameLayout
                 android:id="@+id/status_bar_fragment"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:name="com.nextgis.ngm_clink_monitoring.StatusBarFragment"
                 tools:layout="@layout/fragment_status_bar"
                 />
 

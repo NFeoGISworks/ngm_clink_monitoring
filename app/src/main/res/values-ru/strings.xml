@@ -26,6 +26,16 @@
     <string name="app_name">Compulink Monitoring</string>
 
     <string name="action_settings">Настройки</string>
+    <string name="general">Общие настройки</string>
+    <string name="general_summary">Общие настройки приложения</string>
+    <string name="map">Карта</string>
+    <string name="map_summary">Настройки карты</string>
+    <string name="ngw">NextGIS Web</string>
+    <string name="ngw_summary">Настройки NextGIS Web</string>
+    <string name="keep_screen_on">Удерживать экран включенным</string>
+    <string name="keep_screen_on_summary">Предотвращать отключение экрана при показе карты</string>
+    <string name="show_zoom_controls">Кнопки масштабирования</string>
+    <string name="show_zoom_controls_summary">Отображать кнопки увеличения и уменьшения масштаба на карте</string>
 
     <string name="latitude_caption">Шир:</string>
     <string name="longitude_caption">Долг:</string>

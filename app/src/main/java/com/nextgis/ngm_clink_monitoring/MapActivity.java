@@ -25,8 +25,10 @@ package com.nextgis.ngm_clink_monitoring;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import com.nextgis.maplibui.MapView;
 
 
@@ -46,6 +48,30 @@ public class MapActivity
         mMap = new MapView(this, app.getMap());
 
         setContentView(R.layout.activity_map);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        toolbar.getBackground().setAlpha(255);
+        toolbar.setTitle(getTitle());
+        toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                MapActivity.this.finish();
+            }
+        });
+
+        StatusBarFragment statusBarFragment =
+                (StatusBarFragment) getSupportFragmentManager().findFragmentByTag("StatusBar");
+
+        if (statusBarFragment == null) {
+            statusBarFragment = new StatusBarFragment();
+
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.add(R.id.status_bar_fragment, statusBarFragment, "StatusBar");
+            ft.commit();
+        }
 
         mMapFragment = (MapFragment) getSupportFragmentManager().findFragmentByTag("MAP");
 

@@ -22,10 +22,37 @@
 
 <resources>
 
-    <!-- Base application theme. -->
+    <!--
+        Base application theme, dependent on API level. This theme is replaced
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+    -->
+    <style name="AppBaseTheme"
+           parent="Theme.AppCompat.Light.NoActionBar">
+
+        <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+        -->
+        <item name="colorPrimary">@color/primary_dark_material_light</item>
+        <item name="colorPrimaryDark">@color/primary_dark_material_dark</item>
+        <item name="colorAccent">@color/accent_material_light</item>
+
+    </style>
+
+    <!-- Application theme. -->
+
     <style name="AppTheme"
-           parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+           parent="AppBaseTheme">
+
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+        <item name="windowActionBarOverlay">true</item>
+
+    </style>
+
+    <style name="menu_labels_style">
+        <item name="android:background">@drawable/abc_popup_background_mtrl_mult</item>
+        <item name="android:textColor">@color/primary_text_default_material_light</item>
     </style>
 
 </resources>

@@ -25,8 +25,10 @@ package com.nextgis.ngm_clink_monitoring;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -52,7 +54,26 @@ public class MainActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        // initialize the default settings
+        PreferenceManager.setDefaultValues(this, R.xml.preferences_general, false);
+
         setContentView(R.layout.activity_main);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        toolbar.getBackground().setAlpha(255);
+        setSupportActionBar(toolbar);
+
+        StatusBarFragment statusBarFragment =
+                (StatusBarFragment) getSupportFragmentManager().findFragmentByTag("StatusBar");
+
+        if (statusBarFragment == null) {
+            statusBarFragment = new StatusBarFragment();
+
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.add(R.id.status_bar_fragment, statusBarFragment, "StatusBar");
+            ft.commit();
+        }
 
         TypeWorkFragment typeWorkFragment =
                 (TypeWorkFragment) getSupportFragmentManager().findFragmentByTag("TypeWork");
@@ -105,6 +126,8 @@ public class MainActivity
     {
         switch (item.getItemId()) {
             case R.id.action_settings:
+                Intent intentSet = new Intent(this, SettingsActivity.class);
+                startActivity(intentSet);
                 return true;
             case R.id.menu_map:
                 onMenuMapClick();

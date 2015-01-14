@@ -21,20 +21,46 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ***************************************************************************-->
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:id="@+id/mapholder"
-             android:layout_height="match_parent"
-             android:layout_width="match_parent"
-             tools:context="com.nextgis.maplibui.MapFragment"
-    >
+<preference-headers
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <RelativeLayout
-        android:id="@+id/maprl"
-        android:layout_height="match_parent"
-        android:layout_width="match_parent"
+    <header
+        android:fragment="com.nextgis.ngm_clink_monitoring.SettingsFragment"
+        android:summary="@string/general_summary"
+        android:title="@string/general"
         >
 
-    </RelativeLayout>
+        <extra
+            android:name="settings"
+            android:value="general"
+            />
 
-</FrameLayout>
+    </header>
+
+    <header
+        android:fragment="com.nextgis.ngm_clink_monitoring.SettingsFragment"
+        android:summary="@string/map_summary"
+        android:title="@string/map"
+        >
+
+        <extra
+            android:name="settings"
+            android:value="map"
+            />
+
+    </header>
+
+    <header
+        android:summary="@string/ngw_summary"
+        android:title="@string/ngw"
+        >
+
+        <intent
+            android:action="com.nextgis.ngm_clink_monitoring.PREFS_NGW"
+            android:targetClass="com.nextgis.ngm_clink_monitoring.NGWSettingsActivityProxy"
+            android:targetPackage="com.nextgis.ngm_clink_monitoring"
+            />
+
+    </header>
+
+</preference-headers>

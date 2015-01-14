@@ -29,6 +29,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -47,30 +48,17 @@ public class MapFragment
 {
 
     protected final static int mMargings = 10;
-
+    protected static final String KEY_PREF_WAS_ZOOM_CONTROLS_SHOWN = "was_zoom_controls_shown";
     protected MapView   mMap;
     protected ImageView mivZoomIn;
     protected ImageView mivZoomOut;
-
+    protected boolean mShowZoomControls;
     protected RelativeLayout mMapRelativeLayout;
-    protected boolean        mShowZoomControl;
 
 
     public MapFragment()
     {
-        mShowZoomControl = true;
-    }
-
-
-    public boolean isShowZoomControl()
-    {
-        return mShowZoomControl;
-    }
-
-
-    public void setShowZoomControl(boolean showZoomControl)
-    {
-        mShowZoomControl = showZoomControl;
+        mShowZoomControls = false;
     }
 
 
@@ -94,7 +82,7 @@ public class MapFragment
         if (mMap != null) {
             mMapRelativeLayout = (RelativeLayout) layout.findViewById(R.id.maprl);
             if (mMapRelativeLayout != null) {
-                mMapRelativeLayout.addView(mMap, new RelativeLayout.LayoutParams(
+                mMapRelativeLayout.addView(mMap, 0, new RelativeLayout.LayoutParams(
                         RelativeLayout.LayoutParams.MATCH_PARENT,
                         RelativeLayout.LayoutParams.MATCH_PARENT));
 
@@ -103,16 +91,10 @@ public class MapFragment
                 if (sharedPreferences.getBoolean(KEY_PREF_SHOW_ZOOM_CONTROLS, false)) {
                     addMapButtons(view.getContext(), mMapRelativeLayout);
                 }
-                //TODO: The idea is to have one fab (new in Android L v5) to add new geometry to layer.
-                //TODO: The zoom should be the same as scale bar: user have to choose meters, foots or zoom to seen over the map. The bar/rech shold shown only while zoom/scale is changed
-                //TODO: The zoomin/zoomout buttons should be at left center or top of display and has alpha about 25%. First tap on screen make them non transparent
-                //http://stackoverflow.com/questions/26740107/is-there-a-library-for-floating-action-buttons-with-labels
-                //https://github.com/futuresimple/android-floating-action-button
-                //http://stackoverflow.com/questions/26928976/android-floating-action-button-api-19-kitkat
-                //http://stackoverflow.com/questions/24464017/android-landroid-material-circular-button
-                //http://stackoverflow.com/questions/24451026/android-l-fab-button
             }
+            mMap.invalidate();
         }
+
 
         return view;
     }
@@ -132,11 +114,11 @@ public class MapFragment
     }
 
 
-    protected void removeMapButtons(
-            Context context,
-            RelativeLayout rl)
+    protected void removeMapButtons(RelativeLayout rl)
     {
-        rl.removeAllViewsInLayout();
+        mShowZoomControls = false;
+        rl.removeViewInLayout(mivZoomIn);
+        rl.removeViewInLayout(mivZoomOut);
         mivZoomIn = null;
         mivZoomOut = null;
     }
@@ -146,15 +128,16 @@ public class MapFragment
             Context context,
             RelativeLayout rl)
     {
+        mShowZoomControls = true;
         mivZoomIn = new ImageView(context);
         mivZoomIn.setImageResource(R.drawable.ic_plus);
         ViewUtil.setGeneratedId(mivZoomIn);
 
         mivZoomOut = new ImageView(context);
         mivZoomOut.setImageResource(R.drawable.ic_minus);
-        //mivZoomOut.setId(R.drawable.ic_minus);
+        ViewUtil.setGeneratedId(mivZoomOut);
 
-        mivZoomIn.setOnClickListener(new View.OnClickListener()
+        mivZoomIn.setOnClickListener(new OnClickListener()
         {
             public void onClick(View v)
             {
@@ -162,7 +145,7 @@ public class MapFragment
             }
         });
 
-        mivZoomOut.setOnClickListener(new View.OnClickListener()
+        mivZoomOut.setOnClickListener(new OnClickListener()
         {
             public void onClick(View v)
             {
@@ -182,8 +165,10 @@ public class MapFragment
                 new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
                                                 RelativeLayout.LayoutParams.WRAP_CONTENT);
         RightParams2.setMargins(mMargings + 5, mMargings - 5, mMargings + 5, mMargings - 5);
-        RightParams2.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-        RightParams2.addRule(RelativeLayout.BELOW, R.drawable.ic_plus);
+        RightParams2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        RightParams2.addRule(RelativeLayout.CENTER_IN_PARENT);//ALIGN_PARENT_TOP
+// TODO:
+//        RightParams2.addRule(RelativeLayout.BELOW, mivZoomIn.getId());
         rl.addView(mivZoomOut, RightParams2);
 
         setZoomInEnabled(mMap.canZoomIn());
@@ -283,6 +268,7 @@ public class MapFragment
             edit.putLong(KEY_PREF_SCROLL_X, Double.doubleToRawLongBits(point.getX()));
             edit.putLong(KEY_PREF_SCROLL_Y, Double.doubleToRawLongBits(point.getY()));
         }
+        edit.putBoolean(KEY_PREF_WAS_ZOOM_CONTROLS_SHOWN, mShowZoomControls);
         edit.commit();
 
         super.onPause();
@@ -301,6 +287,16 @@ public class MapFragment
             double mMapScrollX = Double.longBitsToDouble(prefs.getLong(KEY_PREF_SCROLL_X, 0));
             double mMapScrollY = Double.longBitsToDouble(prefs.getLong(KEY_PREF_SCROLL_Y, 0));
             mMap.setZoomAndCenter(mMapZoom, new GeoPoint(mMapScrollX, mMapScrollY));
+        }
+
+        //change zoom controls visibility
+        boolean showControls = prefs.getBoolean(KEY_PREF_SHOW_ZOOM_CONTROLS, false);
+        if (prefs.getBoolean(KEY_PREF_WAS_ZOOM_CONTROLS_SHOWN, false) != showControls) {
+            if (showControls) {
+                addMapButtons(getActivity(), mMapRelativeLayout);
+            } else {
+                removeMapButtons(mMapRelativeLayout);
+            }
         }
     }
 }

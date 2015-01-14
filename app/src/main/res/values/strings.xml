@@ -26,6 +26,16 @@
     <string name="app_name">Compulink Monitoring</string>
 
     <string name="action_settings">Settings</string>
+    <string name="general">General</string>
+    <string name="general_summary">The application general settings</string>
+    <string name="map">Map</string>
+    <string name="map_summary">Map settings</string>
+    <string name="ngw">NextGIS Web</string>
+    <string name="ngw_summary">NextGIS Web settings</string>
+    <string name="keep_screen_on">Keep screen on</string>
+    <string name="keep_screen_on_summary">Prevent screen switch off</string>
+    <string name="show_zoom_controls">Show zoom controls</string>
+    <string name="show_zoom_controls_summary">Show zoom in and zoom out control on map</string>
 
     <string name="latitude_caption">Lat:</string>
     <string name="longitude_caption">Long:</string>
