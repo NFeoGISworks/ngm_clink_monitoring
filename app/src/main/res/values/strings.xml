@@ -47,23 +47,23 @@
 
     <string name="select_work_type">Select work type:</string>
 
-    <string name="construction_length_laying">Construction length laying</string>
-    <string name="clutch_mounting">Clutch mounting</string>
+    <string name="optical_cable_laying">Optical cable laying</string>
+    <string name="fosc_mounting">FOSC mounting</string>
     <string name="cross_mounting">Cross mounting</string>
-    <string name="closet_mounting">Closet mounting</string>
+    <string name="telecom_cabinet_mounting">Telecom. cabinet mounting</string>
     <string name="pole_mounting">Pole mounting</string>
     <string name="line_measuring">Line measuring</string>
 
     <string name="line">Line:</string>
 
-    <string name="construction_length">Construction length:</string>
-    <string name="clutch">Clutch:</string>
+    <string name="optical_cable">Optical cable:</string>
+    <string name="fosc">FOSC:</string>
     <string name="cross">Cross:</string>
-    <string name="closet">Closet:</string>
+    <string name="telecom_cabinet">Telecom. cabinet:</string>
     <string name="pole">Pole:</string>
 
     <string name="take_photos_to_confirm">Take photos to confirm the execution of works.</string>
-    <string name="take_photos_to_confirm_clutch">Take photos of clutch on a pole to confirm the execution of works.</string>
+    <string name="take_photos_to_confirm_fosc">Take photos of FOSC on a pole to confirm the execution of works.</string>
 
     <string name="make_photo">Make photo</string>
     <string name="save">Save</string>
