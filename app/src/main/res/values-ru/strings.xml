@@ -47,23 +47,23 @@
 
     <string name="select_work_type">Выберите вид работ:</string>
 
-    <string name="construction_length_laying">Прокладка строительной длины</string>
-    <string name="clutch_mounting">Разварка муфты</string>
+    <string name="optical_cable_laying">Прокладка строительной длины</string>
+    <string name="fosc_mounting">Разварка муфты</string>
     <string name="cross_mounting">Разварка кросса</string>
-    <string name="closet_mounting">Установка телеком. шкафа</string>
+    <string name="telecom_cabinet_mounting">Установка телеком. шкафа</string>
     <string name="pole_mounting">Установка столба/оконеч. опоры</string>
     <string name="line_measuring">Измерения линии</string>
 
     <string name="line">Линия:</string>
 
-    <string name="construction_length">Строительная длина:</string>
-    <string name="clutch">Муфта:</string>
+    <string name="optical_cable">Строительная длина:</string>
+    <string name="fosc">Муфта:</string>
     <string name="cross">Кросс:</string>
-    <string name="closet">Телеком. шкаф:</string>
+    <string name="telecom_cabinet">Телеком. шкаф:</string>
     <string name="pole">Столб/оконеч. опора:</string>
 
     <string name="take_photos_to_confirm">Сделайте фотографии для подтверждения выполнения работ.</string>
-    <string name="take_photos_to_confirm_clutch">Для подтверждения выполнения работ сфотографируйте муфту, подвешенную на опоре.</string>
+    <string name="take_photos_to_confirm_fosc">Для подтверждения выполнения работ сфотографируйте муфту, подвешенную на опоре.</string>
 
     <string name="make_photo">Сделать фото</string>
     <string name="save">Сохранить</string>

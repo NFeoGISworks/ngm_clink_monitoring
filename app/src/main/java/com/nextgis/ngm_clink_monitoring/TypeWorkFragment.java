@@ -57,7 +57,7 @@ public class TypeWorkFragment
             public void onClick(View v)
             {
                 if (mOnButtonsClickListener != null) {
-                    mOnButtonsClickListener.OnButtonsClick(MainActivity.LAYING_WORK);
+                    mOnButtonsClickListener.OnButtonsClick(MainActivity.OPTICAL_CABLE_LAYING_WORK);
                 }
             }
         });
@@ -68,7 +68,7 @@ public class TypeWorkFragment
             public void onClick(View v)
             {
                 if (mOnButtonsClickListener != null) {
-                    mOnButtonsClickListener.OnButtonsClick(MainActivity.CLUTCH_MOUNTING_WORK);
+                    mOnButtonsClickListener.OnButtonsClick(MainActivity.FOSC_MOUNTING_WORK);
                 }
             }
         });
@@ -90,7 +90,8 @@ public class TypeWorkFragment
             public void onClick(View v)
             {
                 if (mOnButtonsClickListener != null) {
-                    mOnButtonsClickListener.OnButtonsClick(MainActivity.CLOSET_MOUNTING_WORK);
+                    mOnButtonsClickListener.OnButtonsClick(
+                            MainActivity.TELECOM_CABINET_MOUNTING_WORK);
                 }
             }
         });

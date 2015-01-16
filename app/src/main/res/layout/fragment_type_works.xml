@@ -48,7 +48,7 @@
             android:id="@+id/btn_laying"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:text="@string/construction_length_laying"
+            android:text="@string/optical_cable_laying"
             android:textAppearance="?android:attr/textAppearanceSmall"
             />
 
@@ -57,7 +57,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_width="match_parent"
-            android:text="@string/clutch_mounting"
+            android:text="@string/fosc_mounting"
             android:textAppearance="?android:attr/textAppearanceSmall"
             />
 
@@ -75,7 +75,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_width="match_parent"
-            android:text="@string/closet_mounting"
+            android:text="@string/telecom_cabinet_mounting"
             android:textAppearance="?android:attr/textAppearanceSmall"
             />
 

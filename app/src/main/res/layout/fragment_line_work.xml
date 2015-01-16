@@ -20,121 +20,129 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ***************************************************************************-->
 
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layout_width="match_parent"
-    android:orientation="vertical"
     >
 
-    <TextView
-        android:background="@drawable/border_work_type_name"
-        android:id="@+id/work_type_name"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:paddingBottom="5dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:paddingTop="5dp"
-        android:text="----"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="#ff000000"
-        />
-
-    <TextView
-        android:id="@+id/line_caption"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:paddingBottom="5dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:paddingTop="5dp"
-        android:text="@string/line"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="#ff000000"
-        />
-
-    <Spinner
-        android:id="@+id/line_name"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        />
-
-    <TextView
-        android:id="@+id/object_caption"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:paddingBottom="5dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:paddingTop="5dp"
-        android:text="@string/construction_length"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="#ff000000"
-        />
-
-    <Spinner
-        android:id="@+id/object_name"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        />
-
-    <TextView
-        android:background="#ffe4c2b4"
-        android:id="@+id/photo_hint_text"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:layout_width="match_parent"
-        android:paddingBottom="5dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:paddingTop="5dp"
-        android:text="@string/take_photos_to_confirm"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="#ff000000"
-        />
-
-    <Gallery
-        android:id="@+id/photo_gallery"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:layout_width="match_parent"
-        />
-
     <LinearLayout
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         >
 
-        <Button
-            android:id="@+id/btn_make_photo"
+        <TextView
+            android:background="@drawable/border_work_type_name"
+            android:id="@+id/work_type_name"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_width="wrap_content"
-            android:text="@string/make_photo"
+            android:layout_width="match_parent"
+            android:paddingBottom="5dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="5dp"
+            android:text="----"
             android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="#ff000000"
             />
 
-        <Button
-            android:id="@+id/btn_save"
+        <TextView
+            android:id="@+id/line_caption"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_width="wrap_content"
-            android:text="@string/save"
+            android:layout_width="match_parent"
+            android:paddingBottom="5dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="5dp"
+            android:text="@string/line"
             android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="#ff000000"
             />
 
-        <Button
-            android:id="@+id/btn_cancel"
+        <Spinner
+            android:id="@+id/line_name"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_width="wrap_content"
-            android:text="@string/cancel"
-            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_width="match_parent"
             />
+
+        <TextView
+            android:id="@+id/object_caption"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:paddingBottom="5dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="5dp"
+            android:text="@string/optical_cable"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="#ff000000"
+            />
+
+        <Spinner
+            android:id="@+id/object_name"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            />
+
+        <TextView
+            android:background="#ffe4c2b4"
+            android:id="@+id/photo_hint_text"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:paddingBottom="5dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="5dp"
+            android:text="@string/take_photos_to_confirm"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="#ff000000"
+            />
+
+        <Gallery
+            android:id="@+id/photo_gallery"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            />
+
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            >
+
+            <Button
+                android:id="@+id/btn_make_photo"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:text="@string/make_photo"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                />
+
+            <Button
+                android:id="@+id/btn_save"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:text="@string/save"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                />
+
+            <Button
+                android:id="@+id/btn_cancel"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:text="@string/cancel"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                />
+
+        </LinearLayout>
 
     </LinearLayout>
 
-</LinearLayout>
+</ScrollView>

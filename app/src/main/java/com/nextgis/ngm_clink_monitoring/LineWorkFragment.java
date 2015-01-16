@@ -127,16 +127,16 @@ public class LineWorkFragment
         mCancelButton = (Button) view.findViewById(R.id.btn_cancel);
 
         switch (mWorkType) {
-            case MainActivity.LAYING_WORK:
-                mWorkTypeName.setText(R.string.construction_length_laying);
-                mObjectCaption.setText(R.string.construction_length);
+            case MainActivity.OPTICAL_CABLE_LAYING_WORK:
+                mWorkTypeName.setText(R.string.optical_cable_laying);
+                mObjectCaption.setText(R.string.optical_cable);
                 mPhotoHintText.setText(R.string.take_photos_to_confirm);
                 break;
 
-            case MainActivity.CLUTCH_MOUNTING_WORK:
-                mWorkTypeName.setText(R.string.clutch_mounting);
-                mObjectCaption.setText(R.string.clutch);
-                mPhotoHintText.setText(R.string.take_photos_to_confirm_clutch);
+            case MainActivity.FOSC_MOUNTING_WORK:
+                mWorkTypeName.setText(R.string.fosc_mounting);
+                mObjectCaption.setText(R.string.fosc);
+                mPhotoHintText.setText(R.string.take_photos_to_confirm_fosc);
                 break;
 
             case MainActivity.CROSS_MOUNTING_WORK:
@@ -145,9 +145,9 @@ public class LineWorkFragment
                 mPhotoHintText.setText(R.string.take_photos_to_confirm);
                 break;
 
-            case MainActivity.CLOSET_MOUNTING_WORK:
-                mWorkTypeName.setText(R.string.closet_mounting);
-                mObjectCaption.setText(R.string.closet);
+            case MainActivity.TELECOM_CABINET_MOUNTING_WORK:
+                mWorkTypeName.setText(R.string.telecom_cabinet_mounting);
+                mObjectCaption.setText(R.string.telecom_cabinet);
                 mPhotoHintText.setText(R.string.take_photos_to_confirm);
                 break;
 
@@ -158,7 +158,7 @@ public class LineWorkFragment
                 break;
 
             case MainActivity.LINE_MEASURING_WORK:
-                mWorkTypeName.setText(R.string.construction_length_laying);
+                mWorkTypeName.setText(R.string.line_measuring);
                 mObjectCaption.setVisibility(View.INVISIBLE);
                 mObjectName.setVisibility(View.INVISIBLE);
                 mPhotoHintText.setText(R.string.take_photos_to_confirm);
@@ -226,20 +226,20 @@ public class LineWorkFragment
         String prefix = "";
 
         switch (mWorkType) {
-            case MainActivity.LAYING_WORK:
-                prefix = "Laying_";
+            case MainActivity.OPTICAL_CABLE_LAYING_WORK:
+                prefix = "Optical_Cable_Laying_";
                 break;
 
-            case MainActivity.CLUTCH_MOUNTING_WORK:
-                prefix = "Clutch_Mounting_";
+            case MainActivity.FOSC_MOUNTING_WORK:
+                prefix = "FOSC_Mounting_";
                 break;
 
             case MainActivity.CROSS_MOUNTING_WORK:
                 prefix = "Cross_Mounting_";
                 break;
 
-            case MainActivity.CLOSET_MOUNTING_WORK:
-                prefix = "Closet_Mounting_";
+            case MainActivity.TELECOM_CABINET_MOUNTING_WORK:
+                prefix = "Telecom_Cabinet_Mounting_";
                 break;
 
             case MainActivity.POLE_MOUNTING_WORK:

@@ -47,13 +47,16 @@ public class MapFragment
         implements MapEventListener
 {
 
-    protected final static int mMargings = 10;
+    protected static final int mMargings = 10;
+
     protected static final String KEY_PREF_WAS_ZOOM_CONTROLS_SHOWN = "was_zoom_controls_shown";
+
     protected MapView   mMap;
     protected ImageView mivZoomIn;
     protected ImageView mivZoomOut;
-    protected boolean mShowZoomControls;
     protected RelativeLayout mMapRelativeLayout;
+
+    protected boolean mShowZoomControls;
 
 
     public MapFragment()

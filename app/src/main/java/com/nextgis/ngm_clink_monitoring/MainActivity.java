@@ -38,13 +38,13 @@ import java.io.File;
 public class MainActivity
         extends ActionBarActivity
 {
-    public static final int UNKNOWN_WORK         = 0;
-    public static final int LAYING_WORK          = 1;
-    public static final int CLUTCH_MOUNTING_WORK = 2;
-    public static final int CROSS_MOUNTING_WORK  = 3;
-    public static final int CLOSET_MOUNTING_WORK = 4;
-    public static final int POLE_MOUNTING_WORK   = 5;
-    public static final int LINE_MEASURING_WORK  = 6;
+    public static final int UNKNOWN_WORK                  = 0;
+    public static final int OPTICAL_CABLE_LAYING_WORK     = 1;
+    public static final int FOSC_MOUNTING_WORK            = 2;
+    public static final int CROSS_MOUNTING_WORK           = 3;
+    public static final int TELECOM_CABINET_MOUNTING_WORK = 4;
+    public static final int POLE_MOUNTING_WORK            = 5;
+    public static final int LINE_MEASURING_WORK           = 6;
 
     public static final String DATA_DIR_PATH =
             Environment.getExternalStorageDirectory().getAbsolutePath() +
