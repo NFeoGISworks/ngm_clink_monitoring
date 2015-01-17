@@ -87,6 +87,12 @@
             android:name=".MapActivity"
             />
 
+        <activity
+            android:label="@string/action_about"
+            android:name=".AboutActivity"
+            android:theme="@style/AppBaseTheme"
+            />
+
     </application>
 
 </manifest>

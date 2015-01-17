@@ -128,13 +128,21 @@ public class MainActivity
     public boolean onOptionsItemSelected(MenuItem item)
     {
         switch (item.getItemId()) {
-            case R.id.action_settings:
+
+            case R.id.menu_settings:
                 Intent intentSet = new Intent(this, SettingsActivity.class);
                 startActivity(intentSet);
                 return true;
+
+            case R.id.menu_about:
+                Intent intentAbout = new Intent(this, AboutActivity.class);
+                startActivity(intentAbout);
+                return true;
+
             case R.id.menu_map:
                 onMenuMapClick();
                 return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }

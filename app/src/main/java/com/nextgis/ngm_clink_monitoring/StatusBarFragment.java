@@ -67,6 +67,7 @@ public class StatusBarFragment
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
 
+        mStatusLineText = getString(R.string.coordinates_not_defined);
         setLocationDefaultText();
     }
 

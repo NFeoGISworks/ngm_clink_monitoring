@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--****************************************************************************
+  * Project:  NextGIS mobile apps for Compulink
+  * Purpose:  Mobile GIS for Android
+  * Authors:  Dmitry Baryshnikov (aka Bishop), polimax@mail.ru
+  *           NikitaFeodonit, nfeodonit@yandex.com
+  * *****************************************************************************
+  * Copyright (C) 2014-2015 NextGIS
+  *
+  * This program is free software: you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+  * the Free Software Foundation, either version 2 of the License, or
+  * (at your option) any later version.
+  *
+  * This program is distributed in the hope that it will be useful,
+  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  * GNU General Public License for more details.
+  *
+  * You should have received a copy of the GNU General Public License
+  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ***************************************************************************-->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_height="wrap_content"
+              android:layout_width="match_parent"
+              android:orientation="vertical"
+    >
+
+    <include
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        layout="@layout/actionbar"
+        />
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        >
+
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            >
+
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                >
+
+                <ImageView
+                    android:id="@+id/app_logo"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_width="wrap_content"
+                    android:minHeight="64dp"
+                    android:minWidth="64dp"
+                    android:src="@drawable/ic_launcher"
+                    />
+
+                <LinearLayout
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:orientation="vertical"
+                    >
+
+                    <TextView
+                        android:gravity="center_horizontal"
+                        android:id="@+id/app_name"
+                        android:layout_gravity="center_horizontal|top"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:text="@string/app_name"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        />
+
+                    <TextView
+                        android:gravity="center_horizontal"
+                        android:id="@+id/app_version"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:text="Medium Text"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/app_description"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_width="match_parent"
+                android:text="@string/app_description"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                />
+
+            <TextView
+                android:id="@+id/creditsInto"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_width="match_parent"
+                android:text="@string/credits_intro"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                />
+
+            <TextView
+                android:id="@+id/credits"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_width="match_parent"
+                android:linksClickable="true"
+                android:text="@string/credits"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                />
+
+            <TextView
+                android:id="@+id/copyright"
+                android:layout_gravity="center_horizontal"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:layout_width="wrap_content"
+                android:linksClickable="true"
+                android:text="@string/copyright"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                />
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
