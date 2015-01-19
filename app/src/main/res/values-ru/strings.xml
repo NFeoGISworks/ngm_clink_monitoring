@@ -85,4 +85,6 @@
     <string name="coordinates_defined">Координаты определены</string>
     <string name="coordinates_not_defined">Координаты НЕ определены</string>
 
+    <string name="app_description">Мобильное приложение для ввода данных о ходе строительства ВОЛС.</string>
+
 </resources>
