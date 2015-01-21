@@ -24,19 +24,26 @@ package com.nextgis.ngm_clink_monitoring;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.Gallery;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.nextgis.ngm_clink_monitoring.map.FoclProject;
+import com.nextgis.ngm_clink_monitoring.map.FoclStruct;
+import com.nextgis.ngm_clink_monitoring.map.FoclVectorLayer;
 import com.nextgis.ngm_clink_monitoring.util.LocationUtil;
+import com.nextgis.ngm_clink_monitoring.util.SettingsConstants;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,6 +51,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static com.nextgis.ngm_clink_monitoring.util.FoclConstants.*;
 
 
 public class LineWorkFragment
@@ -65,8 +74,8 @@ public class LineWorkFragment
     protected Button mSaveButton;
     protected Button mCancelButton;
 
-    protected String mCurrentPhotoPath = null;
-    protected int    mWorkType         = MainActivity.UNKNOWN_WORK;
+    protected String mCurrentPhotoPath    = null;
+    protected int    mFoclStructLayerType = LAYERTYPE_FOCL_UNKNOWN;
 
     protected List<String> mPhotoList;
     protected ImageAdapter mImageAdapter;
@@ -126,38 +135,102 @@ public class LineWorkFragment
         mSaveButton = (Button) view.findViewById(R.id.btn_save);
         mCancelButton = (Button) view.findViewById(R.id.btn_cancel);
 
-        switch (mWorkType) {
-            case MainActivity.OPTICAL_CABLE_LAYING_WORK:
+        GISApplication app = (GISApplication) getActivity().getApplication();
+        final FoclProject foclProject = app.getFoclProject();
+
+        mLineName.setAdapter(new FoclProjectAdapter(getActivity(), foclProject));
+        mLineName.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
+            @Override
+            public void onItemSelected(
+                    AdapterView<?> parent,
+                    View view,
+                    int position,
+                    long id)
+            {
+                FoclStruct foclStruct = (FoclStruct) foclProject.getLayer(position);
+                FoclVectorLayer layer =
+                        (FoclVectorLayer) foclStruct.getLayerByFoclType(mFoclStructLayerType);
+
+                Uri uri = Uri.parse("content://" + SettingsConstants.AUTHORITY + "/" +
+                                    layer.getPath().getName());
+
+                String from[] = {"name"};
+                int to[] = {android.R.id.text1};
+
+                Cursor cursor =
+                        getActivity().getContentResolver().query(uri, from, null, null, null);
+                getActivity().startManagingCursor(cursor);
+
+                SimpleCursorAdapter adapter =
+                        new SimpleCursorAdapter(getActivity(), android.R.layout.simple_list_item_1,
+                                                cursor, from, to);
+
+                mObjectName.setAdapter(adapter);
+                mObjectName.setSelection(0);
+            }
+
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent)
+            {
+
+            }
+        });
+        mLineName.setSelection(0);
+
+        mObjectName.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
+            @Override
+            public void onItemSelected(
+                    AdapterView<?> parent,
+                    View view,
+                    int position,
+                    long id)
+            {
+
+            }
+
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent)
+            {
+
+            }
+        });
+
+        switch (mFoclStructLayerType) {
+            case LAYERTYPE_FOCL_OPTICAL_CABLE:
                 mWorkTypeName.setText(R.string.optical_cable_laying);
                 mObjectCaption.setText(R.string.optical_cable);
                 mPhotoHintText.setText(R.string.take_photos_to_confirm);
                 break;
 
-            case MainActivity.FOSC_MOUNTING_WORK:
+            case LAYERTYPE_FOCL_FOSC:
                 mWorkTypeName.setText(R.string.fosc_mounting);
                 mObjectCaption.setText(R.string.fosc);
                 mPhotoHintText.setText(R.string.take_photos_to_confirm_fosc);
                 break;
 
-            case MainActivity.CROSS_MOUNTING_WORK:
+            case LAYERTYPE_FOCL_OPTICAL_CROSS:
                 mWorkTypeName.setText(R.string.cross_mounting);
                 mObjectCaption.setText(R.string.cross);
                 mPhotoHintText.setText(R.string.take_photos_to_confirm);
                 break;
 
-            case MainActivity.TELECOM_CABINET_MOUNTING_WORK:
+            case LAYERTYPE_FOCL_TELECOM_CABINET:
                 mWorkTypeName.setText(R.string.telecom_cabinet_mounting);
                 mObjectCaption.setText(R.string.telecom_cabinet);
                 mPhotoHintText.setText(R.string.take_photos_to_confirm);
                 break;
 
-            case MainActivity.POLE_MOUNTING_WORK:
+            case LAYERTYPE_FOCL_POLE:
                 mWorkTypeName.setText(R.string.pole_mounting);
                 mObjectCaption.setText(R.string.pole);
                 mPhotoHintText.setText(R.string.take_photos_to_confirm);
                 break;
 
-            case MainActivity.LINE_MEASURING_WORK:
+            case LAYERTYPE_FOCL_LINE_MEASURING:
                 mWorkTypeName.setText(R.string.line_measuring);
                 mObjectCaption.setVisibility(View.INVISIBLE);
                 mObjectName.setVisibility(View.INVISIBLE);
@@ -225,28 +298,28 @@ public class LineWorkFragment
     {
         String prefix = "";
 
-        switch (mWorkType) {
-            case MainActivity.OPTICAL_CABLE_LAYING_WORK:
+        switch (mFoclStructLayerType) {
+            case LAYERTYPE_FOCL_OPTICAL_CABLE:
                 prefix = "Optical_Cable_Laying_";
                 break;
 
-            case MainActivity.FOSC_MOUNTING_WORK:
+            case LAYERTYPE_FOCL_FOSC:
                 prefix = "FOSC_Mounting_";
                 break;
 
-            case MainActivity.CROSS_MOUNTING_WORK:
+            case LAYERTYPE_FOCL_OPTICAL_CROSS:
                 prefix = "Cross_Mounting_";
                 break;
 
-            case MainActivity.TELECOM_CABINET_MOUNTING_WORK:
+            case LAYERTYPE_FOCL_TELECOM_CABINET:
                 prefix = "Telecom_Cabinet_Mounting_";
                 break;
 
-            case MainActivity.POLE_MOUNTING_WORK:
+            case LAYERTYPE_FOCL_POLE:
                 prefix = "Pole_Mounting_";
                 break;
 
-            case MainActivity.LINE_MEASURING_WORK:
+            case LAYERTYPE_FOCL_LINE_MEASURING:
                 prefix = "Line_Measuring_";
                 break;
         }
@@ -269,6 +342,6 @@ public class LineWorkFragment
 
     public void setParams(int workType)
     {
-        mWorkType = workType;
+        mFoclStructLayerType = workType;
     }
 }

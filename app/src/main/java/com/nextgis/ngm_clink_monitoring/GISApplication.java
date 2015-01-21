@@ -23,19 +23,17 @@
 package com.nextgis.ngm_clink_monitoring;
 
 import android.app.Application;
-import android.content.ContentResolver;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
-import android.os.Bundle;
 import android.preference.PreferenceManager;
 import com.nextgis.maplib.api.IGISApplication;
-import com.nextgis.maplib.datasource.ngw.SyncAdapter;
 import com.nextgis.maplib.location.GpsEventSource;
 import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplibui.mapui.RemoteTMSLayerUI;
 import com.nextgis.ngm_clink_monitoring.map.FoclLayerFactory;
+import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 
 import java.io.File;
 
@@ -54,6 +52,8 @@ public class GISApplication
     protected GpsEventSource mGpsEventSource;
 
     protected Location mCurrentLocation = null;
+
+    protected FoclProject mFoclProject;
 
 
     @Override
@@ -88,6 +88,7 @@ public class GISApplication
                                                                               600)); //10 min
         }*/
 
+        getFoclProject();
     }
 
 
@@ -131,6 +132,26 @@ public class GISApplication
         }
 
         return mMap;
+    }
+
+
+    public FoclProject getFoclProject()
+    {
+        mFoclProject = new FoclProject(mMap.getContext(), mMap.getPath(), mMap.getLayerFactory());
+        return mFoclProject;
+    }
+
+
+    public FoclProject getFoclProject_new()
+    {
+        if (null != mFoclProject) {
+            return mFoclProject;
+        }
+
+        mFoclProject = new FoclProject(mMap.getContext(), mMap.getPath(), mMap.getLayerFactory());
+        mFoclProject.load();
+
+        return mFoclProject;
     }
 
 

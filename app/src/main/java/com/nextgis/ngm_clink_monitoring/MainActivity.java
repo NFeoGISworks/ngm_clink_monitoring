@@ -34,9 +34,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import com.nextgis.maplib.datasource.ngw.Connection;
-import com.nextgis.maplib.map.MapDrawable;
-import com.nextgis.maplib.util.SettingsConstants;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 
 import java.io.File;
@@ -47,14 +44,6 @@ import static com.nextgis.maplib.util.Constants.NGW_ACCOUNT_TYPE;
 public class MainActivity
         extends ActionBarActivity
 {
-    public static final int UNKNOWN_WORK                  = 0;
-    public static final int OPTICAL_CABLE_LAYING_WORK     = 1;
-    public static final int FOSC_MOUNTING_WORK            = 2;
-    public static final int CROSS_MOUNTING_WORK           = 3;
-    public static final int TELECOM_CABINET_MOUNTING_WORK = 4;
-    public static final int POLE_MOUNTING_WORK            = 5;
-    public static final int LINE_MEASURING_WORK           = 6;
-
     public static final String DATA_DIR_PATH =
             Environment.getExternalStorageDirectory().getAbsolutePath() +
             File.separator + "ngm_clink_monitoring";
@@ -187,6 +176,7 @@ public class MainActivity
         }
     }
 
+
     protected void downloadRemoteData(){
         //TODO: get the only one account (account name) from preferences (spinner with accounts to select)
         //now hardcoded this one
@@ -206,9 +196,7 @@ public class MainActivity
         }
 
         GISApplication app = (GISApplication) getApplication();
-        MapDrawable map = app.getMap();
-
-        FoclProject foclProject = new FoclProject(map.getContext(), map.getPath(), map.getLayerFactory());
+        FoclProject foclProject = app.getFoclProject();
 
         foclProject.setName("FOCL");
         foclProject.setAccountName(accountName);

@@ -23,6 +23,7 @@
 package com.nextgis.ngm_clink_monitoring.map;
 
 import android.content.Context;
+import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.map.LayerFactory;
 import com.nextgis.maplib.map.LayerGroup;
 
@@ -47,5 +48,18 @@ public class FoclStruct
     public int getType()
     {
         return LAYERTYPE_FOCL_STRUCT;
+    }
+
+
+    public ILayer getLayerByFoclType(int type)
+    {
+        for (ILayer layer : mLayers) {
+            FoclVectorLayer foclLayer = (FoclVectorLayer) layer;
+            if (foclLayer.getFoclLayerType() == type) {
+                return foclLayer;
+            }
+        }
+
+        return null;
     }
 }

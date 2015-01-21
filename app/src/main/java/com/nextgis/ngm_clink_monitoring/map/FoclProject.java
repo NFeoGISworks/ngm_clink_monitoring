@@ -217,7 +217,8 @@ public class FoclProject
 
                     foclVectorLayer.setRemoteId(idL);
                     foclVectorLayer.setName(nameL);
-                    foclVectorLayer.setFoclLayerType(typeL);
+                    foclVectorLayer.setFoclLayerType(
+                            FoclVectorLayer.getFoclLayerTypeFromString(typeL));
                     foclVectorLayer.setAccountName(mAccountName);
                     foclVectorLayer.setURL(mURL);
                     foclVectorLayer.setLogin(mLogin);

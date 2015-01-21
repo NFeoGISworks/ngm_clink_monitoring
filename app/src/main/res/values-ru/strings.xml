@@ -25,6 +25,7 @@
 
     <string name="app_name">Compulink Monitoring</string>
 
+    <string name="action_download_data">Загрузить линии</string>
     <string name="action_sync">Синхронизация</string>
     <string name="action_settings">Настройки</string>
     <string name="action_about">О программе</string>

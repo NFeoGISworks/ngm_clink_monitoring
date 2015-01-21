@@ -29,7 +29,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 
-import static com.nextgis.ngm_clink_monitoring.util.FoclConstants.LAYERTYPE_FOCL_VECTOR;
+import static com.nextgis.ngm_clink_monitoring.util.FoclConstants.*;
 
 
 public class FoclVectorLayer
@@ -37,7 +37,7 @@ public class FoclVectorLayer
 {
     protected static final String JSON_FOCL_TYPE_KEY = "focl_type";
 
-    protected String mFoclLayerType;
+    protected int mFoclLayerType;
 
 
     public FoclVectorLayer(
@@ -48,13 +48,38 @@ public class FoclVectorLayer
     }
 
 
-    public String getFoclLayerType()
+    public static int getFoclLayerTypeFromString(String type)
+    {
+        if (type.equals("fosc")) {
+            return LAYERTYPE_FOCL_FOSC;
+        }
+        if (type.equals("optical_cross")) {
+            return LAYERTYPE_FOCL_OPTICAL_CROSS;
+        }
+        if (type.equals("pole")) {
+            return LAYERTYPE_FOCL_POLE;
+        }
+        if (type.equals("optical_cable")) {
+            return LAYERTYPE_FOCL_OPTICAL_CABLE;
+        }
+        if (type.equals("telecom_cabinet")) {
+            return LAYERTYPE_FOCL_TELECOM_CABINET;
+        }
+        if (type.equals("endpoint")) {
+            return LAYERTYPE_FOCL_ENDPOINT;
+        }
+
+        return LAYERTYPE_FOCL_UNKNOWN;
+    }
+
+
+    public int getFoclLayerType()
     {
         return mFoclLayerType;
     }
 
 
-    public void setFoclLayerType(String foclLayerType)
+    public void setFoclLayerType(int foclLayerType)
     {
         mFoclLayerType = foclLayerType;
     }
@@ -82,6 +107,6 @@ public class FoclVectorLayer
             throws JSONException
     {
         super.fromJSON(jsonObject);
-        mFoclLayerType = jsonObject.getString(JSON_FOCL_TYPE_KEY);
+        mFoclLayerType = jsonObject.getInt(JSON_FOCL_TYPE_KEY);
     }
 }

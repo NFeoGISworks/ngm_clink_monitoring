@@ -28,5 +28,14 @@ public class FoclConstants
     public static final int LAYERTYPE_FOCL_STRUCT  = 1002;
     public static final int LAYERTYPE_FOCL_PROJECT = 1003;
 
+    public static final int LAYERTYPE_FOCL_UNKNOWN         = 1100;
+    public static final int LAYERTYPE_FOCL_OPTICAL_CABLE   = 1101;
+    public static final int LAYERTYPE_FOCL_FOSC            = 1102;
+    public static final int LAYERTYPE_FOCL_OPTICAL_CROSS   = 1103;
+    public static final int LAYERTYPE_FOCL_TELECOM_CABINET = 1104;
+    public static final int LAYERTYPE_FOCL_POLE            = 1105;
+    public static final int LAYERTYPE_FOCL_ENDPOINT        = 1106;
+    public static final int LAYERTYPE_FOCL_LINE_MEASURING  = 1107;
+
     public static final String JSON_FOCL_STRUCTS_KEY = "focl_structs";
 }

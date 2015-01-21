@@ -29,6 +29,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import static com.nextgis.ngm_clink_monitoring.util.FoclConstants.*;
+
 
 public class TypeWorkFragment
         extends Fragment
@@ -57,7 +59,7 @@ public class TypeWorkFragment
             public void onClick(View v)
             {
                 if (mOnButtonsClickListener != null) {
-                    mOnButtonsClickListener.OnButtonsClick(MainActivity.OPTICAL_CABLE_LAYING_WORK);
+                    mOnButtonsClickListener.OnButtonsClick(LAYERTYPE_FOCL_OPTICAL_CABLE);
                 }
             }
         });
@@ -68,7 +70,7 @@ public class TypeWorkFragment
             public void onClick(View v)
             {
                 if (mOnButtonsClickListener != null) {
-                    mOnButtonsClickListener.OnButtonsClick(MainActivity.FOSC_MOUNTING_WORK);
+                    mOnButtonsClickListener.OnButtonsClick(LAYERTYPE_FOCL_FOSC);
                 }
             }
         });
@@ -79,7 +81,7 @@ public class TypeWorkFragment
             public void onClick(View v)
             {
                 if (mOnButtonsClickListener != null) {
-                    mOnButtonsClickListener.OnButtonsClick(MainActivity.CROSS_MOUNTING_WORK);
+                    mOnButtonsClickListener.OnButtonsClick(LAYERTYPE_FOCL_OPTICAL_CROSS);
                 }
             }
         });
@@ -90,8 +92,7 @@ public class TypeWorkFragment
             public void onClick(View v)
             {
                 if (mOnButtonsClickListener != null) {
-                    mOnButtonsClickListener.OnButtonsClick(
-                            MainActivity.TELECOM_CABINET_MOUNTING_WORK);
+                    mOnButtonsClickListener.OnButtonsClick(LAYERTYPE_FOCL_TELECOM_CABINET);
                 }
             }
         });
@@ -102,7 +103,7 @@ public class TypeWorkFragment
             public void onClick(View v)
             {
                 if (mOnButtonsClickListener != null) {
-                    mOnButtonsClickListener.OnButtonsClick(MainActivity.POLE_MOUNTING_WORK);
+                    mOnButtonsClickListener.OnButtonsClick(LAYERTYPE_FOCL_POLE);
                 }
             }
         });
@@ -113,7 +114,7 @@ public class TypeWorkFragment
             public void onClick(View v)
             {
                 if (mOnButtonsClickListener != null) {
-                    mOnButtonsClickListener.OnButtonsClick(MainActivity.LINE_MEASURING_WORK);
+                    mOnButtonsClickListener.OnButtonsClick(LAYERTYPE_FOCL_LINE_MEASURING);
                 }
             }
         });
