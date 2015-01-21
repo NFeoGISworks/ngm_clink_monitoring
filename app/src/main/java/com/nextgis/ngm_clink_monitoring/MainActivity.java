@@ -22,6 +22,8 @@
 
 package com.nextgis.ngm_clink_monitoring;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
@@ -31,8 +33,13 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import com.nextgis.maplib.datasource.ngw.Connection;
+import com.nextgis.maplib.map.MapDrawable;
+import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 
 import java.io.File;
+
+import static com.nextgis.maplib.util.Constants.NGW_ACCOUNT_TYPE;
 
 
 public class MainActivity
@@ -129,6 +136,14 @@ public class MainActivity
     {
         switch (item.getItemId()) {
 
+            case R.id.menu_map:
+                onMenuMapClick();
+                return true;
+
+            case R.id.menu_sync:
+                onSync();
+                return true;
+
             case R.id.menu_settings:
                 Intent intentSet = new Intent(this, SettingsActivity.class);
                 startActivity(intentSet);
@@ -137,10 +152,6 @@ public class MainActivity
             case R.id.menu_about:
                 Intent intentAbout = new Intent(this, AboutActivity.class);
                 startActivity(intentAbout);
-                return true;
-
-            case R.id.menu_map:
-                onMenuMapClick();
                 return true;
 
             default:
@@ -153,5 +164,32 @@ public class MainActivity
     {
         Intent intent = new Intent(this, MapActivity.class);
         startActivity(intent);
+    }
+
+
+    public void onSync()
+    {
+        final AccountManager accountManager = AccountManager.get(this);
+        Account account = accountManager.getAccountsByType(NGW_ACCOUNT_TYPE)[0];
+        String url = accountManager.getUserData(account, "url");
+        String password = accountManager.getPassword(account);
+        String login = accountManager.getUserData(account, "login");
+        Connection connection = new Connection(account.name, login, password, url);
+
+        GISApplication app = (GISApplication) getApplication();
+        MapDrawable map = app.getMap();
+
+
+        FoclProject foclProject = new FoclProject(this, map.getPath(), map.getLayerFactory());
+
+        foclProject.setName("FOCL");
+        foclProject.setAccountName(connection.getName());
+        foclProject.setURL(connection.getURL());
+        foclProject.setLogin(connection.getLogin());
+        foclProject.setPassword(connection.getPassword());
+        foclProject.setVisible(true);
+
+        //init in separate thread
+        foclProject.downloadAsync();
     }
 }

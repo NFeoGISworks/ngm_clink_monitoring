@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--****************************************************************************
   * Project:  NextGIS mobile apps for Compulink
   * Purpose:  Mobile GIS for Android
@@ -20,40 +21,12 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ***************************************************************************-->
 
-<menu
+<sync-adapter
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".MainActivity"
-    >
-
-    <item
-        android:icon="@drawable/ic_action_map"
-        android:id="@+id/menu_map"
-        android:orderInCategory="0"
-        android:title="Map"
-        app:showAsAction="always"
-        />
-
-    <item
-        android:id="@+id/menu_sync"
-        android:orderInCategory="10"
-        android:title="@string/action_sync"
-        app:showAsAction="never"
-        />
-
-    <item
-        android:id="@+id/menu_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never"
-        />
-
-    <item
-        android:id="@+id/menu_about"
-        android:orderInCategory="100"
-        android:title="@string/action_about"
-        app:showAsAction="never"
-        />
-
-</menu>
+    android:accountType="nextgis.com"
+    android:allowParallelSyncs="true"
+    android:contentAuthority="com.nextgis.mobile.provider"
+    android:isAlwaysSyncable="true"
+    android:supportsUploading="true"
+    android:userVisible="true"
+    />

@@ -33,6 +33,15 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
+    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS"/>
+    <uses-permission android:name="android.permission.READ_SYNC_STATS"/>
+    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS"/>
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+
+
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true"
@@ -41,6 +50,15 @@
     <uses-feature
         android:name="android.hardware.location"
         android:required="true"
+        />
+
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false"
+        />
+    <uses-feature
+        android:name="android.hardware.wifi"
+        android:required="false"
         />
 
     <supports-screens
@@ -91,6 +109,27 @@
             android:label="@string/action_about"
             android:name=".AboutActivity"
             android:theme="@style/AppBaseTheme"
+            />
+
+        <service
+            android:exported="true"
+            android:name="com.nextgis.maplib.service.NGWSyncService"
+            android:process=":sync"
+            >
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/syncadapter"
+                />
+        </service>
+
+        <provider
+            android:authorities="com.nextgis.ngm_clink_monitoring.provider"
+            android:exported="false"
+            android:name="com.nextgis.maplib.datasource.LayerContentProvider"
+            android:syncable="true"
             />
 
     </application>
