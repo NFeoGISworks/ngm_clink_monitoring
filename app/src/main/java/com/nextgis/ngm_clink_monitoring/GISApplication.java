@@ -77,7 +77,8 @@ public class GISApplication
         //ContentResolver.setMasterSyncAutomatically(true);
 
         //turn on periodic sync. Can be set for each layer individually, but this is simpler
-        if (sharedPreferences.getBoolean(KEY_PREF_SYNC_PERIODICALLY, true)) {
+        //this is for get changes from server mainly
+        /*if (sharedPreferences.getBoolean(KEY_PREF_SYNC_PERIODICALLY, true)) {
             Bundle params = new Bundle();
             params.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, false);
             params.putBoolean(ContentResolver.SYNC_EXTRAS_DO_NOT_RETRY, false);
@@ -85,7 +86,7 @@ public class GISApplication
 
             SyncAdapter.setSyncPeriod(this, params, sharedPreferences.getLong(KEY_PREF_SYNC_PERIOD,
                                                                               600)); //10 min
-        }
+        }*/
 
     }
 

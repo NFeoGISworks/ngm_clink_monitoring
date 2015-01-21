@@ -25,7 +25,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:accountType="nextgis.com"
     android:allowParallelSyncs="true"
-    android:contentAuthority="com.nextgis.mobile.provider"
+    android:contentAuthority="com.nextgis.ngm_clink_monitoring.provider"
     android:isAlwaysSyncable="true"
     android:supportsUploading="true"
     android:userVisible="true"
