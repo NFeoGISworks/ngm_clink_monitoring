@@ -24,6 +24,7 @@ package com.nextgis.ngm_clink_monitoring;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
@@ -35,6 +36,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import com.nextgis.maplib.datasource.ngw.Connection;
 import com.nextgis.maplib.map.MapDrawable;
+import com.nextgis.maplib.util.SettingsConstants;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 
 import java.io.File;
@@ -144,6 +146,10 @@ public class MainActivity
                 onSync();
                 return true;
 
+            case R.id.menu_download:
+                downloadRemoteData();
+                return true;
+
             case R.id.menu_settings:
                 Intent intentSet = new Intent(this, SettingsActivity.class);
                 startActivity(intentSet);
@@ -170,23 +176,45 @@ public class MainActivity
     public void onSync()
     {
         final AccountManager accountManager = AccountManager.get(this);
-        Account account = accountManager.getAccountsByType(NGW_ACCOUNT_TYPE)[0];
-        String url = accountManager.getUserData(account, "url");
-        String password = accountManager.getPassword(account);
-        String login = accountManager.getUserData(account, "login");
-        Connection connection = new Connection(account.name, login, password, url);
+        for(Account account : accountManager.getAccountsByType(NGW_ACCOUNT_TYPE)){
+            Bundle settingsBundle = new Bundle();
+            settingsBundle.putBoolean(
+                    ContentResolver.SYNC_EXTRAS_MANUAL, true);
+            settingsBundle.putBoolean(
+                    ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+
+            ContentResolver.requestSync(account, com.nextgis.ngm_clink_monitoring.util.SettingsConstants.AUTHORITY, settingsBundle);
+        }
+    }
+
+    protected void downloadRemoteData(){
+        //TODO: get the only one account (account name) from preferences (spinner with accounts to select)
+        //now hardcoded this one
+        String accountName = "176.9.38.120/cl";
+        final AccountManager accountManager = AccountManager.get(this);
+        String url = null;
+        String password = null;
+        String login = null;
+
+        for(Account account : accountManager.getAccountsByType(NGW_ACCOUNT_TYPE)){
+            if(account.name.equals(accountName)){
+                url = accountManager.getUserData(account, "url");
+                password = accountManager.getPassword(account);
+                login = accountManager.getUserData(account, "login");
+                break;
+            }
+        }
 
         GISApplication app = (GISApplication) getApplication();
         MapDrawable map = app.getMap();
 
-
-        FoclProject foclProject = new FoclProject(this, map.getPath(), map.getLayerFactory());
+        FoclProject foclProject = new FoclProject(map.getContext(), map.getPath(), map.getLayerFactory());
 
         foclProject.setName("FOCL");
-        foclProject.setAccountName(connection.getName());
-        foclProject.setURL(connection.getURL());
-        foclProject.setLogin(connection.getLogin());
-        foclProject.setPassword(connection.getPassword());
+        foclProject.setAccountName(accountName);
+        foclProject.setURL(url);
+        foclProject.setLogin(login);
+        foclProject.setPassword(password);
         foclProject.setVisible(true);
 
         //init in separate thread

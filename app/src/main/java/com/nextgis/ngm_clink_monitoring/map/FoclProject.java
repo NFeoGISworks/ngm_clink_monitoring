@@ -188,7 +188,7 @@ public class FoclProject
     {
         try {
 
-            GISApplication app = (GISApplication) mContext.getApplicationContext();
+            GISApplication app = (GISApplication) getContext();
 
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonStruct = jsonArray.getJSONObject(i);
@@ -196,7 +196,7 @@ public class FoclProject
                 int idSt = jsonStruct.getInt("id");
                 String nameSt = jsonStruct.getString("name");
 
-                FoclStruct foclStruct = new FoclStruct(mContext, getPath(), mLayerFactory);
+                FoclStruct foclStruct = new FoclStruct(getContext(), cretateLayerStorage(), mLayerFactory);
 
                 foclStruct.setId((short) idSt);
                 foclStruct.setName(nameSt);
@@ -213,8 +213,7 @@ public class FoclProject
                     String nameL = jsonLayer.getString("name");
                     String typeL = jsonLayer.getString("type");
 
-
-                    FoclVectorLayer foclVectorLayer = new FoclVectorLayer(app, getPath());
+                    FoclVectorLayer foclVectorLayer = new FoclVectorLayer(foclStruct.getContext(), foclStruct.cretateLayerStorage());
 
                     foclVectorLayer.setRemoteId(idL);
                     foclVectorLayer.setName(nameL);
@@ -223,15 +222,13 @@ public class FoclProject
                     foclVectorLayer.setURL(mURL);
                     foclVectorLayer.setLogin(mLogin);
                     foclVectorLayer.setPassword(mPassword);
-                    foclVectorLayer.setVisible(true);
+                    foclVectorLayer.setVisible(false);
 
                     foclStruct.addLayer(foclVectorLayer);
 
                     //init in separate thread
                     foclVectorLayer.downloadAsync();
                 }
-
-                foclStruct.save();
             }
 
             save();
