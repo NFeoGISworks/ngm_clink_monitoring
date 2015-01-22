@@ -53,9 +53,6 @@ public class GISApplication
 
     protected Location mCurrentLocation = null;
 
-    protected FoclProject mFoclProject;
-
-
     @Override
     public void onCreate()
     {
@@ -86,9 +83,9 @@ public class GISApplication
 
             SyncAdapter.setSyncPeriod(this, params, sharedPreferences.getLong(KEY_PREF_SYNC_PERIOD,
                                                                               600)); //10 min
-        }*/
+        }
 
-        getFoclProject();
+        getFoclProject();*/
     }
 
 
@@ -131,13 +128,25 @@ public class GISApplication
             mMap.load();
         }
 
+        //NOT NEED as this should loaded from map file (default.ngm or something else)
+        if(mMap.getLayerCount() == 0) {
+            //The map is the entry point for content provider. All data mast be in map.
+            final FoclProject foclProject = new FoclProject(mMap.getContext(), mMap.getPath(),
+                                                            new FoclLayerFactory(mMap.getPath()));
+            foclProject.load();
+            mMap.addLayer(foclProject);
+        }
         return mMap;
     }
 
 
+    /* NOT NEED
     public FoclProject getFoclProject()
+
     {
-        mFoclProject = new FoclProject(mMap.getContext(), mMap.getPath(), mMap.getLayerFactory());
+        mFoclProject = new FoclProject(mMap.getContext(), mMap.getPath(), new FoclLayerFactory(
+                getMap().getPath()));
+        mFoclProject.load();
         return mFoclProject;
     }
 
@@ -153,7 +162,7 @@ public class GISApplication
 
         return mFoclProject;
     }
-
+    */
 
     @Override
     public String getAuthority()

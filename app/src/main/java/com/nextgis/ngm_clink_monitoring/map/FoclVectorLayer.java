@@ -45,6 +45,7 @@ public class FoclVectorLayer
             File path)
     {
         super(context, path);
+        mLayerType = LAYERTYPE_FOCL_VECTOR;
     }
 
 
@@ -83,14 +84,6 @@ public class FoclVectorLayer
     {
         mFoclLayerType = foclLayerType;
     }
-
-
-    @Override
-    public int getType()
-    {
-        return LAYERTYPE_FOCL_VECTOR;
-    }
-
 
     @Override
     public JSONObject toJSON()

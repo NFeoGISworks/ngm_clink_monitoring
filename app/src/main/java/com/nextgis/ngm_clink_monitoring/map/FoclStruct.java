@@ -41,15 +41,8 @@ public class FoclStruct
             LayerFactory layerFactory)
     {
         super(context, path, layerFactory);
+        mLayerType = LAYERTYPE_FOCL_STRUCT;
     }
-
-
-    @Override
-    public int getType()
-    {
-        return LAYERTYPE_FOCL_STRUCT;
-    }
-
 
     public ILayer getLayerByFoclType(int type)
     {

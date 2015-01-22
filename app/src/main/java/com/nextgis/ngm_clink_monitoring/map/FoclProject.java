@@ -54,13 +54,10 @@ public class FoclProject
         extends LayerGroup
         implements INGWLayer
 {
-    protected static final String JSON_IS_INITIALIZED_KEY = "is_inited";
     protected static final String JSON_ACCOUNT_KEY        = "account";
     protected static final String JSON_URL_KEY            = "url";
     protected static final String JSON_LOGIN_KEY          = "login";
     protected static final String JSON_PASSWORD_KEY       = "password";
-
-    protected boolean mIsInitialized;
 
     protected String      mAccountName;
     protected NetworkUtil mNet;
@@ -76,8 +73,8 @@ public class FoclProject
     {
         super(context, path, layerFactory);
 
-        mIsInitialized = false;
         mNet = new NetworkUtil(context);
+        mLayerType = LAYERTYPE_FOCL_PROJECT;
     }
 
 
@@ -88,14 +85,6 @@ public class FoclProject
         }
         return server + "/compulink/mobile/user_focl_list";
     }
-
-
-    @Override
-    public int getType()
-    {
-        return LAYERTYPE_FOCL_PROJECT;
-    }
-
 
     @Override
     public String getAccountName()
@@ -135,18 +124,10 @@ public class FoclProject
     {
         JSONObject rootConfig = super.toJSON();
 
-        rootConfig.put(JSON_IS_INITIALIZED_KEY, mIsInitialized);
         rootConfig.put(JSON_ACCOUNT_KEY, mAccountName);
         rootConfig.put(JSON_URL_KEY, mURL);
         rootConfig.put(JSON_LOGIN_KEY, mLogin);
         rootConfig.put(JSON_PASSWORD_KEY, mPassword);
-
-        JSONArray jsonArray = new JSONArray();
-        rootConfig.put(JSON_FOCL_STRUCTS_KEY, jsonArray);
-        for (ILayer layer : mLayers) {
-            FoclStruct foclStruct = (FoclStruct) layer;
-            jsonArray.put(foclStruct.toJSON());
-        }
 
         return rootConfig;
     }
@@ -158,7 +139,6 @@ public class FoclProject
     {
         super.fromJSON(jsonObject);
 
-        mIsInitialized = jsonObject.getBoolean(JSON_IS_INITIALIZED_KEY);
         mAccountName = jsonObject.getString(JSON_ACCOUNT_KEY);
         mURL = jsonObject.getString(JSON_URL_KEY);
         if (jsonObject.has(JSON_LOGIN_KEY)) {
@@ -166,20 +146,6 @@ public class FoclProject
         }
         if (jsonObject.has(JSON_PASSWORD_KEY)) {
             mPassword = jsonObject.getString(JSON_PASSWORD_KEY);
-        }
-
-
-        final JSONArray jsonArray = jsonObject.getJSONArray(JSON_FOCL_STRUCTS_KEY);
-        for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject jsonFoclStruct = jsonArray.getJSONObject(i);
-            FoclStruct foclStruct = new FoclStruct(mContext, getPath(), mLayerFactory);
-            foclStruct.fromJSON(jsonFoclStruct);
-            addLayer(foclStruct);
-        }
-
-        if (!mIsInitialized) {
-            //init in separate thread
-            downloadAsync();
         }
     }
 

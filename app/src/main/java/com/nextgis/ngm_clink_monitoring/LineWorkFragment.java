@@ -39,6 +39,8 @@ import android.widget.Gallery;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.nextgis.maplib.map.MapBase;
+import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 import com.nextgis.ngm_clink_monitoring.map.FoclStruct;
 import com.nextgis.ngm_clink_monitoring.map.FoclVectorLayer;
@@ -136,7 +138,15 @@ public class LineWorkFragment
         mCancelButton = (Button) view.findViewById(R.id.btn_cancel);
 
         GISApplication app = (GISApplication) getActivity().getApplication();
-        final FoclProject foclProject = app.getFoclProject();
+        MapBase map = app.getMap();
+        FoclProject foclProject = null;
+        for(int i = 0; i < map.getLayerCount(); i++){
+            if(map.getLayer(i) instanceof FoclProject){
+                foclProject = (FoclProject)map.getLayer(i);
+            }
+        }
+
+        final FoclProject foclProjectFin = foclProject;
 
         mLineName.setAdapter(new FoclProjectAdapter(getActivity(), foclProject));
         mLineName.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
@@ -148,20 +158,30 @@ public class LineWorkFragment
                     int position,
                     long id)
             {
-                FoclStruct foclStruct = (FoclStruct) foclProject.getLayer(position);
+                if(null == foclProjectFin)
+                    return;
+
+                FoclStruct foclStruct = (FoclStruct) foclProjectFin.getLayer(position);
                 FoclVectorLayer layer =
                         (FoclVectorLayer) foclStruct.getLayerByFoclType(mFoclStructLayerType);
 
                 Uri uri = Uri.parse("content://" + SettingsConstants.AUTHORITY + "/" +
                                     layer.getPath().getName());
 
-                String from[] = {"name"};
-                int to[] = {android.R.id.text1};
+                String proj[] = {VectorLayer.FIELD_ID, "name"};
 
                 Cursor cursor =
-                        getActivity().getContentResolver().query(uri, from, null, null, null);
+                        getActivity().getContentResolver().query(uri, proj, null, null, null);
+
+                if(null == cursor) {
+                    mObjectName.setEnabled(false);
+                    return;
+                }
+
                 getActivity().startManagingCursor(cursor);
 
+                String from[] = {"name"};
+                int to[] = {android.R.id.text1};
                 SimpleCursorAdapter adapter =
                         new SimpleCursorAdapter(getActivity(), android.R.layout.simple_list_item_1,
                                                 cursor, from, to);
