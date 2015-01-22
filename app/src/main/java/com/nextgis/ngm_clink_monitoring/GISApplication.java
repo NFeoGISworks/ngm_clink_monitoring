@@ -29,6 +29,7 @@ import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.preference.PreferenceManager;
 import com.nextgis.maplib.api.IGISApplication;
+import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.location.GpsEventSource;
 import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplibui.mapui.RemoteTMSLayerUI;
@@ -41,6 +42,7 @@ import static com.nextgis.maplib.util.Constants.MAP_EXT;
 import static com.nextgis.maplib.util.GeoConstants.TMSTYPE_OSM;
 import static com.nextgis.maplib.util.SettingsConstants.KEY_PREF_MAP;
 import static com.nextgis.maplib.util.SettingsConstants.KEY_PREF_MAP_PATH;
+import static com.nextgis.ngm_clink_monitoring.util.FoclConstants.LAYERTYPE_FOCL_PROJECT;
 import static com.nextgis.ngm_clink_monitoring.util.SettingsConstants.*;
 
 
@@ -130,11 +132,14 @@ public class GISApplication
         }
 
         if (!hasFoclProject()) {
-            //The map is the entry point for content provider. All data mast be in map.
-            FoclProject foclProject = new FoclProject(mMap.getContext(), mMap.getPath(),
-                                                      new FoclLayerFactory(mMap.getPath()));
+            File layerPath = mMap.cretateLayerStorage();
+
+            FoclProject foclProject =
+                    new FoclProject(mMap.getContext(), layerPath, new FoclLayerFactory(layerPath));
             foclProject.load();
+
             mMap.addLayer(foclProject);
+            mMap.save();
         }
 
         return mMap;
@@ -148,7 +153,7 @@ public class GISApplication
         }
 
         for (int i = 0; i < mMap.getLayerCount(); i++) {
-            if (mMap.getLayer(i) instanceof FoclProject) {
+            if (mMap.getLayer(i).getType() == LAYERTYPE_FOCL_PROJECT) {
                 return true;
             }
         }
@@ -164,8 +169,9 @@ public class GISApplication
         }
 
         for (int i = 0; i < mMap.getLayerCount(); i++) {
-            if (mMap.getLayer(i) instanceof FoclProject) {
-                return (FoclProject) mMap.getLayer(i);
+            ILayer layer = mMap.getLayer(i);
+            if (layer.getType() == LAYERTYPE_FOCL_PROJECT) {
+                return (FoclProject) layer;
             }
         }
 

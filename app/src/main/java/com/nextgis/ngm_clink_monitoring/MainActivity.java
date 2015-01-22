@@ -34,8 +34,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import com.nextgis.maplib.map.MapBase;
-import com.nextgis.ngm_clink_monitoring.map.FoclLayerFactory;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 import com.nextgis.ngm_clink_monitoring.util.SettingsConstants;
 
@@ -214,30 +212,19 @@ public class MainActivity
         }
 
         GISApplication app = (GISApplication) getApplication();
-        MapBase map = app.getMap();
-        FoclProject foclProject = null;
-        for (int i = 0; i < map.getLayerCount(); i++) {
-            if (map.getLayer(i) instanceof FoclProject) {
-                foclProject = (FoclProject) map.getLayer(i);
-            }
+        FoclProject foclProject = app.getFoclProject();
+
+        if (!app.isLoadedFoclProject()) {
+            foclProject.setName("FOCL");
+            foclProject.setAccountName(accountName);
+            foclProject.setURL(url);
+            foclProject.setLogin(login);
+            foclProject.setPassword(password);
+            foclProject.setVisible(false);
+
+            //init in separate thread
+            foclProject.downloadAsync();
         }
-
-        if (null == foclProject) {
-            foclProject = new FoclProject(map.getContext(), map.getPath(),
-                                          new FoclLayerFactory(map.getPath()));
-        }
-
-        foclProject.setName("FOCL");
-        foclProject.setAccountName(accountName);
-        foclProject.setURL(url);
-        foclProject.setLogin(login);
-        foclProject.setPassword(password);
-        foclProject.setVisible(false);
-
-        //init in separate thread
-        foclProject.downloadAsync();
-
-        map.addLayer(foclProject);
 
         mIsLoadingFoclProect = true;
         switchMenuView();
