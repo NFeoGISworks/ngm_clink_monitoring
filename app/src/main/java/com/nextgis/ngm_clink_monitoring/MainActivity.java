@@ -37,6 +37,7 @@ import android.view.MenuItem;
 import com.nextgis.maplib.map.MapBase;
 import com.nextgis.ngm_clink_monitoring.map.FoclLayerFactory;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
+import com.nextgis.ngm_clink_monitoring.util.SettingsConstants;
 
 import java.io.File;
 
@@ -51,6 +52,8 @@ public class MainActivity
             File.separator + "ngm_clink_monitoring";
 
     public static final String PHOTO_DIR_PATH = DATA_DIR_PATH + File.separator + "foto";
+
+    boolean mIsLoadingFoclProect = false;
 
 
     @Override
@@ -120,7 +123,21 @@ public class MainActivity
     {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        GISApplication app = (GISApplication) getApplication();
+
+        if (app.isLoadedFoclProject() || mIsLoadingFoclProect) {
+            MenuItem menuDowmload = menu.findItem(R.id.menu_download);
+            menuDowmload.setEnabled(false);
+        }
+
         return true;
+    }
+
+
+    public void switchMenuView()
+    {
+        supportInvalidateOptionsMenu();
     }
 
 
@@ -134,7 +151,7 @@ public class MainActivity
                 return true;
 
             case R.id.menu_sync:
-                onSync();
+                onMenuSyncClick();
                 return true;
 
             case R.id.menu_download:
@@ -164,22 +181,21 @@ public class MainActivity
     }
 
 
-    public void onSync()
+    public void onMenuSyncClick()
     {
         final AccountManager accountManager = AccountManager.get(this);
-        for(Account account : accountManager.getAccountsByType(NGW_ACCOUNT_TYPE)){
+        for (Account account : accountManager.getAccountsByType(NGW_ACCOUNT_TYPE)) {
             Bundle settingsBundle = new Bundle();
-            settingsBundle.putBoolean(
-                    ContentResolver.SYNC_EXTRAS_MANUAL, true);
-            settingsBundle.putBoolean(
-                    ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+            settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+            settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
 
-            ContentResolver.requestSync(account, com.nextgis.ngm_clink_monitoring.util.SettingsConstants.AUTHORITY, settingsBundle);
+            ContentResolver.requestSync(account, SettingsConstants.AUTHORITY, settingsBundle);
         }
     }
 
 
-    protected void downloadRemoteData(){
+    protected void downloadRemoteData()
+    {
         //TODO: get the only one account (account name) from preferences (spinner with accounts to select)
         //now hardcoded this one
         String accountName = "176.9.38.120/cl";
@@ -188,8 +204,8 @@ public class MainActivity
         String password = null;
         String login = null;
 
-        for(Account account : accountManager.getAccountsByType(NGW_ACCOUNT_TYPE)){
-            if(account.name.equals(accountName)){
+        for (Account account : accountManager.getAccountsByType(NGW_ACCOUNT_TYPE)) {
+            if (account.name.equals(accountName)) {
                 url = accountManager.getUserData(account, "url");
                 password = accountManager.getPassword(account);
                 login = accountManager.getUserData(account, "login");
@@ -200,15 +216,15 @@ public class MainActivity
         GISApplication app = (GISApplication) getApplication();
         MapBase map = app.getMap();
         FoclProject foclProject = null;
-        for(int i = 0; i < map.getLayerCount(); i++){
-            if(map.getLayer(i) instanceof FoclProject){
-                foclProject = (FoclProject)map.getLayer(i);
+        for (int i = 0; i < map.getLayerCount(); i++) {
+            if (map.getLayer(i) instanceof FoclProject) {
+                foclProject = (FoclProject) map.getLayer(i);
             }
         }
 
-        if(null == foclProject){
+        if (null == foclProject) {
             foclProject = new FoclProject(map.getContext(), map.getPath(),
-                                              new FoclLayerFactory(map.getPath()));
+                                          new FoclLayerFactory(map.getPath()));
         }
 
         foclProject.setName("FOCL");
@@ -220,5 +236,10 @@ public class MainActivity
 
         //init in separate thread
         foclProject.downloadAsync();
+
+        map.addLayer(foclProject);
+
+        mIsLoadingFoclProect = true;
+        switchMenuView();
     }
 }

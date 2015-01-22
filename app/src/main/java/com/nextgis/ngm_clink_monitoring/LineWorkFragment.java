@@ -23,6 +23,8 @@
 package com.nextgis.ngm_clink_monitoring;
 
 import android.app.Activity;
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -31,6 +33,7 @@ import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +43,6 @@ import android.widget.Gallery;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 import com.nextgis.ngm_clink_monitoring.map.FoclStruct;
@@ -55,6 +57,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static com.nextgis.maplib.util.Constants.TAG;
 import static com.nextgis.ngm_clink_monitoring.util.FoclConstants.*;
 
 
@@ -139,17 +142,12 @@ public class LineWorkFragment
         mCancelButton = (Button) view.findViewById(R.id.btn_cancel);
 
         GISApplication app = (GISApplication) getActivity().getApplication();
-        MapBase map = app.getMap();
-        FoclProject foclProject = null;
-        for (int i = 0; i < map.getLayerCount(); i++) {
-            if (map.getLayer(i) instanceof FoclProject) {
-                foclProject = (FoclProject) map.getLayer(i);
-            }
-        }
-
-        final FoclProject foclProjectFin = foclProject;
+        final FoclProject foclProject = app.getFoclProject();
+        final String[] itemLayerName = {null};
+        final Long[] itemId = {null};
 
         mLineName.setAdapter(new FoclProjectAdapter(getActivity(), foclProject));
+        mLineName.setSelection(0);
         mLineName.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
         {
             @Override
@@ -159,18 +157,19 @@ public class LineWorkFragment
                     int position,
                     long id)
             {
-                if (null == foclProjectFin) {
+                if (null == foclProject) {
                     return;
                 }
 
-                FoclStruct foclStruct = (FoclStruct) foclProjectFin.getLayer(position);
+                FoclStruct foclStruct = (FoclStruct) foclProject.getLayer(position);
                 FoclVectorLayer layer =
                         (FoclVectorLayer) foclStruct.getLayerByFoclType(mFoclStructLayerType);
+                itemLayerName[0] = layer.getPath().getName();
 
                 Uri uri = Uri.parse("content://" + SettingsConstants.AUTHORITY + "/" +
-                                    layer.getPath().getName());
+                                    itemLayerName[0]);
 
-                String proj[] = {VectorLayer.FIELD_ID, "name"};
+                String proj[] = {VectorLayer.FIELD_ID, "name", "status_built"};
 
                 Cursor cursor = null;
                 try {
@@ -182,9 +181,13 @@ public class LineWorkFragment
                 if (null == cursor) {
                     mObjectName.setAdapter(null);
                     mObjectName.setEnabled(false);
+                    mSaveButton.setEnabled(false);
+                    mMakePhotoButton.setEnabled(false);
                     return;
                 } else {
                     mObjectName.setEnabled(true);
+                    mSaveButton.setEnabled(true);
+                    mMakePhotoButton.setEnabled(true);
                 }
 
                 getActivity().startManagingCursor(cursor);
@@ -207,7 +210,6 @@ public class LineWorkFragment
 
             }
         });
-        mLineName.setSelection(0);
 
         mObjectName.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
         {
@@ -218,7 +220,7 @@ public class LineWorkFragment
                     int position,
                     long id)
             {
-
+                itemId[0] = id;
             }
 
 
@@ -226,6 +228,41 @@ public class LineWorkFragment
             public void onNothingSelected(AdapterView<?> parent)
             {
 
+            }
+        });
+
+        mSaveButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Uri uri = Uri.parse("content://" + SettingsConstants.AUTHORITY + "/" +
+                                    itemLayerName[0]);
+                Uri updateUri = ContentUris.withAppendedId(uri, itemId[0]);
+
+                ContentValues values = new ContentValues();
+                values.put("status_built", "built");
+
+                int result =
+                        getActivity().getContentResolver().update(updateUri, values, null, null);
+                if (result == 0) {
+                    Log.d(TAG,
+                          "Layer: " + itemLayerName[0] + ", id: " + itemId[0] + ", update FAILED");
+                } else {
+                    Log.d(TAG, "Layer: " + itemLayerName[0] + ", id: " + itemId[0] +
+                               ", update result: " + result);
+                }
+
+                getActivity().getSupportFragmentManager().popBackStackImmediate();
+            }
+        });
+
+        mCancelButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                getActivity().getSupportFragmentManager().popBackStackImmediate();
             }
         });
 
@@ -293,7 +330,6 @@ public class LineWorkFragment
                         startActivityForResult(cameraIntent, REQUEST_TAKE_PHOTO);
                     }
                 }
-
             }
         });
 

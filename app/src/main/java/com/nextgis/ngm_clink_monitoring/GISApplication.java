@@ -129,15 +129,7 @@ public class GISApplication
             mMap.load();
         }
 
-        boolean hasFoclProject = false;
-
-        for (int i = 0; i < mMap.getLayerCount(); i++) {
-            if (mMap.getLayer(i) instanceof FoclProject) {
-                hasFoclProject = true;
-            }
-        }
-
-        if (!hasFoclProject) {
+        if (!hasFoclProject()) {
             //The map is the entry point for content provider. All data mast be in map.
             FoclProject foclProject = new FoclProject(mMap.getContext(), mMap.getPath(),
                                                       new FoclLayerFactory(mMap.getPath()));
@@ -146,6 +138,45 @@ public class GISApplication
         }
 
         return mMap;
+    }
+
+
+    public boolean hasFoclProject()
+    {
+        if (mMap == null) {
+            return false;
+        }
+
+        for (int i = 0; i < mMap.getLayerCount(); i++) {
+            if (mMap.getLayer(i) instanceof FoclProject) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+    public FoclProject getFoclProject()
+    {
+        if (mMap == null) {
+            return null;
+        }
+
+        for (int i = 0; i < mMap.getLayerCount(); i++) {
+            if (mMap.getLayer(i) instanceof FoclProject) {
+                return (FoclProject) mMap.getLayer(i);
+            }
+        }
+
+        return null;
+    }
+
+
+    public boolean isLoadedFoclProject()
+    {
+        FoclProject foclProject = getFoclProject();
+        return null != foclProject && foclProject.getLayerCount() > 0;
     }
 
 
