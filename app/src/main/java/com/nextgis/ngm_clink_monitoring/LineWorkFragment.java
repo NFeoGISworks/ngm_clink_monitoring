@@ -29,6 +29,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -140,9 +141,9 @@ public class LineWorkFragment
         GISApplication app = (GISApplication) getActivity().getApplication();
         MapBase map = app.getMap();
         FoclProject foclProject = null;
-        for(int i = 0; i < map.getLayerCount(); i++){
-            if(map.getLayer(i) instanceof FoclProject){
-                foclProject = (FoclProject)map.getLayer(i);
+        for (int i = 0; i < map.getLayerCount(); i++) {
+            if (map.getLayer(i) instanceof FoclProject) {
+                foclProject = (FoclProject) map.getLayer(i);
             }
         }
 
@@ -158,8 +159,9 @@ public class LineWorkFragment
                     int position,
                     long id)
             {
-                if(null == foclProjectFin)
+                if (null == foclProjectFin) {
                     return;
+                }
 
                 FoclStruct foclStruct = (FoclStruct) foclProjectFin.getLayer(position);
                 FoclVectorLayer layer =
@@ -170,21 +172,29 @@ public class LineWorkFragment
 
                 String proj[] = {VectorLayer.FIELD_ID, "name"};
 
-                Cursor cursor =
-                        getActivity().getContentResolver().query(uri, proj, null, null, null);
+                Cursor cursor = null;
+                try {
+                    cursor = getActivity().getContentResolver().query(uri, proj, null, null, null);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
-                if(null == cursor) {
+                if (null == cursor) {
+                    mObjectName.setAdapter(null);
                     mObjectName.setEnabled(false);
                     return;
+                } else {
+                    mObjectName.setEnabled(true);
                 }
 
                 getActivity().startManagingCursor(cursor);
 
                 String from[] = {"name"};
-                int to[] = {android.R.id.text1};
+                int to[] = {R.id.focl_layer_name};
                 SimpleCursorAdapter adapter =
-                        new SimpleCursorAdapter(getActivity(), android.R.layout.simple_list_item_1,
-                                                cursor, from, to);
+                        new SimpleCursorAdapter(getActivity(), R.layout.layout_focl_layer_row,
+                                                cursor, from, to,
+                                                CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
 
                 mObjectName.setAdapter(adapter);
                 mObjectName.setSelection(0);

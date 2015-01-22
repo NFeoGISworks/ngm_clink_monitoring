@@ -53,6 +53,7 @@ public class GISApplication
 
     protected Location mCurrentLocation = null;
 
+
     @Override
     public void onCreate()
     {
@@ -128,41 +129,25 @@ public class GISApplication
             mMap.load();
         }
 
-        //NOT NEED as this should loaded from map file (default.ngm or something else)
-        if(mMap.getLayerCount() == 0) {
+        boolean hasFoclProject = false;
+
+        for (int i = 0; i < mMap.getLayerCount(); i++) {
+            if (mMap.getLayer(i) instanceof FoclProject) {
+                hasFoclProject = true;
+            }
+        }
+
+        if (!hasFoclProject) {
             //The map is the entry point for content provider. All data mast be in map.
-            final FoclProject foclProject = new FoclProject(mMap.getContext(), mMap.getPath(),
-                                                            new FoclLayerFactory(mMap.getPath()));
+            FoclProject foclProject = new FoclProject(mMap.getContext(), mMap.getPath(),
+                                                      new FoclLayerFactory(mMap.getPath()));
             foclProject.load();
             mMap.addLayer(foclProject);
         }
+
         return mMap;
     }
 
-
-    /* NOT NEED
-    public FoclProject getFoclProject()
-
-    {
-        mFoclProject = new FoclProject(mMap.getContext(), mMap.getPath(), new FoclLayerFactory(
-                getMap().getPath()));
-        mFoclProject.load();
-        return mFoclProject;
-    }
-
-
-    public FoclProject getFoclProject_new()
-    {
-        if (null != mFoclProject) {
-            return mFoclProject;
-        }
-
-        mFoclProject = new FoclProject(mMap.getContext(), mMap.getPath(), mMap.getLayerFactory());
-        mFoclProject.load();
-
-        return mFoclProject;
-    }
-    */
 
     @Override
     public String getAuthority()
