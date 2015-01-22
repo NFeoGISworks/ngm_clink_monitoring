@@ -171,23 +171,19 @@ public class LineWorkFragment
 
                 String proj[] = {VectorLayer.FIELD_ID, "name", "status_built"};
 
-                Cursor cursor = null;
-                try {
-                    cursor = getActivity().getContentResolver().query(uri, proj, null, null, null);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                Cursor cursor =
+                        getActivity().getContentResolver().query(uri, proj, null, null, null);
 
-                if (null == cursor) {
+                if (cursor.getCount() > 0) {
+                    mObjectName.setEnabled(true);
+                    mSaveButton.setEnabled(true);
+                    mMakePhotoButton.setEnabled(true);
+                } else {
                     mObjectName.setAdapter(null);
                     mObjectName.setEnabled(false);
                     mSaveButton.setEnabled(false);
                     mMakePhotoButton.setEnabled(false);
                     return;
-                } else {
-                    mObjectName.setEnabled(true);
-                    mSaveButton.setEnabled(true);
-                    mMakePhotoButton.setEnabled(true);
                 }
 
                 getActivity().startManagingCursor(cursor);

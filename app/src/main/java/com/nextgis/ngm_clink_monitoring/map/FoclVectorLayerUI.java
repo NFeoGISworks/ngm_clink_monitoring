@@ -53,4 +53,11 @@ public class FoclVectorLayerUI
     {
 
     }
+
+
+    @Override
+    public void showEditForm(Context context)
+    {
+
+    }
 }
