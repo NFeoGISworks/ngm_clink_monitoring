@@ -87,25 +87,7 @@ public class GISApplication
             SyncAdapter.setSyncPeriod(this, params, sharedPreferences.getLong(KEY_PREF_SYNC_PERIOD,
                                                                               600)); //10 min
         }
-
-        getFoclProject();*/
-    }
-
-
-    protected void onFirstRun()
-    {
-        //add OpenStreetMap layer on application first run
-        String layerName = getString(R.string.osm);
-        String layerURL = getString(R.string.osm_url);
-        RemoteTMSLayerUI layer =
-                new RemoteTMSLayerUI(getApplicationContext(), mMap.cretateLayerStorage());
-        layer.setName(layerName);
-        layer.setURL(layerURL);
-        layer.setTMSType(TMSTYPE_OSM);
-        layer.setVisible(true);
-
-        mMap.addLayer(layer);
-        mMap.save();
+        */
     }
 
 
@@ -131,11 +113,12 @@ public class GISApplication
             mMap.load();
         }
 
-        if (!hasFoclProject()) {
+        if (mMap.getLayerCount() > 0 && !hasFoclProject()) {
             File layerPath = mMap.cretateLayerStorage();
 
             FoclProject foclProject =
                     new FoclProject(mMap.getContext(), layerPath, new FoclLayerFactory(layerPath));
+            foclProject.setVisible(true);
             foclProject.load();
 
             mMap.addLayer(foclProject);
@@ -143,6 +126,35 @@ public class GISApplication
         }
 
         return mMap;
+    }
+
+
+    protected void onFirstRun()
+    {
+        //add OpenStreetMap layer on application first run
+        String layerName = getString(R.string.osm);
+        String layerURL = getString(R.string.osm_url);
+        RemoteTMSLayerUI layer =
+                new RemoteTMSLayerUI(getApplicationContext(), mMap.cretateLayerStorage());
+        layer.setName(layerName);
+        layer.setURL(layerURL);
+        layer.setTMSType(TMSTYPE_OSM);
+        layer.setVisible(true);
+
+        mMap.addLayer(layer);
+
+        if (!hasFoclProject()) {
+            File layerPath = mMap.cretateLayerStorage();
+
+            FoclProject foclProject =
+                    new FoclProject(mMap.getContext(), layerPath, new FoclLayerFactory(layerPath));
+            foclProject.setVisible(true);
+            foclProject.load();
+
+            mMap.addLayer(foclProject);
+        }
+
+        mMap.save();
     }
 
 

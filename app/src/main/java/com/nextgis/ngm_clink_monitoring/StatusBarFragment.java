@@ -44,11 +44,11 @@ public class StatusBarFragment
         extends Fragment
         implements GpsEventListener
 {
-    protected TextView mStatusLine;
-    protected TextView mLatView;
-    protected TextView mLongView;
-    protected TextView mAltView;
-    protected TextView mAccView;
+    protected StatusBarTextView mStatusLine;
+    protected TextView          mLatView;
+    protected TextView          mLongView;
+    protected TextView          mAltView;
+    protected TextView          mAccView;
 
     protected String mStatusLineText;
     protected String mLatText;
@@ -80,7 +80,7 @@ public class StatusBarFragment
     {
         View view = inflater.inflate(R.layout.fragment_status_bar, null);
 
-        mStatusLine = (TextView) view.findViewById(R.id.status_line);
+        mStatusLine = (StatusBarTextView) view.findViewById(R.id.status_line);
         mLatView = (TextView) view.findViewById(R.id.latitude_view);
         mLongView = (TextView) view.findViewById(R.id.longitude_view);
         mAltView = (TextView) view.findViewById(R.id.altitude_view);
@@ -202,6 +202,7 @@ public class StatusBarFragment
 
         GISApplication app = (GISApplication) getActivity().getApplication();
         app.getGpsEventSource().addListener(this);
+        app.getMap().addListener(mStatusLine);
 
         mStatusLine.setText(mStatusLineText);
         setLocationViewsText();
@@ -213,6 +214,7 @@ public class StatusBarFragment
     {
         GISApplication app = (GISApplication) getActivity().getApplication();
         app.getGpsEventSource().removeListener(this);
+        app.getMap().removeListener(mStatusLine);
 
         super.onStop();
     }

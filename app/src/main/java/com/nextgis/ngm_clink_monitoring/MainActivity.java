@@ -174,6 +174,11 @@ public class MainActivity
 
     public void onMenuMapClick()
     {
+        GISApplication app = (GISApplication) getApplication();
+        FoclProject foclProject = app.getFoclProject();
+        foclProject.setVisible(true);
+        app.getMap().save();
+
         Intent intent = new Intent(this, MapActivity.class);
         startActivity(intent);
     }
@@ -214,13 +219,13 @@ public class MainActivity
         GISApplication app = (GISApplication) getApplication();
         FoclProject foclProject = app.getFoclProject();
 
-        if (!app.isLoadedFoclProject()) {
+        if (null != foclProject && !app.isLoadedFoclProject()) {
             foclProject.setName("FOCL");
             foclProject.setAccountName(accountName);
             foclProject.setURL(url);
             foclProject.setLogin(login);
             foclProject.setPassword(password);
-            foclProject.setVisible(false);
+            foclProject.setVisible(true);
 
             //init in separate thread
             foclProject.downloadAsync();

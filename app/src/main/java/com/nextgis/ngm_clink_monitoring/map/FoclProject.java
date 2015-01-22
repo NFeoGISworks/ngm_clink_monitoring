@@ -27,7 +27,6 @@ import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
-import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.api.INGWLayer;
 import com.nextgis.maplib.map.LayerFactory;
 import com.nextgis.maplib.map.LayerGroup;
@@ -46,7 +45,6 @@ import java.io.File;
 import java.io.IOException;
 
 import static com.nextgis.maplib.util.Constants.TAG;
-import static com.nextgis.ngm_clink_monitoring.util.FoclConstants.JSON_FOCL_STRUCTS_KEY;
 import static com.nextgis.ngm_clink_monitoring.util.FoclConstants.LAYERTYPE_FOCL_PROJECT;
 
 
@@ -54,10 +52,10 @@ public class FoclProject
         extends LayerGroup
         implements INGWLayer
 {
-    protected static final String JSON_ACCOUNT_KEY        = "account";
-    protected static final String JSON_URL_KEY            = "url";
-    protected static final String JSON_LOGIN_KEY          = "login";
-    protected static final String JSON_PASSWORD_KEY       = "password";
+    protected static final String JSON_ACCOUNT_KEY  = "account";
+    protected static final String JSON_URL_KEY      = "url";
+    protected static final String JSON_LOGIN_KEY    = "login";
+    protected static final String JSON_PASSWORD_KEY = "password";
 
     protected String      mAccountName;
     protected NetworkUtil mNet;
@@ -85,6 +83,7 @@ public class FoclProject
         }
         return server + "/compulink/mobile/user_focl_list";
     }
+
 
     @Override
     public String getAccountName()
@@ -162,7 +161,8 @@ public class FoclProject
                 int idSt = jsonStruct.getInt("id");
                 String nameSt = jsonStruct.getString("name");
 
-                FoclStruct foclStruct = new FoclStruct(getContext(), cretateLayerStorage(), mLayerFactory);
+                FoclStruct foclStruct =
+                        new FoclStruct(getContext(), cretateLayerStorage(), mLayerFactory);
 
                 foclStruct.setId((short) idSt);
                 foclStruct.setName(nameSt);
@@ -179,7 +179,8 @@ public class FoclProject
                     String nameL = jsonLayer.getString("name");
                     String typeL = jsonLayer.getString("type");
 
-                    FoclVectorLayer foclVectorLayer = new FoclVectorLayer(foclStruct.getContext(), foclStruct.cretateLayerStorage());
+                    FoclVectorLayer foclVectorLayer = new FoclVectorLayer(foclStruct.getContext(),
+                                                                          foclStruct.cretateLayerStorage());
 
                     foclVectorLayer.setRemoteId(idL);
                     foclVectorLayer.setName(nameL);
@@ -189,7 +190,7 @@ public class FoclProject
                     foclVectorLayer.setURL(mURL);
                     foclVectorLayer.setLogin(mLogin);
                     foclVectorLayer.setPassword(mPassword);
-                    foclVectorLayer.setVisible(false);
+                    foclVectorLayer.setVisible(true);
 
                     foclStruct.addLayer(foclVectorLayer);
 

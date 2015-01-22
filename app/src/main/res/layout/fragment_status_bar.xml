@@ -28,7 +28,7 @@
     android:orientation="vertical"
     >
 
-    <TextView
+    <com.nextgis.ngm_clink_monitoring.StatusBarTextView
         android:background="@drawable/border_status_line"
         android:id="@+id/status_line"
         android:layout_height="wrap_content"
