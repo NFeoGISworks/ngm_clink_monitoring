@@ -31,7 +31,6 @@ import com.nextgis.maplib.api.INGWLayer;
 import com.nextgis.maplib.map.LayerFactory;
 import com.nextgis.maplib.map.LayerGroup;
 import com.nextgis.maplib.util.NetworkUtil;
-import com.nextgis.ngm_clink_monitoring.GISApplication;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -154,19 +153,17 @@ public class FoclProject
     {
         try {
 
-            GISApplication app = (GISApplication) getContext();
-
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonStruct = jsonArray.getJSONObject(i);
 
-                int idSt = jsonStruct.getInt("id");
-                String nameSt = jsonStruct.getString("name");
+                int structId = jsonStruct.getInt("id");
+                String structName = jsonStruct.getString("name");
 
                 FoclStruct foclStruct =
                         new FoclStruct(getContext(), cretateLayerStorage(), mLayerFactory);
 
-                foclStruct.setId((short) idSt);
-                foclStruct.setName(nameSt);
+                foclStruct.setRemoteId(structId);
+                foclStruct.setName(structName);
                 foclStruct.setVisible(true);
 
                 addLayer(foclStruct);
@@ -176,17 +173,17 @@ public class FoclProject
                 for (int jj = 0; jj < jsonLayers.length(); jj++) {
                     JSONObject jsonLayer = jsonLayers.getJSONObject(jj);
 
-                    int idL = jsonLayer.getInt("id");
-                    String nameL = jsonLayer.getString("name");
-                    String typeL = jsonLayer.getString("type");
+                    int layerId = jsonLayer.getInt("id");
+                    String layerName = jsonLayer.getString("name");
+                    String layerType = jsonLayer.getString("type");
 
                     FoclVectorLayer foclVectorLayer = new FoclVectorLayer(foclStruct.getContext(),
                                                                           foclStruct.cretateLayerStorage());
 
-                    foclVectorLayer.setRemoteId(idL);
-                    foclVectorLayer.setName(nameL);
+                    foclVectorLayer.setRemoteId(layerId);
+                    foclVectorLayer.setName(layerName);
                     foclVectorLayer.setFoclLayerType(
-                            FoclVectorLayer.getFoclLayerTypeFromString(typeL));
+                            FoclVectorLayer.getFoclLayerTypeFromString(layerType));
                     foclVectorLayer.setAccountName(mAccountName);
                     foclVectorLayer.setURL(mURL);
                     foclVectorLayer.setLogin(mLogin);

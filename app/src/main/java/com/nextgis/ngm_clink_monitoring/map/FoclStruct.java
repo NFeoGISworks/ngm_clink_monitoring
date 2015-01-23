@@ -26,15 +26,21 @@ import android.content.Context;
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.map.LayerFactory;
 import com.nextgis.maplib.map.LayerGroup;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 
+import static com.nextgis.maplib.util.Constants.JSON_ID_KEY;
 import static com.nextgis.ngm_clink_monitoring.util.FoclConstants.LAYERTYPE_FOCL_STRUCT;
 
 
 public class FoclStruct
         extends LayerGroup
 {
+    protected long mRemoteId;
+
+
     public FoclStruct(
             Context context,
             File path,
@@ -43,6 +49,13 @@ public class FoclStruct
         super(context, path, layerFactory);
         mLayerType = LAYERTYPE_FOCL_STRUCT;
     }
+
+
+    public void setRemoteId(long remoteId)
+    {
+        mRemoteId = remoteId;
+    }
+
 
     public ILayer getLayerByFoclType(int type)
     {
@@ -54,5 +67,25 @@ public class FoclStruct
         }
 
         return null;
+    }
+
+
+    @Override
+    public JSONObject toJSON()
+            throws JSONException
+    {
+        JSONObject rootConfig = super.toJSON();
+        rootConfig.put(JSON_ID_KEY, mRemoteId);
+
+        return rootConfig;
+    }
+
+
+    @Override
+    public void fromJSON(JSONObject jsonObject)
+            throws JSONException
+    {
+        super.fromJSON(jsonObject);
+        mRemoteId = jsonObject.getLong(JSON_ID_KEY);
     }
 }

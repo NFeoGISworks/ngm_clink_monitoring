@@ -51,7 +51,7 @@ public class MainActivity
 
     public static final String PHOTO_DIR_PATH = DATA_DIR_PATH + File.separator + "foto";
 
-    boolean mIsLoadingFoclProect = false;
+    protected boolean mIsLoadingFoclProect = false;
 
 
     @Override
@@ -220,12 +220,11 @@ public class MainActivity
         FoclProject foclProject = app.getFoclProject();
 
         if (null != foclProject && !app.isLoadedFoclProject()) {
-            foclProject.setName("FOCL");
             foclProject.setAccountName(accountName);
             foclProject.setURL(url);
             foclProject.setLogin(login);
             foclProject.setPassword(password);
-            foclProject.setVisible(true);
+            foclProject.save();
 
             //init in separate thread
             foclProject.downloadAsync();

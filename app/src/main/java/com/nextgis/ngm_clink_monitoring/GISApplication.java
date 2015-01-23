@@ -59,6 +59,9 @@ public class GISApplication
     @Override
     public void onCreate()
     {
+        // For service debug
+        //android.os.Debug.waitForDebugger();
+
         super.onCreate();
 
         mGpsEventSource = new GpsEventSource(this);
@@ -113,18 +116,6 @@ public class GISApplication
             mMap.load();
         }
 
-        if (mMap.getLayerCount() > 0 && !hasFoclProject()) {
-            File layerPath = mMap.cretateLayerStorage();
-
-            FoclProject foclProject =
-                    new FoclProject(mMap.getContext(), layerPath, new FoclLayerFactory(layerPath));
-            foclProject.setVisible(true);
-            foclProject.load();
-
-            mMap.addLayer(foclProject);
-            mMap.save();
-        }
-
         return mMap;
     }
 
@@ -143,16 +134,13 @@ public class GISApplication
 
         mMap.addLayer(layer);
 
-        if (!hasFoclProject()) {
-            File layerPath = mMap.cretateLayerStorage();
+        File foclPath = mMap.cretateLayerStorage();
+        FoclProject foclProject =
+                new FoclProject(mMap.getContext(), foclPath, new FoclLayerFactory(foclPath));
+        foclProject.setName("FOCL");
+        foclProject.setVisible(true);
 
-            FoclProject foclProject =
-                    new FoclProject(mMap.getContext(), layerPath, new FoclLayerFactory(layerPath));
-            foclProject.setVisible(true);
-            foclProject.load();
-
-            mMap.addLayer(foclProject);
-        }
+        mMap.addLayer(foclProject);
 
         mMap.save();
     }
