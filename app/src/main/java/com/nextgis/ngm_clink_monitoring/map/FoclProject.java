@@ -44,6 +44,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 
+import static com.nextgis.maplib.util.Constants.SYNC_ATTRIBUTES;
 import static com.nextgis.maplib.util.Constants.TAG;
 import static com.nextgis.ngm_clink_monitoring.util.FoclConstants.LAYERTYPE_FOCL_PROJECT;
 
@@ -191,6 +192,7 @@ public class FoclProject
                     foclVectorLayer.setLogin(mLogin);
                     foclVectorLayer.setPassword(mPassword);
                     foclVectorLayer.setVisible(true);
+                    foclVectorLayer.setSyncType(SYNC_ATTRIBUTES);
 
                     foclStruct.addLayer(foclVectorLayer);
 
