@@ -54,6 +54,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -238,6 +239,9 @@ public class LineWorkFragment
 
                 ContentValues values = new ContentValues();
                 values.put("status_built", "built");
+
+                Calendar calendar = Calendar.getInstance();
+                values.put("status_built_ch", calendar.getTimeInMillis());
 
                 int result =
                         getActivity().getContentResolver().update(updateUri, values, null, null);
