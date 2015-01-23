@@ -23,8 +23,8 @@
 
 <sync-adapter
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:accountType="nextgis.com"
-    android:allowParallelSyncs="true"
+    android:accountType="com.nextgis.account"
+    android:allowParallelSyncs="false"
     android:contentAuthority="com.nextgis.ngm_clink_monitoring.provider"
     android:isAlwaysSyncable="true"
     android:supportsUploading="true"
