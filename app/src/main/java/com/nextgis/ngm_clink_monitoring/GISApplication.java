@@ -113,7 +113,7 @@ public class GISApplication
             mMap.load();
         }
 
-        if (!hasFoclProject()) {
+        if (mMap.getLayerCount() > 0 && !hasFoclProject()) {
             File layerPath = mMap.cretateLayerStorage();
 
             FoclProject foclProject =
