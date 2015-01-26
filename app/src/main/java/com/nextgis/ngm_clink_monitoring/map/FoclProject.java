@@ -30,6 +30,7 @@ import android.widget.Toast;
 import com.nextgis.maplib.api.INGWLayer;
 import com.nextgis.maplib.map.LayerFactory;
 import com.nextgis.maplib.map.LayerGroup;
+import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.NetworkUtil;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -156,8 +157,8 @@ public class FoclProject
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonStruct = jsonArray.getJSONObject(i);
 
-                int structId = jsonStruct.getInt("id");
-                String structName = jsonStruct.getString("name");
+                int structId = jsonStruct.getInt(Constants.JSON_ID_KEY);
+                String structName = jsonStruct.getString(Constants.JSON_NAME_KEY);
 
                 FoclStruct foclStruct =
                         new FoclStruct(getContext(), cretateLayerStorage(), mLayerFactory);
@@ -168,14 +169,14 @@ public class FoclProject
 
                 addLayer(foclStruct);
 
-                JSONArray jsonLayers = jsonStruct.getJSONArray("layers");
+                JSONArray jsonLayers = jsonStruct.getJSONArray(Constants.JSON_LAYERS_KEY);
 
                 for (int jj = 0; jj < jsonLayers.length(); jj++) {
                     JSONObject jsonLayer = jsonLayers.getJSONObject(jj);
 
-                    int layerId = jsonLayer.getInt("id");
-                    String layerName = jsonLayer.getString("name");
-                    String layerType = jsonLayer.getString("type");
+                    int layerId = jsonLayer.getInt(Constants.JSON_ID_KEY);
+                    String layerName = jsonLayer.getString(Constants.JSON_NAME_KEY);
+                    String layerType = jsonLayer.getString(Constants.JSON_TYPE_KEY);
 
                     FoclVectorLayer foclVectorLayer = new FoclVectorLayer(
                             foclStruct.getContext(), foclStruct.cretateLayerStorage());

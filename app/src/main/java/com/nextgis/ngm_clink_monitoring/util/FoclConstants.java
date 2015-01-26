@@ -37,6 +37,9 @@ public class FoclConstants
     public static final int LAYERTYPE_FOCL_ENDPOINT        = 1106;
     public static final int LAYERTYPE_FOCL_LINE_MEASURING  = 1107;
 
-    public static final String FIELD_NAME         = "name";
-    public static final String FIELD_STATUS_BUILT = "status_built";
+    public static final String FIELD_NAME            = "name";
+    public static final String FIELD_STATUS_BUILT    = "status_built";
+    public static final String FIELD_STATUS_BUILT_CH = "status_built_ch";
+
+    public static final String FIELD_VALUE_BUILT = "built";
 }

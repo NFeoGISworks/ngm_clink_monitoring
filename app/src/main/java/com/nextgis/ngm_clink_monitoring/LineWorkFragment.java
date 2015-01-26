@@ -243,10 +243,11 @@ public class LineWorkFragment
                         Uri updateUri = ContentUris.withAppendedId(uri, itemId[0]);
 
                         ContentValues values = new ContentValues();
-                        values.put("status_built", "built");
+                        values.put(
+                                FoclConstants.FIELD_STATUS_BUILT, FoclConstants.FIELD_VALUE_BUILT);
 
                         Calendar calendar = Calendar.getInstance();
-                        values.put("status_built_ch", calendar.getTimeInMillis());
+                        values.put(FoclConstants.FIELD_STATUS_BUILT_CH, calendar.getTimeInMillis());
 
                         int result = getActivity().getContentResolver()
                                                   .update(updateUri, values, null, null);
