@@ -34,6 +34,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 import com.nextgis.ngm_clink_monitoring.util.SettingsConstants;
 
@@ -215,6 +216,11 @@ public class MainActivity
                 login = accountManager.getUserData(account, "login");
                 break;
             }
+        }
+
+        if (null == url || null == login || null == password) {
+            Toast.makeText(this, "NO connection", Toast.LENGTH_LONG).show();
+            return;
         }
 
         GISApplication app = (GISApplication) getApplication();
