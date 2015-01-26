@@ -32,7 +32,6 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.CursorAdapter;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,6 +46,7 @@ import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 import com.nextgis.ngm_clink_monitoring.map.FoclStruct;
 import com.nextgis.ngm_clink_monitoring.map.FoclVectorLayer;
+import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 import com.nextgis.ngm_clink_monitoring.util.LocationUtil;
 import com.nextgis.ngm_clink_monitoring.util.SettingsConstants;
 
@@ -149,122 +149,130 @@ public class LineWorkFragment
 
         mLineName.setAdapter(new FoclProjectAdapter(getActivity(), foclProject));
         mLineName.setSelection(0);
-        mLineName.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-        {
-            @Override
-            public void onItemSelected(
-                    AdapterView<?> parent,
-                    View view,
-                    int position,
-                    long id)
-            {
-                if (null == foclProject) {
-                    return;
-                }
+        mLineName.setOnItemSelectedListener(
+                new AdapterView.OnItemSelectedListener()
+                {
+                    @Override
+                    public void onItemSelected(
+                            AdapterView<?> parent,
+                            View view,
+                            int position,
+                            long id)
+                    {
+                        if (null == foclProject) {
+                            return;
+                        }
 
-                FoclStruct foclStruct = (FoclStruct) foclProject.getLayer(position);
-                FoclVectorLayer layer =
-                        (FoclVectorLayer) foclStruct.getLayerByFoclType(mFoclStructLayerType);
-                itemLayerName[0] = layer.getPath().getName();
+                        FoclStruct foclStruct = (FoclStruct) foclProject.getLayer(position);
+                        FoclVectorLayer layer = (FoclVectorLayer) foclStruct.getLayerByFoclType(
+                                mFoclStructLayerType);
+                        itemLayerName[0] = layer.getPath().getName();
 
-                Uri uri = Uri.parse("content://" + SettingsConstants.AUTHORITY + "/" +
-                                    itemLayerName[0]);
+                        Uri uri = Uri.parse(
+                                "content://" + SettingsConstants.AUTHORITY + "/" +
+                                itemLayerName[0]);
 
-                String proj[] = {VectorLayer.FIELD_ID, "name", "status_built"};
+                        String proj[] = {
+                                VectorLayer.FIELD_ID,
+                                FoclConstants.FIELD_NAME,
+                                FoclConstants.FIELD_STATUS_BUILT};
 
-                Cursor cursor =
-                        getActivity().getContentResolver().query(uri, proj, null, null, null);
+                        Cursor cursor = getActivity().getContentResolver()
+                                                     .query(uri, proj, null, null, null);
 
-                if (cursor.getCount() > 0) {
-                    mObjectName.setEnabled(true);
-                    mSaveButton.setEnabled(true);
-                    mMakePhotoButton.setEnabled(true);
-                } else {
-                    mObjectName.setAdapter(null);
-                    mObjectName.setEnabled(false);
-                    mSaveButton.setEnabled(false);
-                    mMakePhotoButton.setEnabled(false);
-                    return;
-                }
+                        if (cursor.getCount() > 0) {
+                            mObjectName.setEnabled(true);
+                            mSaveButton.setEnabled(true);
+                            mMakePhotoButton.setEnabled(true);
+                        } else {
+                            mObjectName.setAdapter(null);
+                            mObjectName.setEnabled(false);
+                            mSaveButton.setEnabled(false);
+                            mMakePhotoButton.setEnabled(false);
+                            return;
+                        }
 
-                getActivity().startManagingCursor(cursor);
+                        getActivity().startManagingCursor(cursor);
 
-                String from[] = {"name"};
-                int to[] = {R.id.focl_layer_name};
-                SimpleCursorAdapter adapter =
-                        new SimpleCursorAdapter(getActivity(), R.layout.layout_focl_layer_row,
-                                                cursor, from, to,
-                                                CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+                        FoclVectorCursorAdapter adapter = new FoclVectorCursorAdapter(
+                                getActivity(), cursor,
+                                CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
 
-                mObjectName.setAdapter(adapter);
-                mObjectName.setSelection(0);
-            }
-
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent)
-            {
-
-            }
-        });
-
-        mObjectName.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-        {
-            @Override
-            public void onItemSelected(
-                    AdapterView<?> parent,
-                    View view,
-                    int position,
-                    long id)
-            {
-                itemId[0] = id;
-            }
+                        mObjectName.setAdapter(adapter);
+                        mObjectName.setSelection(0);
+                    }
 
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent)
-            {
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent)
+                    {
 
-            }
-        });
+                    }
+                });
 
-        mSaveButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                Uri uri = Uri.parse("content://" + SettingsConstants.AUTHORITY + "/" +
-                                    itemLayerName[0]);
-                Uri updateUri = ContentUris.withAppendedId(uri, itemId[0]);
+        mObjectName.setOnItemSelectedListener(
+                new AdapterView.OnItemSelectedListener()
+                {
+                    @Override
+                    public void onItemSelected(
+                            AdapterView<?> parent,
+                            View view,
+                            int position,
+                            long id)
+                    {
+                        itemId[0] = id;
+                    }
 
-                ContentValues values = new ContentValues();
-                values.put("status_built", "built");
 
-                Calendar calendar = Calendar.getInstance();
-                values.put("status_built_ch", calendar.getTimeInMillis());
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent)
+                    {
 
-                int result =
-                        getActivity().getContentResolver().update(updateUri, values, null, null);
-                if (result == 0) {
-                    Log.d(TAG,
-                          "Layer: " + itemLayerName[0] + ", id: " + itemId[0] + ", update FAILED");
-                } else {
-                    Log.d(TAG, "Layer: " + itemLayerName[0] + ", id: " + itemId[0] +
-                               ", update result: " + result);
-                }
+                    }
+                });
 
-                getActivity().getSupportFragmentManager().popBackStackImmediate();
-            }
-        });
+        mSaveButton.setOnClickListener(
+                new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        Uri uri = Uri.parse(
+                                "content://" + SettingsConstants.AUTHORITY + "/" +
+                                itemLayerName[0]);
+                        Uri updateUri = ContentUris.withAppendedId(uri, itemId[0]);
 
-        mCancelButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                getActivity().getSupportFragmentManager().popBackStackImmediate();
-            }
-        });
+                        ContentValues values = new ContentValues();
+                        values.put("status_built", "built");
+
+                        Calendar calendar = Calendar.getInstance();
+                        values.put("status_built_ch", calendar.getTimeInMillis());
+
+                        int result = getActivity().getContentResolver()
+                                                  .update(updateUri, values, null, null);
+                        if (result == 0) {
+                            Log.d(
+                                    TAG, "Layer: " + itemLayerName[0] + ", id: " + itemId[0] +
+                                         ", update FAILED");
+                        } else {
+                            Log.d(
+                                    TAG, "Layer: " + itemLayerName[0] + ", id: " + itemId[0] +
+                                         ", update result: " + result);
+                        }
+
+                        getActivity().getSupportFragmentManager().popBackStackImmediate();
+                    }
+                });
+
+        mCancelButton.setOnClickListener(
+                new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        getActivity().getSupportFragmentManager().popBackStackImmediate();
+                    }
+                });
 
         switch (mFoclStructLayerType) {
             case LAYERTYPE_FOCL_OPTICAL_CABLE:
@@ -305,33 +313,37 @@ public class LineWorkFragment
                 break;
         }
 
-        mMakePhotoButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        mMakePhotoButton.setOnClickListener(
+                new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-                // Ensure that there's a camera activity to handle the intent
-                if (cameraIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-                    File photoFile = null;
+                        // Ensure that there's a camera activity to handle the intent
+                        if (cameraIntent.resolveActivity(getActivity().getPackageManager()) !=
+                            null) {
+                            File photoFile = null;
 
-                    try {
-                        photoFile = createImageFile();
-                    } catch (IOException e) {
-                        Toast.makeText(getActivity(), e.getLocalizedMessage(), Toast.LENGTH_LONG)
-                             .show();
+                            try {
+                                photoFile = createImageFile();
+                            } catch (IOException e) {
+                                Toast.makeText(
+                                        getActivity(), e.getLocalizedMessage(), Toast.LENGTH_LONG)
+                                     .show();
+                            }
+
+                            if (photoFile != null) {
+                                mCurrentPhotoPath = photoFile.getAbsolutePath();
+
+                                cameraIntent.putExtra(
+                                        MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+                                startActivityForResult(cameraIntent, REQUEST_TAKE_PHOTO);
+                            }
+                        }
                     }
-
-                    if (photoFile != null) {
-                        mCurrentPhotoPath = photoFile.getAbsolutePath();
-
-                        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
-                        startActivityForResult(cameraIntent, REQUEST_TAKE_PHOTO);
-                    }
-                }
-            }
-        });
+                });
 
         return view;
     }
@@ -347,8 +359,8 @@ public class LineWorkFragment
             GISApplication app = (GISApplication) getActivity().getApplication();
 
             try {
-                LocationUtil.writeLocationToExif(new File(mCurrentPhotoPath),
-                                                 app.getCurrentLocation());
+                LocationUtil.writeLocationToExif(
+                        new File(mCurrentPhotoPath), app.getCurrentLocation());
             } catch (IOException e) {
                 e.printStackTrace();
             }

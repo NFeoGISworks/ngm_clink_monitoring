@@ -33,7 +33,7 @@
     <TextView
         android:ellipsize="end"
         android:gravity="center_vertical"
-        android:id="@+id/focl_layer_name"
+        android:id="@+id/focl_vector_name"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
