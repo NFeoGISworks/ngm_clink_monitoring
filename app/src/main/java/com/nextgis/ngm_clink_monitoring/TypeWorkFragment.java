@@ -28,6 +28,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import com.nextgis.ngm_clink_monitoring.util.ViewUtil;
 
 import static com.nextgis.ngm_clink_monitoring.util.FoclConstants.*;
 
@@ -46,14 +47,23 @@ public class TypeWorkFragment
     {
         View view = inflater.inflate(R.layout.fragment_type_works, null);
 
-        Button btnLaying = (Button) view.findViewById(R.id.btn_laying);
-        Button btnClutchMounting = (Button) view.findViewById(R.id.btn_clutch_mounting);
+        Button btnOpticalLaying = (Button) view.findViewById(R.id.btn_optical_cable);
+        Button btnFoscMounting = (Button) view.findViewById(R.id.btn_fosc_mounting);
         Button btnCrossMounting = (Button) view.findViewById(R.id.btn_cross_mounting);
-        Button btnClosetMounting = (Button) view.findViewById(R.id.btn_closet_mounting);
+        Button btnTelecomCabinetMounting =
+                (Button) view.findViewById(R.id.btn_telecom_cabinet_mounting);
         Button btnPoleMounting = (Button) view.findViewById(R.id.btn_pole_mounting);
         Button btnLineMeasuring = (Button) view.findViewById(R.id.btn_line_measuring);
 
-        btnLaying.setOnClickListener(
+        // Making square buttons
+        ViewUtil.makingSquareView(btnOpticalLaying);
+        ViewUtil.makingSquareView(btnFoscMounting);
+        ViewUtil.makingSquareView(btnCrossMounting);
+        ViewUtil.makingSquareView(btnTelecomCabinetMounting);
+        ViewUtil.makingSquareView(btnPoleMounting);
+        ViewUtil.makingSquareView(btnLineMeasuring);
+
+        btnOpticalLaying.setOnClickListener(
                 new View.OnClickListener()
                 {
                     @Override
@@ -65,7 +75,7 @@ public class TypeWorkFragment
                     }
                 });
 
-        btnClutchMounting.setOnClickListener(
+        btnFoscMounting.setOnClickListener(
                 new View.OnClickListener()
                 {
                     @Override
@@ -89,7 +99,7 @@ public class TypeWorkFragment
                     }
                 });
 
-        btnClosetMounting.setOnClickListener(
+        btnTelecomCabinetMounting.setOnClickListener(
                 new View.OnClickListener()
                 {
                     @Override

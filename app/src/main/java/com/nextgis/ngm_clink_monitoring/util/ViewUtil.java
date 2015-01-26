@@ -24,6 +24,7 @@ package com.nextgis.ngm_clink_monitoring.util;
 
 import android.os.Build;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -70,5 +71,32 @@ public class ViewUtil
         } else {
             view.setId(View.generateViewId());
         }
+    }
+
+
+    public static void makingSquareView(final View view)
+    {
+        view.post(
+                new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        LinearLayout.LayoutParams params;
+                        params = (LinearLayout.LayoutParams) view.getLayoutParams();
+
+                        int width = view.getWidth();
+                        int height = view.getHeight();
+
+                        if (width > height) {
+                            params.height = width;
+                        } else {
+                            params.width = height;
+                        }
+
+                        view.setLayoutParams(params);
+                        view.postInvalidate();
+                    }
+                });
     }
 }
