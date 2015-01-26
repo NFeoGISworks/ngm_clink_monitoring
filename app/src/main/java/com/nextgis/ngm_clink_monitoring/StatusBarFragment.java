@@ -125,8 +125,8 @@ public class StatusBarFragment
         SharedPreferences prefs;
         prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-        int nFormat = prefs.getInt(SettingsConstants.KEY_PREF_COORD_FORMAT + "_int",
-                                   Location.FORMAT_SECONDS);
+        int nFormat = prefs.getInt(
+                SettingsConstants.KEY_PREF_COORD_FORMAT + "_int", Location.FORMAT_SECONDS);
         DecimalFormat df = new DecimalFormat("0.0");
 
         mLatText = getString(R.string.latitude_caption) + " " +

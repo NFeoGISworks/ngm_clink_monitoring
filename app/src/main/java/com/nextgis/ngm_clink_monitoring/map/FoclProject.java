@@ -177,8 +177,8 @@ public class FoclProject
                     String layerName = jsonLayer.getString("name");
                     String layerType = jsonLayer.getString("type");
 
-                    FoclVectorLayer foclVectorLayer = new FoclVectorLayer(foclStruct.getContext(),
-                                                                          foclStruct.cretateLayerStorage());
+                    FoclVectorLayer foclVectorLayer = new FoclVectorLayer(
+                            foclStruct.getContext(), foclStruct.cretateLayerStorage());
 
                     foclVectorLayer.setRemoteId(layerId);
                     foclVectorLayer.setName(layerName);
@@ -238,8 +238,9 @@ public class FoclProject
             // Check to see if we got success
             final org.apache.http.StatusLine line = response.getStatusLine();
             if (line.getStatusCode() != 200) {
-                Log.d(TAG, "Problem downloading FOCL: " + mURL + " HTTP response: " +
-                           line);
+                Log.d(
+                        TAG, "Problem downloading FOCL: " + mURL + " HTTP response: " +
+                             line);
                 return getContext().getString(com.nextgis.maplib.R.string.error_download_data);
             }
 
@@ -255,8 +256,9 @@ public class FoclProject
             return createFromJson(jsonArray);
 
         } catch (IOException e) {
-            Log.d(TAG, "Problem downloading FOCL: " + mURL + " Error: " +
-                       e.getLocalizedMessage());
+            Log.d(
+                    TAG, "Problem downloading FOCL: " + mURL + " Error: " +
+                         e.getLocalizedMessage());
             return getContext().getString(com.nextgis.maplib.R.string.error_download_data);
         } catch (JSONException e) {
             e.printStackTrace();

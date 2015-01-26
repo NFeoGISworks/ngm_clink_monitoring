@@ -51,9 +51,9 @@ public class MapFragment
 
     protected static final String KEY_PREF_WAS_ZOOM_CONTROLS_SHOWN = "was_zoom_controls_shown";
 
-    protected MapView   mMap;
-    protected ImageView mivZoomIn;
-    protected ImageView mivZoomOut;
+    protected MapView        mMap;
+    protected ImageView      mivZoomIn;
+    protected ImageView      mivZoomOut;
     protected RelativeLayout mMapRelativeLayout;
 
     protected boolean mShowZoomControls;
@@ -85,9 +85,10 @@ public class MapFragment
         if (mMap != null) {
             mMapRelativeLayout = (RelativeLayout) layout.findViewById(R.id.maprl);
             if (mMapRelativeLayout != null) {
-                mMapRelativeLayout.addView(mMap, 0, new RelativeLayout.LayoutParams(
-                        RelativeLayout.LayoutParams.MATCH_PARENT,
-                        RelativeLayout.LayoutParams.MATCH_PARENT));
+                mMapRelativeLayout.addView(
+                        mMap, 0, new RelativeLayout.LayoutParams(
+                                RelativeLayout.LayoutParams.MATCH_PARENT,
+                                RelativeLayout.LayoutParams.MATCH_PARENT));
 
                 SharedPreferences sharedPreferences =
                         PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -140,33 +141,33 @@ public class MapFragment
         mivZoomOut.setImageResource(R.drawable.ic_minus);
         ViewUtil.setGeneratedId(mivZoomOut);
 
-        mivZoomIn.setOnClickListener(new OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                mMap.zoomIn();
-            }
-        });
+        mivZoomIn.setOnClickListener(
+                new OnClickListener()
+                {
+                    public void onClick(View v)
+                    {
+                        mMap.zoomIn();
+                    }
+                });
 
-        mivZoomOut.setOnClickListener(new OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                mMap.zoomOut();
-            }
-        });
+        mivZoomOut.setOnClickListener(
+                new OnClickListener()
+                {
+                    public void onClick(View v)
+                    {
+                        mMap.zoomOut();
+                    }
+                });
 
-        final RelativeLayout.LayoutParams RightParams4 =
-                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
-                                                RelativeLayout.LayoutParams.WRAP_CONTENT);
+        final RelativeLayout.LayoutParams RightParams4 = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         RightParams4.setMargins(mMargings + 5, mMargings - 5, mMargings + 5, mMargings - 5);
         RightParams4.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         RightParams4.addRule(RelativeLayout.CENTER_IN_PARENT);//ALIGN_PARENT_TOP
         rl.addView(mivZoomIn, RightParams4);
 
-        final RelativeLayout.LayoutParams RightParams2 =
-                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
-                                                RelativeLayout.LayoutParams.WRAP_CONTENT);
+        final RelativeLayout.LayoutParams RightParams2 = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         RightParams2.setMargins(mMargings + 5, mMargings - 5, mMargings + 5, mMargings - 5);
         RightParams2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         RightParams2.addRule(RelativeLayout.CENTER_IN_PARENT);//ALIGN_PARENT_TOP

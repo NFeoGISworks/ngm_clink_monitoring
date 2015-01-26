@@ -81,6 +81,6 @@ public interface SettingsConstants
     public static final String KEY_PREF_MAP_PATH            = "map_path";
     public static final String KEY_PREF_MAP_NAME            = "map_name";
     public static final String KEY_PREF_SHOW_ZOOM_CONTROLS  = "show_zoom_controls";
-    public static final String KEY_PREF_SYNC_PERIODICALLY = "sync_periodically";
-    public static final String KEY_PREF_SYNC_PERIOD       = "sync_period";
+    public static final String KEY_PREF_SYNC_PERIODICALLY   = "sync_periodically";
+    public static final String KEY_PREF_SYNC_PERIOD         = "sync_period";
 }

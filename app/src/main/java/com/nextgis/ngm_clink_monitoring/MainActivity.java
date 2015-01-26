@@ -90,29 +90,30 @@ public class MainActivity
             ft.commit();
         }
 
-        typeWorkFragment.setOnButtonsClickListener(new TypeWorkFragment.OnButtonsClickListener()
-        {
-            @Override
-            public void OnButtonsClick(int workType)
-            {
-                FragmentTransaction frTr = getSupportFragmentManager().beginTransaction();
+        typeWorkFragment.setOnButtonsClickListener(
+                new TypeWorkFragment.OnButtonsClickListener()
+                {
+                    @Override
+                    public void OnButtonsClick(int workType)
+                    {
+                        FragmentTransaction frTr = getSupportFragmentManager().beginTransaction();
 
-                LineWorkFragment lineWorkFragment =
-                        (LineWorkFragment) getSupportFragmentManager().findFragmentByTag(
-                                "LineWork");
+                        LineWorkFragment lineWorkFragment =
+                                (LineWorkFragment) getSupportFragmentManager().findFragmentByTag(
+                                        "LineWork");
 
-                if (lineWorkFragment == null) {
-                    lineWorkFragment = new LineWorkFragment();
-                }
+                        if (lineWorkFragment == null) {
+                            lineWorkFragment = new LineWorkFragment();
+                        }
 
-                lineWorkFragment.setParams(workType);
+                        lineWorkFragment.setParams(workType);
 
-                frTr.replace(R.id.work_fragment, lineWorkFragment, "LineWork");
-                frTr.addToBackStack(null);
-                frTr.commit();
-                getSupportFragmentManager().executePendingTransactions();
-            }
-        });
+                        frTr.replace(R.id.work_fragment, lineWorkFragment, "LineWork");
+                        frTr.addToBackStack(null);
+                        frTr.commit();
+                        getSupportFragmentManager().executePendingTransactions();
+                    }
+                });
     }
 
 

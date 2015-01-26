@@ -53,14 +53,15 @@ public class MapActivity
         toolbar.getBackground().setAlpha(255);
         toolbar.setTitle(getTitle());
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                MapActivity.this.finish();
-            }
-        });
+        toolbar.setNavigationOnClickListener(
+                new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        MapActivity.this.finish();
+                    }
+                });
 
         StatusBarFragment statusBarFragment =
                 (StatusBarFragment) getSupportFragmentManager().findFragmentByTag("StatusBar");

@@ -58,9 +58,8 @@ public class ImageAdapter
 
         // sets a grey background; wraps around the images
         TypedArray typedArray = mContext.obtainStyledAttributes(R.styleable.photo_gallery);
-        mItemBackground =
-                typedArray.getResourceId(R.styleable.photo_gallery_android_galleryItemBackground,
-                                         0);
+        mItemBackground = typedArray.getResourceId(
+                R.styleable.photo_gallery_android_galleryItemBackground, 0);
         typedArray.recycle();
     }
 

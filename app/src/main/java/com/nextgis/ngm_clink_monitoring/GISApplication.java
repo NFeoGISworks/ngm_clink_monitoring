@@ -109,8 +109,8 @@ public class GISApplication
 
             File mapFullPath = new File(mapPath, mapName + MAP_EXT);
 
-            final Bitmap bkBitmap = BitmapFactory.decodeResource(getResources(),
-                                                                 com.nextgis.maplibui.R.drawable.bk_tile);
+            final Bitmap bkBitmap = BitmapFactory.decodeResource(
+                    getResources(), com.nextgis.maplibui.R.drawable.bk_tile);
             mMap = new MapDrawable(bkBitmap, this, mapFullPath, new FoclLayerFactory(mapFullPath));
             mMap.setName(mapName);
             mMap.load();
@@ -143,22 +143,6 @@ public class GISApplication
         mMap.addLayer(foclProject);
 
         mMap.save();
-    }
-
-
-    public boolean hasFoclProject()
-    {
-        if (mMap == null) {
-            return false;
-        }
-
-        for (int i = 0; i < mMap.getLayerCount(); i++) {
-            if (mMap.getLayer(i).getType() == LAYERTYPE_FOCL_PROJECT) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
 

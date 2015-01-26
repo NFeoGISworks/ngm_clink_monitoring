@@ -85,6 +85,7 @@ public class FoclVectorLayer
         mFoclLayerType = foclLayerType;
     }
 
+
     @Override
     public JSONObject toJSON()
             throws JSONException

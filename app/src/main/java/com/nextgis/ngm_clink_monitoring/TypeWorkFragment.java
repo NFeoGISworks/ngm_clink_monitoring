@@ -53,71 +53,77 @@ public class TypeWorkFragment
         Button btnPoleMounting = (Button) view.findViewById(R.id.btn_pole_mounting);
         Button btnLineMeasuring = (Button) view.findViewById(R.id.btn_line_measuring);
 
-        btnLaying.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                if (mOnButtonsClickListener != null) {
-                    mOnButtonsClickListener.OnButtonsClick(LAYERTYPE_FOCL_OPTICAL_CABLE);
-                }
-            }
-        });
+        btnLaying.setOnClickListener(
+                new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        if (mOnButtonsClickListener != null) {
+                            mOnButtonsClickListener.OnButtonsClick(LAYERTYPE_FOCL_OPTICAL_CABLE);
+                        }
+                    }
+                });
 
-        btnClutchMounting.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                if (mOnButtonsClickListener != null) {
-                    mOnButtonsClickListener.OnButtonsClick(LAYERTYPE_FOCL_FOSC);
-                }
-            }
-        });
+        btnClutchMounting.setOnClickListener(
+                new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        if (mOnButtonsClickListener != null) {
+                            mOnButtonsClickListener.OnButtonsClick(LAYERTYPE_FOCL_FOSC);
+                        }
+                    }
+                });
 
-        btnCrossMounting.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                if (mOnButtonsClickListener != null) {
-                    mOnButtonsClickListener.OnButtonsClick(LAYERTYPE_FOCL_OPTICAL_CROSS);
-                }
-            }
-        });
+        btnCrossMounting.setOnClickListener(
+                new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        if (mOnButtonsClickListener != null) {
+                            mOnButtonsClickListener.OnButtonsClick(LAYERTYPE_FOCL_OPTICAL_CROSS);
+                        }
+                    }
+                });
 
-        btnClosetMounting.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                if (mOnButtonsClickListener != null) {
-                    mOnButtonsClickListener.OnButtonsClick(LAYERTYPE_FOCL_TELECOM_CABINET);
-                }
-            }
-        });
+        btnClosetMounting.setOnClickListener(
+                new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        if (mOnButtonsClickListener != null) {
+                            mOnButtonsClickListener.OnButtonsClick(LAYERTYPE_FOCL_TELECOM_CABINET);
+                        }
+                    }
+                });
 
-        btnPoleMounting.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                if (mOnButtonsClickListener != null) {
-                    mOnButtonsClickListener.OnButtonsClick(LAYERTYPE_FOCL_POLE);
-                }
-            }
-        });
+        btnPoleMounting.setOnClickListener(
+                new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        if (mOnButtonsClickListener != null) {
+                            mOnButtonsClickListener.OnButtonsClick(LAYERTYPE_FOCL_POLE);
+                        }
+                    }
+                });
 
-        btnLineMeasuring.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                if (mOnButtonsClickListener != null) {
-                    mOnButtonsClickListener.OnButtonsClick(LAYERTYPE_FOCL_LINE_MEASURING);
-                }
-            }
-        });
+        btnLineMeasuring.setOnClickListener(
+                new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        if (mOnButtonsClickListener != null) {
+                            mOnButtonsClickListener.OnButtonsClick(LAYERTYPE_FOCL_LINE_MEASURING);
+                        }
+                    }
+                });
 
         return view;
     }

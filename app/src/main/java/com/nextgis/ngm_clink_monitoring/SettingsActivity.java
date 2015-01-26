@@ -59,14 +59,15 @@ public class SettingsActivity
         toolbar.getBackground().setAlpha(255);
         toolbar.setTitle(getTitle());
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                SettingsActivity.this.finish();
-            }
-        });
+        toolbar.setNavigationOnClickListener(
+                new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        SettingsActivity.this.finish();
+                    }
+                });
 
         boolean bAddPrefXML = false;
         String action = getIntent().getAction();
