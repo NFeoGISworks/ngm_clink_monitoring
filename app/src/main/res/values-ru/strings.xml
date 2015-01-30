@@ -51,11 +51,11 @@
 
     <string name="select_work_type">Выберите вид работ:</string>
 
-    <string name="optical_cable_laying">Прокладка строительной длины</string>
+    <string name="cable_laying">Прокладка кабеля</string>
     <string name="fosc_mounting">Разварка муфты</string>
     <string name="cross_mounting">Разварка кросса</string>
-    <string name="telecom_cabinet_mounting">Установка телеком. шкафа</string>
-    <string name="pole_mounting">Установка столба/оконеч. опоры</string>
+    <string name="cabinet_mounting">Монтаж шкафа</string>
+    <string name="pole_mounting">Установка опоры</string>
     <string name="line_measuring">Измерения линии</string>
 
     <string name="line">Линия связи:</string>

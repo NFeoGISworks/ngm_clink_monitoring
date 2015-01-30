@@ -277,7 +277,7 @@ public class LineWorkFragment
 
         switch (mFoclStructLayerType) {
             case LAYERTYPE_FOCL_OPTICAL_CABLE:
-                mWorkTypeName.setText(R.string.optical_cable_laying);
+                mWorkTypeName.setText(R.string.cable_laying);
                 mObjectCaption.setText(R.string.optical_cable);
                 mPhotoHintText.setText(R.string.take_photos_to_confirm);
                 break;
@@ -295,7 +295,7 @@ public class LineWorkFragment
                 break;
 
             case LAYERTYPE_FOCL_TELECOM_CABINET:
-                mWorkTypeName.setText(R.string.telecom_cabinet_mounting);
+                mWorkTypeName.setText(R.string.cabinet_mounting);
                 mObjectCaption.setText(R.string.telecom_cabinet);
                 mPhotoHintText.setText(R.string.take_photos_to_confirm);
                 break;

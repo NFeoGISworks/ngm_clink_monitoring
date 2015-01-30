@@ -59,11 +59,11 @@
                 >
 
                 <Button
-                    android:id="@+id/btn_optical_cable"
+                    android:id="@+id/btn_cable_laying"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:layout_width="match_parent"
-                    android:text="@string/optical_cable_laying"
+                    android:text="@string/cable_laying"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     />
 
@@ -105,11 +105,11 @@
                     />
 
                 <Button
-                    android:id="@+id/btn_telecom_cabinet_mounting"
+                    android:id="@+id/btn_cabinet_mounting"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:layout_width="match_parent"
-                    android:text="@string/telecom_cabinet_mounting"
+                    android:text="@string/cabinet_mounting"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     />
 

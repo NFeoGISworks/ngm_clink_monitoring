@@ -47,23 +47,22 @@ public class TypeWorkFragment
     {
         View view = inflater.inflate(R.layout.fragment_type_works, null);
 
-        Button btnOpticalLaying = (Button) view.findViewById(R.id.btn_optical_cable);
+        Button btnCableLaying = (Button) view.findViewById(R.id.btn_cable_laying);
         Button btnFoscMounting = (Button) view.findViewById(R.id.btn_fosc_mounting);
         Button btnCrossMounting = (Button) view.findViewById(R.id.btn_cross_mounting);
-        Button btnTelecomCabinetMounting =
-                (Button) view.findViewById(R.id.btn_telecom_cabinet_mounting);
+        Button btnCabinetMounting = (Button) view.findViewById(R.id.btn_cabinet_mounting);
         Button btnPoleMounting = (Button) view.findViewById(R.id.btn_pole_mounting);
         Button btnLineMeasuring = (Button) view.findViewById(R.id.btn_line_measuring);
 
         // Making square buttons
-        ViewUtil.makingSquareView(btnOpticalLaying);
+        ViewUtil.makingSquareView(btnCableLaying);
         ViewUtil.makingSquareView(btnFoscMounting);
         ViewUtil.makingSquareView(btnCrossMounting);
-        ViewUtil.makingSquareView(btnTelecomCabinetMounting);
+        ViewUtil.makingSquareView(btnCabinetMounting);
         ViewUtil.makingSquareView(btnPoleMounting);
         ViewUtil.makingSquareView(btnLineMeasuring);
 
-        btnOpticalLaying.setOnClickListener(
+        btnCableLaying.setOnClickListener(
                 new View.OnClickListener()
                 {
                     @Override
@@ -99,7 +98,7 @@ public class TypeWorkFragment
                     }
                 });
 
-        btnTelecomCabinetMounting.setOnClickListener(
+        btnCabinetMounting.setOnClickListener(
                 new View.OnClickListener()
                 {
                     @Override

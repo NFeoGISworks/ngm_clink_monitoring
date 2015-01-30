@@ -51,10 +51,10 @@
 
     <string name="select_work_type">Select work type:</string>
 
-    <string name="optical_cable_laying">Optical cable laying</string>
+    <string name="cable_laying">Cable laying</string>
     <string name="fosc_mounting">FOSC mounting</string>
     <string name="cross_mounting">Cross mounting</string>
-    <string name="telecom_cabinet_mounting">Telecom. cabinet mounting</string>
+    <string name="cabinet_mounting">Cabinet mounting</string>
     <string name="pole_mounting">Pole mounting</string>
     <string name="line_measuring">Line measuring</string>
 
