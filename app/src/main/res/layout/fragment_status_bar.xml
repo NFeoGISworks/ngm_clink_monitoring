@@ -56,7 +56,7 @@
 
             <TextView
                 android:id="@+id/latitude_view"
-                android:layout_gravity="start"
+                android:layout_gravity="center"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
@@ -65,7 +65,7 @@
 
             <TextView
                 android:id="@+id/longitude_view"
-                android:layout_gravity="start"
+                android:layout_gravity="center"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
@@ -74,7 +74,7 @@
 
             <TextView
                 android:id="@+id/altitude_view"
-                android:layout_gravity="start"
+                android:layout_gravity="center"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
@@ -83,7 +83,7 @@
 
             <TextView
                 android:id="@+id/accuracy_view"
-                android:layout_gravity="start"
+                android:layout_gravity="center"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
