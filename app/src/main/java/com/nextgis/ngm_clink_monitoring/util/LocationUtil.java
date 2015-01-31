@@ -49,7 +49,7 @@ public class LocationUtil
             latitude = -latitude;
         }
 
-        return formatCoordinate(latitude, outputType) + " " + direction;
+        return formatCoordinate(latitude, outputType) + direction;
     }
 
 
@@ -65,7 +65,7 @@ public class LocationUtil
             longitude = -longitude;
         }
 
-        return formatCoordinate(longitude, outputType) + " " + direction;
+        return formatCoordinate(longitude, outputType) + direction;
     }
 
 
@@ -76,7 +76,7 @@ public class LocationUtil
         StringBuilder sb = new StringBuilder();
         char endChar = DEGREE_CHAR;
 
-        DecimalFormat df = new DecimalFormat("###.######");
+        DecimalFormat df = new DecimalFormat("###.####");
         if (outputType == Location.FORMAT_MINUTES || outputType == Location.FORMAT_SECONDS) {
 
             df = new DecimalFormat("##.###");

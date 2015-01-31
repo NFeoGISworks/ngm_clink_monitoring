@@ -127,10 +127,10 @@ public class StatusBarFragment
 
     protected void setLocationDefaultText()
     {
-        mLatText = getString(R.string.latitude_caption) + " --";
-        mLongText = getString(R.string.longitude_caption) + " --";
-        mAltText = getString(R.string.altitude_caption) + " --";
-        mAccText = getString(R.string.accuracy_caption) + " --";
+        mLatText = "--";
+        mLongText = "--";
+        mAltText = "--";
+        mAccText = "--";
     }
 
 
@@ -158,24 +158,21 @@ public class StatusBarFragment
         prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         int nFormat = prefs.getInt(
-                FoclSettingsConstants.KEY_PREF_COORD_FORMAT + "_int", Location.FORMAT_SECONDS);
-        DecimalFormat df = new DecimalFormat("0.0");
+                FoclSettingsConstants.KEY_PREF_COORD_FORMAT + "_int", Location.FORMAT_DEGREES);
 
-        mLatText = getString(R.string.latitude_caption) + " " +
-                   LocationUtil.formatLatitude(location.getLatitude(), nFormat, getResources()) +
+        mLatText = LocationUtil.formatLatitude(location.getLatitude(), nFormat, getResources()) +
                    getString(R.string.coord_lat);
 
-        mLongText = getString(R.string.longitude_caption) + " " +
-                    LocationUtil.formatLongitude(location.getLongitude(), nFormat, getResources()) +
+        mLongText = LocationUtil.formatLongitude(location.getLongitude(), nFormat, getResources()) +
                     getString(R.string.coord_lon);
 
+        DecimalFormat df = new DecimalFormat("0.0");
+
         double altitude = location.getAltitude();
-        mAltText = getString(R.string.altitude_caption) + " " + df.format(altitude) + " " +
-                   getString(R.string.altitude_unit);
+        mAltText = df.format(altitude) + getString(R.string.altitude_unit);
 
         float accuracy = location.getAccuracy();
-        mAccText = getString(R.string.accuracy_caption) + " " + df.format(accuracy) + " " +
-                   getString(R.string.accuracy_unit);
+        mAccText = df.format(accuracy) + getString(R.string.accuracy_unit);
 
         if (isVisible()) {
             setLocationViewsText();

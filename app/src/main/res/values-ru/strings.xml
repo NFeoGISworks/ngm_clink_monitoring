@@ -45,7 +45,7 @@
     <string name="altitude_caption">Высота:</string>
     <string name="accuracy_caption">Точность:</string>
 
-    <string name="altitude_unit">м н.у. моря</string>
+    <string name="altitude_unit">м</string>
     <string name="accuracy_unit">м</string>
 
     <string name="select_work_type">Выберите вид работ:</string>
