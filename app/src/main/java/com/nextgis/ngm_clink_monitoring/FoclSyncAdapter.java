@@ -58,8 +58,13 @@ public class FoclSyncAdapter
     @Override
     protected void sync(
             LayerGroup layerGroup,
+            String authority,
             SyncResult syncResult)
     {
+        // First, we must upload changes for them saving
+        super.sync(layerGroup, authority, syncResult);
+
+        // Second, we update FoclProject, can delete some or all layers
         FoclProject foclProject = null;
 
         for (int i = 0; i < layerGroup.getLayerCount(); i++) {
@@ -75,8 +80,6 @@ public class FoclSyncAdapter
             if (null != error && error.length() > 0) {
                 Toast.makeText(getContext(), error, Toast.LENGTH_LONG).show();
             }
-
-            super.sync(layerGroup, syncResult);
         }
     }
 }

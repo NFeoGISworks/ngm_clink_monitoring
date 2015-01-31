@@ -121,6 +121,12 @@ public class GISApplication
     }
 
 
+    public void reloadMap()
+    {
+        mMap.load();
+    }
+
+
     protected void onFirstRun()
     {
         //add OpenStreetMap layer on application first run

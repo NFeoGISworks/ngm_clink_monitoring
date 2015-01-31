@@ -271,8 +271,13 @@ public class MainActivity
 
             if (intent.getAction().equals(SyncAdapter.SYNC_START)) {
                 mIsSyncing = true;
+
+                // TODO: block UI
+
             } else if (intent.getAction().equals(SyncAdapter.SYNC_FINISH)) {
                 mIsSyncing = false;
+                GISApplication app = (GISApplication) getApplication();
+                app.reloadMap();
             }
 
             switchMenuView();

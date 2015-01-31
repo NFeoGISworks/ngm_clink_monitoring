@@ -44,6 +44,8 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class FoclProject
@@ -162,17 +164,36 @@ public class FoclProject
     }
 
 
-    public FoclStruct addOrUpdateFoclStruct(JSONObject jsonStruct)
+    public FoclStruct addOrUpdateFoclStruct(
+            JSONObject jsonStruct,
+            JSONArray jsonLayers)
             throws JSONException
     {
-        int structId = jsonStruct.getInt(Constants.JSON_ID_KEY);
+        long structId = jsonStruct.getLong(Constants.JSON_ID_KEY);
         String structName = jsonStruct.getString(Constants.JSON_NAME_KEY);
 
         FoclStruct foclStruct = getFoclStructByRemoteId(structId);
 
-        if (foclStruct != null) {
+        if (null != foclStruct) {
+
             if (!foclStruct.getName().equals(structName)) {
                 foclStruct.setName(structName);
+            }
+
+            List<Long> layerIdList = new ArrayList<>(jsonLayers.length());
+
+            for (int jj = 0; jj < jsonLayers.length(); jj++) {
+                JSONObject jsonLayer = jsonLayers.getJSONObject(jj);
+                long layerId = jsonLayer.getInt(Constants.JSON_ID_KEY);
+                layerIdList.add(layerId);
+            }
+
+            for (ILayer layer : foclStruct.getLayers()) {
+                FoclVectorLayer foclVectorLayer = (FoclVectorLayer) layer;
+
+                if (!layerIdList.contains(foclVectorLayer.getRemoteId())) {
+                    foclVectorLayer.delete();
+                }
             }
 
         } else {
@@ -243,17 +264,32 @@ public class FoclProject
 
     public String createOrUpdateFromJson(JSONArray jsonArray)
     {
-        // TODO: if old layer is not jsonArray then delete it
-
         try {
+            List<Long> structIdList = new ArrayList<>(jsonArray.length());
+
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonStruct = jsonArray.getJSONObject(i);
+                long structId = jsonStruct.getLong(Constants.JSON_ID_KEY);
+                structIdList.add(structId);
+            }
 
-                FoclStruct foclStruct = addOrUpdateFoclStruct(jsonStruct);
+            for (ILayer layer : mLayers) {
+                FoclStruct foclStruct = (FoclStruct) layer;
+
+                if (!structIdList.contains(foclStruct.getRemoteId())) {
+                    foclStruct.delete();
+                }
+            }
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonStruct = jsonArray.getJSONObject(i);
                 JSONArray jsonLayers = jsonStruct.getJSONArray(Constants.JSON_LAYERS_KEY);
 
+                FoclStruct foclStruct = addOrUpdateFoclStruct(jsonStruct, jsonLayers);
+
                 for (int jj = 0; jj < jsonLayers.length(); jj++) {
-                    addOrUpdateFoclVectorLayer(jsonLayers.getJSONObject(jj), foclStruct);
+                    JSONObject jsonLayer = jsonLayers.getJSONObject(jj);
+                    addOrUpdateFoclVectorLayer(jsonLayer, foclStruct);
                 }
             }
 
