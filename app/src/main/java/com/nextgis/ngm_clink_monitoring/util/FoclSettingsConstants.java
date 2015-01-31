@@ -22,7 +22,7 @@
 
 package com.nextgis.ngm_clink_monitoring.util;
 
-public interface SettingsConstants
+public interface FoclSettingsConstants
 {
     public final static String AUTHORITY = "com.nextgis.ngm_clink_monitoring.provider";
 

@@ -31,11 +31,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstants;
 
 import java.util.List;
-
-import static com.nextgis.ngm_clink_monitoring.util.SettingsConstants.ACTION_PREFS_GENERAL;
-import static com.nextgis.ngm_clink_monitoring.util.SettingsConstants.ACTION_PREFS_MAP;
 
 
 public class SettingsActivity
@@ -71,10 +69,10 @@ public class SettingsActivity
 
         boolean bAddPrefXML = false;
         String action = getIntent().getAction();
-        if (action != null && action.equals(ACTION_PREFS_GENERAL)) {
+        if (action != null && action.equals(FoclSettingsConstants.ACTION_PREFS_GENERAL)) {
             addPreferencesFromResource(R.xml.preferences_general);
             bAddPrefXML = true;
-        } else if (action != null && action.equals(ACTION_PREFS_MAP)) {
+        } else if (action != null && action.equals(FoclSettingsConstants.ACTION_PREFS_MAP)) {
             addPreferencesFromResource(R.xml.preferences_map);
             bAddPrefXML = true;
         }

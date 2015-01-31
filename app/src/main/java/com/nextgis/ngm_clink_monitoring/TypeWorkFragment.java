@@ -28,9 +28,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 import com.nextgis.ngm_clink_monitoring.util.ViewUtil;
-
-import static com.nextgis.ngm_clink_monitoring.util.FoclConstants.*;
 
 
 public class TypeWorkFragment
@@ -69,7 +68,8 @@ public class TypeWorkFragment
                     public void onClick(View v)
                     {
                         if (mOnButtonsClickListener != null) {
-                            mOnButtonsClickListener.OnButtonsClick(LAYERTYPE_FOCL_OPTICAL_CABLE);
+                            mOnButtonsClickListener.OnButtonsClick(
+                                    FoclConstants.LAYERTYPE_FOCL_OPTICAL_CABLE);
                         }
                     }
                 });
@@ -81,7 +81,8 @@ public class TypeWorkFragment
                     public void onClick(View v)
                     {
                         if (mOnButtonsClickListener != null) {
-                            mOnButtonsClickListener.OnButtonsClick(LAYERTYPE_FOCL_FOSC);
+                            mOnButtonsClickListener.OnButtonsClick(
+                                    FoclConstants.LAYERTYPE_FOCL_FOSC);
                         }
                     }
                 });
@@ -93,7 +94,8 @@ public class TypeWorkFragment
                     public void onClick(View v)
                     {
                         if (mOnButtonsClickListener != null) {
-                            mOnButtonsClickListener.OnButtonsClick(LAYERTYPE_FOCL_OPTICAL_CROSS);
+                            mOnButtonsClickListener.OnButtonsClick(
+                                    FoclConstants.LAYERTYPE_FOCL_OPTICAL_CROSS);
                         }
                     }
                 });
@@ -105,7 +107,8 @@ public class TypeWorkFragment
                     public void onClick(View v)
                     {
                         if (mOnButtonsClickListener != null) {
-                            mOnButtonsClickListener.OnButtonsClick(LAYERTYPE_FOCL_TELECOM_CABINET);
+                            mOnButtonsClickListener.OnButtonsClick(
+                                    FoclConstants.LAYERTYPE_FOCL_TELECOM_CABINET);
                         }
                     }
                 });
@@ -117,7 +120,8 @@ public class TypeWorkFragment
                     public void onClick(View v)
                     {
                         if (mOnButtonsClickListener != null) {
-                            mOnButtonsClickListener.OnButtonsClick(LAYERTYPE_FOCL_POLE);
+                            mOnButtonsClickListener.OnButtonsClick(
+                                    FoclConstants.LAYERTYPE_FOCL_POLE);
                         }
                     }
                 });
@@ -129,7 +133,8 @@ public class TypeWorkFragment
                     public void onClick(View v)
                     {
                         if (mOnButtonsClickListener != null) {
-                            mOnButtonsClickListener.OnButtonsClick(LAYERTYPE_FOCL_LINE_MEASURING);
+                            mOnButtonsClickListener.OnButtonsClick(
+                                    FoclConstants.LAYERTYPE_FOCL_LINE_MEASURING);
                         }
                     }
                 });

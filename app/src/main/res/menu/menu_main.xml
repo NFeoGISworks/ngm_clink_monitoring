@@ -36,13 +36,6 @@
         />
 
     <item
-        android:id="@+id/menu_download"
-        android:orderInCategory="10"
-        android:title="@string/action_download_data"
-        app:showAsAction="never"
-        />
-
-    <item
         android:id="@+id/menu_sync"
         android:orderInCategory="10"
         android:title="@string/action_sync"

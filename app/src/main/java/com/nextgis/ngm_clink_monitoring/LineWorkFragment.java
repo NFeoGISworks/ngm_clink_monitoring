@@ -43,12 +43,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.nextgis.maplib.map.VectorLayer;
+import com.nextgis.maplib.util.Constants;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 import com.nextgis.ngm_clink_monitoring.map.FoclStruct;
 import com.nextgis.ngm_clink_monitoring.map.FoclVectorLayer;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
+import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstants;
 import com.nextgis.ngm_clink_monitoring.util.LocationUtil;
-import com.nextgis.ngm_clink_monitoring.util.SettingsConstants;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,9 +58,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
-import static com.nextgis.maplib.util.Constants.TAG;
-import static com.nextgis.ngm_clink_monitoring.util.FoclConstants.*;
 
 
 public class LineWorkFragment
@@ -82,7 +80,7 @@ public class LineWorkFragment
     protected Button mCancelButton;
 
     protected String mCurrentPhotoPath    = null;
-    protected int    mFoclStructLayerType = LAYERTYPE_FOCL_UNKNOWN;
+    protected int mFoclStructLayerType = FoclConstants.LAYERTYPE_FOCL_UNKNOWN;
 
     protected List<String> mPhotoList;
     protected ImageAdapter mImageAdapter;
@@ -169,7 +167,7 @@ public class LineWorkFragment
                         itemLayerName[0] = layer.getPath().getName();
 
                         Uri uri = Uri.parse(
-                                "content://" + SettingsConstants.AUTHORITY + "/" +
+                                "content://" + FoclSettingsConstants.AUTHORITY + "/" +
                                 itemLayerName[0]);
 
                         String proj[] = {
@@ -238,7 +236,7 @@ public class LineWorkFragment
                     public void onClick(View v)
                     {
                         Uri uri = Uri.parse(
-                                "content://" + SettingsConstants.AUTHORITY + "/" +
+                                "content://" + FoclSettingsConstants.AUTHORITY + "/" +
                                 itemLayerName[0]);
                         Uri updateUri = ContentUris.withAppendedId(uri, itemId[0]);
 
@@ -253,12 +251,14 @@ public class LineWorkFragment
                                                   .update(updateUri, values, null, null);
                         if (result == 0) {
                             Log.d(
-                                    TAG, "Layer: " + itemLayerName[0] + ", id: " + itemId[0] +
-                                         ", update FAILED");
+                                    Constants.TAG,
+                                    "Layer: " + itemLayerName[0] + ", id: " + itemId[0] +
+                                    ", update FAILED");
                         } else {
                             Log.d(
-                                    TAG, "Layer: " + itemLayerName[0] + ", id: " + itemId[0] +
-                                         ", update result: " + result);
+                                    Constants.TAG,
+                                    "Layer: " + itemLayerName[0] + ", id: " + itemId[0] +
+                                    ", update result: " + result);
                         }
 
                         getActivity().getSupportFragmentManager().popBackStackImmediate();
@@ -276,37 +276,37 @@ public class LineWorkFragment
                 });
 
         switch (mFoclStructLayerType) {
-            case LAYERTYPE_FOCL_OPTICAL_CABLE:
+            case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CABLE:
                 mWorkTypeName.setText(R.string.cable_laying);
                 mObjectCaption.setText(R.string.optical_cable);
                 mPhotoHintText.setText(R.string.take_photos_to_confirm);
                 break;
 
-            case LAYERTYPE_FOCL_FOSC:
+            case FoclConstants.LAYERTYPE_FOCL_FOSC:
                 mWorkTypeName.setText(R.string.fosc_mounting);
                 mObjectCaption.setText(R.string.fosc);
                 mPhotoHintText.setText(R.string.take_photos_to_confirm_fosc);
                 break;
 
-            case LAYERTYPE_FOCL_OPTICAL_CROSS:
+            case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CROSS:
                 mWorkTypeName.setText(R.string.cross_mounting);
                 mObjectCaption.setText(R.string.cross);
                 mPhotoHintText.setText(R.string.take_photos_to_confirm);
                 break;
 
-            case LAYERTYPE_FOCL_TELECOM_CABINET:
+            case FoclConstants.LAYERTYPE_FOCL_TELECOM_CABINET:
                 mWorkTypeName.setText(R.string.cabinet_mounting);
                 mObjectCaption.setText(R.string.telecom_cabinet);
                 mPhotoHintText.setText(R.string.take_photos_to_confirm);
                 break;
 
-            case LAYERTYPE_FOCL_POLE:
+            case FoclConstants.LAYERTYPE_FOCL_POLE:
                 mWorkTypeName.setText(R.string.pole_mounting);
                 mObjectCaption.setText(R.string.pole);
                 mPhotoHintText.setText(R.string.take_photos_to_confirm);
                 break;
 
-            case LAYERTYPE_FOCL_LINE_MEASURING:
+            case FoclConstants.LAYERTYPE_FOCL_LINE_MEASURING:
                 mWorkTypeName.setText(R.string.line_measuring);
                 mObjectCaption.setVisibility(View.INVISIBLE);
                 mObjectName.setVisibility(View.INVISIBLE);
@@ -378,27 +378,27 @@ public class LineWorkFragment
         String prefix = "";
 
         switch (mFoclStructLayerType) {
-            case LAYERTYPE_FOCL_OPTICAL_CABLE:
+            case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CABLE:
                 prefix = "Optical_Cable_Laying_";
                 break;
 
-            case LAYERTYPE_FOCL_FOSC:
+            case FoclConstants.LAYERTYPE_FOCL_FOSC:
                 prefix = "FOSC_Mounting_";
                 break;
 
-            case LAYERTYPE_FOCL_OPTICAL_CROSS:
+            case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CROSS:
                 prefix = "Cross_Mounting_";
                 break;
 
-            case LAYERTYPE_FOCL_TELECOM_CABINET:
+            case FoclConstants.LAYERTYPE_FOCL_TELECOM_CABINET:
                 prefix = "Telecom_Cabinet_Mounting_";
                 break;
 
-            case LAYERTYPE_FOCL_POLE:
+            case FoclConstants.LAYERTYPE_FOCL_POLE:
                 prefix = "Pole_Mounting_";
                 break;
 
-            case LAYERTYPE_FOCL_LINE_MEASURING:
+            case FoclConstants.LAYERTYPE_FOCL_LINE_MEASURING:
                 prefix = "Line_Measuring_";
                 break;
         }

@@ -24,8 +24,11 @@ package com.nextgis.ngm_clink_monitoring;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.content.ContentResolver;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -35,12 +38,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
+import com.nextgis.maplib.api.IGISApplication;
+import com.nextgis.maplib.datasource.ngw.SyncAdapter;
+import com.nextgis.maplib.util.Constants;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
-import com.nextgis.ngm_clink_monitoring.util.SettingsConstants;
 
 import java.io.File;
-
-import static com.nextgis.maplib.util.Constants.NGW_ACCOUNT_TYPE;
 
 
 public class MainActivity
@@ -52,13 +55,23 @@ public class MainActivity
 
     public static final String PHOTO_DIR_PATH = DATA_DIR_PATH + File.separator + "foto";
 
-    protected boolean mIsLoadingFoclProect = false;
+    protected SyncReceiver mSyncReceiver;
+
+    protected boolean mIsDownloading = false;
+    protected boolean mIsSyncing     = false;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        // TODO: bind to NGWSyncService for sync status if NGWSyncService is running
+        mSyncReceiver = new SyncReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(SyncAdapter.SYNC_START);
+        intentFilter.addAction(SyncAdapter.SYNC_FINISH);
+        registerReceiver(mSyncReceiver, intentFilter);
 
         // initialize the default settings
         PreferenceManager.setDefaultValues(this, R.xml.preferences_general, false);
@@ -119,16 +132,22 @@ public class MainActivity
 
 
     @Override
+    protected void onDestroy()
+    {
+        // TODO: bind to NGWSyncService for sync status if NGWSyncService is running
+        unregisterReceiver(mSyncReceiver);
+        super.onDestroy();
+    }
+
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
-        GISApplication app = (GISApplication) getApplication();
-
-        if (app.isLoadedFoclProject() || mIsLoadingFoclProect) {
-            MenuItem menuDowmload = menu.findItem(R.id.menu_download);
-            menuDowmload.setEnabled(false);
+        if (mIsDownloading || mIsSyncing) {
+            menu.findItem(R.id.menu_sync).setEnabled(false);
         }
 
         return true;
@@ -154,18 +173,12 @@ public class MainActivity
                 onMenuSyncClick();
                 return true;
 
-            case R.id.menu_download:
-                downloadRemoteData();
-                return true;
-
             case R.id.menu_settings:
-                Intent intentSet = new Intent(this, SettingsActivity.class);
-                startActivity(intentSet);
+                onMenuSettingsClick();
                 return true;
 
             case R.id.menu_about:
-                Intent intentAbout = new Intent(this, AboutActivity.class);
-                startActivity(intentAbout);
+                onMenuAboutClick();
                 return true;
 
             default:
@@ -188,56 +201,100 @@ public class MainActivity
 
     public void onMenuSyncClick()
     {
-        final AccountManager accountManager = AccountManager.get(this);
-        for (Account account : accountManager.getAccountsByType(NGW_ACCOUNT_TYPE)) {
-            Bundle settingsBundle = new Bundle();
-            settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
-            settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+        GISApplication app = (GISApplication) getApplication();
+        FoclProject foclProject = app.getFoclProject();
 
-            ContentResolver.requestSync(account, SettingsConstants.AUTHORITY, settingsBundle);
+        if (null != foclProject) {
+            if (!app.isLoadedFoclProject()) {
+                AccountManager accountManager = AccountManager.get(this);
+
+                if (accountManager.getAccountsByType(Constants.NGW_ACCOUNT_TYPE).length == 0) {
+                    Toast.makeText(this, "NO connection", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                // we work only with one account
+                Account account = accountManager.getAccountsByType(Constants.NGW_ACCOUNT_TYPE)[0];
+
+                String accountName = account.name;
+                String url = accountManager.getUserData(account, "url");
+                String password = accountManager.getPassword(account);
+                String login = accountManager.getUserData(account, "login");
+
+                if (null == url || null == login || null == password) {
+                    Toast.makeText(this, "NO connection", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                foclProject.setAccountName(accountName);
+                foclProject.setURL(url);
+                foclProject.setLogin(login);
+                foclProject.setPassword(password);
+                foclProject.save();
+            }
+
+            foclProject.setOnDownloadFinishedListener(
+                    new FoclProject.OnDownloadFinishedListener()
+                    {
+                        @Override
+                        public void OnDownloadFinished(
+                                boolean newLayersNotCreated,
+                                boolean withError)
+                        {
+                            mIsDownloading = false;
+                            switchMenuView();
+
+                            StatusBarFragment statusBarFragment =
+                                    (StatusBarFragment) getSupportFragmentManager().findFragmentByTag(
+                                            "StatusBar");
+
+                            if (!newLayersNotCreated && !withError) {
+                                statusBarFragment.getStatusLine().setTextColor(Color.BLUE);
+                            } else if (withError) {
+                                statusBarFragment.getStatusLine().setTextColor(Color.RED);
+                            }
+                        }
+                    });
+
+            // in separate thread
+            foclProject.downloadAsync();
+
+            mIsDownloading = true;
+            switchMenuView();
         }
     }
 
 
-    protected void downloadRemoteData()
+    public void onMenuSettingsClick()
     {
-        //TODO: get the only one account (account name) from preferences (spinner with accounts to select)
-        //now hardcoded this one
-        String accountName = "176.9.38.120/cl";
-        final AccountManager accountManager = AccountManager.get(this);
-        String url = null;
-        String password = null;
-        String login = null;
+        final IGISApplication app = (IGISApplication) getApplication();
+        app.showSettings();
+    }
 
-        for (Account account : accountManager.getAccountsByType(NGW_ACCOUNT_TYPE)) {
-            if (account.name.equals(accountName)) {
-                url = accountManager.getUserData(account, "url");
-                password = accountManager.getPassword(account);
-                login = accountManager.getUserData(account, "login");
-                break;
+
+    public void onMenuAboutClick()
+    {
+        Intent intentAbout = new Intent(this, AboutActivity.class);
+        startActivity(intentAbout);
+    }
+
+
+    protected class SyncReceiver
+            extends BroadcastReceiver
+    {
+
+        @Override
+        public void onReceive(
+                Context context,
+                Intent intent)
+        {
+            if (intent.getAction().equals(SyncAdapter.SYNC_START)) {
+                mIsSyncing = true;
+            } else if (intent.getAction().equals(SyncAdapter.SYNC_FINISH)) {
+                mIsSyncing = false;
             }
+
+            switchMenuView();
         }
-
-        if (null == url || null == login || null == password) {
-            Toast.makeText(this, "NO connection", Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        GISApplication app = (GISApplication) getApplication();
-        FoclProject foclProject = app.getFoclProject();
-
-        if (null != foclProject && !app.isLoadedFoclProject()) {
-            foclProject.setAccountName(accountName);
-            foclProject.setURL(url);
-            foclProject.setLogin(login);
-            foclProject.setPassword(password);
-            foclProject.save();
-
-            //init in separate thread
-            foclProject.downloadAsync();
-        }
-
-        mIsLoadingFoclProect = true;
-        switchMenuView();
     }
 }

@@ -23,6 +23,7 @@
 package com.nextgis.ngm_clink_monitoring;
 
 import android.app.Application;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -32,18 +33,16 @@ import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.location.GpsEventSource;
 import com.nextgis.maplib.map.MapDrawable;
+import com.nextgis.maplib.util.Constants;
+import com.nextgis.maplib.util.GeoConstants;
+import com.nextgis.maplib.util.SettingsConstants;
 import com.nextgis.maplibui.mapui.RemoteTMSLayerUI;
 import com.nextgis.ngm_clink_monitoring.map.FoclLayerFactory;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
+import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
+import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstants;
 
 import java.io.File;
-
-import static com.nextgis.maplib.util.Constants.MAP_EXT;
-import static com.nextgis.maplib.util.GeoConstants.TMSTYPE_OSM;
-import static com.nextgis.maplib.util.SettingsConstants.KEY_PREF_MAP;
-import static com.nextgis.maplib.util.SettingsConstants.KEY_PREF_MAP_PATH;
-import static com.nextgis.ngm_clink_monitoring.util.FoclConstants.LAYERTYPE_FOCL_PROJECT;
-import static com.nextgis.ngm_clink_monitoring.util.SettingsConstants.*;
 
 
 public class GISApplication
@@ -69,10 +68,10 @@ public class GISApplication
         getMap();
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        if (sharedPreferences.getBoolean(KEY_PREF_APP_FIRST_RUN, true)) {
+        if (sharedPreferences.getBoolean(FoclSettingsConstants.KEY_PREF_APP_FIRST_RUN, true)) {
             onFirstRun();
             SharedPreferences.Editor edit = sharedPreferences.edit();
-            edit.putBoolean(KEY_PREF_APP_FIRST_RUN, false);
+            edit.putBoolean(FoclSettingsConstants.KEY_PREF_APP_FIRST_RUN, false);
             edit.commit();
         }
 
@@ -101,13 +100,15 @@ public class GISApplication
         }
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        File defaultPath = getExternalFilesDir(KEY_PREF_MAP);
+        File defaultPath = getExternalFilesDir(SettingsConstants.KEY_PREF_MAP);
 
         if (defaultPath != null) {
-            String mapPath = sharedPreferences.getString(KEY_PREF_MAP_PATH, defaultPath.getPath());
-            String mapName = sharedPreferences.getString(KEY_PREF_MAP_NAME, "default");
+            String mapPath = sharedPreferences.getString(
+                    SettingsConstants.KEY_PREF_MAP_PATH, defaultPath.getPath());
+            String mapName =
+                    sharedPreferences.getString(FoclSettingsConstants.KEY_PREF_MAP_NAME, "default");
 
-            File mapFullPath = new File(mapPath, mapName + MAP_EXT);
+            File mapFullPath = new File(mapPath, mapName + Constants.MAP_EXT);
 
             final Bitmap bkBitmap = BitmapFactory.decodeResource(
                     getResources(), com.nextgis.maplibui.R.drawable.bk_tile);
@@ -126,15 +127,15 @@ public class GISApplication
         String layerName = getString(R.string.osm);
         String layerURL = getString(R.string.osm_url);
         RemoteTMSLayerUI layer =
-                new RemoteTMSLayerUI(getApplicationContext(), mMap.cretateLayerStorage());
+                new RemoteTMSLayerUI(getApplicationContext(), mMap.createLayerStorage());
         layer.setName(layerName);
         layer.setURL(layerURL);
-        layer.setTMSType(TMSTYPE_OSM);
+        layer.setTMSType(GeoConstants.TMSTYPE_OSM);
         layer.setVisible(true);
 
         mMap.addLayer(layer);
 
-        File foclPath = mMap.cretateLayerStorage();
+        File foclPath = mMap.createLayerStorage();
         FoclProject foclProject =
                 new FoclProject(mMap.getContext(), foclPath, new FoclLayerFactory(foclPath));
         foclProject.setName("FOCL");
@@ -154,7 +155,7 @@ public class GISApplication
 
         for (int i = 0; i < mMap.getLayerCount(); i++) {
             ILayer layer = mMap.getLayer(i);
-            if (layer.getType() == LAYERTYPE_FOCL_PROJECT) {
+            if (layer.getType() == FoclConstants.LAYERTYPE_FOCL_PROJECT) {
                 return (FoclProject) layer;
             }
         }
@@ -173,13 +174,22 @@ public class GISApplication
     @Override
     public String getAuthority()
     {
-        return AUTHORITY;
+        return FoclSettingsConstants.AUTHORITY;
     }
 
 
     public GpsEventSource getGpsEventSource()
     {
         return mGpsEventSource;
+    }
+
+
+    @Override
+    public void showSettings()
+    {
+        Intent intentSet = new Intent(this, SettingsActivity.class);
+        intentSet.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);//Intent.FLAG_ACTIVITY_CLEAR_TOP |
+        startActivity(intentSet);
     }
 
 

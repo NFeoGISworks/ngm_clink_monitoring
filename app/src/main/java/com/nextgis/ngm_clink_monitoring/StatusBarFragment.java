@@ -22,7 +22,12 @@
 
 package com.nextgis.ngm_clink_monitoring;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.location.GpsStatus;
 import android.location.Location;
 import android.os.Bundle;
@@ -34,8 +39,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.nextgis.maplib.api.GpsEventListener;
+import com.nextgis.maplib.datasource.ngw.SyncAdapter;
+import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstants;
 import com.nextgis.ngm_clink_monitoring.util.LocationUtil;
-import com.nextgis.ngm_clink_monitoring.util.SettingsConstants;
 
 import java.text.DecimalFormat;
 
@@ -44,6 +50,8 @@ public class StatusBarFragment
         extends Fragment
         implements GpsEventListener
 {
+    protected SyncReceiver mSyncReceiver;
+
     protected StatusBarTextView mStatusLine;
     protected TextView          mLatView;
     protected TextView          mLongView;
@@ -66,6 +74,8 @@ public class StatusBarFragment
     {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+
+        mSyncReceiver = new SyncReceiver();
 
         mStatusLineText = getString(R.string.coordinates_not_defined);
         setLocationDefaultText();
@@ -90,6 +100,28 @@ public class StatusBarFragment
         setLocationViewsText();
 
         return view;
+    }
+
+
+    @Override
+    public void onPause()
+    {
+        // TODO: bind to NGWSyncService for sync status if NGWSyncService is running
+        getActivity().unregisterReceiver(mSyncReceiver);
+
+        super.onDestroy();
+    }
+
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(SyncAdapter.SYNC_START);
+        intentFilter.addAction(SyncAdapter.SYNC_FINISH);
+        getActivity().registerReceiver(mSyncReceiver, intentFilter);
     }
 
 
@@ -126,7 +158,7 @@ public class StatusBarFragment
         prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         int nFormat = prefs.getInt(
-                SettingsConstants.KEY_PREF_COORD_FORMAT + "_int", Location.FORMAT_SECONDS);
+                FoclSettingsConstants.KEY_PREF_COORD_FORMAT + "_int", Location.FORMAT_SECONDS);
         DecimalFormat df = new DecimalFormat("0.0");
 
         mLatText = getString(R.string.latitude_caption) + " " +
@@ -217,5 +249,29 @@ public class StatusBarFragment
         app.getMap().removeListener(mStatusLine);
 
         super.onStop();
+    }
+
+
+    public StatusBarTextView getStatusLine()
+    {
+        return mStatusLine;
+    }
+
+
+    protected class SyncReceiver
+            extends BroadcastReceiver
+    {
+
+        @Override
+        public void onReceive(
+                Context context,
+                Intent intent)
+        {
+            if (intent.getAction().equals(SyncAdapter.SYNC_START)) {
+                mStatusLine.setTextColor(Color.MAGENTA);
+            } else if (intent.getAction().equals(SyncAdapter.SYNC_FINISH)) {
+                mStatusLine.setTextColor(Color.GREEN);
+            }
+        }
     }
 }

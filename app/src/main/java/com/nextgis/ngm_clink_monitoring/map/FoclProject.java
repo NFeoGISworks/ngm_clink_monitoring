@@ -22,16 +22,24 @@
 
 package com.nextgis.ngm_clink_monitoring.map;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
+import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.api.INGWLayer;
 import com.nextgis.maplib.map.LayerFactory;
 import com.nextgis.maplib.map.LayerGroup;
+import com.nextgis.maplib.map.NGWVectorLayer;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.NetworkUtil;
+import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
+import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstants;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -44,10 +52,6 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 
-import static com.nextgis.maplib.util.Constants.SYNC_ATTRIBUTES;
-import static com.nextgis.maplib.util.Constants.TAG;
-import static com.nextgis.ngm_clink_monitoring.util.FoclConstants.LAYERTYPE_FOCL_PROJECT;
-
 
 public class FoclProject
         extends LayerGroup
@@ -58,11 +62,21 @@ public class FoclProject
     protected static final String JSON_LOGIN_KEY    = "login";
     protected static final String JSON_PASSWORD_KEY = "password";
 
-    protected String      mAccountName;
     protected NetworkUtil mNet;
-    protected String      mURL;
-    protected String      mLogin;
-    protected String      mPassword;
+
+    protected String mAccountName = "";
+    protected String mURL         = "";
+    protected String mLogin       = "";
+    protected String mPassword    = "";
+
+    protected int mCreatedVectorLayers    = 0;
+    protected int mDownloadedVectorLayers = 0;
+
+    protected boolean mNeedSync            = false;
+    protected boolean mNewLayersNotCreated = false;
+    protected boolean mDownloadedWithError = false;
+
+    protected OnDownloadFinishedListener mOnDownloadFinishedListener = null;
 
 
     public FoclProject(
@@ -73,7 +87,7 @@ public class FoclProject
         super(context, path, layerFactory);
 
         mNet = new NetworkUtil(context);
-        mLayerType = LAYERTYPE_FOCL_PROJECT;
+        mLayerType = FoclConstants.LAYERTYPE_FOCL_PROJECT;
     }
 
 
@@ -118,6 +132,20 @@ public class FoclProject
     }
 
 
+    public FoclStruct getFoclStructByRemoteId(long remoteId)
+    {
+        for (ILayer layer : mLayers) {
+            FoclStruct foclStruct = (FoclStruct) layer;
+
+            if (foclStruct.getRemoteId() == remoteId) {
+                return foclStruct;
+            }
+        }
+
+        return null;
+    }
+
+
     @Override
     public JSONObject toJSON()
             throws JSONException
@@ -150,58 +178,157 @@ public class FoclProject
     }
 
 
-    public String createFromJson(JSONArray jsonArray)
+    public FoclStruct addOrUpdateFoclStruct(JSONObject jsonStruct)
+            throws JSONException
+    {
+        int structId = jsonStruct.getInt(Constants.JSON_ID_KEY);
+        String structName = jsonStruct.getString(Constants.JSON_NAME_KEY);
+
+        FoclStruct foclStruct = getFoclStructByRemoteId(structId);
+
+        if (foclStruct != null) {
+            if (!foclStruct.getName().equals(structName)) {
+                foclStruct.setName(structName);
+            }
+
+        } else {
+            foclStruct = new FoclStruct(getContext(), createLayerStorage(), mLayerFactory);
+
+            foclStruct.setRemoteId(structId);
+            foclStruct.setName(structName);
+            foclStruct.setVisible(true);
+
+            addLayer(foclStruct);
+        }
+
+        return foclStruct;
+    }
+
+
+    public void addOrUpdateFoclVectorLayer(
+            JSONObject jsonLayer,
+            FoclStruct foclStruct)
+            throws JSONException
+    {
+        int layerId = jsonLayer.getInt(Constants.JSON_ID_KEY);
+        String layerName = jsonLayer.getString(Constants.JSON_NAME_KEY);
+        String layerType = jsonLayer.getString(Constants.JSON_TYPE_KEY);
+
+        FoclVectorLayer foclVectorLayer = foclStruct.getLayerByRemoteId(layerId);
+        boolean createNewVectorLayer = false;
+
+        if (foclVectorLayer != null) {
+            if (foclVectorLayer.getFoclLayerType() !=
+                FoclVectorLayer.getFoclLayerTypeFromString(layerType)) {
+
+                foclVectorLayer.delete();
+                createNewVectorLayer = true;
+            }
+
+            if (!createNewVectorLayer) {
+                if (!foclVectorLayer.getName().equals(layerName)) {
+                    foclVectorLayer.setName(layerName);
+                }
+
+                mNeedSync = true;
+            }
+        }
+
+        if (createNewVectorLayer || foclVectorLayer == null) {
+            foclVectorLayer = new FoclVectorLayer(
+                    foclStruct.getContext(), foclStruct.createLayerStorage());
+
+            foclVectorLayer.setRemoteId(layerId);
+            foclVectorLayer.setName(layerName);
+            foclVectorLayer.setFoclLayerType(
+                    FoclVectorLayer.getFoclLayerTypeFromString(layerType));
+            foclVectorLayer.setAccountName(mAccountName);
+            foclVectorLayer.setURL(mURL);
+            foclVectorLayer.setLogin(mLogin);
+            foclVectorLayer.setPassword(mPassword);
+            foclVectorLayer.setVisible(true);
+            foclVectorLayer.setSyncType(Constants.SYNC_ATTRIBUTES);
+            foclStruct.addLayer(foclVectorLayer);
+
+            ++mCreatedVectorLayers;
+
+            foclVectorLayer.setOnDownloadFinishedListener(
+                    new NGWVectorLayer.OnDownloadFinishedListener()
+                    {
+                        @Override
+                        public void OnDownloadFinished(boolean withError)
+                        {
+                            mDownloadedWithError = withError;
+                            ++mDownloadedVectorLayers;
+
+                            if (mCreatedVectorLayers == mDownloadedVectorLayers) {
+                                mCreatedVectorLayers = 0;
+                                mDownloadedVectorLayers = 0;
+
+                                if (mOnDownloadFinishedListener != null) {
+                                    mOnDownloadFinishedListener.OnDownloadFinished(
+                                            false, mDownloadedWithError);
+                                }
+
+                                mDownloadedWithError = false;
+
+                                if (mNeedSync) {
+                                    mNeedSync = false;
+                                    runSync();
+                                }
+                            }
+                        }
+                    });
+
+            // in separate thread
+            foclVectorLayer.downloadAsync();
+        }
+    }
+
+
+    public void runSync()
+    {
+        AccountManager accountManager = AccountManager.get(mContext);
+
+        Bundle settingsBundle = new Bundle();
+        settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+        settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+
+        // we work only with one account
+        Account account = accountManager.getAccountsByType(Constants.NGW_ACCOUNT_TYPE)[0];
+        ContentResolver.requestSync(account, FoclSettingsConstants.AUTHORITY, settingsBundle);
+    }
+
+
+    public String createOrUpdateFromJson(JSONArray jsonArray)
     {
         try {
-
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonStruct = jsonArray.getJSONObject(i);
 
-                int structId = jsonStruct.getInt(Constants.JSON_ID_KEY);
-                String structName = jsonStruct.getString(Constants.JSON_NAME_KEY);
-
-                FoclStruct foclStruct =
-                        new FoclStruct(getContext(), cretateLayerStorage(), mLayerFactory);
-
-                foclStruct.setRemoteId(structId);
-                foclStruct.setName(structName);
-                foclStruct.setVisible(true);
-
-                addLayer(foclStruct);
-
+                FoclStruct foclStruct = addOrUpdateFoclStruct(jsonStruct);
                 JSONArray jsonLayers = jsonStruct.getJSONArray(Constants.JSON_LAYERS_KEY);
 
                 for (int jj = 0; jj < jsonLayers.length(); jj++) {
-                    JSONObject jsonLayer = jsonLayers.getJSONObject(jj);
+                    addOrUpdateFoclVectorLayer(jsonLayers.getJSONObject(jj), foclStruct);
+                }
+            }
 
-                    int layerId = jsonLayer.getInt(Constants.JSON_ID_KEY);
-                    String layerName = jsonLayer.getString(Constants.JSON_NAME_KEY);
-                    String layerType = jsonLayer.getString(Constants.JSON_TYPE_KEY);
+            if (0 == mCreatedVectorLayers) {
+                mDownloadedVectorLayers = 0;
+                mDownloadedWithError = false;
 
-                    FoclVectorLayer foclVectorLayer = new FoclVectorLayer(
-                            foclStruct.getContext(), foclStruct.cretateLayerStorage());
+                mNewLayersNotCreated = true;
 
-                    foclVectorLayer.setRemoteId(layerId);
-                    foclVectorLayer.setName(layerName);
-                    foclVectorLayer.setFoclLayerType(
-                            FoclVectorLayer.getFoclLayerTypeFromString(layerType));
-                    foclVectorLayer.setAccountName(mAccountName);
-                    foclVectorLayer.setURL(mURL);
-                    foclVectorLayer.setLogin(mLogin);
-                    foclVectorLayer.setPassword(mPassword);
-                    foclVectorLayer.setVisible(true);
-                    foclVectorLayer.setSyncType(SYNC_ATTRIBUTES);
-
-                    foclStruct.addLayer(foclVectorLayer);
-
-                    //init in separate thread
-                    foclVectorLayer.downloadAsync();
+                if (mNeedSync) {
+                    mNeedSync = false;
+                    runSync();
                 }
             }
 
             save();
-
             return "";
+
         } catch (JSONException e) {
             e.printStackTrace();
             return e.getLocalizedMessage();
@@ -240,26 +367,26 @@ public class FoclProject
             final org.apache.http.StatusLine line = response.getStatusLine();
             if (line.getStatusCode() != 200) {
                 Log.d(
-                        TAG, "Problem downloading FOCL: " + mURL + " HTTP response: " +
-                             line);
+                        Constants.TAG, "Problem downloading FOCL: " + mURL + " HTTP response: " +
+                                       line);
                 return getContext().getString(com.nextgis.maplib.R.string.error_download_data);
             }
 
             final HttpEntity entity = response.getEntity();
             if (entity == null) {
-                Log.d(TAG, "No content downloading FOCL: " + mURL);
+                Log.d(Constants.TAG, "No content downloading FOCL: " + mURL);
                 return getContext().getString(com.nextgis.maplib.R.string.error_download_data);
             }
 
             String data = EntityUtils.toString(entity);
             JSONArray jsonArray = new JSONArray(data);
 
-            return createFromJson(jsonArray);
+            return createOrUpdateFromJson(jsonArray);
 
         } catch (IOException e) {
             Log.d(
-                    TAG, "Problem downloading FOCL: " + mURL + " Error: " +
-                         e.getLocalizedMessage());
+                    Constants.TAG, "Problem downloading FOCL: " + mURL + " Error: " +
+                                   e.getLocalizedMessage());
             return getContext().getString(com.nextgis.maplib.R.string.error_download_data);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -268,10 +395,23 @@ public class FoclProject
     }
 
 
+    public void setOnDownloadFinishedListener(OnDownloadFinishedListener listener)
+    {
+        mOnDownloadFinishedListener = listener;
+    }
+
+
+    public interface OnDownloadFinishedListener
+    {
+        void OnDownloadFinished(
+                boolean newLayersNotCreated,
+                boolean withError);
+    }
+
+
     protected class DownloadTask
             extends AsyncTask<Void, Void, String>
     {
-
         @Override
         protected String doInBackground(Void... voids)
         {
@@ -282,11 +422,17 @@ public class FoclProject
         @Override
         protected void onPostExecute(String error)
         {
+            boolean withError = false;
+
             if (null != error && error.length() > 0) {
+                withError = true;
                 Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+            }
+
+            if (mNewLayersNotCreated && mOnDownloadFinishedListener != null) {
+                mNewLayersNotCreated = false;
+                mOnDownloadFinishedListener.OnDownloadFinished(true, withError);
             }
         }
     }
-
-
 }

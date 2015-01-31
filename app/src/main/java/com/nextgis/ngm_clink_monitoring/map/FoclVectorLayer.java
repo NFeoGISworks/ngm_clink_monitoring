@@ -24,12 +24,11 @@ package com.nextgis.ngm_clink_monitoring.map;
 
 import android.content.Context;
 import com.nextgis.maplib.map.NGWVectorLayer;
+import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-
-import static com.nextgis.ngm_clink_monitoring.util.FoclConstants.*;
 
 
 public class FoclVectorLayer
@@ -45,32 +44,32 @@ public class FoclVectorLayer
             File path)
     {
         super(context, path);
-        mLayerType = LAYERTYPE_FOCL_VECTOR;
+        mLayerType = FoclConstants.LAYERTYPE_FOCL_VECTOR;
     }
 
 
     public static int getFoclLayerTypeFromString(String type)
     {
         if (type.equals("fosc")) {
-            return LAYERTYPE_FOCL_FOSC;
+            return FoclConstants.LAYERTYPE_FOCL_FOSC;
         }
         if (type.equals("optical_cross")) {
-            return LAYERTYPE_FOCL_OPTICAL_CROSS;
+            return FoclConstants.LAYERTYPE_FOCL_OPTICAL_CROSS;
         }
         if (type.equals("pole")) {
-            return LAYERTYPE_FOCL_POLE;
+            return FoclConstants.LAYERTYPE_FOCL_POLE;
         }
         if (type.equals("optical_cable")) {
-            return LAYERTYPE_FOCL_OPTICAL_CABLE;
+            return FoclConstants.LAYERTYPE_FOCL_OPTICAL_CABLE;
         }
         if (type.equals("telecom_cabinet")) {
-            return LAYERTYPE_FOCL_TELECOM_CABINET;
+            return FoclConstants.LAYERTYPE_FOCL_TELECOM_CABINET;
         }
         if (type.equals("endpoint")) {
-            return LAYERTYPE_FOCL_ENDPOINT;
+            return FoclConstants.LAYERTYPE_FOCL_ENDPOINT;
         }
 
-        return LAYERTYPE_FOCL_UNKNOWN;
+        return FoclConstants.LAYERTYPE_FOCL_UNKNOWN;
     }
 
 

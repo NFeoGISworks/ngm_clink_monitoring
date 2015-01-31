@@ -26,13 +26,12 @@ import android.content.Context;
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.map.LayerFactory;
 import com.nextgis.maplib.map.LayerGroup;
+import com.nextgis.maplib.util.Constants;
+import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-
-import static com.nextgis.maplib.util.Constants.JSON_ID_KEY;
-import static com.nextgis.ngm_clink_monitoring.util.FoclConstants.LAYERTYPE_FOCL_STRUCT;
 
 
 public class FoclStruct
@@ -47,7 +46,13 @@ public class FoclStruct
             LayerFactory layerFactory)
     {
         super(context, path, layerFactory);
-        mLayerType = LAYERTYPE_FOCL_STRUCT;
+        mLayerType = FoclConstants.LAYERTYPE_FOCL_STRUCT;
+    }
+
+
+    public long getRemoteId()
+    {
+        return mRemoteId;
     }
 
 
@@ -70,12 +75,25 @@ public class FoclStruct
     }
 
 
+    public FoclVectorLayer getLayerByRemoteId(int remoteId)
+    {
+        for (ILayer layer : mLayers) {
+            FoclVectorLayer foclLayer = (FoclVectorLayer) layer;
+            if (foclLayer.getRemoteId() == remoteId) {
+                return foclLayer;
+            }
+        }
+
+        return null;
+    }
+
+
     @Override
     public JSONObject toJSON()
             throws JSONException
     {
         JSONObject rootConfig = super.toJSON();
-        rootConfig.put(JSON_ID_KEY, mRemoteId);
+        rootConfig.put(Constants.JSON_ID_KEY, mRemoteId);
 
         return rootConfig;
     }
@@ -86,6 +104,6 @@ public class FoclStruct
             throws JSONException
     {
         super.fromJSON(jsonObject);
-        mRemoteId = jsonObject.getLong(JSON_ID_KEY);
+        mRemoteId = jsonObject.getLong(Constants.JSON_ID_KEY);
     }
 }
