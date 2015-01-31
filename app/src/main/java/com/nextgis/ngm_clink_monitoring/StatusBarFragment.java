@@ -249,12 +249,6 @@ public class StatusBarFragment
     }
 
 
-    public StatusBarTextView getStatusLine()
-    {
-        return mStatusLine;
-    }
-
-
     protected class SyncReceiver
             extends BroadcastReceiver
     {
@@ -265,7 +259,7 @@ public class StatusBarFragment
                 Intent intent)
         {
             if (intent.getAction().equals(SyncAdapter.SYNC_START)) {
-                mStatusLine.setTextColor(Color.MAGENTA);
+                mStatusLine.setTextColor(Color.RED);
             } else if (intent.getAction().equals(SyncAdapter.SYNC_FINISH)) {
                 mStatusLine.setTextColor(Color.GREEN);
             }

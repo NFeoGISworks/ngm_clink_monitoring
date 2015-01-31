@@ -22,12 +22,7 @@
 
 package com.nextgis.ngm_clink_monitoring.map;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
-import android.content.ContentResolver;
 import android.content.Context;
-import android.os.AsyncTask;
-import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
@@ -35,11 +30,9 @@ import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.api.INGWLayer;
 import com.nextgis.maplib.map.LayerFactory;
 import com.nextgis.maplib.map.LayerGroup;
-import com.nextgis.maplib.map.NGWVectorLayer;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.NetworkUtil;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
-import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstants;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -68,15 +61,6 @@ public class FoclProject
     protected String mURL         = "";
     protected String mLogin       = "";
     protected String mPassword    = "";
-
-    protected int mCreatedVectorLayers    = 0;
-    protected int mDownloadedVectorLayers = 0;
-
-    protected boolean mNeedSync            = false;
-    protected boolean mNewLayersNotCreated = false;
-    protected boolean mDownloadedWithError = false;
-
-    protected OnDownloadFinishedListener mOnDownloadFinishedListener = null;
 
 
     public FoclProject(
@@ -229,8 +213,6 @@ public class FoclProject
                 if (!foclVectorLayer.getName().equals(layerName)) {
                     foclVectorLayer.setName(layerName);
                 }
-
-                mNeedSync = true;
             }
         }
 
@@ -250,58 +232,19 @@ public class FoclProject
             foclVectorLayer.setSyncType(Constants.SYNC_ATTRIBUTES);
             foclStruct.addLayer(foclVectorLayer);
 
-            ++mCreatedVectorLayers;
+            String error = foclVectorLayer.download();
 
-            foclVectorLayer.setOnDownloadFinishedListener(
-                    new NGWVectorLayer.OnDownloadFinishedListener()
-                    {
-                        @Override
-                        public void OnDownloadFinished(boolean withError)
-                        {
-                            mDownloadedWithError = withError;
-                            ++mDownloadedVectorLayers;
-
-                            if (mCreatedVectorLayers == mDownloadedVectorLayers) {
-                                mCreatedVectorLayers = 0;
-                                mDownloadedVectorLayers = 0;
-
-                                if (mOnDownloadFinishedListener != null) {
-                                    mOnDownloadFinishedListener.OnDownloadFinished(
-                                            false, mDownloadedWithError);
-                                }
-
-                                mDownloadedWithError = false;
-
-                                if (mNeedSync) {
-                                    mNeedSync = false;
-                                    runSync();
-                                }
-                            }
-                        }
-                    });
-
-            // in separate thread
-            foclVectorLayer.downloadAsync();
+            if (null != error && error.length() > 0) {
+                Toast.makeText(getContext(), error, Toast.LENGTH_LONG).show();
+            }
         }
-    }
-
-
-    public void runSync()
-    {
-        AccountManager accountManager = AccountManager.get(mContext);
-
-        Bundle settingsBundle = new Bundle();
-        settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
-        settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-
-        // we work only with one account
-        Account account = accountManager.getAccountsByType(Constants.NGW_ACCOUNT_TYPE)[0];
-        ContentResolver.requestSync(account, FoclSettingsConstants.AUTHORITY, settingsBundle);
     }
 
 
     public String createOrUpdateFromJson(JSONArray jsonArray)
     {
+        // TODO: if old layer is not jsonArray then delete it
+
         try {
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonStruct = jsonArray.getJSONObject(i);
@@ -314,18 +257,6 @@ public class FoclProject
                 }
             }
 
-            if (0 == mCreatedVectorLayers) {
-                mDownloadedVectorLayers = 0;
-                mDownloadedWithError = false;
-
-                mNewLayersNotCreated = true;
-
-                if (mNeedSync) {
-                    mNeedSync = false;
-                    runSync();
-                }
-            }
-
             save();
             return "";
 
@@ -333,12 +264,6 @@ public class FoclProject
             e.printStackTrace();
             return e.getLocalizedMessage();
         }
-    }
-
-
-    public void downloadAsync()
-    {
-        new DownloadTask().execute();
     }
 
 
@@ -391,48 +316,6 @@ public class FoclProject
         } catch (JSONException e) {
             e.printStackTrace();
             return getContext().getString(com.nextgis.maplib.R.string.error_download_data);
-        }
-    }
-
-
-    public void setOnDownloadFinishedListener(OnDownloadFinishedListener listener)
-    {
-        mOnDownloadFinishedListener = listener;
-    }
-
-
-    public interface OnDownloadFinishedListener
-    {
-        void OnDownloadFinished(
-                boolean newLayersNotCreated,
-                boolean withError);
-    }
-
-
-    protected class DownloadTask
-            extends AsyncTask<Void, Void, String>
-    {
-        @Override
-        protected String doInBackground(Void... voids)
-        {
-            return download();
-        }
-
-
-        @Override
-        protected void onPostExecute(String error)
-        {
-            boolean withError = false;
-
-            if (null != error && error.length() > 0) {
-                withError = true;
-                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
-            }
-
-            if (mNewLayersNotCreated && mOnDownloadFinishedListener != null) {
-                mNewLayersNotCreated = false;
-                mOnDownloadFinishedListener.OnDownloadFinished(true, withError);
-            }
         }
     }
 }

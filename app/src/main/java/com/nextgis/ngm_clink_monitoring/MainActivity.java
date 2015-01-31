@@ -25,10 +25,10 @@ package com.nextgis.ngm_clink_monitoring;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -42,6 +42,7 @@ import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.datasource.ngw.SyncAdapter;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
+import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstants;
 
 import java.io.File;
 
@@ -57,7 +58,6 @@ public class MainActivity
 
     protected SyncReceiver mSyncReceiver;
 
-    protected boolean mIsDownloading = false;
     protected boolean mIsSyncing     = false;
 
 
@@ -146,7 +146,7 @@ public class MainActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
-        if (mIsDownloading || mIsSyncing) {
+        if (mIsSyncing) {
             menu.findItem(R.id.menu_sync).setEnabled(false);
         }
 
@@ -204,64 +204,43 @@ public class MainActivity
         GISApplication app = (GISApplication) getApplication();
         FoclProject foclProject = app.getFoclProject();
 
-        if (null != foclProject) {
-            if (!app.isLoadedFoclProject()) {
-                AccountManager accountManager = AccountManager.get(this);
+        if (null == foclProject) {
+            return;
+        }
 
-                if (accountManager.getAccountsByType(Constants.NGW_ACCOUNT_TYPE).length == 0) {
-                    Toast.makeText(this, "NO connection", Toast.LENGTH_LONG).show();
-                    return;
-                }
+        AccountManager accountManager = AccountManager.get(this);
 
-                // we work only with one account
-                Account account = accountManager.getAccountsByType(Constants.NGW_ACCOUNT_TYPE)[0];
+        if (accountManager.getAccountsByType(Constants.NGW_ACCOUNT_TYPE).length == 0) {
+            Toast.makeText(this, "NO connection", Toast.LENGTH_LONG).show();
+            return;
+        }
 
-                String accountName = account.name;
-                String url = accountManager.getUserData(account, "url");
-                String password = accountManager.getPassword(account);
-                String login = accountManager.getUserData(account, "login");
+        // we work only with one account
+        Account account = accountManager.getAccountsByType(Constants.NGW_ACCOUNT_TYPE)[0];
 
-                if (null == url || null == login || null == password) {
-                    Toast.makeText(this, "NO connection", Toast.LENGTH_LONG).show();
-                    return;
-                }
+        if (!app.isLoadedFoclProject()) {
+            String accountName = account.name;
+            String url = accountManager.getUserData(account, "url");
+            String password = accountManager.getPassword(account);
+            String login = accountManager.getUserData(account, "login");
 
-                foclProject.setAccountName(accountName);
-                foclProject.setURL(url);
-                foclProject.setLogin(login);
-                foclProject.setPassword(password);
-                foclProject.save();
+            if (null == url || null == login || null == password) {
+                Toast.makeText(this, "NO connection", Toast.LENGTH_LONG).show();
+                return;
             }
 
-            foclProject.setOnDownloadFinishedListener(
-                    new FoclProject.OnDownloadFinishedListener()
-                    {
-                        @Override
-                        public void OnDownloadFinished(
-                                boolean newLayersNotCreated,
-                                boolean withError)
-                        {
-                            mIsDownloading = false;
-                            switchMenuView();
-
-                            StatusBarFragment statusBarFragment =
-                                    (StatusBarFragment) getSupportFragmentManager().findFragmentByTag(
-                                            "StatusBar");
-
-                            if (!newLayersNotCreated && !withError) {
-                                statusBarFragment.getStatusLine().setTextColor(Color.BLUE);
-                            } else if (withError) {
-                                statusBarFragment.getStatusLine().setTextColor(Color.RED);
-                            }
-                        }
-                    });
-
-            // in separate thread
-            foclProject.downloadAsync();
-
-            mIsDownloading = true;
-            switchMenuView();
+            foclProject.setAccountName(accountName);
+            foclProject.setURL(url);
+            foclProject.setLogin(login);
+            foclProject.setPassword(password);
+            foclProject.save();
         }
+
+        Bundle settingsBundle = new Bundle();
+        settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+        settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+
+        ContentResolver.requestSync(account, FoclSettingsConstants.AUTHORITY, settingsBundle);
     }
 
 
@@ -288,6 +267,8 @@ public class MainActivity
                 Context context,
                 Intent intent)
         {
+            // TODO: show notifications
+
             if (intent.getAction().equals(SyncAdapter.SYNC_START)) {
                 mIsSyncing = true;
             } else if (intent.getAction().equals(SyncAdapter.SYNC_FINISH)) {
