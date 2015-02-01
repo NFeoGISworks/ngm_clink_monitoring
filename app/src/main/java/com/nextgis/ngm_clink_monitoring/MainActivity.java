@@ -24,11 +24,15 @@ package com.nextgis.ngm_clink_monitoring;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SyncInfo;
+import android.content.SyncStatusObserver;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -56,9 +60,41 @@ public class MainActivity
 
     public static final String PHOTO_DIR_PATH = DATA_DIR_PATH + File.separator + "foto";
 
-    protected SyncReceiver mSyncReceiver;
+    protected SyncStatusObserver mSyncStatusObserver;
+    protected Object             mSyncHandle;
+    protected SyncReceiver       mSyncReceiver;
 
-    protected boolean mIsSyncing     = false;
+    protected boolean mIsUILocked      = false;
+    protected boolean mIsSynchronizing = false;
+    protected boolean mIsMapReloading  = false;
+
+
+    private static boolean isSyncActive(
+            Account account,
+            String authority)
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            return isSyncActiveHoneycomb(account, authority);
+        } else {
+            SyncInfo currentSync = ContentResolver.getCurrentSync();
+            return currentSync != null && currentSync.account.equals(account) &&
+                   currentSync.authority.equals(authority);
+        }
+    }
+
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    private static boolean isSyncActiveHoneycomb(
+            Account account,
+            String authority)
+    {
+        for (SyncInfo syncInfo : ContentResolver.getCurrentSyncs()) {
+            if (syncInfo.account.equals(account) && syncInfo.authority.equals(authority)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 
     @Override
@@ -66,7 +102,32 @@ public class MainActivity
     {
         super.onCreate(savedInstanceState);
 
-        // TODO: bind to NGWSyncService for sync status if NGWSyncService is running
+        mSyncStatusObserver = new SyncStatusObserver()
+        {
+            @Override
+            public void onStatusChanged(int which)
+            {
+                runOnUiThread(
+                        new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                Account account = getAccount();
+
+                                if (null != account) {
+                                    mIsSynchronizing =
+                                            isSyncActive(account, FoclSettingsConstants.AUTHORITY);
+
+                                    if (!mIsMapReloading) {
+                                        setUILocked(mIsSynchronizing);
+                                    }
+                                }
+                            }
+                        });
+            }
+        };
+
         mSyncReceiver = new SyncReceiver();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(SyncAdapter.SYNC_START);
@@ -93,50 +154,105 @@ public class MainActivity
             ft.commit();
         }
 
-        TypeWorkFragment typeWorkFragment =
-                (TypeWorkFragment) getSupportFragmentManager().findFragmentByTag("TypeWork");
+        setUILocked(false);
+    }
 
-        if (typeWorkFragment == null) {
-            typeWorkFragment = new TypeWorkFragment();
 
+    public void setUILocked(boolean isUILocked)
+    {
+        mIsUILocked = isUILocked;
+
+        if (isUILocked) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.add(R.id.work_fragment, typeWorkFragment, "TypeWork");
+
+            PerformSyncFragment performSyncFragment =
+                    (PerformSyncFragment) getSupportFragmentManager().findFragmentByTag(
+                            "PerformSync");
+
+            if (performSyncFragment == null) {
+                performSyncFragment = new PerformSyncFragment();
+            }
+
+            ft.replace(R.id.work_fragment, performSyncFragment, "PerformSync");
             ft.commit();
+            getSupportFragmentManager().executePendingTransactions();
+
+        } else {
+            TypeWorkFragment typeWorkFragment =
+                    (TypeWorkFragment) getSupportFragmentManager().findFragmentByTag("TypeWork");
+
+            if (typeWorkFragment == null) {
+                typeWorkFragment = new TypeWorkFragment();
+
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.work_fragment, typeWorkFragment, "TypeWork");
+                ft.commit();
+            }
+
+            typeWorkFragment.setOnButtonsClickListener(
+                    new TypeWorkFragment.OnButtonsClickListener()
+                    {
+                        @Override
+                        public void OnButtonsClick(int workType)
+                        {
+                            FragmentTransaction frTr =
+                                    getSupportFragmentManager().beginTransaction();
+
+                            LineWorkFragment lineWorkFragment =
+                                    (LineWorkFragment) getSupportFragmentManager().findFragmentByTag(
+                                            "LineWork");
+
+                            if (lineWorkFragment == null) {
+                                lineWorkFragment = new LineWorkFragment();
+                            }
+
+                            lineWorkFragment.setParams(workType);
+
+                            frTr.replace(R.id.work_fragment, lineWorkFragment, "LineWork");
+                            frTr.addToBackStack(null);
+                            frTr.commit();
+                            getSupportFragmentManager().executePendingTransactions();
+                        }
+                    });
         }
 
-        typeWorkFragment.setOnButtonsClickListener(
-                new TypeWorkFragment.OnButtonsClickListener()
-                {
-                    @Override
-                    public void OnButtonsClick(int workType)
-                    {
-                        FragmentTransaction frTr = getSupportFragmentManager().beginTransaction();
-
-                        LineWorkFragment lineWorkFragment =
-                                (LineWorkFragment) getSupportFragmentManager().findFragmentByTag(
-                                        "LineWork");
-
-                        if (lineWorkFragment == null) {
-                            lineWorkFragment = new LineWorkFragment();
-                        }
-
-                        lineWorkFragment.setParams(workType);
-
-                        frTr.replace(R.id.work_fragment, lineWorkFragment, "LineWork");
-                        frTr.addToBackStack(null);
-                        frTr.commit();
-                        getSupportFragmentManager().executePendingTransactions();
-                    }
-                });
+        switchMenuView();
     }
 
 
     @Override
     protected void onDestroy()
     {
-        // TODO: bind to NGWSyncService for sync status if NGWSyncService is running
         unregisterReceiver(mSyncReceiver);
         super.onDestroy();
+    }
+
+
+    @Override
+    protected void onPause()
+    {
+        // Remove our synchronization listener if registered
+        if (mSyncHandle != null) {
+            ContentResolver.removeStatusChangeListener(mSyncHandle);
+            mSyncHandle = null;
+        }
+
+        super.onPause();
+    }
+
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+
+        // Refresh synchronization status
+        mSyncStatusObserver.onStatusChanged(0);
+
+        // Watch for synchronization status changes
+        final int mask = ContentResolver.SYNC_OBSERVER_TYPE_PENDING |
+                         ContentResolver.SYNC_OBSERVER_TYPE_ACTIVE;
+        mSyncHandle = ContentResolver.addStatusChangeListener(mask, mSyncStatusObserver);
     }
 
 
@@ -146,8 +262,12 @@ public class MainActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
-        if (mIsSyncing) {
+        // TODO: remove menu_sync for LineWorkFragment
+
+        if (mIsUILocked) {
+            menu.findItem(R.id.menu_map).setEnabled(false);
             menu.findItem(R.id.menu_sync).setEnabled(false);
+            menu.findItem(R.id.menu_settings).setEnabled(false);
         }
 
         return true;
@@ -208,15 +328,14 @@ public class MainActivity
             return;
         }
 
-        AccountManager accountManager = AccountManager.get(this);
+        Account account = getAccount();
 
-        if (accountManager.getAccountsByType(Constants.NGW_ACCOUNT_TYPE).length == 0) {
+        if (null == account) {
             Toast.makeText(this, "NO connection", Toast.LENGTH_LONG).show();
             return;
         }
 
-        // we work only with one account
-        Account account = accountManager.getAccountsByType(Constants.NGW_ACCOUNT_TYPE)[0];
+        AccountManager accountManager = AccountManager.get(this);
 
         if (!app.isLoadedFoclProject()) {
             String accountName = account.name;
@@ -258,6 +377,17 @@ public class MainActivity
     }
 
 
+    public Account getAccount()
+    {
+        AccountManager accountManager = AccountManager.get(this);
+        if (accountManager.getAccountsByType(Constants.NGW_ACCOUNT_TYPE).length > 0) {
+            // we work only with one account
+            return accountManager.getAccountsByType(Constants.NGW_ACCOUNT_TYPE)[0];
+        }
+        return null;
+    }
+
+
     protected class SyncReceiver
             extends BroadcastReceiver
     {
@@ -269,15 +399,15 @@ public class MainActivity
         {
             // TODO: show notifications
 
-            if (intent.getAction().equals(SyncAdapter.SYNC_START)) {
-                mIsSyncing = true;
+            if (intent.getAction().equals(SyncAdapter.SYNC_FINISH)) {
+                mIsMapReloading = true;
+                setUILocked(true);
 
-                // TODO: block UI
-
-            } else if (intent.getAction().equals(SyncAdapter.SYNC_FINISH)) {
-                mIsSyncing = false;
                 GISApplication app = (GISApplication) getApplication();
                 app.reloadMap();
+
+                setUILocked(false);
+                mIsMapReloading = false;
             }
 
             switchMenuView();

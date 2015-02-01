@@ -72,6 +72,8 @@
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
 
+    <string name="perform_sync">Synchronization is performed,\nplease wait.</string>
+
     <string name="compas_N">N</string>
     <string name="compas_NE">NE</string>
     <string name="compas_E">E</string>

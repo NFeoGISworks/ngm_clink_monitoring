@@ -59,7 +59,7 @@ public class GISApplication
     public void onCreate()
     {
         // For service debug
-        //android.os.Debug.waitForDebugger();
+//        android.os.Debug.waitForDebugger();
 
         super.onCreate();
 
