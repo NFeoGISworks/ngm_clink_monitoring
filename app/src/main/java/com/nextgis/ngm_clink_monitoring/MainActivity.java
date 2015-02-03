@@ -25,11 +25,8 @@ package com.nextgis.ngm_clink_monitoring;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.annotation.TargetApi;
-import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SyncInfo;
 import android.content.SyncStatusObserver;
 import android.os.Build;
@@ -43,7 +40,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 import com.nextgis.maplib.api.IGISApplication;
-import com.nextgis.maplib.datasource.ngw.SyncAdapter;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstants;
@@ -62,7 +58,6 @@ public class MainActivity
 
     protected SyncStatusObserver mSyncStatusObserver;
     protected Object             mSyncHandle;
-    protected SyncReceiver       mSyncReceiver;
 
     protected boolean mIsUILocked      = false;
     protected boolean mIsSynchronizing = false;
@@ -127,12 +122,6 @@ public class MainActivity
                         });
             }
         };
-
-        mSyncReceiver = new SyncReceiver();
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(SyncAdapter.SYNC_START);
-        intentFilter.addAction(SyncAdapter.SYNC_FINISH);
-        registerReceiver(mSyncReceiver, intentFilter);
 
         // initialize the default settings
         PreferenceManager.setDefaultValues(this, R.xml.preferences_general, false);
@@ -221,10 +210,17 @@ public class MainActivity
 
 
     @Override
-    protected void onDestroy()
+    protected void onResume()
     {
-        unregisterReceiver(mSyncReceiver);
-        super.onDestroy();
+        super.onResume();
+
+        // Refresh synchronization status
+        mSyncStatusObserver.onStatusChanged(0);
+
+        // Watch for synchronization status changes
+        final int mask = ContentResolver.SYNC_OBSERVER_TYPE_PENDING |
+                         ContentResolver.SYNC_OBSERVER_TYPE_ACTIVE;
+        mSyncHandle = ContentResolver.addStatusChangeListener(mask, mSyncStatusObserver);
     }
 
 
@@ -238,21 +234,6 @@ public class MainActivity
         }
 
         super.onPause();
-    }
-
-
-    @Override
-    protected void onResume()
-    {
-        super.onResume();
-
-        // Refresh synchronization status
-        mSyncStatusObserver.onStatusChanged(0);
-
-        // Watch for synchronization status changes
-        final int mask = ContentResolver.SYNC_OBSERVER_TYPE_PENDING |
-                         ContentResolver.SYNC_OBSERVER_TYPE_ACTIVE;
-        mSyncHandle = ContentResolver.addStatusChangeListener(mask, mSyncStatusObserver);
     }
 
 
@@ -385,32 +366,5 @@ public class MainActivity
             return accountManager.getAccountsByType(Constants.NGW_ACCOUNT_TYPE)[0];
         }
         return null;
-    }
-
-
-    protected class SyncReceiver
-            extends BroadcastReceiver
-    {
-
-        @Override
-        public void onReceive(
-                Context context,
-                Intent intent)
-        {
-            // TODO: show notifications
-
-            if (intent.getAction().equals(SyncAdapter.SYNC_FINISH)) {
-                mIsMapReloading = true;
-                setUILocked(true);
-
-                GISApplication app = (GISApplication) getApplication();
-                app.reloadMap();
-
-                setUILocked(false);
-                mIsMapReloading = false;
-            }
-
-            switchMenuView();
-        }
     }
 }

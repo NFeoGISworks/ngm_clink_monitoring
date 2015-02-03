@@ -23,7 +23,10 @@
 package com.nextgis.ngm_clink_monitoring;
 
 import android.app.Application;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -31,6 +34,7 @@ import android.location.Location;
 import android.preference.PreferenceManager;
 import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.api.ILayer;
+import com.nextgis.maplib.datasource.ngw.SyncAdapter;
 import com.nextgis.maplib.location.GpsEventSource;
 import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplib.util.Constants;
@@ -51,6 +55,7 @@ public class GISApplication
 {
     protected MapDrawable    mMap;
     protected GpsEventSource mGpsEventSource;
+    protected SyncReceiver mSyncReceiver;
 
     protected Location mCurrentLocation = null;
 
@@ -90,6 +95,12 @@ public class GISApplication
                                                                               600)); //10 min
         }
         */
+
+        mSyncReceiver = new SyncReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(SyncAdapter.SYNC_START);
+        intentFilter.addAction(SyncAdapter.SYNC_FINISH);
+        registerReceiver(mSyncReceiver, intentFilter);
     }
 
 
@@ -208,5 +219,20 @@ public class GISApplication
     public void setCurrentLocation(Location currentLocation)
     {
         mCurrentLocation = currentLocation;
+    }
+
+
+    protected class SyncReceiver
+            extends BroadcastReceiver
+    {
+        @Override
+        public void onReceive(
+                Context context,
+                Intent intent)
+        {
+            if (intent.getAction().equals(SyncAdapter.SYNC_FINISH)) {
+                reloadMap();
+            }
+        }
     }
 }

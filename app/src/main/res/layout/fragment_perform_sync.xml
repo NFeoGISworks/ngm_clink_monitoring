@@ -33,7 +33,7 @@
         android:layout_marginBottom="30dp"
         android:layout_marginTop="30dp"
         android:layout_width="match_parent"
-        android:text="@string/perform_sync"
+        android:text="@string/sync_performed_please_wait"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="#ff000000"
         android:textStyle="bold"

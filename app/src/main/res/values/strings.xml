@@ -72,7 +72,12 @@
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
 
-    <string name="perform_sync">Synchronization is performed,\nplease wait.</string>
+    <string name="sync_performed_please_wait">Synchronization is performed,\nplease wait.</string>
+    <string name="synchronization">Synchronization</string>
+    <string name="sync_started">Synchronization started</string>
+    <string name="sync_finished">Synchronization finished</string>
+    <string name="sync_error">ERROR of synchronization</string>
+    <string name="sync_progress">Synchronization in progress</string>
 
     <string name="compas_N">N</string>
     <string name="compas_NE">NE</string>

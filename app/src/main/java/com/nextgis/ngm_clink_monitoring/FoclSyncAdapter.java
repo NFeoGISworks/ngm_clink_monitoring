@@ -22,11 +22,18 @@
 
 package com.nextgis.ngm_clink_monitoring;
 
+import android.accounts.Account;
 import android.annotation.TargetApi;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.ContentProviderClient;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SyncResult;
+import android.graphics.BitmapFactory;
 import android.os.Build;
-import android.widget.Toast;
+import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.datasource.ngw.SyncAdapter;
 import com.nextgis.maplib.map.LayerGroup;
@@ -37,11 +44,22 @@ import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 public class FoclSyncAdapter
         extends SyncAdapter
 {
+    public static final int NOTIFICATION_START = 1;
+    public static final int NOTIFICATION_STOP  = 2;
+    public static final int NOTIFICATION_ERROR = 3;
+
+    private static final int NOTIFY_ID = 1;
+
+    protected Context mContext;
+    protected boolean mIsError = false;
+
+
     public FoclSyncAdapter(
             Context context,
             boolean autoInitialize)
     {
         super(context, autoInitialize);
+        init(context);
     }
 
 
@@ -52,6 +70,34 @@ public class FoclSyncAdapter
             boolean allowParallelSyncs)
     {
         super(context, autoInitialize, allowParallelSyncs);
+        init(context);
+    }
+
+
+    protected void init(Context context)
+    {
+        mContext = context;
+    }
+
+
+    @Override
+    public void onPerformSync(
+            Account account,
+            Bundle bundle,
+            String authority,
+            ContentProviderClient contentProviderClient,
+            SyncResult syncResult)
+    {
+        sendNotification(NOTIFICATION_START, null);
+
+        super.onPerformSync(account, bundle, authority, contentProviderClient, syncResult);
+
+        if (mIsError) {
+            mIsError = false;
+            return;
+        }
+
+        sendNotification(NOTIFICATION_STOP, null);
     }
 
 
@@ -78,8 +124,62 @@ public class FoclSyncAdapter
             String error = foclProject.download();
 
             if (null != error && error.length() > 0) {
-                Toast.makeText(getContext(), error, Toast.LENGTH_LONG).show();
+                mIsError = true;
+                sendNotification(NOTIFICATION_ERROR, error);
             }
         }
+    }
+
+
+    public void sendNotification(
+            int notificationType,
+            String errorMsg)
+    {
+        Intent notificationIntent = new Intent(mContext, MainActivity.class);
+        notificationIntent.setFlags(
+                Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent contentIntent = PendingIntent.getActivity(
+                mContext, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext);
+
+        builder.setContentIntent(contentIntent)
+                .setWhen(System.currentTimeMillis())
+                .setSmallIcon(R.drawable.ic_notification_sync)
+                .setLargeIcon(
+                        BitmapFactory.decodeResource(
+                                mContext.getResources(), R.drawable.ic_launcher));
+
+        switch (notificationType) {
+            case NOTIFICATION_START:
+                builder.setAutoCancel(false)
+                        .setOngoing(true)
+                        .setProgress(0, 0, true)
+                        .setTicker(mContext.getString(R.string.sync_started))
+                        .setContentTitle(mContext.getString(R.string.synchronization))
+                        .setContentText(mContext.getString(R.string.sync_progress));
+                break;
+
+            case NOTIFICATION_STOP:
+                builder.setAutoCancel(true)
+                        .setOngoing(false)
+                        .setProgress(0, 0, false)
+                        .setTicker(mContext.getString(R.string.sync_finished))
+                        .setContentTitle(mContext.getString(R.string.synchronization))
+                        .setContentText(mContext.getString(R.string.sync_finished));
+                break;
+
+            case NOTIFICATION_ERROR:
+                builder.setAutoCancel(true)
+                        .setOngoing(false)
+                        .setTicker(mContext.getString(R.string.sync_error))
+                        .setContentTitle(mContext.getString(R.string.synchronization))
+                        .setContentText(errorMsg);
+                break;
+        }
+
+        NotificationManager notificationManager =
+                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(NOTIFY_ID, builder.build());
     }
 }
