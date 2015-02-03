@@ -176,7 +176,7 @@ public class LineWorkFragment
                                 FoclConstants.FIELD_STATUS_BUILT};
 
                         Cursor cursor = getActivity().getContentResolver()
-                                                     .query(uri, proj, null, null, null);
+                                .query(uri, proj, null, null, null);
 
                         if (cursor.getCount() > 0) {
                             mObjectName.setEnabled(true);
@@ -248,7 +248,7 @@ public class LineWorkFragment
                         values.put(FoclConstants.FIELD_STATUS_BUILT_CH, calendar.getTimeInMillis());
 
                         int result = getActivity().getContentResolver()
-                                                  .update(updateUri, values, null, null);
+                                .update(updateUri, values, null, null);
                         if (result == 0) {
                             Log.d(
                                     Constants.TAG,
@@ -332,7 +332,7 @@ public class LineWorkFragment
                             } catch (IOException e) {
                                 Toast.makeText(
                                         getActivity(), e.getLocalizedMessage(), Toast.LENGTH_LONG)
-                                     .show();
+                                        .show();
                             }
 
                             if (photoFile != null) {

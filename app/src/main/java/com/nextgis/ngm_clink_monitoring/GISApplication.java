@@ -55,7 +55,7 @@ public class GISApplication
 {
     protected MapDrawable    mMap;
     protected GpsEventSource mGpsEventSource;
-    protected SyncReceiver mSyncReceiver;
+    protected SyncReceiver   mSyncReceiver;
 
     protected Location mCurrentLocation = null;
 

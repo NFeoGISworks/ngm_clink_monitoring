@@ -44,10 +44,10 @@ public class StatusBarFragment
         extends Fragment
         implements GpsEventListener
 {
-    protected TextView          mLatView;
-    protected TextView          mLongView;
-    protected TextView          mAltView;
-    protected TextView          mAccView;
+    protected TextView mLatView;
+    protected TextView mLongView;
+    protected TextView mAltView;
+    protected TextView mAccView;
 
     protected String mLatText;
     protected String mLongText;

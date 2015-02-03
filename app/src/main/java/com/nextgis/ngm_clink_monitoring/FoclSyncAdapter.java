@@ -143,11 +143,9 @@ public class FoclSyncAdapter
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext);
 
-        builder.setContentIntent(contentIntent)
-                .setWhen(System.currentTimeMillis())
-                .setLargeIcon(
-                        BitmapFactory.decodeResource(
-                                mContext.getResources(), R.drawable.ic_launcher));
+        builder.setContentIntent(contentIntent).setWhen(System.currentTimeMillis()).setLargeIcon(
+                BitmapFactory.decodeResource(
+                        mContext.getResources(), R.drawable.ic_launcher));
 
         switch (notificationType) {
             case NOTIFICATION_START:
