@@ -57,7 +57,7 @@
     <string name="pole_mounting">Установка опоры</string>
     <string name="line_measuring">Измерения линии</string>
 
-    <string name="line">Линия связи:</string>
+    <string name="communication_line">Линия связи:</string>
 
     <string name="optical_cable">Строительная длина:</string>
     <string name="fosc">Муфта:</string>

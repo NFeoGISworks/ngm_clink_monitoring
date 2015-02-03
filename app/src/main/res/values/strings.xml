@@ -57,7 +57,7 @@
     <string name="pole_mounting">Pole mounting</string>
     <string name="line_measuring">Line measuring</string>
 
-    <string name="line">Communication line:</string>
+    <string name="communication_line">Communication line:</string>
 
     <string name="optical_cable">Optical cable:</string>
     <string name="fosc">FOSC:</string>

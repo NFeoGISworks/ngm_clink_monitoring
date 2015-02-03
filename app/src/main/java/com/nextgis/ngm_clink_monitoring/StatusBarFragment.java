@@ -22,12 +22,7 @@
 
 package com.nextgis.ngm_clink_monitoring;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.location.GpsStatus;
 import android.location.Location;
 import android.os.Bundle;
@@ -39,7 +34,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.nextgis.maplib.api.GpsEventListener;
-import com.nextgis.maplib.datasource.ngw.SyncAdapter;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstants;
 import com.nextgis.ngm_clink_monitoring.util.LocationUtil;
 
@@ -50,15 +44,11 @@ public class StatusBarFragment
         extends Fragment
         implements GpsEventListener
 {
-    protected SyncReceiver mSyncReceiver;
-
-    protected StatusBarTextView mStatusLine;
     protected TextView          mLatView;
     protected TextView          mLongView;
     protected TextView          mAltView;
     protected TextView          mAccView;
 
-    protected String mStatusLineText;
     protected String mLatText;
     protected String mLongText;
     protected String mAltText;
@@ -74,10 +64,6 @@ public class StatusBarFragment
     {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-
-        mSyncReceiver = new SyncReceiver();
-
-        mStatusLineText = getString(R.string.coordinates_not_defined);
         setLocationDefaultText();
     }
 
@@ -90,38 +76,14 @@ public class StatusBarFragment
     {
         View view = inflater.inflate(R.layout.fragment_status_bar, null);
 
-        mStatusLine = (StatusBarTextView) view.findViewById(R.id.status_line);
         mLatView = (TextView) view.findViewById(R.id.latitude_view);
         mLongView = (TextView) view.findViewById(R.id.longitude_view);
         mAltView = (TextView) view.findViewById(R.id.altitude_view);
         mAccView = (TextView) view.findViewById(R.id.accuracy_view);
 
-        mStatusLine.setText(mStatusLineText);
         setLocationViewsText();
 
         return view;
-    }
-
-
-    @Override
-    public void onPause()
-    {
-        // TODO: bind to NGWSyncService for sync status if NGWSyncService is running
-        getActivity().unregisterReceiver(mSyncReceiver);
-
-        super.onDestroy();
-    }
-
-
-    @Override
-    public void onResume()
-    {
-        super.onResume();
-
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(SyncAdapter.SYNC_START);
-        intentFilter.addAction(SyncAdapter.SYNC_FINISH);
-        getActivity().registerReceiver(mSyncReceiver, intentFilter);
     }
 
 
@@ -192,19 +154,10 @@ public class StatusBarFragment
                     mIsGPSFix = (SystemClock.elapsedRealtime() - mLastLocationMillis) < 10000;
                 }
 
-                if (mIsGPSFix) { // A fix has been acquired.
-                    mStatusLineText = getString(R.string.coordinates_defined);
-
-                    if (isVisible()) {
-                        mStatusLine.setText(mStatusLineText);
-                    }
-
-                } else { // The fix has been lost.
-                    mStatusLineText = getString(R.string.coordinates_not_defined);
+                if (!mIsGPSFix) { // The fix has been lost.
                     setLocationDefaultText();
 
                     if (isVisible()) {
-                        mStatusLine.setText(mStatusLineText);
                         setLocationViewsText();
                     }
                 }
@@ -213,12 +166,6 @@ public class StatusBarFragment
 
             case GpsStatus.GPS_EVENT_FIRST_FIX:
                 mIsGPSFix = true;
-                mStatusLineText = getString(R.string.coordinates_defined);
-
-                if (isVisible()) {
-                    mStatusLine.setText(mStatusLineText);
-                }
-
                 break;
         }
     }
@@ -231,9 +178,6 @@ public class StatusBarFragment
 
         GISApplication app = (GISApplication) getActivity().getApplication();
         app.getGpsEventSource().addListener(this);
-        app.getMap().addListener(mStatusLine);
-
-        mStatusLine.setText(mStatusLineText);
         setLocationViewsText();
     }
 
@@ -243,26 +187,7 @@ public class StatusBarFragment
     {
         GISApplication app = (GISApplication) getActivity().getApplication();
         app.getGpsEventSource().removeListener(this);
-        app.getMap().removeListener(mStatusLine);
 
         super.onStop();
-    }
-
-
-    protected class SyncReceiver
-            extends BroadcastReceiver
-    {
-
-        @Override
-        public void onReceive(
-                Context context,
-                Intent intent)
-        {
-            if (intent.getAction().equals(SyncAdapter.SYNC_START)) {
-                mStatusLine.setTextColor(Color.RED);
-            } else if (intent.getAction().equals(SyncAdapter.SYNC_FINISH)) {
-                mStatusLine.setTextColor(Color.GREEN);
-            }
-        }
     }
 }

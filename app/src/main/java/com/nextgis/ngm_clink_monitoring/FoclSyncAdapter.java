@@ -44,9 +44,9 @@ import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 public class FoclSyncAdapter
         extends SyncAdapter
 {
-    public static final int NOTIFICATION_START = 1;
-    public static final int NOTIFICATION_STOP  = 2;
-    public static final int NOTIFICATION_ERROR = 3;
+    public static final int NOTIFICATION_START  = 1;
+    public static final int NOTIFICATION_FINISH = 2;
+    public static final int NOTIFICATION_ERROR  = 3;
 
     private static final int NOTIFY_ID = 1;
 
@@ -97,7 +97,7 @@ public class FoclSyncAdapter
             return;
         }
 
-        sendNotification(NOTIFICATION_STOP, null);
+        sendNotification(NOTIFICATION_FINISH, null);
     }
 
 
@@ -145,7 +145,6 @@ public class FoclSyncAdapter
 
         builder.setContentIntent(contentIntent)
                 .setWhen(System.currentTimeMillis())
-                .setSmallIcon(R.drawable.ic_notification_sync)
                 .setLargeIcon(
                         BitmapFactory.decodeResource(
                                 mContext.getResources(), R.drawable.ic_launcher));
@@ -155,23 +154,24 @@ public class FoclSyncAdapter
                 builder.setAutoCancel(false)
                         .setOngoing(true)
                         .setProgress(0, 0, true)
+                        .setSmallIcon(R.drawable.ic_sync_started)
                         .setTicker(mContext.getString(R.string.sync_started))
                         .setContentTitle(mContext.getString(R.string.synchronization))
                         .setContentText(mContext.getString(R.string.sync_progress));
                 break;
 
-            case NOTIFICATION_STOP:
+            case NOTIFICATION_FINISH:
                 builder.setAutoCancel(true)
                         .setOngoing(false)
                         .setProgress(0, 0, false)
+                        .setSmallIcon(R.drawable.ic_sync_finished)
                         .setTicker(mContext.getString(R.string.sync_finished))
                         .setContentTitle(mContext.getString(R.string.synchronization))
                         .setContentText(mContext.getString(R.string.sync_finished));
                 break;
 
             case NOTIFICATION_ERROR:
-                builder.setAutoCancel(true)
-                        .setOngoing(false)
+                builder.setAutoCancel(true).setOngoing(false).setSmallIcon(R.drawable.ic_sync_error)
                         .setTicker(mContext.getString(R.string.sync_error))
                         .setContentTitle(mContext.getString(R.string.synchronization))
                         .setContentText(errorMsg);
