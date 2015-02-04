@@ -22,7 +22,7 @@
 
 package com.nextgis.ngm_clink_monitoring.util;
 
-public class FoclConstants
+public interface FoclConstants
 {
     public static final int LAYERTYPE_FOCL_VECTOR  = 1001;
     public static final int LAYERTYPE_FOCL_STRUCT  = 1002;

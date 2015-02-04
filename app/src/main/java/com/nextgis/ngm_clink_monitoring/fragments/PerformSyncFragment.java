@@ -20,40 +20,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-package com.nextgis.ngm_clink_monitoring;
+package com.nextgis.ngm_clink_monitoring.fragments;
 
-import android.content.Intent;
-import android.os.IBinder;
-import com.nextgis.maplib.service.NGWSyncService;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import com.nextgis.ngm_clink_monitoring.R;
 
 
-public class FoclSyncService
-        extends NGWSyncService
+public class PerformSyncFragment
+        extends Fragment
+
 {
-    // Object to use as a thread-safe lock
-    private static final Object          sSyncAdapterLock = new Object();
-    private static       FoclSyncAdapter foclSyncAdapter  = null;
-
-
     @Override
-    public void onCreate()
+    public View onCreateView(
+            LayoutInflater inflater,
+            ViewGroup container,
+            Bundle savedInstanceState)
     {
-        /*
-         * Create the sync adapter as a singleton.
-         * Set the sync adapter as syncable
-         * Disallow parallel syncs
-         */
-        synchronized (sSyncAdapterLock) {
-            if (foclSyncAdapter == null) {
-                foclSyncAdapter = new FoclSyncAdapter(getApplicationContext(), true);
-            }
-        }
-    }
-
-
-    @Override
-    public IBinder onBind(Intent intent)
-    {
-        return foclSyncAdapter.getSyncAdapterBinder();
+        return inflater.inflate(R.layout.fragment_perform_sync, null);
     }
 }

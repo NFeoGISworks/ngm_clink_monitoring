@@ -80,7 +80,7 @@
 
         <activity
             android:label="@string/app_name"
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             >
 
             <intent-filter>
@@ -92,28 +92,28 @@
 
         <activity
             android:label="@string/action_settings"
-            android:name=".SettingsActivity"
+            android:name=".activities.SettingsActivity"
             />
 
         <activity
             android:label="@string/nextgis_web"
-            android:name=".NGWSettingsActivityProxy"
+            android:name=".activities.NGWSettingsActivityProxy"
             />
 
         <activity
             android:label="@string/app_name"
-            android:name=".MapActivity"
+            android:name=".activities.MapActivity"
             />
 
         <activity
             android:label="@string/action_about"
-            android:name=".AboutActivity"
+            android:name=".activities.AboutActivity"
             android:theme="@style/AppBaseTheme"
             />
 
         <service
             android:exported="true"
-            android:name=".FoclSyncService"
+            android:name=".services.FoclSyncService"
             android:process=":sync"
             >
             <intent-filter>

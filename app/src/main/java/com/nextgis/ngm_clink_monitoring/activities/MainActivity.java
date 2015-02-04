@@ -20,7 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-package com.nextgis.ngm_clink_monitoring;
+package com.nextgis.ngm_clink_monitoring.activities;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -41,6 +41,12 @@ import android.view.MenuItem;
 import android.widget.Toast;
 import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.util.Constants;
+import com.nextgis.ngm_clink_monitoring.GISApplication;
+import com.nextgis.ngm_clink_monitoring.R;
+import com.nextgis.ngm_clink_monitoring.fragments.LineWorkFragment;
+import com.nextgis.ngm_clink_monitoring.fragments.PerformSyncFragment;
+import com.nextgis.ngm_clink_monitoring.fragments.StatusBarFragment;
+import com.nextgis.ngm_clink_monitoring.fragments.TypeWorkFragment;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstants;
 

@@ -20,25 +20,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-package com.nextgis.ngm_clink_monitoring;
+package com.nextgis.ngm_clink_monitoring.activities;
 
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.annotation.TargetApi;
+import android.os.Build;
+import com.nextgis.maplibui.NGWSettingsActivity;
 
 
-public class PerformSyncFragment
-        extends Fragment
-
+public class NGWSettingsActivityProxy
+        extends NGWSettingsActivity
 {
+    @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
-    public View onCreateView(
-            LayoutInflater inflater,
-            ViewGroup container,
-            Bundle savedInstanceState)
+    protected boolean isValidFragment(String fragmentName)
     {
-        return inflater.inflate(R.layout.fragment_perform_sync, null);
+        return super.isValidFragment(fragmentName);
     }
 }

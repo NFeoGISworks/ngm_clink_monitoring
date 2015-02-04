@@ -20,7 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-package com.nextgis.ngm_clink_monitoring;
+package com.nextgis.ngm_clink_monitoring.activities;
 
 import android.annotation.TargetApi;
 import android.os.Build;
@@ -31,6 +31,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import com.nextgis.ngm_clink_monitoring.R;
+import com.nextgis.ngm_clink_monitoring.fragments.SettingsFragment;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstants;
 
 import java.util.List;

@@ -25,7 +25,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <header
-        android:fragment="com.nextgis.ngm_clink_monitoring.SettingsFragment"
+        android:fragment="com.nextgis.ngm_clink_monitoring.fragments.SettingsFragment"
         android:summary="@string/general_summary"
         android:title="@string/general"
         >
@@ -38,7 +38,7 @@
     </header>
 
     <header
-        android:fragment="com.nextgis.ngm_clink_monitoring.SettingsFragment"
+        android:fragment="com.nextgis.ngm_clink_monitoring.fragments.SettingsFragment"
         android:summary="@string/map_summary"
         android:title="@string/map"
         >

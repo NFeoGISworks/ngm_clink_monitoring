@@ -41,6 +41,7 @@ import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.GeoConstants;
 import com.nextgis.maplib.util.SettingsConstants;
 import com.nextgis.maplibui.mapui.RemoteTMSLayerUI;
+import com.nextgis.ngm_clink_monitoring.activities.SettingsActivity;
 import com.nextgis.ngm_clink_monitoring.map.FoclLayerFactory;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;

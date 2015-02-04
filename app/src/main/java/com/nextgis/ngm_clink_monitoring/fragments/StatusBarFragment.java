@@ -20,7 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-package com.nextgis.ngm_clink_monitoring;
+package com.nextgis.ngm_clink_monitoring.fragments;
 
 import android.content.SharedPreferences;
 import android.location.GpsStatus;
@@ -34,6 +34,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.nextgis.maplib.api.GpsEventListener;
+import com.nextgis.ngm_clink_monitoring.GISApplication;
+import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstants;
 import com.nextgis.ngm_clink_monitoring.util.LocationUtil;
 

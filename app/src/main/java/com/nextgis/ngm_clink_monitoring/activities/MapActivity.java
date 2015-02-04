@@ -20,7 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-package com.nextgis.ngm_clink_monitoring;
+package com.nextgis.ngm_clink_monitoring.activities;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -30,6 +30,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import com.nextgis.maplibui.MapView;
+import com.nextgis.ngm_clink_monitoring.GISApplication;
+import com.nextgis.ngm_clink_monitoring.R;
+import com.nextgis.ngm_clink_monitoring.fragments.MapFragment;
+import com.nextgis.ngm_clink_monitoring.fragments.StatusBarFragment;
 
 
 public class MapActivity

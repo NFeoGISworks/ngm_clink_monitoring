@@ -20,7 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-package com.nextgis.ngm_clink_monitoring;
+package com.nextgis.ngm_clink_monitoring.fragments;
 
 import android.app.Activity;
 import android.content.ContentUris;
@@ -44,6 +44,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.util.Constants;
+import com.nextgis.ngm_clink_monitoring.GISApplication;
+import com.nextgis.ngm_clink_monitoring.R;
+import com.nextgis.ngm_clink_monitoring.activities.MainActivity;
+import com.nextgis.ngm_clink_monitoring.adapters.FoclProjectAdapter;
+import com.nextgis.ngm_clink_monitoring.adapters.FoclVectorCursorAdapter;
+import com.nextgis.ngm_clink_monitoring.adapters.ImageAdapter;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 import com.nextgis.ngm_clink_monitoring.map.FoclStruct;
 import com.nextgis.ngm_clink_monitoring.map.FoclVectorLayer;
@@ -80,7 +86,7 @@ public class LineWorkFragment
     protected Button mCancelButton;
 
     protected String mCurrentPhotoPath    = null;
-    protected int mFoclStructLayerType = FoclConstants.LAYERTYPE_FOCL_UNKNOWN;
+    protected int    mFoclStructLayerType = FoclConstants.LAYERTYPE_FOCL_UNKNOWN;
 
     protected List<String> mPhotoList;
     protected ImageAdapter mImageAdapter;
