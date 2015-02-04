@@ -22,7 +22,8 @@
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
-project.extensions.GisApplicationId = 'com.nextgis.ngm_clink_monitoring'
+project.extensions.GisAuthAccountType = 'com.nextgis.ngm_clink_monitoring.account'
+project.extensions.GisAuthAccountLabel = '@string/app_name'
 
 buildscript {
     repositories {

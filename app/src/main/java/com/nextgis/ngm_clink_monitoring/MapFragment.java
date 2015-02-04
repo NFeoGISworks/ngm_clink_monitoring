@@ -171,7 +171,7 @@ public class MapFragment
         RightParams2.setMargins(mMargings + 5, mMargings - 5, mMargings + 5, mMargings - 5);
         RightParams2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         RightParams2.addRule(RelativeLayout.CENTER_IN_PARENT);//ALIGN_PARENT_TOP
-// TODO:
+        // TODO:
 //        RightParams2.addRule(RelativeLayout.BELOW, mivZoomIn.getId());
         rl.addView(mivZoomOut, RightParams2);
 
