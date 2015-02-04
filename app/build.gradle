@@ -31,8 +31,6 @@ android {
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"
-
-        resValue "string", "gis_auth_account_type", rootProject.extensions.GisAuthAccountType
     }
     buildTypes {
         release {
