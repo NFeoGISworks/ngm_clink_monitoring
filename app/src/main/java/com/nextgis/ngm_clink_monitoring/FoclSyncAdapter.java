@@ -171,7 +171,7 @@ public class FoclSyncAdapter
             case NOTIFICATION_ERROR:
                 builder.setAutoCancel(true).setOngoing(false).setSmallIcon(R.drawable.ic_sync_error)
                         .setTicker(mContext.getString(R.string.sync_error))
-                        .setContentTitle(mContext.getString(R.string.synchronization))
+                        .setContentTitle(mContext.getString(R.string.sync_error))
                         .setContentText(errorMsg);
                 break;
         }

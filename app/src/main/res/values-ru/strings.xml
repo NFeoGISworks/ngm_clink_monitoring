@@ -75,7 +75,7 @@
     <string name="sync_performed_please_wait">Выполняется синхронизация,\nпожалуйста, подождите.</string>
     <string name="synchronization">Синхронизация</string>
     <string name="sync_started">Синхронизация начата</string>
-    <string name="sync_finished">Синхронизация закончена</string>
+    <string name="sync_finished">Синхронизация завершена</string>
     <string name="sync_error">ОШИБКА синхронизации</string>
     <string name="sync_progress">Синхронизация выполняется</string>
 
