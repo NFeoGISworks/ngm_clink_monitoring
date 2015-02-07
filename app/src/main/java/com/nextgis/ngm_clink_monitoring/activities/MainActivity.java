@@ -40,7 +40,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 import com.nextgis.maplib.api.IGISApplication;
-import com.nextgis.maplib.util.Constants;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.fragments.LineWorkFragment;
@@ -114,7 +113,8 @@ public class MainActivity
                             @Override
                             public void run()
                             {
-                                Account account = getAccount();
+                                GISApplication app = (GISApplication) getApplication();
+                                Account account = app.getAccount();
 
                                 if (null != account) {
                                     mIsSynchronizing =
@@ -315,7 +315,7 @@ public class MainActivity
             return;
         }
 
-        Account account = getAccount();
+        Account account = app.getAccount();
 
         if (null == account) {
             Toast.makeText(this, "NO connection", Toast.LENGTH_LONG).show();
@@ -361,16 +361,5 @@ public class MainActivity
     {
         Intent intentAbout = new Intent(this, AboutActivity.class);
         startActivity(intentAbout);
-    }
-
-
-    public Account getAccount()
-    {
-        AccountManager accountManager = AccountManager.get(this);
-        if (accountManager.getAccountsByType(Constants.NGW_ACCOUNT_TYPE).length > 0) {
-            // we work only with one account
-            return accountManager.getAccountsByType(Constants.NGW_ACCOUNT_TYPE)[0];
-        }
-        return null;
     }
 }

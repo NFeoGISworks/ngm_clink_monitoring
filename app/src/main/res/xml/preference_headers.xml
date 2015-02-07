@@ -21,46 +21,25 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ***************************************************************************-->
 
-<preference-headers
-    xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <header
-        android:fragment="com.nextgis.ngm_clink_monitoring.fragments.SettingsFragment"
-        android:summary="@string/general_summary"
-        android:title="@string/general"
-        >
-
-        <extra
-            android:name="settings"
-            android:value="general"
-            />
-
-    </header>
-
+<preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
     <header
         android:fragment="com.nextgis.ngm_clink_monitoring.fragments.SettingsFragment"
         android:summary="@string/map_summary"
         android:title="@string/map"
         >
-
         <extra
             android:name="settings"
             android:value="map"
             />
-
     </header>
-
     <header
         android:summary="@string/ngw_summary"
         android:title="@string/ngw"
         >
-
         <intent
             android:action="com.nextgis.ngm_clink_monitoring.PREFS_NGW"
-            android:targetClass="com.nextgis.ngm_clink_monitoring.NGWSettingsActivityProxy"
+            android:targetClass="com.nextgis.ngm_clink_monitoring.activities.NGWSettingsActivityProxy"
             android:targetPackage="com.nextgis.ngm_clink_monitoring"
             />
-
     </header>
-
 </preference-headers>

@@ -69,30 +69,19 @@ public class SettingsActivity
                     }
                 });
 
-        boolean bAddPrefXML = false;
         String action = getIntent().getAction();
-        if (action != null && action.equals(FoclSettingsConstants.ACTION_PREFS_GENERAL)) {
-            addPreferencesFromResource(R.xml.preferences_general);
-            bAddPrefXML = true;
-        } else if (action != null && action.equals(FoclSettingsConstants.ACTION_PREFS_MAP)) {
-            addPreferencesFromResource(R.xml.preferences_map);
-            bAddPrefXML = true;
-        }
-        /*else if (action != null && action.equals(ACTION_PREFS_USER)) {
-            addPreferencesFromResource(R.xml.preferences_user);
-            bAddPrefXML = true;
-        }
-        else if (action != null && action.equals(ACTION_PREFS_SCANEX)) {
-            addPreferencesFromResource(R.xml.preferences_scanex);
-            bAddPrefXML = true;
-        }*/
-        else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+
+        if (action != null) {
+
+            switch (action) {
+                case FoclSettingsConstants.ACTION_PREFS_MAP:
+                    addPreferencesFromResource(R.xml.preferences_map);
+                    break;
+            }
+
+        } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
             // Load the legacy preferences headers
             addPreferencesFromResource(R.xml.preference_headers_legacy);
-            bAddPrefXML = true;
-        }
-        if (bAddPrefXML) {
-            //support = new SettingsSupport(this, this.getPreferenceScreen());
         }
     }
 
@@ -115,24 +104,6 @@ public class SettingsActivity
     public void onBuildHeaders(List<Header> target)
     {
         loadHeadersFromResource(R.xml.preference_headers, target);
-    }
-
-
-    @Override
-    public void onResume()
-    {
-        super.onResume();
-        //    if(support != null)
-        //        support.registerListener();
-    }
-
-
-    @Override
-    public void onPause()
-    {
-        super.onPause();
-        //    if(support != null)
-        //        support.unregisterListener();
     }
 
 

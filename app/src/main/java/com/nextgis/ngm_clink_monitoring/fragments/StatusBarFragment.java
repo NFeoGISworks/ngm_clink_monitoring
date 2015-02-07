@@ -118,8 +118,7 @@ public class StatusBarFragment
         app.setCurrentLocation(location);
         mLastLocationMillis = SystemClock.elapsedRealtime();
 
-        SharedPreferences prefs;
-        prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         int nFormat = prefs.getInt(
                 FoclSettingsConstants.KEY_PREF_COORD_FORMAT + "_int", Location.FORMAT_DEGREES);

@@ -21,46 +21,26 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ***************************************************************************-->
 
-<PreferenceScreen
-    xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <Preference
-        android:summary="@string/general_summary"
-        android:title="@string/general"
-        >
-
-        <intent
-            android:action="com.nextgis.ngm_clink_monitoring.PREFS_GENERAL"
-            android:targetClass="com.nextgis.ngm_clink_monitoring.SettingsActivity"
-            android:targetPackage="com.nextgis.ngm_clink_monitoring"
-            />
-
-    </Preference>
-
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <Preference
         android:summary="@string/map_summary"
         android:title="@string/map"
         >
-
         <intent
             android:action="com.nextgis.ngm_clink_monitoring.PREFS_MAP"
-            android:targetClass="com.nextgis.ngm_clink_monitoring.SettingsActivity"
+            android:targetClass="com.nextgis.ngm_clink_monitoring.activities.SettingsActivity"
             android:targetPackage="com.nextgis.ngm_clink_monitoring"
             />
-
     </Preference>
-
     <Preference
         android:summary="@string/ngw_summary"
         android:title="@string/ngw"
         >
-
         <intent
             android:action="com.nextgis.ngm_clink_monitoring.PREFS_NGW"
-            android:targetClass="com.nextgis.ngm_clink_monitoring.NGWSettingsActivityProxy"
+            android:targetClass="com.nextgis.ngm_clink_monitoring.activities.NGWSettingsActivityProxy"
             android:targetPackage="com.nextgis.ngm_clink_monitoring"
             />
-
     </Preference>
 
 </PreferenceScreen>

@@ -22,14 +22,78 @@
 
 package com.nextgis.ngm_clink_monitoring.activities;
 
+import android.accounts.Account;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
+import android.preference.Preference;
 import com.nextgis.maplibui.NGWSettingsActivity;
+import com.nextgis.ngm_clink_monitoring.GISApplication;
+
+import java.util.List;
 
 
 public class NGWSettingsActivityProxy
         extends NGWSettingsActivity
 {
+    @Override
+    protected void fillPreferences()
+    {
+        GISApplication app = (GISApplication) getApplication();
+        Account account = app.getAccount();
+        Preference preference = new Preference(this);
+
+        if (null != account) {
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("account", account);
+            Intent intent = new Intent(this, NGWSettingsActivity.class);
+            intent.putExtras(bundle);
+            intent.setAction(ACCOUNT_ACTION);
+
+            preference.setIntent(intent);
+            preference.setTitle(account.name);
+
+        } else {
+            //add "Add account" preference
+            Intent intent = new Intent(this, FoclLoginActivity.class);
+
+            preference.setIntent(intent);
+            preference.setTitle(com.nextgis.maplibui.R.string.add_account);
+            preference.setSummary(com.nextgis.maplibui.R.string.add_account_summary);
+        }
+
+        getPreferenceScreen().addPreference(preference);
+    }
+
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    @Override
+    public void onBuildHeaders(List<Header> target)
+    {
+        GISApplication app = (GISApplication) getApplication();
+        Account account = app.getAccount();
+        Header header = new Header();
+
+        if (null != account) {
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("account", account);
+
+            header.title = account.name;
+            header.fragment = com.nextgis.maplibui.NGWSettingsFragment.class.getName();
+            header.fragmentArguments = bundle;
+
+        } else {
+            //add "Add account" header
+            header.title = getString(com.nextgis.maplibui.R.string.add_account);
+            header.summary = getString(com.nextgis.maplibui.R.string.add_account_summary);
+            header.intent = new Intent(this, FoclLoginActivity.class);
+        }
+
+        target.add(header);
+    }
+
+
     @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
     protected boolean isValidFragment(String fragmentName)

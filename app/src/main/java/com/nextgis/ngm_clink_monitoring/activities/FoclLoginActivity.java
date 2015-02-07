@@ -20,30 +20,43 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-package com.nextgis.ngm_clink_monitoring.fragments;
+package com.nextgis.ngm_clink_monitoring.activities;
 
-import android.annotation.TargetApi;
-import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceFragment;
+import android.view.View;
+import android.widget.EditText;
+import com.nextgis.maplibui.NGWLoginActivity;
 import com.nextgis.ngm_clink_monitoring.R;
+import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 
 
-@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-public class SettingsFragment
-        extends PreferenceFragment
+public class FoclLoginActivity
+        extends NGWLoginActivity
 {
     @Override
-    public void onCreate(Bundle savedInstanceState)
+    protected void onCreate(Bundle bundle)
     {
-        super.onCreate(savedInstanceState);
+        super.onCreate(bundle);
 
-        String settings = getArguments().getString("settings");
+        View view = getSupportFragmentManager().findFragmentById(R.id.login_frame).getView();
 
-        switch (settings) {
-            case "map":
-                addPreferencesFromResource(R.xml.preferences_map);
-                break;
+        if (view != null) {
+            ((EditText) view.findViewById(com.nextgis.maplibui.R.id.url)).setText(
+                    FoclConstants.FOCL_DEFAULT_ACCOUNT_URL);
         }
+    }
+
+
+    @Override
+    public void onTokenReceived(
+            String accountName,
+            String url,
+            String login,
+            String password,
+            String token)
+    {
+        accountName = FoclConstants.FOCL_ACCOUNT_NAME;
+
+        super.onTokenReceived(accountName, url, login, password, token);
     }
 }

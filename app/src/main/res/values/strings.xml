@@ -91,9 +91,6 @@
     <string name="coord_lat"></string>
     <string name="coord_lon"></string>
 
-    <string name="coordinates_defined">Coordinates are defined</string>
-    <string name="coordinates_not_defined">Coordinates are not defined</string>
-
     <string name="app_description">Mobile application for data entry on the FOCL construction.</string>
 
     <string name="credits_intro">Credits:</string>

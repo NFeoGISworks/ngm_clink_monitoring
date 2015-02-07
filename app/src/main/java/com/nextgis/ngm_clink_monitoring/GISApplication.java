@@ -22,6 +22,8 @@
 
 package com.nextgis.ngm_clink_monitoring;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.Application;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -193,6 +195,18 @@ public class GISApplication
     public String getAuthority()
     {
         return FoclSettingsConstants.AUTHORITY;
+    }
+
+
+    public Account getAccount()
+    {
+        AccountManager accountManager = AccountManager.get(this);
+        for (Account account : accountManager.getAccountsByType(Constants.NGW_ACCOUNT_TYPE)) {
+            if (account.name.equals(FoclConstants.FOCL_ACCOUNT_NAME)) {
+                return account;
+            }
+        }
+        return null;
     }
 
 

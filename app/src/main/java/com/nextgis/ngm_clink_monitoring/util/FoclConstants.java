@@ -42,4 +42,7 @@ public interface FoclConstants
     public static final String FIELD_STATUS_BUILT_CH = "status_built_ch";
 
     public static final String FIELD_VALUE_BUILT = "built";
+
+    public static final String FOCL_ACCOUNT_NAME        = "Compulink Account";
+    public static final String FOCL_DEFAULT_ACCOUNT_URL = "http://176.9.38.120/cl";
 }
