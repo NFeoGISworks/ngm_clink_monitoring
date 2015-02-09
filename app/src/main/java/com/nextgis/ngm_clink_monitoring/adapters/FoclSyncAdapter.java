@@ -145,15 +145,17 @@ public class FoclSyncAdapter
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext);
 
-        builder.setContentIntent(contentIntent).setWhen(System.currentTimeMillis()).setLargeIcon(
+        builder.setLargeIcon(
                 BitmapFactory.decodeResource(
-                        mContext.getResources(), R.drawable.ic_launcher));
+                        mContext.getResources(), R.drawable.ic_launcher))
+                .setContentIntent(contentIntent)
+                .setWhen(System.currentTimeMillis())
+                .setAutoCancel(true)
+                .setOngoing(false);
 
         switch (notificationType) {
             case NOTIFICATION_START:
-                builder.setAutoCancel(false)
-                        .setOngoing(true)
-                        .setProgress(0, 0, true)
+                builder.setProgress(0, 0, true)
                         .setSmallIcon(R.drawable.ic_sync_started)
                         .setTicker(mContext.getString(R.string.sync_started))
                         .setContentTitle(mContext.getString(R.string.synchronization))
@@ -161,9 +163,7 @@ public class FoclSyncAdapter
                 break;
 
             case NOTIFICATION_FINISH:
-                builder.setAutoCancel(true)
-                        .setOngoing(false)
-                        .setProgress(0, 0, false)
+                builder.setProgress(0, 0, false)
                         .setSmallIcon(R.drawable.ic_sync_finished)
                         .setTicker(mContext.getString(R.string.sync_finished))
                         .setContentTitle(mContext.getString(R.string.synchronization))
@@ -171,7 +171,7 @@ public class FoclSyncAdapter
                 break;
 
             case NOTIFICATION_ERROR:
-                builder.setAutoCancel(true).setOngoing(false).setSmallIcon(R.drawable.ic_sync_error)
+                builder.setProgress(0, 0, false).setSmallIcon(R.drawable.ic_sync_error)
                         .setTicker(mContext.getString(R.string.sync_error))
                         .setContentTitle(mContext.getString(R.string.sync_error))
                         .setContentText(errorMsg);
