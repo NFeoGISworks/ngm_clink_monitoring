@@ -43,7 +43,6 @@ import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.fragments.LineWorkFragment;
-import com.nextgis.ngm_clink_monitoring.fragments.PerformSyncFragment;
 import com.nextgis.ngm_clink_monitoring.fragments.StatusBarFragment;
 import com.nextgis.ngm_clink_monitoring.fragments.TypeWorkFragment;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
@@ -64,9 +63,7 @@ public class MainActivity
     protected SyncStatusObserver mSyncStatusObserver;
     protected Object             mSyncHandle;
 
-    protected boolean mIsUILocked      = false;
     protected boolean mIsSynchronizing = false;
-    protected boolean mIsMapReloading  = false;
 
 
     private static boolean isSyncActive(
@@ -119,10 +116,7 @@ public class MainActivity
                                 if (null != account) {
                                     mIsSynchronizing =
                                             isSyncActive(account, FoclSettingsConstants.AUTHORITY);
-
-                                    if (!mIsMapReloading) {
-                                        setUILocked(mIsSynchronizing);
-                                    }
+                                    switchMenuView();
                                 }
                             }
                         });
@@ -149,69 +143,41 @@ public class MainActivity
             ft.commit();
         }
 
-        setUILocked(false);
-    }
+        TypeWorkFragment typeWorkFragment =
+                (TypeWorkFragment) getSupportFragmentManager().findFragmentByTag("TypeWork");
 
+        if (typeWorkFragment == null) {
+            typeWorkFragment = new TypeWorkFragment();
 
-    public void setUILocked(boolean isUILocked)
-    {
-        mIsUILocked = isUILocked;
-
-        if (isUILocked) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-
-            PerformSyncFragment performSyncFragment =
-                    (PerformSyncFragment) getSupportFragmentManager().findFragmentByTag(
-                            "PerformSync");
-
-            if (performSyncFragment == null) {
-                performSyncFragment = new PerformSyncFragment();
-            }
-
-            ft.replace(R.id.work_fragment, performSyncFragment, "PerformSync");
+            ft.replace(R.id.work_fragment, typeWorkFragment, "TypeWork");
             ft.commit();
-            getSupportFragmentManager().executePendingTransactions();
-
-        } else {
-            TypeWorkFragment typeWorkFragment =
-                    (TypeWorkFragment) getSupportFragmentManager().findFragmentByTag("TypeWork");
-
-            if (typeWorkFragment == null) {
-                typeWorkFragment = new TypeWorkFragment();
-
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.work_fragment, typeWorkFragment, "TypeWork");
-                ft.commit();
-            }
-
-            typeWorkFragment.setOnButtonsClickListener(
-                    new TypeWorkFragment.OnButtonsClickListener()
-                    {
-                        @Override
-                        public void OnButtonsClick(int workType)
-                        {
-                            FragmentTransaction frTr =
-                                    getSupportFragmentManager().beginTransaction();
-
-                            LineWorkFragment lineWorkFragment =
-                                    (LineWorkFragment) getSupportFragmentManager().findFragmentByTag(
-                                            "LineWork");
-
-                            if (lineWorkFragment == null) {
-                                lineWorkFragment = new LineWorkFragment();
-                            }
-
-                            lineWorkFragment.setParams(workType);
-
-                            frTr.replace(R.id.work_fragment, lineWorkFragment, "LineWork");
-                            frTr.addToBackStack(null);
-                            frTr.commit();
-                            getSupportFragmentManager().executePendingTransactions();
-                        }
-                    });
         }
 
-        switchMenuView();
+        typeWorkFragment.setOnButtonsClickListener(
+                new TypeWorkFragment.OnButtonsClickListener()
+                {
+                    @Override
+                    public void OnButtonsClick(int workType)
+                    {
+                        FragmentTransaction frTr = getSupportFragmentManager().beginTransaction();
+
+                        LineWorkFragment lineWorkFragment =
+                                (LineWorkFragment) getSupportFragmentManager().findFragmentByTag(
+                                        "LineWork");
+
+                        if (lineWorkFragment == null) {
+                            lineWorkFragment = new LineWorkFragment();
+                        }
+
+                        lineWorkFragment.setParams(workType);
+
+                        frTr.replace(R.id.work_fragment, lineWorkFragment, "LineWork");
+                        frTr.addToBackStack(null);
+                        frTr.commit();
+                        getSupportFragmentManager().executePendingTransactions();
+                    }
+                });
     }
 
 
@@ -251,8 +217,7 @@ public class MainActivity
 
         // TODO: remove menu_sync for LineWorkFragment
 
-        if (mIsUILocked) {
-            menu.findItem(R.id.menu_map).setEnabled(false);
+        if (mIsSynchronizing) {
             menu.findItem(R.id.menu_sync).setEnabled(false);
             menu.findItem(R.id.menu_settings).setEnabled(false);
         }

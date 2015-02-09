@@ -42,6 +42,8 @@ import android.widget.Gallery;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.nextgis.maplib.api.MapEventListener;
+import com.nextgis.maplib.datasource.GeoPoint;
 import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
@@ -68,6 +70,7 @@ import java.util.List;
 
 public class LineWorkFragment
         extends Fragment
+        implements MapEventListener
 {
     private static final int REQUEST_TAKE_PHOTO = 1;
 
@@ -151,7 +154,9 @@ public class LineWorkFragment
         final String[] itemLayerName = {null};
         final Long[] itemId = {null};
 
-        mLineName.setAdapter(new FoclProjectAdapter(getActivity(), foclProject));
+        FoclProjectAdapter projectAdapter = new FoclProjectAdapter(getActivity(), foclProject);
+
+        mLineName.setAdapter(projectAdapter);
         mLineName.setSelection(0);
         mLineName.setOnItemSelectedListener(
                 new AdapterView.OnItemSelectedListener()
@@ -198,11 +203,11 @@ public class LineWorkFragment
 
                         getActivity().startManagingCursor(cursor);
 
-                        FoclVectorCursorAdapter adapter = new FoclVectorCursorAdapter(
+                        FoclVectorCursorAdapter cursorAdapter = new FoclVectorCursorAdapter(
                                 getActivity(), cursor,
                                 CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
 
-                        mObjectName.setAdapter(adapter);
+                        mObjectName.setAdapter(cursorAdapter);
                         mObjectName.setSelection(0);
                     }
 
@@ -428,5 +433,79 @@ public class LineWorkFragment
     public void setParams(int workType)
     {
         mFoclStructLayerType = workType;
+    }
+
+
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+
+        GISApplication app = (GISApplication) getActivity().getApplication();
+        app.getMap().addListener(this);
+    }
+
+
+    @Override
+    public void onStop()
+    {
+        GISApplication app = (GISApplication) getActivity().getApplication();
+        app.getMap().removeListener(this);
+
+        super.onStop();
+    }
+
+
+    public void refreshView()
+    {
+        if (!this.isDetached()) {
+            getFragmentManager().beginTransaction().detach(this).attach(this).commit();
+        }
+    }
+
+
+    @Override
+    public void onLayerAdded(int id)
+    {
+        refreshView();
+    }
+
+
+    @Override
+    public void onLayerDeleted(int id)
+    {
+        refreshView();
+    }
+
+
+    @Override
+    public void onLayerChanged(int id)
+    {
+        refreshView();
+    }
+
+
+    @Override
+    public void onExtentChanged(
+            float zoom,
+            GeoPoint center)
+    {
+
+    }
+
+
+    @Override
+    public void onLayersReordered()
+    {
+        refreshView();
+    }
+
+
+    @Override
+    public void onLayerDrawFinished(
+            int id,
+            float percent)
+    {
+
     }
 }
