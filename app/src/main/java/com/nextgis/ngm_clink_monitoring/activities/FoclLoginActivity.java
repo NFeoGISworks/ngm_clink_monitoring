@@ -22,10 +22,13 @@
 
 package com.nextgis.ngm_clink_monitoring.activities;
 
+import android.accounts.Account;
+import android.content.ContentResolver;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import com.nextgis.maplibui.NGWLoginActivity;
+import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 
@@ -58,5 +61,12 @@ public class FoclLoginActivity
         accountName = FoclConstants.FOCL_ACCOUNT_NAME;
 
         super.onTokenReceived(accountName, url, login, password, token);
+
+        GISApplication app = (GISApplication) getApplicationContext();
+        Account account = app.getAccount();
+
+        if (null != account) {
+            ContentResolver.setSyncAutomatically(account, app.getAuthority(), true);
+        }
     }
 }
