@@ -28,7 +28,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
+import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 import com.nextgis.ngm_clink_monitoring.util.ViewUtil;
 
@@ -37,6 +39,7 @@ public class TypeWorkFragment
         extends Fragment
 {
     protected OnButtonsClickListener mOnButtonsClickListener;
+    protected FoclProject mFoclProject = null;
 
 
     @Override
@@ -61,6 +64,19 @@ public class TypeWorkFragment
         ViewUtil.makingSquareView(btnCabinetMounting);
         ViewUtil.makingSquareView(btnPoleMounting);
         ViewUtil.makingSquareView(btnLineMeasuring);
+
+        GISApplication app = (GISApplication) getActivity().getApplication();
+        mFoclProject = app.getFoclProject();
+
+        if (null == mFoclProject) {
+            btnCableLaying.setEnabled(false);
+            btnFoscMounting.setEnabled(false);
+            btnCrossMounting.setEnabled(false);
+            btnCabinetMounting.setEnabled(false);
+            btnPoleMounting.setEnabled(false);
+            btnLineMeasuring.setEnabled(false);
+            return view;
+        }
 
         btnCableLaying.setOnClickListener(
                 new View.OnClickListener()

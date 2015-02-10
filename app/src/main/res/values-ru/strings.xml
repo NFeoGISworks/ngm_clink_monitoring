@@ -40,6 +40,8 @@
     <string name="show_zoom_controls">Кнопки масштабирования</string>
     <string name="show_zoom_controls_summary">Отображать кнопки увеличения и уменьшения масштаба на карте</string>
 
+    <string name="no_connection">НЕТ подключения</string>
+
     <string name="latitude_caption">Шир:</string>
     <string name="longitude_caption">Долг:</string>
     <string name="altitude_caption">Высота:</string>
@@ -72,7 +74,6 @@
     <string name="save">Сохранить</string>
     <string name="cancel">Отмена</string>
 
-    <string name="sync_performed_please_wait">Выполняется синхронизация,\nпожалуйста, подождите.</string>
     <string name="synchronization">Синхронизация</string>
     <string name="sync_started">Синхронизация начата</string>
     <string name="sync_finished">Синхронизация завершена</string>

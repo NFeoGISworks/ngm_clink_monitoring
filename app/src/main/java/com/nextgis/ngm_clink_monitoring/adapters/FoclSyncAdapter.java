@@ -171,7 +171,8 @@ public class FoclSyncAdapter
                 break;
 
             case NOTIFICATION_ERROR:
-                builder.setProgress(0, 0, false).setSmallIcon(R.drawable.ic_sync_error)
+                builder.setProgress(0, 0, false)
+                        .setSmallIcon(R.drawable.ic_sync_error)
                         .setTicker(mContext.getString(R.string.sync_error))
                         .setContentTitle(mContext.getString(R.string.sync_error))
                         .setContentText(errorMsg);

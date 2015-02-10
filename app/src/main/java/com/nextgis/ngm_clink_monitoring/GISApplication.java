@@ -42,6 +42,7 @@ import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.GeoConstants;
 import com.nextgis.maplib.util.SettingsConstants;
+import com.nextgis.maplibui.NGWSettingsActivity;
 import com.nextgis.maplibui.mapui.RemoteTMSLayerUI;
 import com.nextgis.ngm_clink_monitoring.activities.SettingsActivity;
 import com.nextgis.ngm_clink_monitoring.map.FoclLayerFactory;
@@ -54,13 +55,16 @@ import java.io.File;
 
 public class GISApplication
         extends Application
-        implements IGISApplication
+        implements IGISApplication, NGWSettingsActivity.OnDeleteAccountListener
 {
     protected MapDrawable    mMap;
     protected GpsEventSource mGpsEventSource;
     protected SyncReceiver   mSyncReceiver;
 
-    protected Location mCurrentLocation = null;
+    protected Location            mCurrentLocation     = null;
+    protected OnReloadMapListener mOnReloadMapListener = null;
+
+    protected boolean mIsMapReloaded = false;
 
 
     @Override
@@ -135,12 +139,6 @@ public class GISApplication
     }
 
 
-    public void reloadMap()
-    {
-        mMap.load();
-    }
-
-
     protected void onFirstRun()
     {
         //add OpenStreetMap layer on application first run
@@ -154,15 +152,37 @@ public class GISApplication
         layer.setVisible(true);
 
         mMap.addLayer(layer);
+        mMap.save();
+    }
+
+
+    public void addFoclProject()
+    {
+        Account account = getAccount();
+
+        if (null == account) {
+            return;
+        }
+
+        AccountManager accountManager = AccountManager.get(this);
+
+        String accountName = account.name;
+        String url = accountManager.getUserData(account, "url");
+        String password = accountManager.getPassword(account);
+        String login = accountManager.getUserData(account, "login");
 
         File foclPath = mMap.createLayerStorage();
         FoclProject foclProject =
                 new FoclProject(mMap.getContext(), foclPath, new FoclLayerFactory(foclPath));
-        foclProject.setName("FOCL");
+
+        foclProject.setName(FoclConstants.FOCL_PROJECT);
+        foclProject.setAccountName(accountName);
+        foclProject.setURL(url);
+        foclProject.setLogin(login);
+        foclProject.setPassword(password);
         foclProject.setVisible(true);
 
         mMap.addLayer(foclProject);
-
         mMap.save();
     }
 
@@ -176,18 +196,17 @@ public class GISApplication
         for (int i = 0; i < mMap.getLayerCount(); i++) {
             ILayer layer = mMap.getLayer(i);
             if (layer.getType() == FoclConstants.LAYERTYPE_FOCL_PROJECT) {
-                return (FoclProject) layer;
+                FoclProject foclProject = (FoclProject) layer;
+
+                if (foclProject.getLayerCount() > 0) {
+                    return foclProject;
+                }
+
+                return null;
             }
         }
 
         return null;
-    }
-
-
-    public boolean isLoadedFoclProject()
-    {
-        FoclProject foclProject = getFoclProject();
-        return null != foclProject && foclProject.getLayerCount() > 0;
     }
 
 
@@ -234,6 +253,45 @@ public class GISApplication
     public void setCurrentLocation(Location currentLocation)
     {
         mCurrentLocation = currentLocation;
+    }
+
+
+    @Override
+    public void OnDeleteAccount(Account account)
+    {
+        reloadMap();
+    }
+
+
+    public boolean isMapReloaded()
+    {
+        boolean isReloaded = mIsMapReloaded;
+        mIsMapReloaded = false;
+        return isReloaded;
+    }
+
+
+    public void reloadMap()
+    {
+        mMap.load();
+
+        mIsMapReloaded = true;
+
+        if (null != mOnReloadMapListener) {
+            mOnReloadMapListener.OnReloadMap();
+        }
+    }
+
+
+    public void setOnReloadMapListener(OnReloadMapListener onReloadMapListener)
+    {
+        mOnReloadMapListener = onReloadMapListener;
+    }
+
+
+    public interface OnReloadMapListener
+    {
+        public void OnReloadMap();
     }
 
 

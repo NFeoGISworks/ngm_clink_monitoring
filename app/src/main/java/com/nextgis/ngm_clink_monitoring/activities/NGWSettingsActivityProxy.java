@@ -38,6 +38,16 @@ public class NGWSettingsActivityProxy
         extends NGWSettingsActivity
 {
     @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+
+        GISApplication app = (GISApplication) getApplicationContext();
+        setOnDeleteAccountListener(app);
+    }
+
+
+    @Override
     protected void fillPreferences()
     {
         GISApplication app = (GISApplication) getApplication();

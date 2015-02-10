@@ -40,6 +40,8 @@
     <string name="show_zoom_controls">Show zoom controls</string>
     <string name="show_zoom_controls_summary">Show zoom in and zoom out control on map</string>
 
+    <string name="no_connection">NO connection</string>
+
     <string name="latitude_caption">Lat:</string>
     <string name="longitude_caption">Long:</string>
     <string name="altitude_caption">Altitude:</string>
@@ -72,7 +74,6 @@
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
 
-    <string name="sync_performed_please_wait">Synchronization is performed,\nplease wait.</string>
     <string name="synchronization">Synchronization</string>
     <string name="sync_started">Synchronization started</string>
     <string name="sync_finished">Synchronization finished</string>

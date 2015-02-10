@@ -42,8 +42,6 @@ import android.widget.Gallery;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.nextgis.maplib.api.MapEventListener;
-import com.nextgis.maplib.datasource.GeoPoint;
 import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
@@ -70,7 +68,6 @@ import java.util.List;
 
 public class LineWorkFragment
         extends Fragment
-        implements MapEventListener
 {
     private static final int REQUEST_TAKE_PHOTO = 1;
 
@@ -143,14 +140,79 @@ public class LineWorkFragment
         mObjectName = (Spinner) view.findViewById(R.id.object_name);
 
         mPhotoGallery = (Gallery) view.findViewById(R.id.photo_gallery);
-        mPhotoGallery.setAdapter(mImageAdapter);
 
         mMakePhotoButton = (Button) view.findViewById(R.id.btn_make_photo);
         mSaveButton = (Button) view.findViewById(R.id.btn_save);
         mCancelButton = (Button) view.findViewById(R.id.btn_cancel);
 
+        switch (mFoclStructLayerType) {
+            case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CABLE:
+                mWorkTypeName.setText(R.string.cable_laying);
+                mObjectCaption.setText(R.string.optical_cable);
+                mPhotoHintText.setText(R.string.take_photos_to_confirm);
+                break;
+
+            case FoclConstants.LAYERTYPE_FOCL_FOSC:
+                mWorkTypeName.setText(R.string.fosc_mounting);
+                mObjectCaption.setText(R.string.fosc);
+                mPhotoHintText.setText(R.string.take_photos_to_confirm_fosc);
+                break;
+
+            case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CROSS:
+                mWorkTypeName.setText(R.string.cross_mounting);
+                mObjectCaption.setText(R.string.cross);
+                mPhotoHintText.setText(R.string.take_photos_to_confirm);
+                break;
+
+            case FoclConstants.LAYERTYPE_FOCL_TELECOM_CABINET:
+                mWorkTypeName.setText(R.string.cabinet_mounting);
+                mObjectCaption.setText(R.string.telecom_cabinet);
+                mPhotoHintText.setText(R.string.take_photos_to_confirm);
+                break;
+
+            case FoclConstants.LAYERTYPE_FOCL_POLE:
+                mWorkTypeName.setText(R.string.pole_mounting);
+                mObjectCaption.setText(R.string.pole);
+                mPhotoHintText.setText(R.string.take_photos_to_confirm);
+                break;
+
+            case FoclConstants.LAYERTYPE_FOCL_LINE_MEASURING:
+                mWorkTypeName.setText(R.string.line_measuring);
+                mObjectCaption.setVisibility(View.INVISIBLE);
+                mObjectName.setVisibility(View.INVISIBLE);
+                mPhotoHintText.setText(R.string.take_photos_to_confirm);
+                break;
+        }
+
+        mCancelButton.setOnClickListener(
+                new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        getActivity().getSupportFragmentManager().popBackStackImmediate();
+                    }
+                });
+
         GISApplication app = (GISApplication) getActivity().getApplication();
         final FoclProject foclProject = app.getFoclProject();
+
+        if (null == foclProject) {
+            mLineName.setEnabled(false);
+            mLineName.setAdapter(null);
+            mObjectName.setEnabled(false);
+            mObjectName.setAdapter(null);
+            mPhotoGallery.setEnabled(false);
+            mPhotoGallery.setAdapter(null);
+            mMakePhotoButton.setEnabled(false);
+            mMakePhotoButton.setOnClickListener(null);
+            mSaveButton.setEnabled(false);
+            mSaveButton.setOnClickListener(null);
+            return view;
+        }
+
+        mPhotoGallery.setAdapter(mImageAdapter);
+
         final String[] itemLayerName = {null};
         final Long[] itemId = {null};
 
@@ -168,10 +230,6 @@ public class LineWorkFragment
                             int position,
                             long id)
                     {
-                        if (null == foclProject) {
-                            return;
-                        }
-
                         FoclStruct foclStruct = (FoclStruct) foclProject.getLayer(position);
                         FoclVectorLayer layer = (FoclVectorLayer) foclStruct.getLayerByFoclType(
                                 mFoclStructLayerType);
@@ -200,8 +258,6 @@ public class LineWorkFragment
                             mMakePhotoButton.setEnabled(false);
                             return;
                         }
-
-                        getActivity().startManagingCursor(cursor);
 
                         FoclVectorCursorAdapter cursorAdapter = new FoclVectorCursorAdapter(
                                 getActivity(), cursor,
@@ -275,55 +331,6 @@ public class LineWorkFragment
                         getActivity().getSupportFragmentManager().popBackStackImmediate();
                     }
                 });
-
-        mCancelButton.setOnClickListener(
-                new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View v)
-                    {
-                        getActivity().getSupportFragmentManager().popBackStackImmediate();
-                    }
-                });
-
-        switch (mFoclStructLayerType) {
-            case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CABLE:
-                mWorkTypeName.setText(R.string.cable_laying);
-                mObjectCaption.setText(R.string.optical_cable);
-                mPhotoHintText.setText(R.string.take_photos_to_confirm);
-                break;
-
-            case FoclConstants.LAYERTYPE_FOCL_FOSC:
-                mWorkTypeName.setText(R.string.fosc_mounting);
-                mObjectCaption.setText(R.string.fosc);
-                mPhotoHintText.setText(R.string.take_photos_to_confirm_fosc);
-                break;
-
-            case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CROSS:
-                mWorkTypeName.setText(R.string.cross_mounting);
-                mObjectCaption.setText(R.string.cross);
-                mPhotoHintText.setText(R.string.take_photos_to_confirm);
-                break;
-
-            case FoclConstants.LAYERTYPE_FOCL_TELECOM_CABINET:
-                mWorkTypeName.setText(R.string.cabinet_mounting);
-                mObjectCaption.setText(R.string.telecom_cabinet);
-                mPhotoHintText.setText(R.string.take_photos_to_confirm);
-                break;
-
-            case FoclConstants.LAYERTYPE_FOCL_POLE:
-                mWorkTypeName.setText(R.string.pole_mounting);
-                mObjectCaption.setText(R.string.pole);
-                mPhotoHintText.setText(R.string.take_photos_to_confirm);
-                break;
-
-            case FoclConstants.LAYERTYPE_FOCL_LINE_MEASURING:
-                mWorkTypeName.setText(R.string.line_measuring);
-                mObjectCaption.setVisibility(View.INVISIBLE);
-                mObjectName.setVisibility(View.INVISIBLE);
-                mPhotoHintText.setText(R.string.take_photos_to_confirm);
-                break;
-        }
 
         mMakePhotoButton.setOnClickListener(
                 new View.OnClickListener()
@@ -433,79 +440,5 @@ public class LineWorkFragment
     public void setParams(int workType)
     {
         mFoclStructLayerType = workType;
-    }
-
-
-    @Override
-    public void onStart()
-    {
-        super.onStart();
-
-        GISApplication app = (GISApplication) getActivity().getApplication();
-        app.getMap().addListener(this);
-    }
-
-
-    @Override
-    public void onStop()
-    {
-        GISApplication app = (GISApplication) getActivity().getApplication();
-        app.getMap().removeListener(this);
-
-        super.onStop();
-    }
-
-
-    public void refreshView()
-    {
-        if (!this.isDetached()) {
-            getFragmentManager().beginTransaction().detach(this).attach(this).commit();
-        }
-    }
-
-
-    @Override
-    public void onLayerAdded(int id)
-    {
-        refreshView();
-    }
-
-
-    @Override
-    public void onLayerDeleted(int id)
-    {
-        refreshView();
-    }
-
-
-    @Override
-    public void onLayerChanged(int id)
-    {
-        refreshView();
-    }
-
-
-    @Override
-    public void onExtentChanged(
-            float zoom,
-            GeoPoint center)
-    {
-
-    }
-
-
-    @Override
-    public void onLayersReordered()
-    {
-        refreshView();
-    }
-
-
-    @Override
-    public void onLayerDrawFinished(
-            int id,
-            float percent)
-    {
-
     }
 }

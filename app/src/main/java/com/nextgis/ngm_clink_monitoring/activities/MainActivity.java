@@ -23,7 +23,6 @@
 package com.nextgis.ngm_clink_monitoring.activities;
 
 import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.annotation.TargetApi;
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -33,6 +32,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -45,7 +45,6 @@ import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.fragments.LineWorkFragment;
 import com.nextgis.ngm_clink_monitoring.fragments.StatusBarFragment;
 import com.nextgis.ngm_clink_monitoring.fragments.TypeWorkFragment;
-import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstants;
 
 import java.io.File;
@@ -53,6 +52,7 @@ import java.io.File;
 
 public class MainActivity
         extends ActionBarActivity
+        implements GISApplication.OnReloadMapListener
 {
     public static final String DATA_DIR_PATH =
             Environment.getExternalStorageDirectory().getAbsolutePath() +
@@ -186,6 +186,13 @@ public class MainActivity
     {
         super.onResume();
 
+        GISApplication app = (GISApplication) getApplication();
+        app.setOnReloadMapListener(this);
+
+        if (app.isMapReloaded()) {
+            refreshView();
+        }
+
         // Refresh synchronization status
         mSyncStatusObserver.onStatusChanged(0);
 
@@ -199,6 +206,9 @@ public class MainActivity
     @Override
     protected void onPause()
     {
+        GISApplication app = (GISApplication) getApplication();
+        app.setOnReloadMapListener(null);
+
         // Remove our synchronization listener if registered
         if (mSyncHandle != null) {
             ContentResolver.removeStatusChangeListener(mSyncHandle);
@@ -261,11 +271,6 @@ public class MainActivity
 
     public void onMenuMapClick()
     {
-        GISApplication app = (GISApplication) getApplication();
-        FoclProject foclProject = app.getFoclProject();
-        foclProject.setVisible(true);
-        app.getMap().save();
-
         Intent intent = new Intent(this, MapActivity.class);
         startActivity(intent);
     }
@@ -274,37 +279,11 @@ public class MainActivity
     public void onMenuSyncClick()
     {
         GISApplication app = (GISApplication) getApplication();
-        FoclProject foclProject = app.getFoclProject();
-
-        if (null == foclProject) {
-            return;
-        }
-
         Account account = app.getAccount();
 
         if (null == account) {
-            Toast.makeText(this, "NO connection", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.no_connection), Toast.LENGTH_LONG).show();
             return;
-        }
-
-        AccountManager accountManager = AccountManager.get(this);
-
-        if (!app.isLoadedFoclProject()) {
-            String accountName = account.name;
-            String url = accountManager.getUserData(account, "url");
-            String password = accountManager.getPassword(account);
-            String login = accountManager.getUserData(account, "login");
-
-            if (null == url || null == login || null == password) {
-                Toast.makeText(this, "NO connection", Toast.LENGTH_LONG).show();
-                return;
-            }
-
-            foclProject.setAccountName(accountName);
-            foclProject.setURL(url);
-            foclProject.setLogin(login);
-            foclProject.setPassword(password);
-            foclProject.save();
         }
 
         Bundle settingsBundle = new Bundle();
@@ -326,5 +305,24 @@ public class MainActivity
     {
         Intent intentAbout = new Intent(this, AboutActivity.class);
         startActivity(intentAbout);
+    }
+
+
+    public void refreshView()
+    {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.work_fragment);
+        if (!fragment.isDetached()) {
+            getSupportFragmentManager().beginTransaction()
+                    .detach(fragment)
+                    .attach(fragment)
+                    .commit();
+        }
+    }
+
+
+    @Override
+    public void OnReloadMap()
+    {
+        refreshView();
     }
 }
