@@ -99,11 +99,12 @@
             android:textColor="#ff000000"
             />
 
-        <Gallery
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/photo_gallery"
-            android:layout_height="wrap_content"
+            android:layout_height="130dp"
             android:layout_marginTop="5dp"
             android:layout_width="match_parent"
+            android:scrollbars="horizontal"
             />
 
         <LinearLayout

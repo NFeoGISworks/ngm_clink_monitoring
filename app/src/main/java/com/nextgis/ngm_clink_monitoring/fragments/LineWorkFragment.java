@@ -32,13 +32,14 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.CursorAdapter;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.Gallery;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,7 +50,7 @@ import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.activities.MainActivity;
 import com.nextgis.ngm_clink_monitoring.adapters.FoclProjectAdapter;
 import com.nextgis.ngm_clink_monitoring.adapters.FoclVectorCursorAdapter;
-import com.nextgis.ngm_clink_monitoring.adapters.ImageAdapter;
+import com.nextgis.ngm_clink_monitoring.adapters.PhotoAdapter;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 import com.nextgis.ngm_clink_monitoring.map.FoclStruct;
 import com.nextgis.ngm_clink_monitoring.map.FoclVectorLayer;
@@ -78,8 +79,7 @@ public class LineWorkFragment
     protected Spinner mLineName;
     protected Spinner mObjectName;
 
-    @SuppressWarnings("deprecation")
-    protected Gallery mPhotoGallery;
+    protected RecyclerView mPhotoGallery;
 
     protected Button mMakePhotoButton;
     protected Button mSaveButton;
@@ -89,7 +89,7 @@ public class LineWorkFragment
     protected int    mFoclStructLayerType = FoclConstants.LAYERTYPE_FOCL_UNKNOWN;
 
     protected List<String> mPhotoList;
-    protected ImageAdapter mImageAdapter;
+    protected PhotoAdapter mPhotoAdapter;
 
 
     @Override
@@ -120,7 +120,7 @@ public class LineWorkFragment
         }
 */
 
-        mImageAdapter = new ImageAdapter(getActivity(), mPhotoList);
+        mPhotoAdapter = new PhotoAdapter(getActivity(), mPhotoList);
     }
 
 
@@ -139,7 +139,7 @@ public class LineWorkFragment
         mLineName = (Spinner) view.findViewById(R.id.line_name);
         mObjectName = (Spinner) view.findViewById(R.id.object_name);
 
-        mPhotoGallery = (Gallery) view.findViewById(R.id.photo_gallery);
+        mPhotoGallery = (RecyclerView) view.findViewById(R.id.photo_gallery);
 
         mMakePhotoButton = (Button) view.findViewById(R.id.btn_make_photo);
         mSaveButton = (Button) view.findViewById(R.id.btn_save);
@@ -211,7 +211,12 @@ public class LineWorkFragment
             return view;
         }
 
-        mPhotoGallery.setAdapter(mImageAdapter);
+        RecyclerView.LayoutManager layoutManager =
+                new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+
+        mPhotoGallery.setLayoutManager(layoutManager);
+        mPhotoGallery.setAdapter(mPhotoAdapter);
+        mPhotoGallery.setHasFixedSize(true);
 
         final String[] itemLayerName = {null};
         final Long[] itemId = {null};
@@ -385,7 +390,7 @@ public class LineWorkFragment
             }
 
             mPhotoList.add(mCurrentPhotoPath);
-            mImageAdapter.notifyDataSetChanged();
+            mPhotoAdapter.notifyDataSetChanged();
         }
     }
 

@@ -26,18 +26,18 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.Gallery;
 import android.widget.ImageView;
 import com.nextgis.ngm_clink_monitoring.R;
 
 import java.util.List;
 
 
-public class ImageAdapter
-        extends BaseAdapter
+public class PhotoAdapter
+        extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
 {
     protected static final int IMAGE_SIZE_PX = 120;
     protected final int IMAGE_SIZE_DP;
@@ -48,7 +48,7 @@ public class ImageAdapter
     protected int mItemBackground;
 
 
-    public ImageAdapter(
+    public PhotoAdapter(
             Context context,
             List<String> imagePathList)
     {
@@ -65,15 +65,30 @@ public class ImageAdapter
     }
 
 
-    public int getCount()
+    @Override
+    public PhotoAdapter.ViewHolder onCreateViewHolder(
+            ViewGroup viewGroup,
+            int i)
     {
-        return mImagePathList.size();
+        View view = LayoutInflater.from(viewGroup.getContext())
+                .inflate(R.layout.layout_photo_item, viewGroup, false);
+
+        return new ViewHolder(view);
     }
 
 
-    public Object getItem(int position)
+    @Override
+    public void onBindViewHolder(
+            ViewHolder viewHolder,
+            int i)
     {
-        return position;
+        ViewGroup.LayoutParams layoutParams = viewHolder.mImageView.getLayoutParams();
+        layoutParams.height = IMAGE_SIZE_DP;
+        layoutParams.width = IMAGE_SIZE_DP;
+
+        viewHolder.mImageView.setLayoutParams(layoutParams);
+        viewHolder.mImageView.setBackgroundResource(mItemBackground);
+        viewHolder.mImageView.setImageBitmap(createImagePreview(mImagePathList.get(i)));
     }
 
 
@@ -83,26 +98,14 @@ public class ImageAdapter
     }
 
 
-    public View getView(
-            int position,
-            View convertView,
-            ViewGroup parent)
+    @Override
+    public int getItemCount()
     {
-        ImageView imageView = new ImageView(mContext);
-
-        @SuppressWarnings("deprecation")
-        Gallery.LayoutParams layoutParams = new Gallery.LayoutParams(IMAGE_SIZE_DP, IMAGE_SIZE_DP);
-        imageView.setLayoutParams(layoutParams);
-
-        imageView.setImageBitmap(createImagePreview(mImagePathList.get(position), imageView));
-        imageView.setBackgroundResource(mItemBackground);
-        return imageView;
+        return mImagePathList.size();
     }
 
 
-    protected Bitmap createImagePreview(
-            String imagePath,
-            ImageView imageView)
+    protected Bitmap createImagePreview(String imagePath)
     {
         int targetW = IMAGE_SIZE_DP;
         int targetH = IMAGE_SIZE_DP;
@@ -120,5 +123,19 @@ public class ImageAdapter
         bmOptions.inPurgeable = true;
 
         return BitmapFactory.decodeFile(imagePath, bmOptions);
+    }
+
+
+    public static class ViewHolder
+            extends RecyclerView.ViewHolder
+    {
+        public ImageView mImageView;
+
+
+        public ViewHolder(View itemView)
+        {
+            super(itemView);
+            mImageView = (ImageView) itemView.findViewById(R.id.photo_item);
+        }
     }
 }
