@@ -39,7 +39,7 @@ import android.widget.Toast;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.activities.MainActivity;
-import com.nextgis.ngm_clink_monitoring.adapters.PhotoAdapter;
+import com.nextgis.ngm_clink_monitoring.adapters.ObjectPhotoAdapter;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 import com.nextgis.ngm_clink_monitoring.util.LocationUtil;
@@ -68,9 +68,9 @@ public class ObjectStatusFragment
     protected String mLineNameText;
     protected String mObjectNameText;
 
-    protected RecyclerView mPhotoGallery;
-    protected List<String> mPhotoList;
-    protected PhotoAdapter mPhotoAdapter;
+    protected RecyclerView       mPhotoGallery;
+    protected List<String>       mPhotoList;
+    protected ObjectPhotoAdapter mObjectPhotoAdapter;
 
     protected String mCurrentPhotoPath = null;
 
@@ -114,7 +114,7 @@ public class ObjectStatusFragment
         }
 */
 
-        mPhotoAdapter = new PhotoAdapter(getActivity(), mPhotoList);
+        mObjectPhotoAdapter = new ObjectPhotoAdapter(getActivity(), mPhotoList);
     }
 
 
@@ -195,7 +195,7 @@ public class ObjectStatusFragment
                 new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
 
         mPhotoGallery.setLayoutManager(layoutManager);
-        mPhotoGallery.setAdapter(mPhotoAdapter);
+        mPhotoGallery.setAdapter(mObjectPhotoAdapter);
         mPhotoGallery.setHasFixedSize(true);
 
 // TODO:
@@ -307,7 +307,7 @@ public class ObjectStatusFragment
             }
 
             mPhotoList.add(mCurrentPhotoPath);
-            mPhotoAdapter.notifyDataSetChanged();
+            mObjectPhotoAdapter.notifyDataSetChanged();
         }
     }
 

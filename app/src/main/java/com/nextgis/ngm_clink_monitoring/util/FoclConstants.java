@@ -41,7 +41,8 @@ public interface FoclConstants
     public static final String FIELD_STATUS_BUILT    = "status_built";
     public static final String FIELD_STATUS_BUILT_CH = "status_built_ch";
 
-    public static final String FIELD_VALUE_BUILT = "built";
+    public static final String FIELD_VALUE_PROJECT = "project";
+    public static final String FIELD_VALUE_BUILT   = "built";
 
     public static final String FOCL_PROJECT             = "FOCL_project";
     public static final String FOCL_ACCOUNT_NAME        = "Compulink Account";

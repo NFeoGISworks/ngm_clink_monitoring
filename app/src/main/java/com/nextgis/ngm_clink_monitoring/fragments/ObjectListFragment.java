@@ -39,8 +39,8 @@ import android.widget.TextView;
 import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
-import com.nextgis.ngm_clink_monitoring.adapters.FoclProjectAdapter;
-import com.nextgis.ngm_clink_monitoring.adapters.FoclVectorCursorAdapter;
+import com.nextgis.ngm_clink_monitoring.adapters.LineNameAdapter;
+import com.nextgis.ngm_clink_monitoring.adapters.ObjectCursorAdapter;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 import com.nextgis.ngm_clink_monitoring.map.FoclStruct;
 import com.nextgis.ngm_clink_monitoring.map.FoclVectorLayer;
@@ -134,7 +134,7 @@ public class ObjectListFragment
 
         final String[] lineName = {null};
 
-        FoclProjectAdapter projectAdapter = new FoclProjectAdapter(getActivity(), foclProject);
+        LineNameAdapter projectAdapter = new LineNameAdapter(getActivity(), foclProject);
 
         mLineNameSpinner.setAdapter(projectAdapter);
         mLineNameSpinner.setSelection(0);
@@ -175,7 +175,7 @@ public class ObjectListFragment
                             return;
                         }
 
-                        FoclVectorCursorAdapter cursorAdapter = new FoclVectorCursorAdapter(
+                        ObjectCursorAdapter cursorAdapter = new ObjectCursorAdapter(
                                 getActivity(), cursor,
                                 CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
 
@@ -203,7 +203,7 @@ public class ObjectListFragment
                         Cursor cursor = (Cursor) mObjectList.getAdapter().getItem(position);
                         OnObjectClick(
                                 mFoclStructLayerType, lineName[0],
-                                FoclVectorCursorAdapter.getObjectName(cursor));
+                                ObjectCursorAdapter.getObjectName(cursor));
                     }
                 });
 

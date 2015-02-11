@@ -36,8 +36,8 @@ import com.nextgis.ngm_clink_monitoring.R;
 import java.util.List;
 
 
-public class PhotoAdapter
-        extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
+public class ObjectPhotoAdapter
+        extends RecyclerView.Adapter<ObjectPhotoAdapter.ViewHolder>
 {
     protected static final int IMAGE_SIZE_PX = 120;
     protected final int IMAGE_SIZE_DP;
@@ -48,7 +48,7 @@ public class PhotoAdapter
     protected int mItemBackground;
 
 
-    public PhotoAdapter(
+    public ObjectPhotoAdapter(
             Context context,
             List<String> imagePathList)
     {
@@ -66,7 +66,7 @@ public class PhotoAdapter
 
 
     @Override
-    public PhotoAdapter.ViewHolder onCreateViewHolder(
+    public ObjectPhotoAdapter.ViewHolder onCreateViewHolder(
             ViewGroup viewGroup,
             int i)
     {

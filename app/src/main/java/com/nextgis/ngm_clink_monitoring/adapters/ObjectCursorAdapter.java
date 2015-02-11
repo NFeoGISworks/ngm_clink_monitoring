@@ -25,6 +25,8 @@ package com.nextgis.ngm_clink_monitoring.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,13 +37,13 @@ import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 
 
-public class FoclVectorCursorAdapter
+public class ObjectCursorAdapter
         extends CursorAdapter
 {
     private static LayoutInflater mInflater = null;
 
 
-    public FoclVectorCursorAdapter(
+    public ObjectCursorAdapter(
             Context context,
             Cursor c,
             int flags)
@@ -79,11 +81,12 @@ public class FoclVectorCursorAdapter
             Cursor cursor,
             ViewGroup viewGroup)
     {
-        View view = mInflater.inflate(R.layout.item_focl_vector, viewGroup, false);
-        ViewHolder holder = new ViewHolder();
-        view.setTag(holder);
+        View view = mInflater.inflate(R.layout.item_object_name, viewGroup, false);
+        ViewHolder viewHolder = new ViewHolder();
+        view.setTag(viewHolder);
 
-        holder.mFoclVectorName = (TextView) view.findViewById(R.id.focl_vector_name);
+        viewHolder.mObjectName = (TextView) view.findViewById(R.id.item_object_name);
+        viewHolder.mObjectStatus = (TextView) view.findViewById(R.id.item_object_status);
 
         return view;
     }
@@ -96,16 +99,43 @@ public class FoclVectorCursorAdapter
             Cursor cursor)
     {
         if (null == view) {
-            view = mInflater.inflate(R.layout.item_focl_vector, null);
+            view = mInflater.inflate(R.layout.item_object_name, null);
         }
 
         ViewHolder viewHolder = (ViewHolder) view.getTag();
-        viewHolder.mFoclVectorName.setText(getObjectName(cursor));
+        viewHolder.mObjectName.setText(getObjectName(cursor));
+
+        String status = cursor.getString(cursor.getColumnIndex(FoclConstants.FIELD_STATUS_BUILT));
+
+        Drawable background;
+
+        switch (status) {
+            case FoclConstants.FIELD_VALUE_PROJECT:
+                viewHolder.mObjectStatus.setText(mContext.getString(R.string.project));
+                background = mContext.getResources().getDrawable(R.drawable.border_status_red);
+                break;
+
+            case FoclConstants.FIELD_VALUE_BUILT:
+                viewHolder.mObjectStatus.setText(mContext.getString(R.string.built));
+                background = mContext.getResources().getDrawable(R.drawable.border_status_green);
+                break;
+
+            default:
+                background = mContext.getResources().getDrawable(R.drawable.border_status_red);
+                break;
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            viewHolder.mObjectStatus.setBackground(background);
+        } else {
+            viewHolder.mObjectStatus.setBackgroundDrawable(background);
+        }
     }
 
 
     public static class ViewHolder
     {
-        public TextView mFoclVectorName;
+        public TextView mObjectName;
+        public TextView mObjectStatus;
     }
 }

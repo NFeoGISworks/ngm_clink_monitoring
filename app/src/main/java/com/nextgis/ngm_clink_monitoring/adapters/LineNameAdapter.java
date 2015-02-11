@@ -33,14 +33,14 @@ import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 
 
-public class FoclProjectAdapter
+public class LineNameAdapter
         extends BaseAdapter
 {
     protected Context     mContext;
     protected FoclProject mFoclProject;
 
 
-    public FoclProjectAdapter(
+    public LineNameAdapter(
             Context context,
             FoclProject foclProject)
     {
@@ -78,7 +78,7 @@ public class FoclProjectAdapter
     {
         if (convertView == null) {
             LayoutInflater inflater = LayoutInflater.from(mContext);
-            convertView = inflater.inflate(R.layout.item_focl_struct, null);
+            convertView = inflater.inflate(R.layout.item_line_name, null);
         }
 
         Layer layer = (Layer) getItem(position);

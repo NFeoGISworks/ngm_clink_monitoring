@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <!--****************************************************************************
   * Project:  NextGIS mobile apps for Compulink
   * Purpose:  Mobile GIS for Android
@@ -21,26 +22,18 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ***************************************************************************-->
 
-<LinearLayout
+<shape
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:descendantFocusability="blocksDescendants"
-    android:gravity="center_vertical"
-    android:layout_height="?android:attr/listPreferredItemHeight"
-    android:layout_width="fill_parent"
-    android:orientation="horizontal"
+    android:shape="rectangle"
     >
 
-    <TextView
-        android:ellipsize="end"
-        android:gravity="center_vertical"
-        android:id="@+id/focl_vector_name"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_weight="1"
-        android:layout_width="fill_parent"
-        android:maxLines="2"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+    <solid
+        android:color="#ff8888"
         />
 
-</LinearLayout>
+    <stroke
+        android:color="#ffa0a0a0"
+        android:width="1dip"
+        />
+
+</shape>
