@@ -78,7 +78,7 @@ public class FoclProjectAdapter
     {
         if (convertView == null) {
             LayoutInflater inflater = LayoutInflater.from(mContext);
-            convertView = inflater.inflate(R.layout.layout_focl_struct_row, null);
+            convertView = inflater.inflate(R.layout.item_focl_struct, null);
         }
 
         Layer layer = (Layer) getItem(position);

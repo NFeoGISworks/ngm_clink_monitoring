@@ -61,6 +61,12 @@
 
     <string name="communication_line">Линия связи:</string>
 
+    <string name="optical_cables">Строительные длины:</string>
+    <string name="foscs">Муфты:</string>
+    <string name="crosses">Кроссы:</string>
+    <string name="telecom_cabinets">Телеком. шкафы:</string>
+    <string name="poles">Столбы/оконеч. опоры:</string>
+
     <string name="optical_cable">Строительная длина:</string>
     <string name="fosc">Муфта:</string>
     <string name="cross">Кросс:</string>

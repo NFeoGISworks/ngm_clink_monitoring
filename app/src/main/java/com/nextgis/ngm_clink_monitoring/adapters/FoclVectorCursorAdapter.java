@@ -52,13 +52,34 @@ public class FoclVectorCursorAdapter
     }
 
 
+    public static String getObjectName(Cursor cursor)
+    {
+        String id = cursor.getString(cursor.getColumnIndex(VectorLayer.FIELD_ID));
+        String name = cursor.getString(cursor.getColumnIndex(FoclConstants.FIELD_NAME));
+
+        String objectName;
+
+        if (id.length() == 1) {
+            id = "0" + id;
+        }
+
+        objectName = id;
+
+        if (null != name) {
+            objectName += " - " + name;
+        }
+
+        return objectName;
+    }
+
+
     @Override
     public View newView(
             Context context,
             Cursor cursor,
             ViewGroup viewGroup)
     {
-        View view = mInflater.inflate(R.layout.layout_focl_vector_row, viewGroup, false);
+        View view = mInflater.inflate(R.layout.item_focl_vector, viewGroup, false);
         ViewHolder holder = new ViewHolder();
         view.setTag(holder);
 
@@ -75,27 +96,11 @@ public class FoclVectorCursorAdapter
             Cursor cursor)
     {
         if (null == view) {
-            view = mInflater.inflate(R.layout.layout_focl_vector_row, null);
+            view = mInflater.inflate(R.layout.item_focl_vector, null);
         }
 
-        ViewHolder holder = (ViewHolder) view.getTag();
-
-        String id = cursor.getString(cursor.getColumnIndex(VectorLayer.FIELD_ID));
-        String name = cursor.getString(cursor.getColumnIndex(FoclConstants.FIELD_NAME));
-
-        String vectorName;
-
-        if (id.length() == 1) {
-            id = "0" + id;
-        }
-
-        vectorName = id;
-
-        if (null != name) {
-            vectorName += " - " + name;
-        }
-
-        holder.mFoclVectorName.setText(vectorName);
+        ViewHolder viewHolder = (ViewHolder) view.getTag();
+        viewHolder.mFoclVectorName.setText(getObjectName(cursor));
     }
 
 

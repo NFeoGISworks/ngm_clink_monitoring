@@ -33,9 +33,10 @@
         >
 
         <TextView
-            android:id="@+id/type_work"
+            android:id="@+id/work_type_caption"
             android:layout_gravity="start"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:text="@string/select_work_type"
             android:textAppearance="?android:attr/textAppearanceMedium"

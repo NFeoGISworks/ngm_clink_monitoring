@@ -61,6 +61,12 @@
 
     <string name="communication_line">Communication line:</string>
 
+    <string name="optical_cables">Optical cables:</string>
+    <string name="foscs">FOSC:</string>
+    <string name="crosses">Crosses:</string>
+    <string name="telecom_cabinets">Telecom. cabinets:</string>
+    <string name="poles">Poles:</string>
+
     <string name="optical_cable">Optical cable:</string>
     <string name="fosc">FOSC:</string>
     <string name="cross">Cross:</string>

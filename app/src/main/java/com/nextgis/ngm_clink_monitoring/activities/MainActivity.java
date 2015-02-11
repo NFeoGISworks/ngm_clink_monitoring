@@ -33,6 +33,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -42,9 +43,8 @@ import android.widget.Toast;
 import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
-import com.nextgis.ngm_clink_monitoring.fragments.LineWorkFragment;
+import com.nextgis.ngm_clink_monitoring.fragments.ObjectTypesFragment;
 import com.nextgis.ngm_clink_monitoring.fragments.StatusBarFragment;
-import com.nextgis.ngm_clink_monitoring.fragments.TypeWorkFragment;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstants;
 
 import java.io.File;
@@ -99,6 +99,38 @@ public class MainActivity
     {
         super.onCreate(savedInstanceState);
 
+        // initialize the default settings
+        PreferenceManager.setDefaultValues(this, R.xml.preferences_general, false);
+
+        setContentView(R.layout.activity_main);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        toolbar.getBackground().setAlpha(255);
+        setSupportActionBar(toolbar);
+
+        final FragmentManager fm = getSupportFragmentManager();
+
+        StatusBarFragment statusBarFragment = (StatusBarFragment) fm.findFragmentByTag("StatusBar");
+
+        if (statusBarFragment == null) {
+            statusBarFragment = new StatusBarFragment();
+
+            FragmentTransaction ft = fm.beginTransaction();
+            ft.add(R.id.status_bar_fragment, statusBarFragment, "StatusBar");
+            ft.commit();
+        }
+
+        ObjectTypesFragment objectTypesFragment =
+                (ObjectTypesFragment) fm.findFragmentByTag("ObjectTypes");
+
+        if (objectTypesFragment == null) {
+            objectTypesFragment = new ObjectTypesFragment();
+
+            FragmentTransaction ft = fm.beginTransaction();
+            ft.replace(R.id.object_fragment, objectTypesFragment, "ObjectTypes");
+            ft.commit();
+        }
+
         mSyncStatusObserver = new SyncStatusObserver()
         {
             @Override
@@ -122,62 +154,18 @@ public class MainActivity
                         });
             }
         };
+    }
 
-        // initialize the default settings
-        PreferenceManager.setDefaultValues(this, R.xml.preferences_general, false);
 
-        setContentView(R.layout.activity_main);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
-        toolbar.getBackground().setAlpha(255);
-        setSupportActionBar(toolbar);
-
-        StatusBarFragment statusBarFragment =
-                (StatusBarFragment) getSupportFragmentManager().findFragmentByTag("StatusBar");
-
-        if (statusBarFragment == null) {
-            statusBarFragment = new StatusBarFragment();
-
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.add(R.id.status_bar_fragment, statusBarFragment, "StatusBar");
-            ft.commit();
+    public void refreshView()
+    {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.object_fragment);
+        if (!fragment.isDetached()) {
+            getSupportFragmentManager().beginTransaction()
+                    .detach(fragment)
+                    .attach(fragment)
+                    .commit();
         }
-
-        TypeWorkFragment typeWorkFragment =
-                (TypeWorkFragment) getSupportFragmentManager().findFragmentByTag("TypeWork");
-
-        if (typeWorkFragment == null) {
-            typeWorkFragment = new TypeWorkFragment();
-
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.work_fragment, typeWorkFragment, "TypeWork");
-            ft.commit();
-        }
-
-        typeWorkFragment.setOnButtonsClickListener(
-                new TypeWorkFragment.OnButtonsClickListener()
-                {
-                    @Override
-                    public void OnButtonsClick(int workType)
-                    {
-                        FragmentTransaction frTr = getSupportFragmentManager().beginTransaction();
-
-                        LineWorkFragment lineWorkFragment =
-                                (LineWorkFragment) getSupportFragmentManager().findFragmentByTag(
-                                        "LineWork");
-
-                        if (lineWorkFragment == null) {
-                            lineWorkFragment = new LineWorkFragment();
-                        }
-
-                        lineWorkFragment.setParams(workType);
-
-                        frTr.replace(R.id.work_fragment, lineWorkFragment, "LineWork");
-                        frTr.addToBackStack(null);
-                        frTr.commit();
-                        getSupportFragmentManager().executePendingTransactions();
-                    }
-                });
     }
 
 
@@ -220,12 +208,17 @@ public class MainActivity
 
 
     @Override
+    public void OnReloadMap()
+    {
+        refreshView();
+    }
+
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-
-        // TODO: remove menu_sync for LineWorkFragment
 
         if (mIsSynchronizing) {
             menu.findItem(R.id.menu_sync).setEnabled(false);
@@ -305,24 +298,5 @@ public class MainActivity
     {
         Intent intentAbout = new Intent(this, AboutActivity.class);
         startActivity(intentAbout);
-    }
-
-
-    public void refreshView()
-    {
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.work_fragment);
-        if (!fragment.isDetached()) {
-            getSupportFragmentManager().beginTransaction()
-                    .detach(fragment)
-                    .attach(fragment)
-                    .commit();
-        }
-    }
-
-
-    @Override
-    public void OnReloadMap()
-    {
-        refreshView();
     }
 }

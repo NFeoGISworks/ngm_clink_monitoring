@@ -71,7 +71,7 @@ public class PhotoAdapter
             int i)
     {
         View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.layout_photo_item, viewGroup, false);
+                .inflate(R.layout.item_object_photo, viewGroup, false);
 
         return new ViewHolder(view);
     }

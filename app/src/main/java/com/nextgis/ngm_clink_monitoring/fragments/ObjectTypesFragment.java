@@ -24,6 +24,8 @@ package com.nextgis.ngm_clink_monitoring.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,10 +37,9 @@ import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 import com.nextgis.ngm_clink_monitoring.util.ViewUtil;
 
 
-public class TypeWorkFragment
+public class ObjectTypesFragment
         extends Fragment
 {
-    protected OnButtonsClickListener mOnButtonsClickListener;
     protected FoclProject mFoclProject = null;
 
 
@@ -48,7 +49,7 @@ public class TypeWorkFragment
             ViewGroup container,
             Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_type_works, null);
+        View view = inflater.inflate(R.layout.fragment_object_types, null);
 
         Button btnCableLaying = (Button) view.findViewById(R.id.btn_cable_laying);
         Button btnFoscMounting = (Button) view.findViewById(R.id.btn_fosc_mounting);
@@ -78,16 +79,18 @@ public class TypeWorkFragment
             return view;
         }
 
+
+        // TODO: remove it
+        btnLineMeasuring.setEnabled(false);
+
+
         btnCableLaying.setOnClickListener(
                 new View.OnClickListener()
                 {
                     @Override
                     public void onClick(View v)
                     {
-                        if (mOnButtonsClickListener != null) {
-                            mOnButtonsClickListener.OnButtonsClick(
-                                    FoclConstants.LAYERTYPE_FOCL_OPTICAL_CABLE);
-                        }
+                        OnButtonClick(FoclConstants.LAYERTYPE_FOCL_OPTICAL_CABLE);
                     }
                 });
 
@@ -97,10 +100,7 @@ public class TypeWorkFragment
                     @Override
                     public void onClick(View v)
                     {
-                        if (mOnButtonsClickListener != null) {
-                            mOnButtonsClickListener.OnButtonsClick(
-                                    FoclConstants.LAYERTYPE_FOCL_FOSC);
-                        }
+                        OnButtonClick(FoclConstants.LAYERTYPE_FOCL_FOSC);
                     }
                 });
 
@@ -110,10 +110,7 @@ public class TypeWorkFragment
                     @Override
                     public void onClick(View v)
                     {
-                        if (mOnButtonsClickListener != null) {
-                            mOnButtonsClickListener.OnButtonsClick(
-                                    FoclConstants.LAYERTYPE_FOCL_OPTICAL_CROSS);
-                        }
+                        OnButtonClick(FoclConstants.LAYERTYPE_FOCL_OPTICAL_CROSS);
                     }
                 });
 
@@ -123,10 +120,7 @@ public class TypeWorkFragment
                     @Override
                     public void onClick(View v)
                     {
-                        if (mOnButtonsClickListener != null) {
-                            mOnButtonsClickListener.OnButtonsClick(
-                                    FoclConstants.LAYERTYPE_FOCL_TELECOM_CABINET);
-                        }
+                        OnButtonClick(FoclConstants.LAYERTYPE_FOCL_TELECOM_CABINET);
                     }
                 });
 
@@ -136,10 +130,7 @@ public class TypeWorkFragment
                     @Override
                     public void onClick(View v)
                     {
-                        if (mOnButtonsClickListener != null) {
-                            mOnButtonsClickListener.OnButtonsClick(
-                                    FoclConstants.LAYERTYPE_FOCL_POLE);
-                        }
+                        OnButtonClick(FoclConstants.LAYERTYPE_FOCL_POLE);
                     }
                 });
 
@@ -149,10 +140,7 @@ public class TypeWorkFragment
                     @Override
                     public void onClick(View v)
                     {
-                        if (mOnButtonsClickListener != null) {
-                            mOnButtonsClickListener.OnButtonsClick(
-                                    FoclConstants.LAYERTYPE_FOCL_LINE_MEASURING);
-                        }
+                        OnButtonClick(FoclConstants.LAYERTYPE_FOCL_LINE_MEASURING);
                     }
                 });
 
@@ -160,14 +148,28 @@ public class TypeWorkFragment
     }
 
 
-    public void setOnButtonsClickListener(OnButtonsClickListener onButtonsClickListener)
+    public void OnButtonClick(int workType)
     {
-        mOnButtonsClickListener = onButtonsClickListener;
-    }
+        final FragmentManager fm = getActivity().getSupportFragmentManager();
 
+        StatusBarFragment statusBarFragment = (StatusBarFragment) fm.findFragmentByTag("StatusBar");
 
-    public interface OnButtonsClickListener
-    {
-        void OnButtonsClick(int workType);
+        ObjectListFragment objectListFragment =
+                (ObjectListFragment) fm.findFragmentByTag("ObjectList");
+
+        if (objectListFragment == null) {
+            objectListFragment = new ObjectListFragment();
+        }
+
+        objectListFragment.setParams(workType);
+
+        FragmentTransaction ft = fm.beginTransaction();
+        if (null != statusBarFragment) {
+            ft.hide(statusBarFragment);
+        }
+        ft.replace(R.id.object_fragment, objectListFragment, "ObjectList");
+        ft.addToBackStack(null);
+        ft.commit();
+        fm.executePendingTransactions();
     }
 }

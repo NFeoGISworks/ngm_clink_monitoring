@@ -23,73 +23,67 @@
 package com.nextgis.ngm_clink_monitoring.fragments;
 
 import android.app.Activity;
-import android.content.ContentUris;
-import android.content.ContentValues;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.CursorAdapter;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.nextgis.maplib.map.VectorLayer;
-import com.nextgis.maplib.util.Constants;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.activities.MainActivity;
-import com.nextgis.ngm_clink_monitoring.adapters.FoclProjectAdapter;
-import com.nextgis.ngm_clink_monitoring.adapters.FoclVectorCursorAdapter;
 import com.nextgis.ngm_clink_monitoring.adapters.PhotoAdapter;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
-import com.nextgis.ngm_clink_monitoring.map.FoclStruct;
-import com.nextgis.ngm_clink_monitoring.map.FoclVectorLayer;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
-import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstants;
 import com.nextgis.ngm_clink_monitoring.util.LocationUtil;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 
-public class LineWorkFragment
+public class ObjectStatusFragment
         extends Fragment
 {
     private static final int REQUEST_TAKE_PHOTO = 1;
 
     protected TextView mWorkTypeName;
-    protected TextView mObjectCaption;
+    protected TextView mLineName;
+    protected TextView mObjectNameCaption;
+    protected TextView mObjectName;
     protected TextView mPhotoHintText;
+    protected Button   mMakePhotoButton;
 
-    protected Spinner mLineName;
-    protected Spinner mObjectName;
+    protected int mFoclStructLayerType = FoclConstants.LAYERTYPE_FOCL_UNKNOWN;
+    protected String mLineNameText;
+    protected String mObjectNameText;
 
     protected RecyclerView mPhotoGallery;
-
-    protected Button mMakePhotoButton;
-    protected Button mSaveButton;
-    protected Button mCancelButton;
-
-    protected String mCurrentPhotoPath    = null;
-    protected int    mFoclStructLayerType = FoclConstants.LAYERTYPE_FOCL_UNKNOWN;
-
     protected List<String> mPhotoList;
     protected PhotoAdapter mPhotoAdapter;
+
+    protected String mCurrentPhotoPath = null;
+
+
+    public void setParams(
+            int foclStructLayerType,
+            String lineName,
+            String objectName)
+    {
+        mFoclStructLayerType = foclStructLayerType;
+        mLineNameText = lineName;
+        mObjectNameText = objectName;
+    }
 
 
     @Override
@@ -130,60 +124,82 @@ public class LineWorkFragment
             ViewGroup container,
             Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_line_work, null);
+        View view = inflater.inflate(R.layout.fragment_object_status, null);
 
-        mWorkTypeName = (TextView) view.findViewById(R.id.work_type_name);
-        mObjectCaption = (TextView) view.findViewById(R.id.object_caption);
+        mWorkTypeName = (TextView) view.findViewById(R.id.work_type_name_st);
+        mLineName = (TextView) view.findViewById(R.id.line_name);
+        mObjectNameCaption = (TextView) view.findViewById(R.id.object_name_caption);
+        mObjectName = (TextView) view.findViewById(R.id.object_name);
         mPhotoHintText = (TextView) view.findViewById(R.id.photo_hint_text);
-
-        mLineName = (Spinner) view.findViewById(R.id.line_name);
-        mObjectName = (Spinner) view.findViewById(R.id.object_name);
 
         mPhotoGallery = (RecyclerView) view.findViewById(R.id.photo_gallery);
 
         mMakePhotoButton = (Button) view.findViewById(R.id.btn_make_photo);
-        mSaveButton = (Button) view.findViewById(R.id.btn_save);
-        mCancelButton = (Button) view.findViewById(R.id.btn_cancel);
 
         switch (mFoclStructLayerType) {
             case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CABLE:
                 mWorkTypeName.setText(R.string.cable_laying);
-                mObjectCaption.setText(R.string.optical_cable);
+                mObjectNameCaption.setText(R.string.optical_cable);
                 mPhotoHintText.setText(R.string.take_photos_to_confirm);
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_FOSC:
                 mWorkTypeName.setText(R.string.fosc_mounting);
-                mObjectCaption.setText(R.string.fosc);
+                mObjectNameCaption.setText(R.string.fosc);
                 mPhotoHintText.setText(R.string.take_photos_to_confirm_fosc);
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CROSS:
                 mWorkTypeName.setText(R.string.cross_mounting);
-                mObjectCaption.setText(R.string.cross);
+                mObjectNameCaption.setText(R.string.cross);
                 mPhotoHintText.setText(R.string.take_photos_to_confirm);
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_TELECOM_CABINET:
                 mWorkTypeName.setText(R.string.cabinet_mounting);
-                mObjectCaption.setText(R.string.telecom_cabinet);
+                mObjectNameCaption.setText(R.string.telecom_cabinet);
                 mPhotoHintText.setText(R.string.take_photos_to_confirm);
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_POLE:
                 mWorkTypeName.setText(R.string.pole_mounting);
-                mObjectCaption.setText(R.string.pole);
+                mObjectNameCaption.setText(R.string.pole);
                 mPhotoHintText.setText(R.string.take_photos_to_confirm);
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_LINE_MEASURING:
                 mWorkTypeName.setText(R.string.line_measuring);
-                mObjectCaption.setVisibility(View.INVISIBLE);
+                mObjectNameCaption.setVisibility(View.INVISIBLE);
                 mObjectName.setVisibility(View.INVISIBLE);
                 mPhotoHintText.setText(R.string.take_photos_to_confirm);
                 break;
         }
 
+        GISApplication app = (GISApplication) getActivity().getApplication();
+        final FoclProject foclProject = app.getFoclProject();
+
+        if (null == foclProject) {
+            mLineName.setText("");
+            mObjectName.setText("");
+            mPhotoGallery.setEnabled(false);
+            mPhotoGallery.setAdapter(null);
+            mMakePhotoButton.setEnabled(false);
+            mMakePhotoButton.setOnClickListener(null);
+            return view;
+        }
+
+        mLineName.setText(mLineNameText);
+        mObjectName.setText(mObjectNameText);
+
+        RecyclerView.LayoutManager layoutManager =
+                new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+
+        mPhotoGallery.setLayoutManager(layoutManager);
+        mPhotoGallery.setAdapter(mPhotoAdapter);
+        mPhotoGallery.setHasFixedSize(true);
+
+// TODO:
+/*
         mCancelButton.setOnClickListener(
                 new View.OnClickListener()
                 {
@@ -193,114 +209,14 @@ public class LineWorkFragment
                         getActivity().getSupportFragmentManager().popBackStackImmediate();
                     }
                 });
+*/
 
-        GISApplication app = (GISApplication) getActivity().getApplication();
-        final FoclProject foclProject = app.getFoclProject();
-
-        if (null == foclProject) {
-            mLineName.setEnabled(false);
-            mLineName.setAdapter(null);
-            mObjectName.setEnabled(false);
-            mObjectName.setAdapter(null);
-            mPhotoGallery.setEnabled(false);
-            mPhotoGallery.setAdapter(null);
-            mMakePhotoButton.setEnabled(false);
-            mMakePhotoButton.setOnClickListener(null);
-            mSaveButton.setEnabled(false);
-            mSaveButton.setOnClickListener(null);
-            return view;
-        }
-
-        RecyclerView.LayoutManager layoutManager =
-                new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
-
-        mPhotoGallery.setLayoutManager(layoutManager);
-        mPhotoGallery.setAdapter(mPhotoAdapter);
-        mPhotoGallery.setHasFixedSize(true);
-
+// TODO:
         final String[] itemLayerName = {null};
         final Long[] itemId = {null};
 
-        FoclProjectAdapter projectAdapter = new FoclProjectAdapter(getActivity(), foclProject);
-
-        mLineName.setAdapter(projectAdapter);
-        mLineName.setSelection(0);
-        mLineName.setOnItemSelectedListener(
-                new AdapterView.OnItemSelectedListener()
-                {
-                    @Override
-                    public void onItemSelected(
-                            AdapterView<?> parent,
-                            View view,
-                            int position,
-                            long id)
-                    {
-                        FoclStruct foclStruct = (FoclStruct) foclProject.getLayer(position);
-                        FoclVectorLayer layer = (FoclVectorLayer) foclStruct.getLayerByFoclType(
-                                mFoclStructLayerType);
-                        itemLayerName[0] = layer.getPath().getName();
-
-                        Uri uri = Uri.parse(
-                                "content://" + FoclSettingsConstants.AUTHORITY + "/" +
-                                itemLayerName[0]);
-
-                        String proj[] = {
-                                VectorLayer.FIELD_ID,
-                                FoclConstants.FIELD_NAME,
-                                FoclConstants.FIELD_STATUS_BUILT};
-
-                        Cursor cursor = getActivity().getContentResolver()
-                                .query(uri, proj, null, null, null);
-
-                        if (cursor.getCount() > 0) {
-                            mObjectName.setEnabled(true);
-                            mSaveButton.setEnabled(true);
-                            mMakePhotoButton.setEnabled(true);
-                        } else {
-                            mObjectName.setAdapter(null);
-                            mObjectName.setEnabled(false);
-                            mSaveButton.setEnabled(false);
-                            mMakePhotoButton.setEnabled(false);
-                            return;
-                        }
-
-                        FoclVectorCursorAdapter cursorAdapter = new FoclVectorCursorAdapter(
-                                getActivity(), cursor,
-                                CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
-
-                        mObjectName.setAdapter(cursorAdapter);
-                        mObjectName.setSelection(0);
-                    }
-
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> parent)
-                    {
-
-                    }
-                });
-
-        mObjectName.setOnItemSelectedListener(
-                new AdapterView.OnItemSelectedListener()
-                {
-                    @Override
-                    public void onItemSelected(
-                            AdapterView<?> parent,
-                            View view,
-                            int position,
-                            long id)
-                    {
-                        itemId[0] = id;
-                    }
-
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> parent)
-                    {
-
-                    }
-                });
-
+// TODO:
+/*
         mSaveButton.setOnClickListener(
                 new View.OnClickListener()
                 {
@@ -336,6 +252,7 @@ public class LineWorkFragment
                         getActivity().getSupportFragmentManager().popBackStackImmediate();
                     }
                 });
+*/
 
         mMakePhotoButton.setOnClickListener(
                 new View.OnClickListener()
@@ -439,11 +356,5 @@ public class LineWorkFragment
         emptyFile.createNewFile();
 
         return emptyFile;
-    }
-
-
-    public void setParams(int workType)
-    {
-        mFoclStructLayerType = workType;
     }
 }
