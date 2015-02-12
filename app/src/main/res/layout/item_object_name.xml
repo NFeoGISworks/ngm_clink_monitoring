@@ -52,10 +52,10 @@
         />
 
     <TextView
+        android:id="@+id/item_object_status"
         android:background="@drawable/border_status_red"
         android:ellipsize="end"
         android:gravity="center"
-        android:id="@+id/item_object_status"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_height="wrap_content"

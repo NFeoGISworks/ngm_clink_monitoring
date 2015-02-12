@@ -133,6 +133,7 @@ public class ObjectListFragment
         }
 
         final String[] lineName = {null};
+        final String[] objectLayerName = {null};
 
         LineNameAdapter projectAdapter = new LineNameAdapter(getActivity(), foclProject);
 
@@ -149,11 +150,11 @@ public class ObjectListFragment
                             long id)
                     {
                         FoclStruct foclStruct = (FoclStruct) foclProject.getLayer(position);
-
                         lineName[0] = foclStruct.getName();
 
                         FoclVectorLayer layer = (FoclVectorLayer) foclStruct.getLayerByFoclType(
                                 mFoclStructLayerType);
+                        objectLayerName[0] = layer.getPath().getName();
 
                         Uri uri = Uri.parse(
                                 "content://" + FoclSettingsConstants.AUTHORITY + "/" +
@@ -202,8 +203,7 @@ public class ObjectListFragment
                     {
                         Cursor cursor = (Cursor) mObjectList.getAdapter().getItem(position);
                         OnObjectClick(
-                                mFoclStructLayerType, lineName[0],
-                                ObjectCursorAdapter.getObjectName(cursor));
+                                mFoclStructLayerType, lineName[0], objectLayerName[0], cursor);
                     }
                 });
 
@@ -214,7 +214,8 @@ public class ObjectListFragment
     public void OnObjectClick(
             int foclStructLayerType,
             String lineName,
-            String objectName)
+            String objectLayerName,
+            Cursor objectCursor)
     {
         final FragmentManager fm = getActivity().getSupportFragmentManager();
 
@@ -225,7 +226,8 @@ public class ObjectListFragment
             objectStatusFragment = new ObjectStatusFragment();
         }
 
-        objectStatusFragment.setParams(foclStructLayerType, lineName, objectName);
+        objectStatusFragment.setParams(
+                foclStructLayerType, lineName, objectLayerName, objectCursor);
 
         FragmentTransaction ft = fm.beginTransaction();
         ft.replace(R.id.object_fragment, objectStatusFragment, "ObjectStatus");

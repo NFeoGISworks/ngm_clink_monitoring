@@ -101,6 +101,9 @@
     <string name="project">Проект</string>
     <string name="built">Постр</string>
 
+    <string name="builted">Построен</string>
+    <string name="not_builted">НЕ построен</string>
+
     <string name="app_description">Мобильное приложение для ввода данных о ходе строительства ВОЛС.</string>
 
     <string name="credits_intro">Лицензии:</string>

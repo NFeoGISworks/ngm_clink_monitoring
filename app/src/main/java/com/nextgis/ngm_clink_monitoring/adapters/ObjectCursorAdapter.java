@@ -112,16 +112,13 @@ public class ObjectCursorAdapter
         switch (status) {
             case FoclConstants.FIELD_VALUE_PROJECT:
                 viewHolder.mObjectStatus.setText(mContext.getString(R.string.project));
+            default:
                 background = mContext.getResources().getDrawable(R.drawable.border_status_red);
                 break;
 
             case FoclConstants.FIELD_VALUE_BUILT:
                 viewHolder.mObjectStatus.setText(mContext.getString(R.string.built));
                 background = mContext.getResources().getDrawable(R.drawable.border_status_green);
-                break;
-
-            default:
-                background = mContext.getResources().getDrawable(R.drawable.border_status_red);
                 break;
         }
 

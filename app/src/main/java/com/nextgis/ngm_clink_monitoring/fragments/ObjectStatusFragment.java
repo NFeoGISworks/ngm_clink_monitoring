@@ -23,31 +23,42 @@
 package com.nextgis.ngm_clink_monitoring.fragments;
 
 import android.app.Activity;
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.nextgis.maplib.map.VectorLayer;
+import com.nextgis.maplib.util.Constants;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.activities.MainActivity;
+import com.nextgis.ngm_clink_monitoring.adapters.ObjectCursorAdapter;
 import com.nextgis.ngm_clink_monitoring.adapters.ObjectPhotoAdapter;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
+import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstants;
 import com.nextgis.ngm_clink_monitoring.util.LocationUtil;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -61,12 +72,18 @@ public class ObjectStatusFragment
     protected TextView mLineName;
     protected TextView mObjectNameCaption;
     protected TextView mObjectName;
+    protected TextView mStatusButtonNotBuilted;
+    protected TextView mStatusButtonBuilted;
     protected TextView mPhotoHintText;
     protected Button   mMakePhotoButton;
 
     protected int mFoclStructLayerType = FoclConstants.LAYERTYPE_FOCL_UNKNOWN;
     protected String mLineNameText;
+    protected String mObjectLayerName;
+    protected Cursor mObjectCursor;
+    protected long   mObjectId;
     protected String mObjectNameText;
+    protected String mObjectStatus;
 
     protected RecyclerView       mPhotoGallery;
     protected List<String>       mPhotoList;
@@ -78,11 +95,17 @@ public class ObjectStatusFragment
     public void setParams(
             int foclStructLayerType,
             String lineName,
-            String objectName)
+            String objectLayerName,
+            Cursor objectCursor)
     {
         mFoclStructLayerType = foclStructLayerType;
         mLineNameText = lineName;
-        mObjectNameText = objectName;
+        mObjectLayerName = objectLayerName;
+        mObjectCursor = objectCursor;
+        mObjectId = objectCursor.getLong(objectCursor.getColumnIndex(VectorLayer.FIELD_ID));
+        mObjectNameText = ObjectCursorAdapter.getObjectName(objectCursor);
+        mObjectStatus = mObjectCursor.getString(
+                mObjectCursor.getColumnIndex(FoclConstants.FIELD_STATUS_BUILT));
     }
 
 
@@ -130,6 +153,8 @@ public class ObjectStatusFragment
         mLineName = (TextView) view.findViewById(R.id.line_name);
         mObjectNameCaption = (TextView) view.findViewById(R.id.object_name_caption);
         mObjectName = (TextView) view.findViewById(R.id.object_name);
+        mStatusButtonNotBuilted = (TextView) view.findViewById(R.id.status_not_builted);
+        mStatusButtonBuilted = (TextView) view.findViewById(R.id.status_builted);
         mPhotoHintText = (TextView) view.findViewById(R.id.photo_hint_text);
 
         mPhotoGallery = (RecyclerView) view.findViewById(R.id.photo_gallery);
@@ -181,6 +206,8 @@ public class ObjectStatusFragment
         if (null == foclProject) {
             mLineName.setText("");
             mObjectName.setText("");
+            mStatusButtonNotBuilted.setEnabled(false);
+            mStatusButtonBuilted.setEnabled(false);
             mPhotoGallery.setEnabled(false);
             mPhotoGallery.setAdapter(null);
             mMakePhotoButton.setEnabled(false);
@@ -211,48 +238,51 @@ public class ObjectStatusFragment
                 });
 */
 
-// TODO:
-        final String[] itemLayerName = {null};
-        final Long[] itemId = {null};
+        setStatusButtonView();
 
-// TODO:
-/*
-        mSaveButton.setOnClickListener(
-                new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View v)
-                    {
-                        Uri uri = Uri.parse(
-                                "content://" + FoclSettingsConstants.AUTHORITY + "/" +
-                                itemLayerName[0]);
-                        Uri updateUri = ContentUris.withAppendedId(uri, itemId[0]);
+        View.OnClickListener statusButtonOnClickListener = new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                switch (mObjectStatus) {
+                    case FoclConstants.FIELD_VALUE_PROJECT:
+                    default:
+                        mObjectStatus = FoclConstants.FIELD_VALUE_BUILT;
+                        break;
 
-                        ContentValues values = new ContentValues();
-                        values.put(
-                                FoclConstants.FIELD_STATUS_BUILT, FoclConstants.FIELD_VALUE_BUILT);
+                    case FoclConstants.FIELD_VALUE_BUILT:
+                        mObjectStatus = FoclConstants.FIELD_VALUE_PROJECT;
+                        break;
+                }
 
-                        Calendar calendar = Calendar.getInstance();
-                        values.put(FoclConstants.FIELD_STATUS_BUILT_CH, calendar.getTimeInMillis());
+                Uri uri = Uri.parse(
+                        "content://" + FoclSettingsConstants.AUTHORITY + "/" + mObjectLayerName);
+                Uri updateUri = ContentUris.withAppendedId(uri, mObjectId);
 
-                        int result = getActivity().getContentResolver()
-                                .update(updateUri, values, null, null);
-                        if (result == 0) {
-                            Log.d(
-                                    Constants.TAG,
-                                    "Layer: " + itemLayerName[0] + ", id: " + itemId[0] +
-                                    ", update FAILED");
-                        } else {
-                            Log.d(
-                                    Constants.TAG,
-                                    "Layer: " + itemLayerName[0] + ", id: " + itemId[0] +
-                                    ", update result: " + result);
-                        }
+                ContentValues values = new ContentValues();
+                values.put(FoclConstants.FIELD_STATUS_BUILT, mObjectStatus);
 
-                        getActivity().getSupportFragmentManager().popBackStackImmediate();
-                    }
-                });
-*/
+                Calendar calendar = Calendar.getInstance();
+                values.put(FoclConstants.FIELD_STATUS_BUILT_CH, calendar.getTimeInMillis());
+
+                int result =
+                        getActivity().getContentResolver().update(updateUri, values, null, null);
+                if (result == 0) {
+                    Log.d(
+                            Constants.TAG, "Layer: " + mObjectLayerName + ", id: " + mObjectId +
+                                           ", update FAILED");
+                } else {
+                    Log.d(
+                            Constants.TAG, "Layer: " + mObjectLayerName + ", id: " + mObjectId +
+                                           ", update result: " + result);
+                    setStatusButtonView();
+                }
+            }
+        };
+
+        mStatusButtonNotBuilted.setOnClickListener(statusButtonOnClickListener);
+        mStatusButtonBuilted.setOnClickListener(statusButtonOnClickListener);
 
         mMakePhotoButton.setOnClickListener(
                 new View.OnClickListener()
@@ -287,6 +317,38 @@ public class ObjectStatusFragment
                 });
 
         return view;
+    }
+
+
+    protected void setStatusButtonView()
+    {
+        Drawable backgroundNotBuilted;
+        Drawable backgroundBuilted;
+
+        switch (mObjectStatus) {
+            case FoclConstants.FIELD_VALUE_PROJECT:
+            default:
+                backgroundNotBuilted =
+                        getActivity().getResources().getDrawable(R.drawable.border_status_red);
+                backgroundBuilted =
+                        getActivity().getResources().getDrawable(R.drawable.border_status_grey);
+                break;
+
+            case FoclConstants.FIELD_VALUE_BUILT:
+                backgroundNotBuilted =
+                        getActivity().getResources().getDrawable(R.drawable.border_status_grey);
+                backgroundBuilted =
+                        getActivity().getResources().getDrawable(R.drawable.border_status_green);
+                break;
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            mStatusButtonNotBuilted.setBackground(backgroundNotBuilted);
+            mStatusButtonBuilted.setBackground(backgroundBuilted);
+        } else {
+            mStatusButtonNotBuilted.setBackgroundDrawable(backgroundNotBuilted);
+            mStatusButtonBuilted.setBackgroundDrawable(backgroundBuilted);
+        }
     }
 
 

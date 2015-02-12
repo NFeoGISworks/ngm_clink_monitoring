@@ -101,6 +101,9 @@
     <string name="project">Project</string>
     <string name="built">Built</string>
 
+    <string name="builted">Builted</string>
+    <string name="not_builted">NOT builted</string>
+
     <string name="app_description">Mobile application for data entry on the FOCL construction.</string>
 
     <string name="credits_intro">Credits:</string>
