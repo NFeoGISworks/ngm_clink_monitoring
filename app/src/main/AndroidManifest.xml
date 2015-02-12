@@ -118,11 +118,13 @@
 
         <service
             android:exported="true"
-            android:name=".services.FoclSyncService"
+            android:name="com.nextgis.ngm_clink_monitoring.services.FoclSyncService"
             android:process=":sync"
             >
             <intent-filter>
-                <action android:name="android.content.SyncAdapter"/>
+                <action
+                    android:name="android.content.SyncAdapter"
+                    />
             </intent-filter>
             <meta-data
                 android:name="android.content.SyncAdapter"

@@ -20,111 +20,122 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ***************************************************************************-->
 
-<ScrollView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/maprl"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     >
 
-    <LinearLayout
+    <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:orientation="vertical"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         >
-
-        <TextView
-            android:id="@+id/work_type_caption"
-            android:layout_gravity="start"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_width="match_parent"
-            android:text="@string/select_work_type"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="#ff000000"
-            />
 
         <LinearLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             >
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/work_type_caption"
+                android:layout_gravity="start"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="3dp"
-                android:layout_weight=".5"
-                android:layout_width="0dip"
-                android:orientation="vertical"
-                >
-
-                <Button
-                    android:id="@+id/btn_cable_laying"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_width="match_parent"
-                    android:text="@string/cable_laying"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    />
-
-                <Button
-                    android:id="@+id/btn_cross_mounting"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_width="match_parent"
-                    android:text="@string/cross_mounting"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    />
-
-                <Button
-                    android:id="@+id/btn_pole_mounting"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_width="match_parent"
-                    android:text="@string/pole_mounting"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    />
-
-            </LinearLayout>
+                android:layout_width="match_parent"
+                android:text="@string/select_work_type"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="#ff000000"
+                />
 
             <LinearLayout
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="3dp"
-                android:layout_weight=".5"
-                android:layout_width="0dip"
-                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
                 >
 
-                <Button
-                    android:id="@+id/btn_fosc_mounting"
+                <LinearLayout
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_width="match_parent"
-                    android:text="@string/fosc_mounting"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    />
+                    android:layout_marginRight="3dp"
+                    android:layout_weight=".5"
+                    android:layout_width="0dip"
+                    android:orientation="vertical"
+                    >
 
-                <Button
-                    android:id="@+id/btn_cabinet_mounting"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_width="match_parent"
-                    android:text="@string/cabinet_mounting"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    />
+                    <Button
+                        android:id="@+id/btn_cable_laying"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_width="match_parent"
+                        android:text="@string/cable_laying"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        />
 
-                <Button
-                    android:id="@+id/btn_line_measuring"
+                    <Button
+                        android:id="@+id/btn_cross_mounting"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_width="match_parent"
+                        android:text="@string/cross_mounting"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        />
+
+                    <Button
+                        android:id="@+id/btn_pole_mounting"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_width="match_parent"
+                        android:text="@string/pole_mounting"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_width="match_parent"
-                    android:text="@string/line_measuring"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    />
+                    android:layout_marginLeft="3dp"
+                    android:layout_weight=".5"
+                    android:layout_width="0dip"
+                    android:orientation="vertical"
+                    >
+
+                    <Button
+                        android:id="@+id/btn_fosc_mounting"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_width="match_parent"
+                        android:text="@string/fosc_mounting"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        />
+
+                    <Button
+                        android:id="@+id/btn_cabinet_mounting"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_width="match_parent"
+                        android:text="@string/cabinet_mounting"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        />
+
+                    <Button
+                        android:id="@+id/btn_line_measuring"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_width="match_parent"
+                        android:text="@string/line_measuring"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        />
+
+                </LinearLayout>
 
             </LinearLayout>
 
         </LinearLayout>
 
-    </LinearLayout>
+    </ScrollView>
 
-</ScrollView>
+</LinearLayout>

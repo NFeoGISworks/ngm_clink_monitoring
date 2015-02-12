@@ -27,54 +27,81 @@
     android:orientation="vertical"
     >
 
-    <TextView
-        android:background="@drawable/border_object_type_name"
-        android:id="@+id/work_type_name"
+    <android.support.v7.widget.Toolbar
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/object_list_toolbar"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:paddingBottom="5dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:paddingTop="5dp"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="#ff000000"
-        />
+        android:minHeight="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        >
 
-    <TextView
-        android:id="@+id/line_spinner_caption"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:paddingTop="5dp"
-        android:text="@string/communication_line"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="#ff000000"
-        />
+    </android.support.v7.widget.Toolbar>
 
-    <Spinner
-        android:id="@+id/line_name_spinner"
-        android:layout_height="wrap_content"
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_height="match_parent"
         android:layout_width="match_parent"
-        />
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:orientation="vertical"
+        >
 
-    <TextView
-        android:id="@+id/object_list_caption"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:paddingBottom="5dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:paddingTop="5dp"
-        android:text="@string/optical_cables"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="#ff000000"
-        />
+        <TextView
+            android:background="@drawable/border_object_type_name"
+            android:id="@+id/work_type_name"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:paddingBottom="5dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="5dp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="#ff000000"
+            />
 
-    <ListView
-        android:id="@+id/object_list"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        />
+        <TextView
+            android:id="@+id/line_spinner_caption"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="5dp"
+            android:text="@string/communication_line"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="#ff000000"
+            />
+
+        <Spinner
+            android:id="@+id/line_name_spinner"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            />
+
+        <TextView
+            android:id="@+id/object_list_caption"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:paddingBottom="5dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="5dp"
+            android:text="@string/optical_cables"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="#ff000000"
+            />
+
+        <ListView
+            android:id="@+id/object_list"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            />
+
+    </LinearLayout>
 
 </LinearLayout>

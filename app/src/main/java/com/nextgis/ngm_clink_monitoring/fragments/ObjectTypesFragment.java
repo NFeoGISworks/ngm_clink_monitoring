@@ -26,6 +26,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,6 +51,13 @@ public class ObjectTypesFragment
             ViewGroup container,
             Bundle savedInstanceState)
     {
+        ActionBarActivity activity = (ActionBarActivity) getActivity();
+
+        ViewGroup rootView =
+                (ViewGroup) activity.getWindow().getDecorView().findViewById(android.R.id.content);
+        Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.object_types_toolbar);
+        toolbar.setVisibility(View.VISIBLE);
+
         View view = inflater.inflate(R.layout.fragment_object_types, null);
 
         Button btnCableLaying = (Button) view.findViewById(R.id.btn_cable_laying);

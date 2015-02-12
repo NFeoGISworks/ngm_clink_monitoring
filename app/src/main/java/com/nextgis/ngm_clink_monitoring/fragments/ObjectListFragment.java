@@ -29,6 +29,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.CursorAdapter;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,7 +82,21 @@ public class ObjectListFragment
             ViewGroup container,
             Bundle savedInstanceState)
     {
+        ActionBarActivity activity = (ActionBarActivity) getActivity();
+
+        ViewGroup rootView =
+                (ViewGroup) activity.getWindow().getDecorView().findViewById(android.R.id.content);
+        Toolbar typesToolbar = (Toolbar) rootView.findViewById(R.id.object_types_toolbar);
+        typesToolbar.setVisibility(View.GONE);
+
         View view = inflater.inflate(R.layout.fragment_object_list, null);
+
+        Toolbar toolbar = (Toolbar) view.findViewById(R.id.object_list_toolbar);
+        toolbar.getBackground().setAlpha(255);
+        toolbar.setTitle(activity.getString(R.string.backward) + "  -  " + activity.getTitle());
+        toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+
+        activity.setSupportActionBar(toolbar);
 
         mWorkTypeName = (TextView) view.findViewById(R.id.work_type_name);
         mObjectListCaption = (TextView) view.findViewById(R.id.object_list_caption);

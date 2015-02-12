@@ -66,34 +66,6 @@ public class MainActivity
     protected boolean mIsSynchronizing = false;
 
 
-    private static boolean isSyncActive(
-            Account account,
-            String authority)
-    {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            return isSyncActiveHoneycomb(account, authority);
-        } else {
-            SyncInfo currentSync = ContentResolver.getCurrentSync();
-            return currentSync != null && currentSync.account.equals(account) &&
-                   currentSync.authority.equals(authority);
-        }
-    }
-
-
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    private static boolean isSyncActiveHoneycomb(
-            Account account,
-            String authority)
-    {
-        for (SyncInfo syncInfo : ContentResolver.getCurrentSyncs()) {
-            if (syncInfo.account.equals(account) && syncInfo.authority.equals(authority)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -104,7 +76,7 @@ public class MainActivity
 
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.object_types_toolbar);
         toolbar.getBackground().setAlpha(255);
         setSupportActionBar(toolbar);
 
@@ -240,6 +212,10 @@ public class MainActivity
     {
         switch (item.getItemId()) {
 
+            case android.R.id.home:
+                getSupportFragmentManager().popBackStackImmediate();
+                return true;
+
             case R.id.menu_map:
                 onMenuMapClick();
                 return true;
@@ -298,5 +274,33 @@ public class MainActivity
     {
         Intent intentAbout = new Intent(this, AboutActivity.class);
         startActivity(intentAbout);
+    }
+
+
+    private static boolean isSyncActive(
+            Account account,
+            String authority)
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            return isSyncActiveHoneycomb(account, authority);
+        } else {
+            SyncInfo currentSync = ContentResolver.getCurrentSync();
+            return currentSync != null && currentSync.account.equals(account) &&
+                   currentSync.authority.equals(authority);
+        }
+    }
+
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    private static boolean isSyncActiveHoneycomb(
+            Account account,
+            String authority)
+    {
+        for (SyncInfo syncInfo : ContentResolver.getCurrentSyncs()) {
+            if (syncInfo.account.equals(account) && syncInfo.authority.equals(authority)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

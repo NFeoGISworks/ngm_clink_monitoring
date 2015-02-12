@@ -29,6 +29,8 @@
     <string name="action_settings">Настройки</string>
     <string name="action_about">О программе</string>
 
+    <string name="backward">Назад</string>
+
     <string name="general">Общие настройки</string>
     <string name="general_summary">Общие настройки приложения</string>
     <string name="map">Карта</string>
