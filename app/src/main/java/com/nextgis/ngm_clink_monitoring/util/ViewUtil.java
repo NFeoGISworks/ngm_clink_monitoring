@@ -82,8 +82,8 @@ public class ViewUtil
                     @Override
                     public void run()
                     {
-                        LinearLayout.LayoutParams params;
-                        params = (LinearLayout.LayoutParams) view.getLayoutParams();
+                        LinearLayout.LayoutParams params =
+                                (LinearLayout.LayoutParams) view.getLayoutParams();
 
                         int width = view.getWidth();
                         int height = view.getHeight();
@@ -98,5 +98,15 @@ public class ViewUtil
                         view.postInvalidate();
                     }
                 });
+    }
+
+
+    public static void setViewHeight(
+            View view,
+            int height)
+    {
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) view.getLayoutParams();
+        params.height = height;
+        view.setLayoutParams(params);
     }
 }

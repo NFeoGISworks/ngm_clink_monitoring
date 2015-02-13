@@ -52,150 +52,166 @@
         android:orientation="vertical"
         >
 
-        <TextView
-            android:background="@drawable/border_object_type_name"
-            android:id="@+id/work_type_name_st"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:paddingBottom="5dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingTop="5dp"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="#ff000000"
-            />
-
-        <TextView
-            android:id="@+id/line_name_caption"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingTop="5dp"
-            android:text="@string/communication_line"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="#ff000000"
-            />
-
-        <TextView
-            android:id="@+id/line_name"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:paddingBottom="5dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingTop="5dp"
-            android:text="@string/communication_line"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="#ff000000"
-            />
-
-        <TextView
-            android:id="@+id/object_name_caption"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingTop="5dp"
-            android:text="@string/optical_cable"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="#ff000000"
-            />
-
-        <TextView
-            android:id="@+id/object_name"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:text="@string/optical_cable"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="#ff000000"
-            />
-
-        <LinearLayout
+        <ScrollView
             xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_height="?android:attr/listPreferredItemHeight"
-            android:layout_width="fill_parent"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
-            android:descendantFocusability="blocksDescendants"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
             >
 
-            <TextView
-                android:id="@+id/status_not_builted"
-                android:background="@drawable/border_status_red"
+            <LinearLayout
                 android:layout_height="match_parent"
-                android:layout_width="0dip"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:layout_weight=".5"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:text="@string/not_builted"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:ellipsize="end"
-                android:gravity="center"
-                android:maxLines="1"
-                />
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                >
 
-            <TextView
-                android:id="@+id/status_builted"
-                android:background="@drawable/border_status_grey"
-                android:layout_height="match_parent"
-                android:layout_width="0dip"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:layout_weight=".5"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:text="@string/builted"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:ellipsize="end"
-                android:gravity="center"
-                android:maxLines="1"
-                />
+                <TextView
+                    android:background="@drawable/border_object_type_name"
+                    android:id="@+id/work_type_name_st"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="5dp"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="#ff000000"
+                    />
 
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/line_name_caption"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="5dp"
+                    android:text="@string/communication_line"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="#ff000000"
+                    />
 
-        <TextView
-            android:id="@+id/photo_hint_text"
-            android:background="#ffe4c2b4"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:layout_marginTop="10dp"
-            android:paddingBottom="5dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingTop="5dp"
-            android:text="@string/take_photos_to_confirm"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="#ff000000"
-            />
+                <TextView
+                    android:id="@+id/line_name"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="5dp"
+                    android:text="@string/communication_line"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="#ff000000"
+                    />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/photo_gallery"
-            android:layout_height="130dp"
-            android:layout_width="match_parent"
-            android:scrollbars="horizontal"
-            />
+                <TextView
+                    android:id="@+id/object_name_caption"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="5dp"
+                    android:text="@string/optical_cable"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="#ff000000"
+                    />
 
-        <Button
-            android:id="@+id/btn_make_photo"
-            android:layout_gravity="center_horizontal"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:text="@string/make_photo"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            />
+                <TextView
+                    android:id="@+id/object_name"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:text="@string/optical_cable"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="#ff000000"
+                    />
+
+                <LinearLayout
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_height="?android:attr/listPreferredItemHeight"
+                    android:layout_width="fill_parent"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:descendantFocusability="blocksDescendants"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    >
+
+                    <TextView
+                        android:id="@+id/status_not_builted"
+                        android:background="@drawable/border_status_red"
+                        android:layout_height="match_parent"
+                        android:layout_width="0dip"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
+                        android:layout_weight=".5"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:text="@string/not_builted"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        />
+
+                    <TextView
+                        android:id="@+id/status_builted"
+                        android:background="@drawable/border_status_grey"
+                        android:layout_height="match_parent"
+                        android:layout_width="0dip"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
+                        android:layout_weight=".5"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:text="@string/builted"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/photo_hint_text"
+                    android:background="#ffe4c2b4"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="5dp"
+                    android:text="@string/take_photos_to_confirm"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="#ff000000"
+                    />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/photo_gallery"
+                    android:layout_height="130dp"
+                    android:layout_width="match_parent"
+                    android:scrollbars="horizontal"
+                    />
+
+                <Button
+                    android:id="@+id/btn_make_photo"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:text="@string/make_photo"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    />
+
+            </LinearLayout>
+
+        </ScrollView>
 
     </LinearLayout>
 

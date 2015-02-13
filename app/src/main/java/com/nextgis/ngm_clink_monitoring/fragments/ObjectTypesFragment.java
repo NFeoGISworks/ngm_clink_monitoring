@@ -22,6 +22,7 @@
 
 package com.nextgis.ngm_clink_monitoring.fragments;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -31,7 +32,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
@@ -51,29 +54,61 @@ public class ObjectTypesFragment
             ViewGroup container,
             Bundle savedInstanceState)
     {
-        ActionBarActivity activity = (ActionBarActivity) getActivity();
+        final ActionBarActivity activity = (ActionBarActivity) getActivity();
 
-        ViewGroup rootView =
+        final ViewGroup rootView =
                 (ViewGroup) activity.getWindow().getDecorView().findViewById(android.R.id.content);
-        Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.object_types_toolbar);
+        final Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.object_types_toolbar);
         toolbar.setVisibility(View.VISIBLE);
 
-        View view = inflater.inflate(R.layout.fragment_object_types, null);
+        final View view = inflater.inflate(R.layout.fragment_object_types, null);
 
-        Button btnCableLaying = (Button) view.findViewById(R.id.btn_cable_laying);
-        Button btnFoscMounting = (Button) view.findViewById(R.id.btn_fosc_mounting);
-        Button btnCrossMounting = (Button) view.findViewById(R.id.btn_cross_mounting);
-        Button btnCabinetMounting = (Button) view.findViewById(R.id.btn_cabinet_mounting);
-        Button btnPoleMounting = (Button) view.findViewById(R.id.btn_pole_mounting);
-        Button btnLineMeasuring = (Button) view.findViewById(R.id.btn_line_measuring);
+        final LinearLayout buttonsLayout = (LinearLayout) view.findViewById(R.id.buttons_layout);
 
-        // Making square buttons
-        ViewUtil.makingSquareView(btnCableLaying);
-        ViewUtil.makingSquareView(btnFoscMounting);
-        ViewUtil.makingSquareView(btnCrossMounting);
-        ViewUtil.makingSquareView(btnCabinetMounting);
-        ViewUtil.makingSquareView(btnPoleMounting);
-        ViewUtil.makingSquareView(btnLineMeasuring);
+        final Button btnCableLaying = (Button) view.findViewById(R.id.btn_cable_laying);
+        final Button btnFoscMounting = (Button) view.findViewById(R.id.btn_fosc_mounting);
+        final Button btnCrossMounting = (Button) view.findViewById(R.id.btn_cross_mounting);
+        final Button btnCabinetMounting = (Button) view.findViewById(R.id.btn_cabinet_mounting);
+        final Button btnPoleMounting = (Button) view.findViewById(R.id.btn_pole_mounting);
+        final Button btnLineMeasuring = (Button) view.findViewById(R.id.btn_line_measuring);
+
+        // Set button height to 1/3 of button's display part.
+        // Set a global layout listener which will be called
+        // when the layout pass is completed and the view is drawn
+        buttonsLayout.getViewTreeObserver().addOnGlobalLayoutListener(
+                new ViewTreeObserver.OnGlobalLayoutListener()
+                {
+                    public void onGlobalLayout()
+                    {
+                        //Remove the listener before proceeding
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                            buttonsLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        } else {
+                            buttonsLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                        }
+
+                        // measure your views here
+
+                        int rootViewH = rootView.getHeight();
+
+                        int[] locations = new int[2];
+                        buttonsLayout.getLocationInWindow(locations);
+                        int buttonsLayoutTop = locations[1];
+
+                        int buttonMinH = btnCableLaying.getHeight(); // with layout_margins
+                        int buttonMaxH = (rootViewH - buttonsLayoutTop) / 3; // with layout_margins
+
+                        if (buttonMaxH > buttonMinH) {
+                            ViewUtil.setViewHeight(btnCableLaying, buttonMaxH);
+                            ViewUtil.setViewHeight(btnFoscMounting, buttonMaxH);
+                            ViewUtil.setViewHeight(btnCrossMounting, buttonMaxH);
+                            ViewUtil.setViewHeight(btnCabinetMounting, buttonMaxH);
+                            ViewUtil.setViewHeight(btnPoleMounting, buttonMaxH);
+                            ViewUtil.setViewHeight(btnLineMeasuring, buttonMaxH);
+                        }
+                    }
+                });
+
 
         GISApplication app = (GISApplication) getActivity().getApplication();
         mFoclProject = app.getFoclProject();

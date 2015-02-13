@@ -39,8 +39,8 @@ import java.util.List;
 public class ObjectPhotoAdapter
         extends RecyclerView.Adapter<ObjectPhotoAdapter.ViewHolder>
 {
-    protected static final int IMAGE_SIZE_PX = 120;
-    protected final int IMAGE_SIZE_DP;
+    protected static final int IMAGE_SIZE_DP = 120;
+    protected final int IMAGE_SIZE_PX;
 
     protected Context      mContext;
     protected List<String> mImagePathList;
@@ -55,7 +55,7 @@ public class ObjectPhotoAdapter
         mContext = context;
         mImagePathList = imagePathList;
 
-        IMAGE_SIZE_DP = (int) (IMAGE_SIZE_PX * mContext.getResources().getDisplayMetrics().density);
+        IMAGE_SIZE_PX = (int) (IMAGE_SIZE_DP * mContext.getResources().getDisplayMetrics().density);
 
         // sets a grey background; wraps around the images
         TypedArray typedArray = mContext.obtainStyledAttributes(R.styleable.photo_gallery);
@@ -83,8 +83,8 @@ public class ObjectPhotoAdapter
             int i)
     {
         ViewGroup.LayoutParams layoutParams = viewHolder.mImageView.getLayoutParams();
-        layoutParams.height = IMAGE_SIZE_DP;
-        layoutParams.width = IMAGE_SIZE_DP;
+        layoutParams.height = IMAGE_SIZE_PX;
+        layoutParams.width = IMAGE_SIZE_PX;
 
         viewHolder.mImageView.setLayoutParams(layoutParams);
         viewHolder.mImageView.setBackgroundResource(mItemBackground);
@@ -107,8 +107,8 @@ public class ObjectPhotoAdapter
 
     protected Bitmap createImagePreview(String imagePath)
     {
-        int targetW = IMAGE_SIZE_DP;
-        int targetH = IMAGE_SIZE_DP;
+        int targetW = IMAGE_SIZE_PX;
+        int targetH = IMAGE_SIZE_PX;
 
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
         bmOptions.inJustDecodeBounds = true;
