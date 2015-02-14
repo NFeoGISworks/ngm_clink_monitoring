@@ -123,11 +123,6 @@ public class ObjectTypesFragment
             return view;
         }
 
-
-        // TODO: remove it
-        btnLineMeasuring.setEnabled(false);
-
-
         btnCableLaying.setOnClickListener(
                 new View.OnClickListener()
                 {
@@ -192,26 +187,42 @@ public class ObjectTypesFragment
     }
 
 
-    public void OnButtonClick(int workType)
+    public void OnButtonClick(int foclStructLayerType)
     {
         final FragmentManager fm = getActivity().getSupportFragmentManager();
 
         StatusBarFragment statusBarFragment = (StatusBarFragment) fm.findFragmentByTag("StatusBar");
 
-        ObjectListFragment objectListFragment =
-                (ObjectListFragment) fm.findFragmentByTag("ObjectList");
-
-        if (objectListFragment == null) {
-            objectListFragment = new ObjectListFragment();
-        }
-
-        objectListFragment.setParams(workType);
-
         FragmentTransaction ft = fm.beginTransaction();
         if (null != statusBarFragment) {
             ft.hide(statusBarFragment);
         }
-        ft.replace(R.id.object_fragment, objectListFragment, "ObjectList");
+
+        if (FoclConstants.LAYERTYPE_FOCL_LINE_MEASURING == foclStructLayerType) {
+            ObjectStatusFragment objectMeasureFragment =
+                    (ObjectStatusFragment) fm.findFragmentByTag("ObjectMeasure");
+
+            if (objectMeasureFragment == null) {
+                objectMeasureFragment = new ObjectStatusFragment();
+            }
+
+            objectMeasureFragment.setParams(foclStructLayerType, null, null, null);
+
+            ft.replace(R.id.object_fragment, objectMeasureFragment, "ObjectMeasure");
+
+        } else {
+            ObjectListFragment objectListFragment =
+                    (ObjectListFragment) fm.findFragmentByTag("ObjectList");
+
+            if (objectListFragment == null) {
+                objectListFragment = new ObjectListFragment();
+            }
+
+            objectListFragment.setParams(foclStructLayerType);
+
+            ft.replace(R.id.object_fragment, objectListFragment, "ObjectList");
+        }
+
         ft.addToBackStack(null);
         ft.commit();
         fm.executePendingTransactions();

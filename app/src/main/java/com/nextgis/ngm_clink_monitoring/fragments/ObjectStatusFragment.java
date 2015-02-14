@@ -41,7 +41,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.nextgis.maplib.map.VectorLayer;
@@ -49,6 +51,7 @@ import com.nextgis.maplib.util.Constants;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.activities.MainActivity;
+import com.nextgis.ngm_clink_monitoring.adapters.LineNameAdapter;
 import com.nextgis.ngm_clink_monitoring.adapters.ObjectCursorAdapter;
 import com.nextgis.ngm_clink_monitoring.adapters.ObjectPhotoAdapter;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
@@ -72,6 +75,7 @@ public class ObjectStatusFragment
 
     protected TextView mWorkTypeName;
     protected TextView mLineName;
+    protected Spinner mLineNameSpinner;
     protected TextView mObjectNameCaption;
     protected TextView mObjectName;
     protected TextView mStatusButtonNotBuilted;
@@ -101,13 +105,19 @@ public class ObjectStatusFragment
             Cursor objectCursor)
     {
         mFoclStructLayerType = foclStructLayerType;
-        mLineNameText = lineName;
-        mObjectLayerName = objectLayerName;
-        mObjectCursor = objectCursor;
-        mObjectId = objectCursor.getLong(objectCursor.getColumnIndex(VectorLayer.FIELD_ID));
-        mObjectNameText = ObjectCursorAdapter.getObjectName(objectCursor);
-        mObjectStatus = mObjectCursor.getString(
-                mObjectCursor.getColumnIndex(FoclConstants.FIELD_STATUS_BUILT));
+
+        if (FoclConstants.LAYERTYPE_FOCL_LINE_MEASURING == mFoclStructLayerType) {
+            mObjectStatus = FoclConstants.FIELD_VALUE_PROJECT;
+
+        } else {
+            mLineNameText = lineName;
+            mObjectLayerName = objectLayerName;
+            mObjectCursor = objectCursor;
+            mObjectId = objectCursor.getLong(objectCursor.getColumnIndex(VectorLayer.FIELD_ID));
+            mObjectNameText = ObjectCursorAdapter.getObjectName(objectCursor);
+            mObjectStatus = mObjectCursor.getString(
+                    mObjectCursor.getColumnIndex(FoclConstants.FIELD_STATUS_BUILT));
+        }
     }
 
 
@@ -167,6 +177,7 @@ public class ObjectStatusFragment
 
         mWorkTypeName = (TextView) view.findViewById(R.id.work_type_name_st);
         mLineName = (TextView) view.findViewById(R.id.line_name);
+        mLineNameSpinner = (Spinner) view.findViewById(R.id.line_name_spinner_st);
         mObjectNameCaption = (TextView) view.findViewById(R.id.object_name_caption);
         mObjectName = (TextView) view.findViewById(R.id.object_name);
         mStatusButtonNotBuilted = (TextView) view.findViewById(R.id.status_not_builted);
@@ -210,10 +221,23 @@ public class ObjectStatusFragment
 
             case FoclConstants.LAYERTYPE_FOCL_LINE_MEASURING:
                 mWorkTypeName.setText(R.string.line_measuring);
-                mObjectNameCaption.setVisibility(View.INVISIBLE);
-                mObjectName.setVisibility(View.INVISIBLE);
                 mPhotoHintText.setText(R.string.take_photos_to_confirm);
                 break;
+        }
+
+        if (FoclConstants.LAYERTYPE_FOCL_LINE_MEASURING == mFoclStructLayerType) {
+            mLineNameSpinner.setVisibility(View.VISIBLE);
+
+            mLineName.setVisibility(View.GONE);
+            mObjectNameCaption.setVisibility(View.GONE);
+            mObjectName.setVisibility(View.GONE);
+
+        } else {
+            mLineNameSpinner.setVisibility(View.GONE);
+
+            mLineName.setVisibility(View.VISIBLE);
+            mObjectNameCaption.setVisibility(View.VISIBLE);
+            mObjectName.setVisibility(View.VISIBLE);
         }
 
         GISApplication app = (GISApplication) getActivity().getApplication();
@@ -221,6 +245,8 @@ public class ObjectStatusFragment
 
         if (null == foclProject) {
             mLineName.setText("");
+            mLineNameSpinner.setEnabled(false);
+            mLineNameSpinner.setAdapter(null);
             mObjectName.setText("");
             mStatusButtonNotBuilted.setEnabled(false);
             mStatusButtonBuilted.setEnabled(false);
@@ -231,8 +257,35 @@ public class ObjectStatusFragment
             return view;
         }
 
-        mLineName.setText(mLineNameText);
-        mObjectName.setText(mObjectNameText);
+        if (FoclConstants.LAYERTYPE_FOCL_LINE_MEASURING != mFoclStructLayerType) {
+            mLineName.setText(mLineNameText);
+            mObjectName.setText(mObjectNameText);
+
+        } else {
+            LineNameAdapter projectAdapter = new LineNameAdapter(getActivity(), foclProject);
+
+            mLineNameSpinner.setAdapter(projectAdapter);
+            mLineNameSpinner.setSelection(0);
+            mLineNameSpinner.setOnItemSelectedListener(
+                    new AdapterView.OnItemSelectedListener()
+                    {
+                        @Override
+                        public void onItemSelected(
+                                AdapterView<?> parent,
+                                View view,
+                                int position,
+                                long id)
+                        {
+                        }
+
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent)
+                        {
+
+                        }
+                    });
+        }
 
         RecyclerView.LayoutManager layoutManager =
                 new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
@@ -240,19 +293,6 @@ public class ObjectStatusFragment
         mPhotoGallery.setLayoutManager(layoutManager);
         mPhotoGallery.setAdapter(mObjectPhotoAdapter);
         mPhotoGallery.setHasFixedSize(true);
-
-// TODO:
-/*
-        mCancelButton.setOnClickListener(
-                new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View v)
-                    {
-                        getActivity().getSupportFragmentManager().popBackStackImmediate();
-                    }
-                });
-*/
 
         setStatusButtonView();
 

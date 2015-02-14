@@ -54,9 +54,8 @@ public class ObjectListFragment
         extends Fragment
 {
     protected TextView mWorkTypeName;
-    protected TextView mObjectListCaption;
-
     protected Spinner  mLineNameSpinner;
+    protected TextView mObjectListCaption;
     protected ListView mObjectList;
 
     protected int mFoclStructLayerType = FoclConstants.LAYERTYPE_FOCL_UNKNOWN;
@@ -99,9 +98,8 @@ public class ObjectListFragment
         activity.setSupportActionBar(toolbar);
 
         mWorkTypeName = (TextView) view.findViewById(R.id.work_type_name);
+        mLineNameSpinner = (Spinner) view.findViewById(R.id.line_name_spinner_ls);
         mObjectListCaption = (TextView) view.findViewById(R.id.object_list_caption);
-
-        mLineNameSpinner = (Spinner) view.findViewById(R.id.line_name_spinner);
         mObjectList = (ListView) view.findViewById(R.id.object_list);
 
         switch (mFoclStructLayerType) {

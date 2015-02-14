@@ -66,7 +66,6 @@
             />
 
         <TextView
-            android:id="@+id/line_spinner_caption"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:paddingLeft="10dp"
@@ -78,7 +77,7 @@
             />
 
         <Spinner
-            android:id="@+id/line_name_spinner"
+            android:id="@+id/line_name_spinner_ls"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             />
