@@ -102,6 +102,8 @@
 
     <string name="project">Project</string>
     <string name="built">Built</string>
+    <string name="complete">Complete</string>
+    <string name="not_complete">NOT complete</string>
 
     <string name="builted">Builted</string>
     <string name="not_builted">NOT builted</string>
