@@ -26,12 +26,13 @@ import android.accounts.Account;
 import android.content.ContentResolver;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.view.View;
-import android.widget.EditText;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.Toolbar;
 import com.nextgis.maplibui.NGWLoginActivity;
 import com.nextgis.maplibui.util.SettingsConstants;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
-import com.nextgis.ngm_clink_monitoring.R;
+import com.nextgis.ngm_clink_monitoring.fragments.FoclLoginFragment;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 
 
@@ -39,35 +40,37 @@ public class FoclLoginActivity
         extends NGWLoginActivity
 {
     @Override
-    protected void onCreate(Bundle bundle)
+    protected void createView()
     {
-        super.onCreate(bundle);
+        setContentView(com.nextgis.maplibui.R.layout.activity_ngw_login);
 
-        View view = getSupportFragmentManager().findFragmentById(R.id.login_frame).getView();
+        Toolbar toolbar = (Toolbar) findViewById(com.nextgis.maplibui.R.id.main_toolbar);
+        toolbar.getBackground().setAlpha(255);
+        setSupportActionBar(toolbar);
 
-        if (view != null) {
-            ((EditText) view.findViewById(com.nextgis.maplibui.R.id.url)).setText(
-                    FoclConstants.FOCL_DEFAULT_ACCOUNT_URL);
+        FragmentManager fm = getSupportFragmentManager();
+        FoclLoginFragment foclLoginFragment = (FoclLoginFragment) fm.findFragmentByTag("FoclLogin");
+
+        if (foclLoginFragment == null) {
+            foclLoginFragment = new FoclLoginFragment();
         }
+
+        foclLoginFragment.setOnResultListener(this);
+
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.add(com.nextgis.maplibui.R.id.login_frame, foclLoginFragment, "FoclLogin");
+        ft.commit();
     }
 
 
     @Override
-    public void onTokenReceived(
-            String accountName,
-            String url,
-            String login,
-            String password,
-            String token)
+    public void OnResult(
+            Account account,
+            String token,
+            boolean accountAlreadyExists)
     {
-        accountName = FoclConstants.FOCL_ACCOUNT_NAME;
-
-        super.onTokenReceived(accountName, url, login, password, token);
-
-        GISApplication app = (GISApplication) getApplicationContext();
-        Account account = app.getAccount();
-
-        if (null != account) {
+        if (!accountAlreadyExists) {
+            GISApplication app = (GISApplication) getApplicationContext();
             app.addFoclProject();
 
             ContentResolver.setSyncAutomatically(account, app.getAuthority(), true);
@@ -81,5 +84,7 @@ public class FoclLoginActivity
                             FoclConstants.DEFAULT_SYNC_PERIOD)
                     .commit();
         }
+
+        super.OnResult(account, token, accountAlreadyExists);
     }
 }
