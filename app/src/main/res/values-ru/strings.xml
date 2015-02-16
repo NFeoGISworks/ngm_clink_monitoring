@@ -105,6 +105,8 @@
 
     <string name="builted">Построен</string>
     <string name="not_builted">НЕ построен</string>
+    <string name="complete">Выполнено</string>
+    <string name="not_complete">НЕ выполнено</string>
 
     <string name="app_description">Мобильное приложение для ввода данных о ходе строительства ВОЛС.</string>
 

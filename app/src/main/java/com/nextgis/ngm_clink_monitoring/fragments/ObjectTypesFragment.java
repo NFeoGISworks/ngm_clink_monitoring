@@ -179,7 +179,7 @@ public class ObjectTypesFragment
                     @Override
                     public void onClick(View v)
                     {
-                        OnButtonClick(FoclConstants.LAYERTYPE_FOCL_LINE_MEASURING);
+                        OnButtonClick(FoclConstants.LAYERTYPE_FOCL_ENDPOINT);
                     }
                 });
 
@@ -198,7 +198,7 @@ public class ObjectTypesFragment
             ft.hide(statusBarFragment);
         }
 
-        if (FoclConstants.LAYERTYPE_FOCL_LINE_MEASURING == foclStructLayerType) {
+        if (FoclConstants.LAYERTYPE_FOCL_ENDPOINT == foclStructLayerType) {
             ObjectStatusFragment objectMeasureFragment =
                     (ObjectStatusFragment) fm.findFragmentByTag("ObjectMeasure");
 

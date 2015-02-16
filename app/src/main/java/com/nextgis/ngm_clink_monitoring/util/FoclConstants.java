@@ -35,14 +35,20 @@ public interface FoclConstants
     public static final int LAYERTYPE_FOCL_TELECOM_CABINET = 1104;
     public static final int LAYERTYPE_FOCL_POLE            = 1105;
     public static final int LAYERTYPE_FOCL_ENDPOINT        = 1106;
-    public static final int LAYERTYPE_FOCL_LINE_MEASURING  = 1107;
 
-    public static final String FIELD_NAME            = "name";
-    public static final String FIELD_STATUS_BUILT    = "status_built";
-    public static final String FIELD_STATUS_BUILT_CH = "status_built_ch";
+    public static final String FIELD_NAME              = "name";
+    public static final String FIELD_TYPE_ENDPOINT     = "type_endpoint";
+    public static final String FIELD_STATUS_BUILT      = "status_built";
+    public static final String FIELD_STATUS_BUILT_CH   = "status_built_ch";
+    public static final String FIELD_STATUS_MEASURE    = "status_measure";
+    public static final String FIELD_STATUS_MEASURE_CH = "status_measure_ch";
 
-    public static final String FIELD_VALUE_PROJECT = "project";
-    public static final String FIELD_VALUE_BUILT   = "built";
+    public static final String FIELD_VALUE_UNKNOWN     = "unknown";
+    public static final String FIELD_VALUE_POINT_B     = "point_b";
+    public static final String FIELD_VALUE_PROJECT     = "project";
+    public static final String FIELD_VALUE_BUILT       = "built";
+    public static final String FIELD_VALUE_NOT_MEASURE = "not_measure";
+    public static final String FIELD_VALUE_MEASURE     = "measure";
 
     public static final String FOCL_PROJECT             = "FOCL_project";
     public static final String FOCL_ACCOUNT_NAME = "Compulink Monitoring Account";

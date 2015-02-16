@@ -57,6 +57,8 @@ public class ObjectListFragment
     protected Spinner  mLineNameSpinner;
     protected TextView mObjectListCaption;
     protected ListView mObjectList;
+    protected String mLineName        = null;
+    protected String mObjectLayerName = null;
 
     protected int mFoclStructLayerType = FoclConstants.LAYERTYPE_FOCL_UNKNOWN;
 
@@ -128,7 +130,7 @@ public class ObjectListFragment
                 mObjectListCaption.setText(R.string.poles);
                 break;
 
-            case FoclConstants.LAYERTYPE_FOCL_LINE_MEASURING:
+            case FoclConstants.LAYERTYPE_FOCL_ENDPOINT:
                 mWorkTypeName.setText(R.string.line_measuring);
                 mObjectListCaption.setVisibility(View.INVISIBLE);
                 mObjectList.setVisibility(View.INVISIBLE);
@@ -146,8 +148,6 @@ public class ObjectListFragment
             return view;
         }
 
-        final String[] lineName = {null};
-        final String[] objectLayerName = {null};
 
         LineNameAdapter projectAdapter = new LineNameAdapter(getActivity(), foclProject);
 
@@ -164,15 +164,15 @@ public class ObjectListFragment
                             long id)
                     {
                         FoclStruct foclStruct = (FoclStruct) foclProject.getLayer(position);
-                        lineName[0] = foclStruct.getName();
+                        mLineName = foclStruct.getName();
 
                         FoclVectorLayer layer = (FoclVectorLayer) foclStruct.getLayerByFoclType(
                                 mFoclStructLayerType);
-                        objectLayerName[0] = layer.getPath().getName();
+                        mObjectLayerName = layer.getPath().getName();
 
                         Uri uri = Uri.parse(
                                 "content://" + FoclSettingsConstants.AUTHORITY + "/" +
-                                layer.getPath().getName());
+                                mObjectLayerName);
 
                         String proj[] = {
                                 VectorLayer.FIELD_ID,
@@ -182,7 +182,7 @@ public class ObjectListFragment
                         Cursor cursor = getActivity().getContentResolver()
                                 .query(uri, proj, null, null, null);
 
-                        if (cursor.getCount() > 0) {
+                        if (null != cursor && cursor.getCount() > 0) {
                             mObjectList.setEnabled(true);
                         } else {
                             mObjectList.setAdapter(null);
@@ -215,9 +215,8 @@ public class ObjectListFragment
                             int position,
                             long id)
                     {
-                        Cursor cursor = (Cursor) mObjectList.getAdapter().getItem(position);
-                        OnObjectClick(
-                                mFoclStructLayerType, lineName[0], objectLayerName[0], cursor);
+                        Cursor objectCursor = (Cursor) mObjectList.getAdapter().getItem(position);
+                        OnObjectClick(objectCursor);
                     }
                 });
 
@@ -225,11 +224,7 @@ public class ObjectListFragment
     }
 
 
-    public void OnObjectClick(
-            int foclStructLayerType,
-            String lineName,
-            String objectLayerName,
-            Cursor objectCursor)
+    public void OnObjectClick(Cursor objectCursor)
     {
         final FragmentManager fm = getActivity().getSupportFragmentManager();
 
@@ -241,7 +236,7 @@ public class ObjectListFragment
         }
 
         objectStatusFragment.setParams(
-                foclStructLayerType, lineName, objectLayerName, objectCursor);
+                mFoclStructLayerType, mLineName, mObjectLayerName, objectCursor);
 
         FragmentTransaction ft = fm.beginTransaction();
         ft.replace(R.id.object_fragment, objectStatusFragment, "ObjectStatus");

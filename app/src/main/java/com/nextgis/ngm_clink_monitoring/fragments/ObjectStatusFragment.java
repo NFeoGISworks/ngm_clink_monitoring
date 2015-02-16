@@ -55,6 +55,8 @@ import com.nextgis.ngm_clink_monitoring.adapters.LineNameAdapter;
 import com.nextgis.ngm_clink_monitoring.adapters.ObjectCursorAdapter;
 import com.nextgis.ngm_clink_monitoring.adapters.ObjectPhotoAdapter;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
+import com.nextgis.ngm_clink_monitoring.map.FoclStruct;
+import com.nextgis.ngm_clink_monitoring.map.FoclVectorLayer;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstants;
 import com.nextgis.ngm_clink_monitoring.util.LocationUtil;
@@ -89,7 +91,7 @@ public class ObjectStatusFragment
     protected Cursor mObjectCursor;
     protected long   mObjectId;
     protected String mObjectNameText;
-    protected String mObjectStatus;
+    protected String mObjectStatus = FoclConstants.FIELD_VALUE_UNKNOWN;
 
     protected RecyclerView       mPhotoGallery;
     protected List<String>       mPhotoList;
@@ -106,15 +108,12 @@ public class ObjectStatusFragment
     {
         mFoclStructLayerType = foclStructLayerType;
 
-        if (FoclConstants.LAYERTYPE_FOCL_LINE_MEASURING == mFoclStructLayerType) {
-            mObjectStatus = FoclConstants.FIELD_VALUE_PROJECT;
-
-        } else {
+        if (FoclConstants.LAYERTYPE_FOCL_ENDPOINT != mFoclStructLayerType) {
             mLineNameText = lineName;
             mObjectLayerName = objectLayerName;
             mObjectCursor = objectCursor;
-            mObjectId = objectCursor.getLong(objectCursor.getColumnIndex(VectorLayer.FIELD_ID));
-            mObjectNameText = ObjectCursorAdapter.getObjectName(objectCursor);
+            mObjectId = mObjectCursor.getLong(mObjectCursor.getColumnIndex(VectorLayer.FIELD_ID));
+            mObjectNameText = ObjectCursorAdapter.getObjectName(mObjectCursor);
             mObjectStatus = mObjectCursor.getString(
                     mObjectCursor.getColumnIndex(FoclConstants.FIELD_STATUS_BUILT));
         }
@@ -219,13 +218,13 @@ public class ObjectStatusFragment
                 mPhotoHintText.setText(R.string.take_photos_to_confirm);
                 break;
 
-            case FoclConstants.LAYERTYPE_FOCL_LINE_MEASURING:
+            case FoclConstants.LAYERTYPE_FOCL_ENDPOINT:
                 mWorkTypeName.setText(R.string.line_measuring);
                 mPhotoHintText.setText(R.string.take_photos_to_confirm);
                 break;
         }
 
-        if (FoclConstants.LAYERTYPE_FOCL_LINE_MEASURING == mFoclStructLayerType) {
+        if (FoclConstants.LAYERTYPE_FOCL_ENDPOINT == mFoclStructLayerType) {
             mLineNameSpinner.setVisibility(View.VISIBLE);
 
             mLineName.setVisibility(View.GONE);
@@ -248,20 +247,18 @@ public class ObjectStatusFragment
             mLineNameSpinner.setEnabled(false);
             mLineNameSpinner.setAdapter(null);
             mObjectName.setText("");
-            mStatusButtonNotBuilted.setEnabled(false);
-            mStatusButtonBuilted.setEnabled(false);
             mPhotoGallery.setEnabled(false);
             mPhotoGallery.setAdapter(null);
             mMakePhotoButton.setEnabled(false);
             mMakePhotoButton.setOnClickListener(null);
+            setStatusButtonView(false);
             return view;
         }
 
-        if (FoclConstants.LAYERTYPE_FOCL_LINE_MEASURING != mFoclStructLayerType) {
-            mLineName.setText(mLineNameText);
-            mObjectName.setText(mObjectNameText);
+        if (FoclConstants.LAYERTYPE_FOCL_ENDPOINT == mFoclStructLayerType) {
+            mStatusButtonNotBuilted.setText(activity.getString(R.string.not_complete));
+            mStatusButtonBuilted.setText(activity.getString(R.string.complete));
 
-        } else {
             LineNameAdapter projectAdapter = new LineNameAdapter(getActivity(), foclProject);
 
             mLineNameSpinner.setAdapter(projectAdapter);
@@ -276,6 +273,51 @@ public class ObjectStatusFragment
                                 int position,
                                 long id)
                         {
+                            FoclStruct foclStruct = (FoclStruct) foclProject.getLayer(position);
+                            FoclVectorLayer layer = (FoclVectorLayer) foclStruct.getLayerByFoclType(
+                                    mFoclStructLayerType);
+                            mObjectLayerName = layer.getPath().getName();
+
+                            Uri uri = Uri.parse(
+                                    "content://" + FoclSettingsConstants.AUTHORITY + "/" +
+                                    mObjectLayerName);
+
+                            String proj[] = {
+                                    VectorLayer.FIELD_ID,
+                                    FoclConstants.FIELD_TYPE_ENDPOINT,
+                                    FoclConstants.FIELD_STATUS_MEASURE};
+
+                            mObjectCursor = getActivity().getContentResolver()
+                                    .query(uri, proj, null, null, null);
+
+                            if (null != mObjectCursor && mObjectCursor.getCount() > 0) {
+                                mObjectCursor.moveToFirst();
+
+                                do {
+                                    String typeEndpoint = mObjectCursor.getString(
+                                            mObjectCursor.getColumnIndex(
+                                                    FoclConstants.FIELD_TYPE_ENDPOINT));
+
+                                    if (typeEndpoint.equals(FoclConstants.FIELD_VALUE_POINT_B)) {
+                                        mObjectId = mObjectCursor.getLong(
+                                                mObjectCursor.getColumnIndex(
+                                                        VectorLayer.FIELD_ID));
+
+                                        mObjectStatus = mObjectCursor.getString(
+                                                mObjectCursor.getColumnIndex(
+                                                        FoclConstants.FIELD_STATUS_MEASURE));
+
+                                        if (null == mObjectStatus) {
+                                            mObjectStatus = FoclConstants.FIELD_VALUE_UNKNOWN;
+                                        }
+
+                                        setStatusButtonView(true);
+                                        return;
+                                    }
+                                } while (mObjectCursor.moveToNext());
+                            }
+
+                            setStatusButtonView(false);
                         }
 
 
@@ -285,6 +327,12 @@ public class ObjectStatusFragment
 
                         }
                     });
+
+        } else {
+            mLineName.setText(mLineNameText);
+            mObjectName.setText(mObjectNameText);
+            mStatusButtonNotBuilted.setText(activity.getString(R.string.not_builted));
+            mStatusButtonBuilted.setText(activity.getString(R.string.builted));
         }
 
         RecyclerView.LayoutManager layoutManager =
@@ -294,7 +342,7 @@ public class ObjectStatusFragment
         mPhotoGallery.setAdapter(mObjectPhotoAdapter);
         mPhotoGallery.setHasFixedSize(true);
 
-        setStatusButtonView();
+        setStatusButtonView(true);
 
         View.OnClickListener statusButtonOnClickListener = new View.OnClickListener()
         {
@@ -303,12 +351,28 @@ public class ObjectStatusFragment
             {
                 switch (mObjectStatus) {
                     case FoclConstants.FIELD_VALUE_PROJECT:
-                    default:
                         mObjectStatus = FoclConstants.FIELD_VALUE_BUILT;
                         break;
 
                     case FoclConstants.FIELD_VALUE_BUILT:
                         mObjectStatus = FoclConstants.FIELD_VALUE_PROJECT;
+                        break;
+
+                    case FoclConstants.FIELD_VALUE_NOT_MEASURE:
+                        mObjectStatus = FoclConstants.FIELD_VALUE_MEASURE;
+                        break;
+
+                    case FoclConstants.FIELD_VALUE_MEASURE:
+                        mObjectStatus = FoclConstants.FIELD_VALUE_NOT_MEASURE;
+                        break;
+
+                    case FoclConstants.FIELD_VALUE_UNKNOWN:
+                    default:
+                        if (FoclConstants.LAYERTYPE_FOCL_ENDPOINT == mFoclStructLayerType) {
+                            mObjectStatus = FoclConstants.FIELD_VALUE_MEASURE;
+                        } else {
+                            mObjectStatus = FoclConstants.FIELD_VALUE_BUILT;
+                        }
                         break;
                 }
 
@@ -317,10 +381,16 @@ public class ObjectStatusFragment
                 Uri updateUri = ContentUris.withAppendedId(uri, mObjectId);
 
                 ContentValues values = new ContentValues();
-                values.put(FoclConstants.FIELD_STATUS_BUILT, mObjectStatus);
-
                 Calendar calendar = Calendar.getInstance();
-                values.put(FoclConstants.FIELD_STATUS_BUILT_CH, calendar.getTimeInMillis());
+
+                if (FoclConstants.LAYERTYPE_FOCL_ENDPOINT == mFoclStructLayerType) {
+                    values.put(FoclConstants.FIELD_STATUS_MEASURE, mObjectStatus);
+                    values.put(FoclConstants.FIELD_STATUS_MEASURE_CH, calendar.getTimeInMillis());
+
+                } else {
+                    values.put(FoclConstants.FIELD_STATUS_BUILT, mObjectStatus);
+                    values.put(FoclConstants.FIELD_STATUS_BUILT_CH, calendar.getTimeInMillis());
+                }
 
                 int result =
                         getActivity().getContentResolver().update(updateUri, values, null, null);
@@ -332,7 +402,7 @@ public class ObjectStatusFragment
                     Log.d(
                             Constants.TAG, "Layer: " + mObjectLayerName + ", id: " + mObjectId +
                                            ", update result: " + result);
-                    setStatusButtonView();
+                    setStatusButtonView(true);
                 }
             }
         };
@@ -376,26 +446,38 @@ public class ObjectStatusFragment
     }
 
 
-    protected void setStatusButtonView()
+    protected void setStatusButtonView(boolean enabled)
     {
         Drawable backgroundNotBuilted;
         Drawable backgroundBuilted;
 
-        switch (mObjectStatus) {
-            case FoclConstants.FIELD_VALUE_PROJECT:
-            default:
-                backgroundNotBuilted =
-                        getActivity().getResources().getDrawable(R.drawable.border_status_red);
-                backgroundBuilted =
-                        getActivity().getResources().getDrawable(R.drawable.border_status_grey);
-                break;
+        if (enabled) {
 
-            case FoclConstants.FIELD_VALUE_BUILT:
-                backgroundNotBuilted =
-                        getActivity().getResources().getDrawable(R.drawable.border_status_grey);
-                backgroundBuilted =
-                        getActivity().getResources().getDrawable(R.drawable.border_status_green);
-                break;
+            switch (mObjectStatus) {
+                case FoclConstants.FIELD_VALUE_PROJECT:
+                case FoclConstants.FIELD_VALUE_NOT_MEASURE:
+                case FoclConstants.FIELD_VALUE_UNKNOWN:
+                default:
+                    backgroundNotBuilted =
+                            getActivity().getResources().getDrawable(R.drawable.border_status_red);
+                    backgroundBuilted =
+                            getActivity().getResources().getDrawable(R.drawable.border_status_grey);
+                    break;
+
+                case FoclConstants.FIELD_VALUE_BUILT:
+                case FoclConstants.FIELD_VALUE_MEASURE:
+                    backgroundNotBuilted =
+                            getActivity().getResources().getDrawable(R.drawable.border_status_grey);
+                    backgroundBuilted = getActivity().getResources()
+                            .getDrawable(R.drawable.border_status_green);
+                    break;
+            }
+
+        } else {
+            backgroundNotBuilted =
+                    getActivity().getResources().getDrawable(R.drawable.border_status_grey);
+            backgroundBuilted =
+                    getActivity().getResources().getDrawable(R.drawable.border_status_grey);
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -405,6 +487,9 @@ public class ObjectStatusFragment
             mStatusButtonNotBuilted.setBackgroundDrawable(backgroundNotBuilted);
             mStatusButtonBuilted.setBackgroundDrawable(backgroundBuilted);
         }
+
+        mStatusButtonNotBuilted.setEnabled(enabled);
+        mStatusButtonBuilted.setEnabled(enabled);
     }
 
 
@@ -456,7 +541,7 @@ public class ObjectStatusFragment
                 prefix = "Pole_Mounting_";
                 break;
 
-            case FoclConstants.LAYERTYPE_FOCL_LINE_MEASURING:
+            case FoclConstants.LAYERTYPE_FOCL_ENDPOINT:
                 prefix = "Line_Measuring_";
                 break;
         }
