@@ -61,15 +61,11 @@ public class FoclLoginFragment
         accountName = FoclConstants.FOCL_ACCOUNT_NAME;
         super.onTokenReceived(accountName, token);
 
-        if (!mAccountAlreadyExists) {
-            GISApplication app = (GISApplication) getActivity().getApplicationContext();
+        GISApplication app = (GISApplication) getActivity().getApplicationContext();
+        Account account = app.getAccount();
+
+        if (null != account) {
             app.addFoclProject();
-
-            Account account = app.getAccount();
-
-            if (null == account) {
-                return;
-            }
 
             ContentResolver.setSyncAutomatically(account, app.getAuthority(), true);
             ContentResolver.addPeriodicSync(
