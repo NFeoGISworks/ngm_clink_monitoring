@@ -22,18 +22,11 @@
 
 package com.nextgis.ngm_clink_monitoring.activities;
 
-import android.accounts.Account;
-import android.content.ContentResolver;
-import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import com.nextgis.maplibui.NGWLoginActivity;
-import com.nextgis.maplibui.util.SettingsConstants;
-import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.fragments.FoclLoginFragment;
-import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 
 
 public class FoclLoginActivity
@@ -60,31 +53,5 @@ public class FoclLoginActivity
         FragmentTransaction ft = fm.beginTransaction();
         ft.add(com.nextgis.maplibui.R.id.login_frame, foclLoginFragment, "FoclLogin");
         ft.commit();
-    }
-
-
-    @Override
-    public void OnResult(
-            Account account,
-            String token,
-            boolean accountAlreadyExists)
-    {
-        if (!accountAlreadyExists) {
-            GISApplication app = (GISApplication) getApplicationContext();
-            app.addFoclProject();
-
-            ContentResolver.setSyncAutomatically(account, app.getAuthority(), true);
-            ContentResolver.addPeriodicSync(
-                    account, app.getAuthority(), Bundle.EMPTY, FoclConstants.DEFAULT_SYNC_PERIOD);
-
-            PreferenceManager.getDefaultSharedPreferences(this)
-                    .edit()
-                    .putLong(
-                            SettingsConstants.KEY_PREF_SYNC_PERIOD_LONG,
-                            FoclConstants.DEFAULT_SYNC_PERIOD)
-                    .commit();
-        }
-
-        super.OnResult(account, token, accountAlreadyExists);
     }
 }

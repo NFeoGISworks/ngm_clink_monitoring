@@ -22,12 +22,17 @@
 
 package com.nextgis.ngm_clink_monitoring.fragments;
 
+import android.accounts.Account;
+import android.content.ContentResolver;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.nextgis.maplibui.NGWLoginFragment;
+import com.nextgis.maplibui.util.SettingsConstants;
+import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 
 
@@ -55,6 +60,27 @@ public class FoclLoginFragment
     {
         accountName = FoclConstants.FOCL_ACCOUNT_NAME;
         super.onTokenReceived(accountName, token);
-    }
 
+        if (!mAccountAlreadyExists) {
+            GISApplication app = (GISApplication) getActivity().getApplicationContext();
+            app.addFoclProject();
+
+            Account account = app.getAccount();
+
+            if (null == account) {
+                return;
+            }
+
+            ContentResolver.setSyncAutomatically(account, app.getAuthority(), true);
+            ContentResolver.addPeriodicSync(
+                    account, app.getAuthority(), Bundle.EMPTY, FoclConstants.DEFAULT_SYNC_PERIOD);
+
+            PreferenceManager.getDefaultSharedPreferences(getActivity())
+                    .edit()
+                    .putLong(
+                            SettingsConstants.KEY_PREF_SYNC_PERIOD_LONG,
+                            FoclConstants.DEFAULT_SYNC_PERIOD)
+                    .commit();
+        }
+    }
 }
