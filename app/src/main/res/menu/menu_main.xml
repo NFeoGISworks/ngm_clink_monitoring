@@ -31,8 +31,8 @@
         android:icon="@drawable/ic_action_map"
         android:id="@+id/menu_map"
         android:orderInCategory="0"
-        android:title="Map"
-        app:showAsAction="always"
+        android:title="@string/action_map"
+        app:showAsAction="never"
         />
 
     <item
