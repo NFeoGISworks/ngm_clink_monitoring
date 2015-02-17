@@ -216,7 +216,7 @@ public class ObjectListFragment
                             long id)
                     {
                         Cursor objectCursor = (Cursor) mObjectList.getAdapter().getItem(position);
-                        OnObjectClick(objectCursor);
+                        onObjectClick(objectCursor);
                     }
                 });
 
@@ -224,7 +224,7 @@ public class ObjectListFragment
     }
 
 
-    public void OnObjectClick(Cursor objectCursor)
+    public void onObjectClick(Cursor objectCursor)
     {
         final FragmentManager fm = getActivity().getSupportFragmentManager();
 

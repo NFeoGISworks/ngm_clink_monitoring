@@ -129,7 +129,7 @@ public class ObjectTypesFragment
                     @Override
                     public void onClick(View v)
                     {
-                        OnButtonClick(FoclConstants.LAYERTYPE_FOCL_OPTICAL_CABLE);
+                        onButtonClick(FoclConstants.LAYERTYPE_FOCL_OPTICAL_CABLE);
                     }
                 });
 
@@ -139,7 +139,7 @@ public class ObjectTypesFragment
                     @Override
                     public void onClick(View v)
                     {
-                        OnButtonClick(FoclConstants.LAYERTYPE_FOCL_FOSC);
+                        onButtonClick(FoclConstants.LAYERTYPE_FOCL_FOSC);
                     }
                 });
 
@@ -149,7 +149,7 @@ public class ObjectTypesFragment
                     @Override
                     public void onClick(View v)
                     {
-                        OnButtonClick(FoclConstants.LAYERTYPE_FOCL_OPTICAL_CROSS);
+                        onButtonClick(FoclConstants.LAYERTYPE_FOCL_OPTICAL_CROSS);
                     }
                 });
 
@@ -159,7 +159,7 @@ public class ObjectTypesFragment
                     @Override
                     public void onClick(View v)
                     {
-                        OnButtonClick(FoclConstants.LAYERTYPE_FOCL_TELECOM_CABINET);
+                        onButtonClick(FoclConstants.LAYERTYPE_FOCL_TELECOM_CABINET);
                     }
                 });
 
@@ -169,7 +169,7 @@ public class ObjectTypesFragment
                     @Override
                     public void onClick(View v)
                     {
-                        OnButtonClick(FoclConstants.LAYERTYPE_FOCL_POLE);
+                        onButtonClick(FoclConstants.LAYERTYPE_FOCL_POLE);
                     }
                 });
 
@@ -179,7 +179,7 @@ public class ObjectTypesFragment
                     @Override
                     public void onClick(View v)
                     {
-                        OnButtonClick(FoclConstants.LAYERTYPE_FOCL_ENDPOINT);
+                        onButtonClick(FoclConstants.LAYERTYPE_FOCL_ENDPOINT);
                     }
                 });
 
@@ -187,7 +187,7 @@ public class ObjectTypesFragment
     }
 
 
-    public void OnButtonClick(int foclStructLayerType)
+    public void onButtonClick(int foclStructLayerType)
     {
         final FragmentManager fm = getActivity().getSupportFragmentManager();
 

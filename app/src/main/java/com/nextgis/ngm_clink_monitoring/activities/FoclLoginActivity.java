@@ -26,6 +26,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import com.nextgis.maplibui.NGWLoginActivity;
+import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.fragments.FoclLoginFragment;
 
 
@@ -48,7 +49,10 @@ public class FoclLoginActivity
             foclLoginFragment = new FoclLoginFragment();
         }
 
-        foclLoginFragment.setOnResultListener(this);
+        foclLoginFragment.setOnAddAccountListener(this);
+
+        GISApplication app = (GISApplication) getApplication();
+        foclLoginFragment.setOnAddAccountListener(app);
 
         FragmentTransaction ft = fm.beginTransaction();
         ft.add(com.nextgis.maplibui.R.id.login_frame, foclLoginFragment, "FoclLogin");

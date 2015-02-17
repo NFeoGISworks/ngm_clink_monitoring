@@ -43,6 +43,7 @@ import android.widget.Toast;
 import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
+import com.nextgis.ngm_clink_monitoring.fragments.FoclLoginFragment;
 import com.nextgis.ngm_clink_monitoring.fragments.ObjectTypesFragment;
 import com.nextgis.ngm_clink_monitoring.fragments.StatusBarFragment;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstants;
@@ -52,7 +53,8 @@ import java.io.File;
 
 public class MainActivity
         extends ActionBarActivity
-        implements GISApplication.OnReloadMapListener
+        implements GISApplication.OnReloadMapListener, GISApplication.OnAccountAddedListener,
+                   GISApplication.OnAccountDeletedListener
 {
     public static final String DATA_DIR_PATH =
             Environment.getExternalStorageDirectory().getAbsolutePath() +
@@ -80,28 +82,45 @@ public class MainActivity
         toolbar.getBackground().setAlpha(255);
         setSupportActionBar(toolbar);
 
+        final GISApplication app = (GISApplication) getApplication();
         final FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
 
         StatusBarFragment statusBarFragment = (StatusBarFragment) fm.findFragmentByTag("StatusBar");
 
-        if (statusBarFragment == null) {
-            statusBarFragment = new StatusBarFragment();
+        if (null == app.getAccount()) {
+            FoclLoginFragment foclLoginFragment =
+                    (FoclLoginFragment) fm.findFragmentByTag("FoclLogin");
 
-            FragmentTransaction ft = fm.beginTransaction();
+            if (null == foclLoginFragment) {
+                foclLoginFragment = new FoclLoginFragment();
+            }
+
+            foclLoginFragment.setOnAddAccountListener(app);
+
+            if (null != statusBarFragment) {
+                ft.hide(statusBarFragment);
+            }
+            ft.replace(R.id.object_fragment, foclLoginFragment, "FoclLogin");
+
+        } else {
+
+            if (null == statusBarFragment) {
+                statusBarFragment = new StatusBarFragment();
+            }
+
+            ObjectTypesFragment objectTypesFragment =
+                    (ObjectTypesFragment) fm.findFragmentByTag("ObjectTypes");
+
+            if (null == objectTypesFragment) {
+                objectTypesFragment = new ObjectTypesFragment();
+            }
+
             ft.add(R.id.status_bar_fragment, statusBarFragment, "StatusBar");
-            ft.commit();
-        }
-
-        ObjectTypesFragment objectTypesFragment =
-                (ObjectTypesFragment) fm.findFragmentByTag("ObjectTypes");
-
-        if (objectTypesFragment == null) {
-            objectTypesFragment = new ObjectTypesFragment();
-
-            FragmentTransaction ft = fm.beginTransaction();
             ft.replace(R.id.object_fragment, objectTypesFragment, "ObjectTypes");
-            ft.commit();
         }
+
+        ft.commit();
 
         mSyncStatusObserver = new SyncStatusObserver()
         {
@@ -114,7 +133,6 @@ public class MainActivity
                             @Override
                             public void run()
                             {
-                                GISApplication app = (GISApplication) getApplication();
                                 Account account = app.getAccount();
 
                                 if (null != account) {
@@ -129,7 +147,7 @@ public class MainActivity
     }
 
 
-    public void refreshView()
+    public void refreshFragmentView()
     {
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.object_fragment);
         if (!fragment.isDetached()) {
@@ -141,16 +159,31 @@ public class MainActivity
     }
 
 
+    public void refreshActivityView()
+    {
+        Intent intent = getIntent();
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        finish();
+        startActivity(intent);
+    }
+
+
     @Override
     protected void onResume()
     {
         super.onResume();
 
         GISApplication app = (GISApplication) getApplication();
+        app.setOnAccountAddedListener(this);
+        app.setOnAccountDeletedListener(this);
         app.setOnReloadMapListener(this);
 
+        if (app.isAccountCreated() || app.isAccountDeleted()) {
+            refreshActivityView();
+        }
+
         if (app.isMapReloaded()) {
-            refreshView();
+            refreshFragmentView();
         }
 
         // Refresh synchronization status
@@ -167,6 +200,8 @@ public class MainActivity
     protected void onPause()
     {
         GISApplication app = (GISApplication) getApplication();
+        app.setOnAccountAddedListener(null);
+        app.setOnAccountDeletedListener(null);
         app.setOnReloadMapListener(null);
 
         // Remove our synchronization listener if registered
@@ -180,9 +215,23 @@ public class MainActivity
 
 
     @Override
-    public void OnReloadMap()
+    public void onAccountAdded()
     {
-        refreshView();
+        refreshActivityView();
+    }
+
+
+    @Override
+    public void onAccountDeleted()
+    {
+        refreshActivityView();
+    }
+
+
+    @Override
+    public void onReloadMap()
+    {
+        refreshFragmentView();
     }
 
 

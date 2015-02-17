@@ -26,6 +26,7 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Application;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -33,6 +34,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.api.ILayer;
@@ -42,6 +44,7 @@ import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.GeoConstants;
 import com.nextgis.maplib.util.SettingsConstants;
+import com.nextgis.maplibui.NGWLoginFragment;
 import com.nextgis.maplibui.NGWSettingsActivity;
 import com.nextgis.maplibui.mapui.RemoteTMSLayerUI;
 import com.nextgis.ngm_clink_monitoring.activities.SettingsActivity;
@@ -55,16 +58,21 @@ import java.io.File;
 
 public class GISApplication
         extends Application
-        implements IGISApplication, NGWSettingsActivity.OnDeleteAccountListener
+        implements IGISApplication, NGWLoginFragment.OnAddAccountListener,
+                   NGWSettingsActivity.OnDeleteAccountListener
 {
     protected MapDrawable    mMap;
     protected GpsEventSource mGpsEventSource;
     protected SyncReceiver   mSyncReceiver;
 
-    protected Location            mCurrentLocation     = null;
-    protected OnReloadMapListener mOnReloadMapListener = null;
+    protected Location                 mCurrentLocation          = null;
+    protected OnAccountAddedListener   mOnAccountAddedListener   = null;
+    protected OnAccountDeletedListener mOnAccountDeletedListener = null;
+    protected OnReloadMapListener      mOnReloadMapListener      = null;
 
-    protected boolean mIsMapReloaded = false;
+    protected boolean mIsAccountCreated = false;
+    protected boolean mIsAccountDeleted = false;
+    protected boolean mIsMapReloaded    = false;
 
 
     @Override
@@ -82,9 +90,9 @@ public class GISApplication
 
         if (sharedPreferences.getBoolean(FoclSettingsConstants.KEY_PREF_APP_FIRST_RUN, true)) {
             onFirstRun();
-            SharedPreferences.Editor edit = sharedPreferences.edit();
-            edit.putBoolean(FoclSettingsConstants.KEY_PREF_APP_FIRST_RUN, false);
-            edit.commit();
+            sharedPreferences.edit()
+                    .putBoolean(FoclSettingsConstants.KEY_PREF_APP_FIRST_RUN, false)
+                    .commit();
         }
 
         //turn on sync automatically (every 2 sec. on network exist) - to often?
@@ -117,10 +125,11 @@ public class GISApplication
             return mMap;
         }
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         File defaultPath = getExternalFilesDir(SettingsConstants.KEY_PREF_MAP);
 
         if (defaultPath != null) {
+            SharedPreferences sharedPreferences =
+                    PreferenceManager.getDefaultSharedPreferences(this);
             String mapPath = sharedPreferences.getString(
                     SettingsConstants.KEY_PREF_MAP_PATH, defaultPath.getPath());
             String mapName =
@@ -257,9 +266,69 @@ public class GISApplication
 
 
     @Override
-    public void OnDeleteAccount(Account account)
+    public void onAddAccount(
+            Account account,
+            String token,
+            boolean accountAdded)
     {
+        if (accountAdded) {
+            addFoclProject();
+
+            SharedPreferences sharedPreferences =
+                    PreferenceManager.getDefaultSharedPreferences(this);
+            long syncPeriod = sharedPreferences.getLong(
+                    SettingsConstants.KEY_PREF_MAP_PATH, FoclConstants.DEFAULT_SYNC_PERIOD);
+
+            ContentResolver.setSyncAutomatically(account, getAuthority(), true);
+            ContentResolver.addPeriodicSync(account, getAuthority(), Bundle.EMPTY, syncPeriod);
+
+            mIsAccountCreated = true;
+
+            if (null != mOnAccountAddedListener) {
+                mOnAccountAddedListener.onAccountAdded();
+            }
+        }
+    }
+
+
+    @Override
+    public void onDeleteAccount(Account account)
+    {
+        mIsAccountDeleted = true;
+
         reloadMap();
+
+        if (null != mOnAccountDeletedListener) {
+            mOnAccountDeletedListener.onAccountDeleted();
+        }
+    }
+
+
+    public void reloadMap()
+    {
+        mMap.load();
+
+        mIsMapReloaded = true;
+
+        if (null != mOnReloadMapListener) {
+            mOnReloadMapListener.onReloadMap();
+        }
+    }
+
+
+    public boolean isAccountCreated()
+    {
+        boolean isCreated = mIsAccountCreated;
+        mIsAccountCreated = false;
+        return isCreated;
+    }
+
+
+    public boolean isAccountDeleted()
+    {
+        boolean isDeleted = mIsAccountDeleted;
+        mIsAccountDeleted = false;
+        return isDeleted;
     }
 
 
@@ -271,15 +340,27 @@ public class GISApplication
     }
 
 
-    public void reloadMap()
+    public void setOnAccountAddedListener(OnAccountAddedListener onAccountAddedListener)
     {
-        mMap.load();
+        mOnAccountAddedListener = onAccountAddedListener;
+    }
 
-        mIsMapReloaded = true;
 
-        if (null != mOnReloadMapListener) {
-            mOnReloadMapListener.OnReloadMap();
-        }
+    public interface OnAccountAddedListener
+    {
+        public void onAccountAdded();
+    }
+
+
+    public void setOnAccountDeletedListener(OnAccountDeletedListener onAccountDeletedListener)
+    {
+        mOnAccountDeletedListener = onAccountDeletedListener;
+    }
+
+
+    public interface OnAccountDeletedListener
+    {
+        public void onAccountDeleted();
     }
 
 
@@ -291,7 +372,7 @@ public class GISApplication
 
     public interface OnReloadMapListener
     {
-        public void OnReloadMap();
+        public void onReloadMap();
     }
 
 
