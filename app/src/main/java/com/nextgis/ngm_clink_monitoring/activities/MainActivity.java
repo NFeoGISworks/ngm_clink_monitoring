@@ -56,6 +56,10 @@ public class MainActivity
         implements GISApplication.OnReloadMapListener, GISApplication.OnAccountAddedListener,
                    GISApplication.OnAccountDeletedListener
 {
+    protected static final int VIEW_STATUS_SYNC    = 1;
+    protected static final int VIEW_STATUS_ACCOUNT = 2;
+    protected static final int VIEW_STATUS_OBJECT  = 3;
+
     public static final String DATA_DIR_PATH =
             Environment.getExternalStorageDirectory().getAbsolutePath() +
             File.separator + "ngm_clink_monitoring";
@@ -65,7 +69,7 @@ public class MainActivity
     protected SyncStatusObserver mSyncStatusObserver;
     protected Object             mSyncHandle;
 
-    protected boolean mIsSynchronizing = false;
+    protected int mViewStatus = VIEW_STATUS_ACCOUNT;
 
 
     @Override
@@ -89,6 +93,8 @@ public class MainActivity
         StatusBarFragment statusBarFragment = (StatusBarFragment) fm.findFragmentByTag("StatusBar");
 
         if (null == app.getAccount()) {
+            mViewStatus = VIEW_STATUS_ACCOUNT;
+
             FoclLoginFragment foclLoginFragment =
                     (FoclLoginFragment) fm.findFragmentByTag("FoclLogin");
 
@@ -104,6 +110,7 @@ public class MainActivity
             ft.replace(R.id.object_fragment, foclLoginFragment, "FoclLogin");
 
         } else {
+            mViewStatus = VIEW_STATUS_OBJECT;
 
             if (null == statusBarFragment) {
                 statusBarFragment = new StatusBarFragment();
@@ -136,8 +143,11 @@ public class MainActivity
                                 Account account = app.getAccount();
 
                                 if (null != account) {
-                                    mIsSynchronizing =
-                                            isSyncActive(account, FoclSettingsConstants.AUTHORITY);
+                                    if (isSyncActive(account, FoclSettingsConstants.AUTHORITY)) {
+                                        mViewStatus = VIEW_STATUS_SYNC;
+                                    } else {
+                                        mViewStatus = VIEW_STATUS_OBJECT;
+                                    }
                                     switchMenuView();
                                 }
                             }
@@ -241,9 +251,14 @@ public class MainActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
-        if (mIsSynchronizing) {
-            menu.findItem(R.id.menu_sync).setEnabled(false);
-            menu.findItem(R.id.menu_settings).setEnabled(false);
+        switch (mViewStatus) {
+            case VIEW_STATUS_SYNC:
+                menu.findItem(R.id.menu_settings).setEnabled(false);
+            case VIEW_STATUS_ACCOUNT:
+                menu.findItem(R.id.menu_sync).setEnabled(false);
+                break;
+            case VIEW_STATUS_OBJECT:
+                break;
         }
 
         return true;
