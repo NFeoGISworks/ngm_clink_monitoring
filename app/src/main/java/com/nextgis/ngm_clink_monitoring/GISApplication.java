@@ -65,7 +65,8 @@ public class GISApplication
     protected GpsEventSource mGpsEventSource;
     protected SyncReceiver   mSyncReceiver;
 
-    protected Location                 mCurrentLocation          = null;
+    protected Location mCurrentLocation = null;
+
     protected OnAccountAddedListener   mOnAccountAddedListener   = null;
     protected OnAccountDeletedListener mOnAccountDeletedListener = null;
     protected OnReloadMapListener      mOnReloadMapListener      = null;

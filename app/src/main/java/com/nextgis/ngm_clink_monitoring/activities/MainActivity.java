@@ -37,18 +37,22 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 import com.nextgis.maplib.api.IGISApplication;
+import com.nextgis.maplib.util.Constants;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.fragments.FoclLoginFragment;
 import com.nextgis.ngm_clink_monitoring.fragments.ObjectTypesFragment;
+import com.nextgis.ngm_clink_monitoring.fragments.PerformSyncFragment;
 import com.nextgis.ngm_clink_monitoring.fragments.StatusBarFragment;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstants;
 
 import java.io.File;
+import java.util.concurrent.TimeUnit;
 
 
 public class MainActivity
@@ -56,9 +60,9 @@ public class MainActivity
         implements GISApplication.OnReloadMapListener, GISApplication.OnAccountAddedListener,
                    GISApplication.OnAccountDeletedListener
 {
-    protected static final int VIEW_STATUS_SYNC    = 1;
-    protected static final int VIEW_STATUS_ACCOUNT = 2;
-    protected static final int VIEW_STATUS_OBJECT  = 3;
+    protected static final int VIEW_STATE_ACCOUNT  = 1;
+    protected static final int VIEW_STATE_1ST_SYNC = 2;
+    protected static final int VIEW_STATE_OBJECTS  = 3;
 
     public static final String DATA_DIR_PATH =
             Environment.getExternalStorageDirectory().getAbsolutePath() +
@@ -69,7 +73,8 @@ public class MainActivity
     protected SyncStatusObserver mSyncStatusObserver;
     protected Object             mSyncHandle;
 
-    protected int mViewStatus = VIEW_STATUS_ACCOUNT;
+    protected int     mViewState = VIEW_STATE_ACCOUNT;
+    protected boolean mIsSyncing = false;
 
 
     @Override
@@ -87,47 +92,16 @@ public class MainActivity
         setSupportActionBar(toolbar);
 
         final GISApplication app = (GISApplication) getApplication();
-        final FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-
-        StatusBarFragment statusBarFragment = (StatusBarFragment) fm.findFragmentByTag("StatusBar");
 
         if (null == app.getAccount()) {
-            mViewStatus = VIEW_STATUS_ACCOUNT;
-
-            FoclLoginFragment foclLoginFragment =
-                    (FoclLoginFragment) fm.findFragmentByTag("FoclLogin");
-
-            if (null == foclLoginFragment) {
-                foclLoginFragment = new FoclLoginFragment();
-            }
-
-            foclLoginFragment.setOnAddAccountListener(app);
-
-            if (null != statusBarFragment) {
-                ft.hide(statusBarFragment);
-            }
-            ft.replace(R.id.object_fragment, foclLoginFragment, "FoclLogin");
-
+            mViewState = VIEW_STATE_ACCOUNT;
+        } else if (null == app.getFoclProject()) {
+            mViewState = VIEW_STATE_1ST_SYNC;
         } else {
-            mViewStatus = VIEW_STATUS_OBJECT;
-
-            if (null == statusBarFragment) {
-                statusBarFragment = new StatusBarFragment();
-            }
-
-            ObjectTypesFragment objectTypesFragment =
-                    (ObjectTypesFragment) fm.findFragmentByTag("ObjectTypes");
-
-            if (null == objectTypesFragment) {
-                objectTypesFragment = new ObjectTypesFragment();
-            }
-
-            ft.add(R.id.status_bar_fragment, statusBarFragment, "StatusBar");
-            ft.replace(R.id.object_fragment, objectTypesFragment, "ObjectTypes");
+            mViewState = VIEW_STATE_OBJECTS;
         }
 
-        ft.commit();
+        setActivityView();
 
         mSyncStatusObserver = new SyncStatusObserver()
         {
@@ -143,17 +117,76 @@ public class MainActivity
                                 Account account = app.getAccount();
 
                                 if (null != account) {
-                                    if (isSyncActive(account, FoclSettingsConstants.AUTHORITY)) {
-                                        mViewStatus = VIEW_STATUS_SYNC;
-                                    } else {
-                                        mViewStatus = VIEW_STATUS_OBJECT;
-                                    }
+                                    mIsSyncing =
+                                            isSyncActive(account, FoclSettingsConstants.AUTHORITY);
                                     switchMenuView();
                                 }
                             }
                         });
             }
         };
+    }
+
+
+    protected void setActivityView()
+    {
+        GISApplication app = (GISApplication) getApplication();
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+
+        StatusBarFragment statusBarFragment = (StatusBarFragment) fm.findFragmentByTag("StatusBar");
+
+        switch (mViewState) {
+            case VIEW_STATE_ACCOUNT:
+                FoclLoginFragment foclLoginFragment =
+                        (FoclLoginFragment) fm.findFragmentByTag("FoclLogin");
+
+                if (null == foclLoginFragment) {
+                    foclLoginFragment = new FoclLoginFragment();
+                }
+
+                foclLoginFragment.setOnAddAccountListener(app);
+
+                if (null != statusBarFragment) {
+                    ft.hide(statusBarFragment);
+                }
+                ft.replace(R.id.object_fragment, foclLoginFragment, "FoclLogin");
+                break;
+
+            case VIEW_STATE_1ST_SYNC:
+                if (null == statusBarFragment) {
+                    statusBarFragment = new StatusBarFragment();
+                }
+
+                PerformSyncFragment performSyncFragment =
+                        (PerformSyncFragment) fm.findFragmentByTag("PerformSync");
+
+                if (null == performSyncFragment) {
+                    performSyncFragment = new PerformSyncFragment();
+                }
+
+                ft.replace(R.id.status_bar_fragment, statusBarFragment, "StatusBar");
+                ft.replace(R.id.object_fragment, performSyncFragment, "PerformSync");
+                break;
+
+            case VIEW_STATE_OBJECTS:
+                if (null == statusBarFragment) {
+                    statusBarFragment = new StatusBarFragment();
+                }
+
+                ObjectTypesFragment objectTypesFragment =
+                        (ObjectTypesFragment) fm.findFragmentByTag("ObjectTypes");
+
+                if (null == objectTypesFragment) {
+                    objectTypesFragment = new ObjectTypesFragment();
+                }
+
+                ft.replace(R.id.status_bar_fragment, statusBarFragment, "StatusBar");
+                ft.replace(R.id.object_fragment, objectTypesFragment, "ObjectTypes");
+                break;
+        }
+
+        ft.commit();
     }
 
 
@@ -184,17 +217,10 @@ public class MainActivity
         super.onResume();
 
         GISApplication app = (GISApplication) getApplication();
+
         app.setOnAccountAddedListener(this);
         app.setOnAccountDeletedListener(this);
         app.setOnReloadMapListener(this);
-
-        if (app.isAccountCreated() || app.isAccountDeleted()) {
-            refreshActivityView();
-        }
-
-        if (app.isMapReloaded()) {
-            refreshFragmentView();
-        }
 
         // Refresh synchronization status
         mSyncStatusObserver.onStatusChanged(0);
@@ -203,6 +229,20 @@ public class MainActivity
         final int mask = ContentResolver.SYNC_OBSERVER_TYPE_PENDING |
                          ContentResolver.SYNC_OBSERVER_TYPE_ACTIVE;
         mSyncHandle = ContentResolver.addStatusChangeListener(mask, mSyncStatusObserver);
+
+        if (app.isAccountDeleted()) {
+            mViewState = VIEW_STATE_ACCOUNT;
+            setActivityView();
+        }
+
+        if (app.isMapReloaded()) {
+            if (VIEW_STATE_1ST_SYNC == mViewState) {
+                mViewState = VIEW_STATE_OBJECTS;
+                setActivityView();
+            } else {
+                refreshFragmentView();
+            }
+        }
     }
 
 
@@ -227,6 +267,11 @@ public class MainActivity
     @Override
     public void onAccountAdded()
     {
+        try {
+            TimeUnit.MILLISECONDS.sleep(500);
+        } catch (InterruptedException e) {
+            Log.d(Constants.TAG, e.getLocalizedMessage());
+        }
         refreshActivityView();
     }
 
@@ -234,14 +279,20 @@ public class MainActivity
     @Override
     public void onAccountDeleted()
     {
-        refreshActivityView();
+        mViewState = VIEW_STATE_ACCOUNT;
+        setActivityView();
     }
 
 
     @Override
     public void onReloadMap()
     {
-        refreshFragmentView();
+        if (VIEW_STATE_1ST_SYNC == mViewState) {
+            mViewState = VIEW_STATE_OBJECTS;
+            setActivityView();
+        } else {
+            refreshFragmentView();
+        }
     }
 
 
@@ -251,14 +302,18 @@ public class MainActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
-        switch (mViewStatus) {
-            case VIEW_STATUS_SYNC:
+        switch (mViewState) {
+            case VIEW_STATE_1ST_SYNC:
                 menu.findItem(R.id.menu_settings).setEnabled(false);
-            case VIEW_STATUS_ACCOUNT:
+            case VIEW_STATE_ACCOUNT:
                 menu.findItem(R.id.menu_sync).setEnabled(false);
                 break;
-            case VIEW_STATUS_OBJECT:
+            case VIEW_STATE_OBJECTS:
                 break;
+        }
+
+        if (mIsSyncing) {
+            menu.findItem(R.id.menu_sync).setEnabled(false);
         }
 
         return true;

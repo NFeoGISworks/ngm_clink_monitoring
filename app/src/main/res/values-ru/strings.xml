@@ -43,6 +43,7 @@
     <string name="show_zoom_controls_summary">Отображать кнопки увеличения и уменьшения масштаба на карте</string>
 
     <string name="no_connection">НЕТ подключения</string>
+    <string name="perform_sync">Выполняется начальная синхронизация, пожалуйста, подождите.</string>
 
     <string name="latitude_caption">Шир:</string>
     <string name="longitude_caption">Долг:</string>

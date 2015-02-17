@@ -43,6 +43,7 @@
     <string name="show_zoom_controls_summary">Show zoom in and zoom out control on map</string>
 
     <string name="no_connection">NO connection</string>
+    <string name="perform_sync">Initial synchronization is performed, please wait.</string>
 
     <string name="latitude_caption">Lat:</string>
     <string name="longitude_caption">Long:</string>
