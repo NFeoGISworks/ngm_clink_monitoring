@@ -44,27 +44,19 @@
 
     </android.support.v7.widget.Toolbar>
 
-    <LinearLayout
+    <FrameLayout
+        android:id="@+id/status_bar_fragment"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:orientation="vertical"
-        >
+        tools:layout="@layout/fragment_status_bar"
+        />
 
-        <FrameLayout
-            android:id="@+id/status_bar_fragment"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            tools:layout="@layout/fragment_status_bar"
-            />
-
-        <FrameLayout
-            android:id="@+id/object_fragment"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            tools:layout="@layout/fragment_object_types"
-            />
-
-    </LinearLayout>
+    <FrameLayout
+        android:id="@+id/object_fragment"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        tools:layout="@layout/fragment_object_types"
+        />
 
 </LinearLayout>
 
