@@ -28,6 +28,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
+import android.preference.PreferenceScreen;
 import com.nextgis.maplibui.NGWSettingsActivity;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 
@@ -93,5 +94,14 @@ public class NGWSettingsActivityProxy
     protected boolean isValidFragment(String fragmentName)
     {
         return super.isValidFragment(fragmentName);
+    }
+
+
+    @Override
+    protected void addAccountLayers(
+            PreferenceScreen screen,
+            Account account)
+    {
+        // We do not need to list of layers
     }
 }
