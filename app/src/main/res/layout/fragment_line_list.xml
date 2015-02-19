@@ -30,7 +30,7 @@
     <android.support.v7.widget.Toolbar
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/object_list_toolbar"
+        android:id="@+id/line_list_toolbar"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:minHeight="?attr/actionBarSize"
@@ -53,7 +53,7 @@
         >
 
         <TextView
-            android:id="@+id/work_type_name_ls"
+            android:id="@+id/work_type_name_ln"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:paddingTop="5dp"
@@ -76,34 +76,8 @@
             android:textColor="#ff000000"
             />
 
-        <TextView
-            android:id="@+id/line_name_ls"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:text="@string/optical_cables"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="#ff000000"
-            />
-
-        <TextView
-            android:id="@+id/object_list_caption_ls"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:text="@string/optical_cables"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="#ff000000"
-            />
-
         <ListView
-            android:id="@+id/object_list_ls"
+            android:id="@+id/line_list_ln"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             />

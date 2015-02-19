@@ -22,13 +22,10 @@
 
 package com.nextgis.ngm_clink_monitoring.fragments;
 
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.CursorAdapter;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -37,39 +34,29 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
-import com.nextgis.ngm_clink_monitoring.adapters.ObjectCursorAdapter;
+import com.nextgis.ngm_clink_monitoring.adapters.LineNameAdapter;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 import com.nextgis.ngm_clink_monitoring.map.FoclStruct;
-import com.nextgis.ngm_clink_monitoring.map.FoclVectorLayer;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
-import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstants;
 
 
-public class ObjectListFragment
+public class LineListFragment
         extends Fragment
 {
     protected TextView mWorkTypeName;
-    protected TextView mLineName;
-    protected TextView mObjectListCaption;
-    protected ListView mObjectList;
-
-    protected Integer mLineId;
-    protected String  mLineNameText;
-    protected String  mObjectLayerName;
-    protected Cursor  mObjectCursor;
+    protected ListView mLineNameList;
 
     protected Integer mFoclStructLayerType = FoclConstants.LAYERTYPE_FOCL_UNKNOWN;
 
+    protected Integer mLineId;
+    protected String  mLineNameText;
 
-    public void setParams(
-            Integer foclStructLayerType,
-            Integer lineId)
+
+    public void setParams(Integer foclStructLayerType)
     {
         mFoclStructLayerType = foclStructLayerType;
-        mLineId = lineId;
     }
 
 
@@ -94,46 +81,43 @@ public class ObjectListFragment
         Toolbar typesToolbar = (Toolbar) rootView.findViewById(R.id.object_types_toolbar);
         typesToolbar.setVisibility(View.GONE);
 
-        View view = inflater.inflate(R.layout.fragment_object_list, null);
+        View view = inflater.inflate(R.layout.fragment_line_list, null);
 
-        Toolbar toolbar = (Toolbar) view.findViewById(R.id.object_list_toolbar);
+        Toolbar toolbar = (Toolbar) view.findViewById(R.id.line_list_toolbar);
         toolbar.getBackground().setAlpha(255);
         toolbar.setTitle(
                 activity.getString(R.string.backward) + "  -  " + activity.getString(
-                        R.string.select_object));
+                        R.string.select_line));
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
 
         activity.setSupportActionBar(toolbar);
 
-        mWorkTypeName = (TextView) view.findViewById(R.id.work_type_name_ls);
-        mLineName = (TextView) view.findViewById(R.id.line_name_ls);
-        mObjectListCaption = (TextView) view.findViewById(R.id.object_list_caption_ls);
-        mObjectList = (ListView) view.findViewById(R.id.object_list_ls);
+        mWorkTypeName = (TextView) view.findViewById(R.id.work_type_name_ln);
+        mLineNameList = (ListView) view.findViewById(R.id.line_list_ln);
 
         switch (mFoclStructLayerType) {
             case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CABLE:
                 mWorkTypeName.setText(R.string.cable_laying);
-                mObjectListCaption.setText(R.string.optical_cables);
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_FOSC:
                 mWorkTypeName.setText(R.string.fosc_mounting);
-                mObjectListCaption.setText(R.string.foscs);
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CROSS:
                 mWorkTypeName.setText(R.string.cross_mounting);
-                mObjectListCaption.setText(R.string.crosses);
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_TELECOM_CABINET:
                 mWorkTypeName.setText(R.string.cabinet_mounting);
-                mObjectListCaption.setText(R.string.telecom_cabinets);
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_POLE:
                 mWorkTypeName.setText(R.string.pole_mounting);
-                mObjectListCaption.setText(R.string.poles);
+                break;
+
+            case FoclConstants.LAYERTYPE_FOCL_ENDPOINT:
+                mWorkTypeName.setText(R.string.line_measuring);
                 break;
         }
 
@@ -141,43 +125,15 @@ public class ObjectListFragment
         final FoclProject foclProject = app.getFoclProject();
 
         if (null == foclProject) {
-            mLineName.setText("");
-            mObjectList.setEnabled(false);
-            mObjectList.setAdapter(null);
+            mLineNameList.setEnabled(false);
+            mLineNameList.setAdapter(null);
             return view;
         }
 
 
-        FoclStruct foclStruct = (FoclStruct) foclProject.getLayer(mLineId);
-        mLineNameText = foclStruct.getName();
-        mLineName.setText(mLineNameText);
-
-        FoclVectorLayer layer = (FoclVectorLayer) foclStruct.getLayerByFoclType(
-                mFoclStructLayerType);
-        mObjectLayerName = layer.getPath().getName();
-
-        Uri uri =
-                Uri.parse("content://" + FoclSettingsConstants.AUTHORITY + "/" + mObjectLayerName);
-
-        String proj[] = {
-                VectorLayer.FIELD_ID, FoclConstants.FIELD_NAME, FoclConstants.FIELD_STATUS_BUILT};
-
-        Cursor cursor = getActivity().getContentResolver().query(uri, proj, null, null, null);
-
-        if (null != cursor && cursor.getCount() > 0) {
-            mObjectList.setEnabled(true);
-        } else {
-            mObjectList.setEnabled(false);
-            mObjectList.setAdapter(null);
-            return view;
-        }
-
-
-        ObjectCursorAdapter cursorAdapter = new ObjectCursorAdapter(
-                getActivity(), cursor, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
-
-        mObjectList.setAdapter(cursorAdapter);
-        mObjectList.setOnItemClickListener(
+        LineNameAdapter lineNameAdapter = new LineNameAdapter(getActivity(), foclProject);
+        mLineNameList.setAdapter(lineNameAdapter);
+        mLineNameList.setOnItemClickListener(
                 new AdapterView.OnItemClickListener()
                 {
                     @Override
@@ -187,8 +143,10 @@ public class ObjectListFragment
                             int position,
                             long id)
                     {
-                        mObjectCursor = (Cursor) mObjectList.getAdapter().getItem(position);
-                        onObjectClick();
+                        mLineId = (int) id;
+                        FoclStruct foclStruct = (FoclStruct) foclProject.getLayer(mLineId);
+                        mLineNameText = foclStruct.getName();
+                        onLineClick();
                     }
                 });
 
@@ -196,22 +154,37 @@ public class ObjectListFragment
     }
 
 
-    public void onObjectClick()
+    public void onLineClick()
     {
         final FragmentManager fm = getActivity().getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
 
-        ObjectStatusFragment objectStatusFragment =
-                (ObjectStatusFragment) fm.findFragmentByTag("ObjectStatus");
+        if (FoclConstants.LAYERTYPE_FOCL_ENDPOINT == mFoclStructLayerType) {
+            ObjectStatusFragment objectMeasureFragment =
+                    (ObjectStatusFragment) fm.findFragmentByTag("ObjectMeasure");
 
-        if (objectStatusFragment == null) {
-            objectStatusFragment = new ObjectStatusFragment();
+            if (objectMeasureFragment == null) {
+                objectMeasureFragment = new ObjectStatusFragment();
+            }
+
+            objectMeasureFragment.setParams(
+                    mFoclStructLayerType, mLineId, mLineNameText, null, null);
+
+            ft.replace(R.id.object_fragment, objectMeasureFragment, "ObjectMeasure");
+
+        } else {
+            ObjectListFragment objectListFragment =
+                    (ObjectListFragment) fm.findFragmentByTag("ObjectList");
+
+            if (objectListFragment == null) {
+                objectListFragment = new ObjectListFragment();
+            }
+
+            objectListFragment.setParams(mFoclStructLayerType, mLineId);
+
+            ft.replace(R.id.object_fragment, objectListFragment, "ObjectList");
         }
 
-        objectStatusFragment.setParams(
-                mFoclStructLayerType, null, mLineNameText, mObjectLayerName, mObjectCursor);
-
-        ft.replace(R.id.object_fragment, objectStatusFragment, "ObjectStatus");
         ft.addToBackStack(null);
         ft.commit();
         fm.executePendingTransactions();

@@ -31,6 +31,9 @@
     <string name="action_about">О программе</string>
 
     <string name="backward">Назад</string>
+    <string name="select_line">Выберите линию</string>
+    <string name="select_object">Выберите объект</string>
+    <string name="set_status">Укажите статус</string>
 
     <string name="general">Общие настройки</string>
     <string name="general_summary">Общие настройки приложения</string>

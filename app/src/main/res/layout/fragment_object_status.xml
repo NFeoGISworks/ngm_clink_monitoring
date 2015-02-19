@@ -65,14 +65,14 @@
                 >
 
                 <TextView
-                    android:background="@drawable/border_object_type_name"
                     android:id="@+id/work_type_name_st"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"
+                    android:paddingTop="5dp"
                     android:paddingBottom="5dp"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
-                    android:paddingTop="5dp"
+                    android:background="@drawable/border_object_type_name"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="#ff000000"
                     />
@@ -80,42 +80,34 @@
                 <TextView
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"
+                    android:paddingTop="5dp"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
-                    android:paddingTop="5dp"
                     android:text="@string/communication_line"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="#ff000000"
                     />
 
                 <TextView
-                    android:id="@+id/line_name"
+                    android:id="@+id/line_name_st"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"
+                    android:paddingTop="5dp"
                     android:paddingBottom="5dp"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
-                    android:paddingTop="5dp"
                     android:text="@string/communication_line"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="#ff000000"
-                    android:visibility="visible"
-                    />
-
-                <Spinner
-                    android:id="@+id/line_name_spinner_st"
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:visibility="gone"
                     />
 
                 <TextView
-                    android:id="@+id/object_name_caption"
+                    android:id="@+id/object_name_caption_st"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"
+                    android:paddingTop="5dp"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
-                    android:paddingTop="5dp"
                     android:text="@string/optical_cable"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="#ff000000"
@@ -149,7 +141,6 @@
 
                     <TextView
                         android:id="@+id/status_not_builted"
-                        android:background="@drawable/border_status_red"
                         android:layout_height="match_parent"
                         android:layout_width="0dip"
                         android:layout_marginTop="5dp"
@@ -159,6 +150,7 @@
                         android:paddingBottom="10dp"
                         android:paddingLeft="10dp"
                         android:paddingRight="10dp"
+                        android:background="@drawable/border_status_red"
                         android:text="@string/not_builted"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:ellipsize="end"
@@ -168,7 +160,6 @@
 
                     <TextView
                         android:id="@+id/status_builted"
-                        android:background="@drawable/border_status_grey"
                         android:layout_height="match_parent"
                         android:layout_width="0dip"
                         android:layout_marginTop="5dp"
@@ -178,6 +169,7 @@
                         android:paddingBottom="10dp"
                         android:paddingLeft="10dp"
                         android:paddingRight="10dp"
+                        android:background="@drawable/border_status_grey"
                         android:text="@string/builted"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:ellipsize="end"
@@ -189,14 +181,14 @@
 
                 <TextView
                     android:id="@+id/photo_hint_text"
-                    android:background="#ffe4c2b4"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"
                     android:layout_marginTop="10dp"
+                    android:paddingTop="5dp"
                     android:paddingBottom="5dp"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
-                    android:paddingTop="5dp"
+                    android:background="#ffe4c2b4"
                     android:text="@string/take_photos_to_confirm"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="#ff000000"
@@ -208,10 +200,10 @@
                     android:layout_width="wrap_content"
                     android:layout_marginTop="10dp"
                     android:layout_gravity="center_horizontal"
-                    android:text="@string/make_photo"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
                     android:drawableLeft="@drawable/ic_action_camera"
                     android:drawableStart="@drawable/ic_action_camera"
+                    android:text="@string/make_photo"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
                     />
 
                 <android.support.v7.widget.RecyclerView

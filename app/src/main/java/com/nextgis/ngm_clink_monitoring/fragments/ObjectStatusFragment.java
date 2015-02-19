@@ -41,9 +41,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.nextgis.maplib.map.VectorLayer;
@@ -51,7 +49,6 @@ import com.nextgis.maplib.util.Constants;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.activities.MainActivity;
-import com.nextgis.ngm_clink_monitoring.adapters.LineNameAdapter;
 import com.nextgis.ngm_clink_monitoring.adapters.ObjectCursorAdapter;
 import com.nextgis.ngm_clink_monitoring.adapters.ObjectPhotoAdapter;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
@@ -73,27 +70,28 @@ import java.util.List;
 public class ObjectStatusFragment
         extends Fragment
 {
-    private static final int REQUEST_TAKE_PHOTO = 1;
+    protected static final int REQUEST_TAKE_PHOTO = 1;
 
-    protected TextView mWorkTypeName;
-    protected TextView mLineName;
-    protected Spinner mLineNameSpinner;
-    protected TextView mObjectNameCaption;
-    protected TextView mObjectName;
-    protected TextView mStatusButtonNotBuilted;
-    protected TextView mStatusButtonBuilted;
-    protected TextView mPhotoHintText;
-    protected Button   mMakePhotoButton;
+    protected TextView     mWorkTypeName;
+    protected TextView     mLineName;
+    protected TextView     mObjectNameCaption;
+    protected TextView     mObjectName;
+    protected TextView     mStatusButtonNotBuilted;
+    protected TextView     mStatusButtonBuilted;
+    protected TextView     mPhotoHintText;
+    protected Button       mMakePhotoButton;
+    protected RecyclerView mPhotoGallery;
 
-    protected int mFoclStructLayerType = FoclConstants.LAYERTYPE_FOCL_UNKNOWN;
-    protected String mLineNameText;
-    protected String mObjectLayerName;
-    protected Cursor mObjectCursor;
-    protected long   mObjectId;
-    protected String mObjectNameText;
+    protected Integer mFoclStructLayerType = FoclConstants.LAYERTYPE_FOCL_UNKNOWN;
+
+    protected Integer mLineId;
+    protected String  mLineNameText;
+    protected String  mObjectLayerName;
+    protected Long    mObjectId;
+    protected String  mObjectNameText;
+
     protected String mObjectStatus = FoclConstants.FIELD_VALUE_UNKNOWN;
 
-    protected RecyclerView       mPhotoGallery;
     protected List<String>       mPhotoList;
     protected ObjectPhotoAdapter mObjectPhotoAdapter;
 
@@ -101,21 +99,24 @@ public class ObjectStatusFragment
 
 
     public void setParams(
-            int foclStructLayerType,
+            Integer foclStructLayerType,
+            Integer lineId,
             String lineName,
             String objectLayerName,
             Cursor objectCursor)
     {
         mFoclStructLayerType = foclStructLayerType;
+        mLineNameText = lineName;
 
-        if (FoclConstants.LAYERTYPE_FOCL_ENDPOINT != mFoclStructLayerType) {
-            mLineNameText = lineName;
+        if (FoclConstants.LAYERTYPE_FOCL_ENDPOINT == mFoclStructLayerType) {
+            mLineId = lineId;
+
+        } else {
             mObjectLayerName = objectLayerName;
-            mObjectCursor = objectCursor;
-            mObjectId = mObjectCursor.getLong(mObjectCursor.getColumnIndex(VectorLayer.FIELD_ID));
-            mObjectNameText = ObjectCursorAdapter.getObjectName(mObjectCursor);
-            mObjectStatus = mObjectCursor.getString(
-                    mObjectCursor.getColumnIndex(FoclConstants.FIELD_STATUS_BUILT));
+            mObjectId = objectCursor.getLong(objectCursor.getColumnIndex(VectorLayer.FIELD_ID));
+            mObjectNameText = ObjectCursorAdapter.getObjectName(objectCursor);
+            mObjectStatus = objectCursor.getString(
+                    objectCursor.getColumnIndex(FoclConstants.FIELD_STATUS_BUILT));
         }
     }
 
@@ -169,23 +170,22 @@ public class ObjectStatusFragment
 
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.object_status_toolbar);
         toolbar.getBackground().setAlpha(255);
-        toolbar.setTitle(activity.getString(R.string.backward) + "  -  " + activity.getTitle());
+        toolbar.setTitle(
+                activity.getString(R.string.backward) + "  -  " + activity.getString(
+                        R.string.set_status));
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
 
         activity.setSupportActionBar(toolbar);
 
         mWorkTypeName = (TextView) view.findViewById(R.id.work_type_name_st);
-        mLineName = (TextView) view.findViewById(R.id.line_name);
-        mLineNameSpinner = (Spinner) view.findViewById(R.id.line_name_spinner_st);
-        mObjectNameCaption = (TextView) view.findViewById(R.id.object_name_caption);
+        mLineName = (TextView) view.findViewById(R.id.line_name_st);
+        mObjectNameCaption = (TextView) view.findViewById(R.id.object_name_caption_st);
         mObjectName = (TextView) view.findViewById(R.id.object_name);
         mStatusButtonNotBuilted = (TextView) view.findViewById(R.id.status_not_builted);
         mStatusButtonBuilted = (TextView) view.findViewById(R.id.status_builted);
         mPhotoHintText = (TextView) view.findViewById(R.id.photo_hint_text);
-
-        mPhotoGallery = (RecyclerView) view.findViewById(R.id.photo_gallery);
-
         mMakePhotoButton = (Button) view.findViewById(R.id.btn_make_photo);
+        mPhotoGallery = (RecyclerView) view.findViewById(R.id.photo_gallery);
 
         switch (mFoclStructLayerType) {
             case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CABLE:
@@ -225,16 +225,10 @@ public class ObjectStatusFragment
         }
 
         if (FoclConstants.LAYERTYPE_FOCL_ENDPOINT == mFoclStructLayerType) {
-            mLineNameSpinner.setVisibility(View.VISIBLE);
-
-            mLineName.setVisibility(View.GONE);
             mObjectNameCaption.setVisibility(View.GONE);
             mObjectName.setVisibility(View.GONE);
 
         } else {
-            mLineNameSpinner.setVisibility(View.GONE);
-
-            mLineName.setVisibility(View.VISIBLE);
             mObjectNameCaption.setVisibility(View.VISIBLE);
             mObjectName.setVisibility(View.VISIBLE);
         }
@@ -244,105 +238,73 @@ public class ObjectStatusFragment
 
         if (null == foclProject) {
             mLineName.setText("");
-            mLineNameSpinner.setEnabled(false);
-            mLineNameSpinner.setAdapter(null);
             mObjectName.setText("");
-            mPhotoGallery.setEnabled(false);
-            mPhotoGallery.setAdapter(null);
             mMakePhotoButton.setEnabled(false);
             mMakePhotoButton.setOnClickListener(null);
+            mPhotoGallery.setEnabled(false);
+            mPhotoGallery.setAdapter(null);
             setStatusButtonView(false);
             return view;
         }
+
+
+        mLineName.setText(mLineNameText);
 
         if (FoclConstants.LAYERTYPE_FOCL_ENDPOINT == mFoclStructLayerType) {
             mStatusButtonNotBuilted.setText(activity.getString(R.string.not_complete));
             mStatusButtonBuilted.setText(activity.getString(R.string.complete));
 
-            LineNameAdapter projectAdapter = new LineNameAdapter(getActivity(), foclProject);
+            FoclStruct foclStruct = (FoclStruct) foclProject.getLayer(mLineId);
+            FoclVectorLayer layer = (FoclVectorLayer) foclStruct.getLayerByFoclType(
+                    mFoclStructLayerType);
 
-            mLineNameSpinner.setAdapter(projectAdapter);
-            mLineNameSpinner.setSelection(0);
-            mLineNameSpinner.setOnItemSelectedListener(
-                    new AdapterView.OnItemSelectedListener()
-                    {
-                        @Override
-                        public void onItemSelected(
-                                AdapterView<?> parent,
-                                View view,
-                                int position,
-                                long id)
-                        {
-                            FoclStruct foclStruct = (FoclStruct) foclProject.getLayer(position);
-                            FoclVectorLayer layer = (FoclVectorLayer) foclStruct.getLayerByFoclType(
-                                    mFoclStructLayerType);
-                            mObjectLayerName = layer.getPath().getName();
+            mObjectLayerName = layer.getPath().getName();
 
-                            Uri uri = Uri.parse(
-                                    "content://" + FoclSettingsConstants.AUTHORITY + "/" +
-                                    mObjectLayerName);
+            Uri uri = Uri.parse(
+                    "content://" + FoclSettingsConstants.AUTHORITY + "/" + mObjectLayerName);
 
-                            String proj[] = {
-                                    VectorLayer.FIELD_ID,
-                                    FoclConstants.FIELD_TYPE_ENDPOINT,
-                                    FoclConstants.FIELD_STATUS_MEASURE};
+            String proj[] = {
+                    VectorLayer.FIELD_ID,
+                    FoclConstants.FIELD_TYPE_ENDPOINT,
+                    FoclConstants.FIELD_STATUS_MEASURE};
 
-                            mObjectCursor = getActivity().getContentResolver()
-                                    .query(uri, proj, null, null, null);
+            Cursor objectCursor =
+                    getActivity().getContentResolver().query(uri, proj, null, null, null);
 
-                            if (null != mObjectCursor && mObjectCursor.getCount() > 0) {
-                                mObjectCursor.moveToFirst();
+            boolean found = false;
 
-                                do {
-                                    String typeEndpoint = mObjectCursor.getString(
-                                            mObjectCursor.getColumnIndex(
-                                                    FoclConstants.FIELD_TYPE_ENDPOINT));
+            if (null != objectCursor && objectCursor.getCount() > 0) {
+                objectCursor.moveToFirst();
 
-                                    if (typeEndpoint.equals(FoclConstants.FIELD_VALUE_POINT_B)) {
-                                        mObjectId = mObjectCursor.getLong(
-                                                mObjectCursor.getColumnIndex(
-                                                        VectorLayer.FIELD_ID));
+                do {
+                    String typeEndpoint = objectCursor.getString(
+                            objectCursor.getColumnIndex(FoclConstants.FIELD_TYPE_ENDPOINT));
 
-                                        mObjectStatus = mObjectCursor.getString(
-                                                mObjectCursor.getColumnIndex(
-                                                        FoclConstants.FIELD_STATUS_MEASURE));
+                    if (typeEndpoint.equals(FoclConstants.FIELD_VALUE_POINT_B)) {
+                        mObjectId = objectCursor.getLong(
+                                objectCursor.getColumnIndex(VectorLayer.FIELD_ID));
 
-                                        if (null == mObjectStatus) {
-                                            mObjectStatus = FoclConstants.FIELD_VALUE_UNKNOWN;
-                                        }
+                        mObjectStatus = objectCursor.getString(
+                                objectCursor.getColumnIndex(FoclConstants.FIELD_STATUS_MEASURE));
 
-                                        setStatusButtonView(true);
-                                        return;
-                                    }
-                                } while (mObjectCursor.moveToNext());
-                            }
-
-                            setStatusButtonView(false);
+                        if (null == mObjectStatus) {
+                            mObjectStatus = FoclConstants.FIELD_VALUE_UNKNOWN;
                         }
 
+                        found = true;
+                        break;
+                    }
+                } while (objectCursor.moveToNext());
+            }
 
-                        @Override
-                        public void onNothingSelected(AdapterView<?> parent)
-                        {
-
-                        }
-                    });
+            setStatusButtonView(found);
 
         } else {
-            mLineName.setText(mLineNameText);
             mObjectName.setText(mObjectNameText);
             mStatusButtonNotBuilted.setText(activity.getString(R.string.not_builted));
             mStatusButtonBuilted.setText(activity.getString(R.string.builted));
+            setStatusButtonView(true);
         }
-
-        RecyclerView.LayoutManager layoutManager =
-                new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
-
-        mPhotoGallery.setLayoutManager(layoutManager);
-        mPhotoGallery.setAdapter(mObjectPhotoAdapter);
-        mPhotoGallery.setHasFixedSize(true);
-
-        setStatusButtonView(true);
 
         View.OnClickListener statusButtonOnClickListener = new View.OnClickListener()
         {
@@ -394,6 +356,7 @@ public class ObjectStatusFragment
 
                 int result =
                         getActivity().getContentResolver().update(updateUri, values, null, null);
+
                 if (result == 0) {
                     Log.d(
                             Constants.TAG, "Layer: " + mObjectLayerName + ", id: " + mObjectId +
@@ -441,6 +404,13 @@ public class ObjectStatusFragment
                         }
                     }
                 });
+
+        RecyclerView.LayoutManager layoutManager =
+                new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+
+        mPhotoGallery.setLayoutManager(layoutManager);
+        mPhotoGallery.setAdapter(mObjectPhotoAdapter);
+        mPhotoGallery.setHasFixedSize(true);
 
         return view;
     }

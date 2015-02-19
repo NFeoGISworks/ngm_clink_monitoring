@@ -190,39 +190,23 @@ public class ObjectTypesFragment
     public void onButtonClick(int foclStructLayerType)
     {
         final FragmentManager fm = getActivity().getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
 
         StatusBarFragment statusBarFragment = (StatusBarFragment) fm.findFragmentByTag("StatusBar");
 
-        FragmentTransaction ft = fm.beginTransaction();
         if (null != statusBarFragment) {
             ft.hide(statusBarFragment);
         }
 
-        if (FoclConstants.LAYERTYPE_FOCL_ENDPOINT == foclStructLayerType) {
-            ObjectStatusFragment objectMeasureFragment =
-                    (ObjectStatusFragment) fm.findFragmentByTag("ObjectMeasure");
+        LineListFragment lineListFragment = (LineListFragment) fm.findFragmentByTag("LineList");
 
-            if (objectMeasureFragment == null) {
-                objectMeasureFragment = new ObjectStatusFragment();
-            }
-
-            objectMeasureFragment.setParams(foclStructLayerType, null, null, null);
-
-            ft.replace(R.id.object_fragment, objectMeasureFragment, "ObjectMeasure");
-
-        } else {
-            ObjectListFragment objectListFragment =
-                    (ObjectListFragment) fm.findFragmentByTag("ObjectList");
-
-            if (objectListFragment == null) {
-                objectListFragment = new ObjectListFragment();
-            }
-
-            objectListFragment.setParams(foclStructLayerType);
-
-            ft.replace(R.id.object_fragment, objectListFragment, "ObjectList");
+        if (lineListFragment == null) {
+            lineListFragment = new LineListFragment();
         }
 
+        lineListFragment.setParams(foclStructLayerType);
+
+        ft.replace(R.id.object_fragment, lineListFragment, "LineList");
         ft.addToBackStack(null);
         ft.commit();
         fm.executePendingTransactions();
