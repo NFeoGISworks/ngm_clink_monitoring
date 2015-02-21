@@ -54,5 +54,5 @@ public interface FoclConstants
     public static final String FOCL_ACCOUNT_NAME = "Compulink Monitoring Account";
     public static final String FOCL_DEFAULT_ACCOUNT_URL = "http://176.9.38.120/cl";
 
-    public static final long DEFAULT_SYNC_PERIOD = 600;
+    public static final int DEFAULT_SYNC_PERIOD_SEC = 600;
 }

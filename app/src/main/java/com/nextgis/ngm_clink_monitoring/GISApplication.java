@@ -24,6 +24,7 @@ package com.nextgis.ngm_clink_monitoring;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.app.ActivityManager;
 import android.app.Application;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
@@ -52,6 +53,7 @@ import com.nextgis.ngm_clink_monitoring.map.FoclLayerFactory;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstants;
+import com.nextgis.ngm_clink_monitoring.util.UIUpdater;
 
 import java.io.File;
 
@@ -70,6 +72,8 @@ public class GISApplication
     protected OnAccountAddedListener   mOnAccountAddedListener   = null;
     protected OnAccountDeletedListener mOnAccountDeletedListener = null;
     protected OnReloadMapListener      mOnReloadMapListener      = null;
+
+    protected UIUpdater mSyncPeriodicRunner;
 
     protected boolean mIsAccountCreated = false;
     protected boolean mIsAccountDeleted = false;
@@ -117,6 +121,29 @@ public class GISApplication
         intentFilter.addAction(SyncAdapter.SYNC_START);
         intentFilter.addAction(SyncAdapter.SYNC_FINISH);
         registerReceiver(mSyncReceiver, intentFilter);
+
+        if (!isRanAsService() && null != getAccount() && null != getFoclProject()) {
+            startPeriodicSync();
+        }
+    }
+
+
+    protected boolean isRanAsService()
+    {
+        return getCurrentProcessName().matches(".*:sync$");
+    }
+
+
+    protected String getCurrentProcessName()
+    {
+        int pid = android.os.Process.myPid();
+        ActivityManager manager = (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningAppProcessInfo processInfo : manager.getRunningAppProcesses()) {
+            if (processInfo.pid == pid) {
+                return processInfo.processName;
+            }
+        }
+        return "";
     }
 
 
@@ -245,6 +272,70 @@ public class GISApplication
     }
 
 
+    public void setSyncPeriod(int seconds)
+    {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences.edit()
+                .putInt(FoclSettingsConstants.KEY_PREF_SYNC_PERIOD_SEC, seconds)
+                .commit();
+
+        mSyncPeriodicRunner.setUpdateInterval(seconds * 1000);
+    }
+
+
+    public boolean startPeriodicSync()
+    {
+        final Account account = getAccount();
+
+        if (null == account) {
+            return false;
+        }
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        int syncPriod = sharedPreferences.getInt(
+                FoclSettingsConstants.KEY_PREF_SYNC_PERIOD_SEC,
+                FoclConstants.DEFAULT_SYNC_PERIOD_SEC);
+
+        mSyncPeriodicRunner = new UIUpdater(
+                new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        runSync(account);
+                    }
+                }, syncPriod * 1000);
+
+        mSyncPeriodicRunner.startUpdates();
+        return true;
+    }
+
+
+    public void stopPeriodicSync()
+    {
+        if (null == mSyncPeriodicRunner) {
+            return;
+        }
+
+        mSyncPeriodicRunner.stopUpdates();
+    }
+
+
+    public boolean runSync(Account account)
+    {
+        if (null == account) {
+            return false;
+        }
+
+        Bundle settingsBundle = new Bundle();
+        settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+        settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+
+        ContentResolver.requestSync(account, FoclSettingsConstants.AUTHORITY, settingsBundle);
+        return true;
+    }
+
+
     @Override
     public void showSettings()
     {
@@ -273,17 +364,9 @@ public class GISApplication
             boolean accountAdded)
     {
         if (accountAdded) {
-            addFoclProject();
-
-            SharedPreferences sharedPreferences =
-                    PreferenceManager.getDefaultSharedPreferences(this);
-            long syncPeriod = sharedPreferences.getLong(
-                    SettingsConstants.KEY_PREF_MAP_PATH, FoclConstants.DEFAULT_SYNC_PERIOD);
-
-            ContentResolver.setSyncAutomatically(account, getAuthority(), true);
-            ContentResolver.addPeriodicSync(account, getAuthority(), Bundle.EMPTY, syncPeriod);
-
             mIsAccountCreated = true;
+            addFoclProject();
+            startPeriodicSync();
 
             if (null != mOnAccountAddedListener) {
                 mOnAccountAddedListener.onAccountAdded();
@@ -296,8 +379,8 @@ public class GISApplication
     public void onDeleteAccount(Account account)
     {
         mIsAccountDeleted = true;
-
-        reloadMap();
+        stopPeriodicSync();
+        mMap.load(); // reload map without listener
 
         if (null != mOnAccountDeletedListener) {
             mOnAccountDeletedListener.onAccountDeleted();
@@ -317,7 +400,7 @@ public class GISApplication
     }
 
 
-    public boolean isAccountCreated()
+    public boolean isAccountAdded()
     {
         boolean isCreated = mIsAccountCreated;
         mIsAccountCreated = false;
@@ -385,8 +468,21 @@ public class GISApplication
                 Context context,
                 Intent intent)
         {
-            if (intent.getAction().equals(SyncAdapter.SYNC_FINISH)) {
-                reloadMap();
+            String action = intent.getAction();
+
+            switch (action) {
+                case SyncAdapter.SYNC_START:
+                    break;
+
+                case SyncAdapter.SYNC_FINISH:
+                    reloadMap();
+                    break;
+
+                case SyncAdapter.SYNC_CANCELED:
+                    break;
+
+                case SyncAdapter.SYNC_CHANGES:
+                    break;
             }
         }
     }

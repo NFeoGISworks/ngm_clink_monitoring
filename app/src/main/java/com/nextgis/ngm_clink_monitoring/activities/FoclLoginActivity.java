@@ -22,6 +22,7 @@
 
 package com.nextgis.ngm_clink_monitoring.activities;
 
+import android.accounts.Account;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
@@ -51,11 +52,20 @@ public class FoclLoginActivity
 
         foclLoginFragment.setOnAddAccountListener(this);
 
-        GISApplication app = (GISApplication) getApplication();
-        foclLoginFragment.setOnAddAccountListener(app);
-
         FragmentTransaction ft = fm.beginTransaction();
         ft.add(com.nextgis.maplibui.R.id.login_frame, foclLoginFragment, "FoclLogin");
         ft.commit();
+    }
+
+
+    @Override
+    public void onAddAccount(
+            Account account,
+            String token,
+            boolean accountAdded)
+    {
+        super.onAddAccount(account, token, accountAdded);
+        GISApplication app = (GISApplication) getApplication();
+        app.onAddAccount(account, token, accountAdded);
     }
 }

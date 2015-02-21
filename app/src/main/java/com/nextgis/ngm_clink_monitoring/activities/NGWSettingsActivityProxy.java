@@ -53,9 +53,9 @@ public class NGWSettingsActivityProxy
     {
         GISApplication app = (GISApplication) getApplication();
         Account account = app.getAccount();
+        Preference preference = new Preference(this);
 
         if (null != account) {
-            Preference preference = new Preference(this);
             Bundle bundle = new Bundle();
             bundle.putParcelable("account", account);
             Intent intent = new Intent(this, NGWSettingsActivity.class);
@@ -64,8 +64,17 @@ public class NGWSettingsActivityProxy
 
             preference.setIntent(intent);
             preference.setTitle(account.name);
-            getPreferenceScreen().addPreference(preference);
+
+        } else {
+            //add "Add account" preference
+            Intent intent = new Intent(this, FoclLoginActivity.class);
+
+            preference.setIntent(intent);
+            preference.setTitle(com.nextgis.maplibui.R.string.add_account);
+            preference.setSummary(com.nextgis.maplibui.R.string.add_account_summary);
         }
+
+        getPreferenceScreen().addPreference(preference);
     }
 
 
@@ -75,17 +84,24 @@ public class NGWSettingsActivityProxy
     {
         GISApplication app = (GISApplication) getApplication();
         Account account = app.getAccount();
+        Header header = new Header();
 
         if (null != account) {
-            Header header = new Header();
             Bundle bundle = new Bundle();
             bundle.putParcelable("account", account);
 
             header.title = account.name;
             header.fragment = com.nextgis.maplibui.NGWSettingsFragment.class.getName();
             header.fragmentArguments = bundle;
-            target.add(header);
+
+        } else {
+            //add "Add account" header
+            header.title = getString(com.nextgis.maplibui.R.string.add_account);
+            header.summary = getString(com.nextgis.maplibui.R.string.add_account_summary);
+            header.intent = new Intent(this, FoclLoginActivity.class);
         }
+
+        target.add(header);
     }
 
 

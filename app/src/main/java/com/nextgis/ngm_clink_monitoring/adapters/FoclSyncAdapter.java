@@ -34,26 +34,25 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
-import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.datasource.ngw.SyncAdapter;
 import com.nextgis.maplib.map.LayerGroup;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.activities.MainActivity;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
-import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 
 
 public class FoclSyncAdapter
         extends SyncAdapter
 {
-    public static final int NOTIFICATION_START  = 1;
-    public static final int NOTIFICATION_FINISH = 2;
-    public static final int NOTIFICATION_ERROR  = 3;
+    public static final int NOTIFICATION_START    = 1;
+    public static final int NOTIFICATION_FINISH   = 2;
+    public static final int NOTIFICATION_CANCELED = 3;
+    public static final int NOTIFICATION_ERROR    = 4;
 
     private static final int NOTIFY_ID = 1;
 
     protected Context mContext;
-    protected boolean mIsError = false;
+    protected String mError = null;
 
 
     public FoclSyncAdapter(
@@ -94,42 +93,48 @@ public class FoclSyncAdapter
 
         super.onPerformSync(account, bundle, authority, contentProviderClient, syncResult);
 
-        if (mIsError) {
-            mIsError = false;
-            return;
-        }
+        if (null != mError && mError.length() > 0) {
 
-        sendNotification(NOTIFICATION_FINISH, null);
+            if (mError.equals(getContext().getString(R.string.sync_canceled))) {
+                sendNotification(NOTIFICATION_CANCELED, mError);
+            } else {
+                sendNotification(NOTIFICATION_ERROR, mError);
+            }
+
+        } else {
+            sendNotification(NOTIFICATION_FINISH, null);
+        }
     }
 
 
     @Override
-    protected void sync(
-            LayerGroup layerGroup,
-            String authority,
-            SyncResult syncResult)
+    protected void sync( // has recursive call in super.sync()
+                         LayerGroup layerGroup,
+                         String authority,
+                         SyncResult syncResult)
     {
         // First, we must upload changes for them saving
         super.sync(layerGroup, authority, syncResult);
 
-        // Second, we update FoclProject, can delete some or all layers
-        FoclProject foclProject = null;
-
-        for (int i = 0; i < layerGroup.getLayerCount(); i++) {
-            ILayer layer = layerGroup.getLayer(i);
-            if (layer.getType() == FoclConstants.LAYERTYPE_FOCL_PROJECT) {
-                foclProject = (FoclProject) layer;
-            }
+        if (isCanceled()) {
+            mError = getContext().getString(R.string.sync_canceled);
+            return;
         }
 
-        if (null != foclProject) {
-            String error = foclProject.download();
-
-            if (null != error && error.length() > 0) {
-                mIsError = true;
-                sendNotification(NOTIFICATION_ERROR, error);
-            }
+        if (layerGroup instanceof FoclProject) {
+            // Second, we update FoclProject, can delete some or all layers
+            FoclProject foclProject = (FoclProject) layerGroup;
+            mError = foclProject.download(this);
         }
+    }
+
+
+    @Override
+    protected void onCanceled()
+    {
+        // we try do this before thread is killed
+        super.onCanceled();
+        sendNotification(NOTIFICATION_CANCELED, getContext().getString(R.string.sync_canceled));
     }
 
 
@@ -168,6 +173,14 @@ public class FoclSyncAdapter
                         .setTicker(mContext.getString(R.string.sync_finished))
                         .setContentTitle(mContext.getString(R.string.synchronization))
                         .setContentText(mContext.getString(R.string.sync_finished));
+                break;
+
+            case NOTIFICATION_CANCELED:
+                builder.setProgress(0, 0, false)
+                        .setSmallIcon(R.drawable.ic_sync_error)
+                        .setTicker(mContext.getString(R.string.sync_canceled))
+                        .setContentTitle(mContext.getString(R.string.synchronization))
+                        .setContentText(mContext.getString(R.string.sync_canceled));
                 break;
 
             case NOTIFICATION_ERROR:

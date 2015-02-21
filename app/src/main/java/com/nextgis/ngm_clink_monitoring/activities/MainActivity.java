@@ -37,12 +37,10 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 import com.nextgis.maplib.api.IGISApplication;
-import com.nextgis.maplib.util.Constants;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.fragments.FoclLoginFragment;
@@ -52,7 +50,6 @@ import com.nextgis.ngm_clink_monitoring.fragments.StatusBarFragment;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstants;
 
 import java.io.File;
-import java.util.concurrent.TimeUnit;
 
 
 public class MainActivity
@@ -82,26 +79,10 @@ public class MainActivity
     {
         super.onCreate(savedInstanceState);
 
-        // initialize the default settings
-        PreferenceManager.setDefaultValues(this, R.xml.preferences_general, false);
-
-        setContentView(R.layout.activity_main);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.object_types_toolbar);
-        toolbar.getBackground().setAlpha(255);
-        setSupportActionBar(toolbar);
-
         final GISApplication app = (GISApplication) getApplication();
 
-        if (null == app.getAccount()) {
-            mViewState = VIEW_STATE_ACCOUNT;
-        } else if (null == app.getFoclProject()) {
-            mViewState = VIEW_STATE_1ST_SYNC;
-        } else {
-            mViewState = VIEW_STATE_OBJECTS;
-        }
-
-        setActivityView();
+        // initialize the default settings
+        PreferenceManager.setDefaultValues(this, R.xml.preferences_general, false);
 
         mSyncStatusObserver = new SyncStatusObserver()
         {
@@ -125,6 +106,22 @@ public class MainActivity
                         });
             }
         };
+
+        setContentView(R.layout.activity_main);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.object_types_toolbar);
+        toolbar.getBackground().setAlpha(255);
+        setSupportActionBar(toolbar);
+
+        if (null == app.getAccount()) {
+            mViewState = VIEW_STATE_ACCOUNT;
+        } else if (null == app.getFoclProject()) {
+            mViewState = VIEW_STATE_1ST_SYNC;
+        } else {
+            mViewState = VIEW_STATE_OBJECTS;
+        }
+
+        setActivityView();
     }
 
 
@@ -187,6 +184,7 @@ public class MainActivity
         }
 
         ft.commit();
+        switchMenuView();
     }
 
 
@@ -199,13 +197,13 @@ public class MainActivity
                     .attach(fragment)
                     .commit();
         }
+        switchMenuView();
     }
 
 
     public void refreshActivityView()
     {
         Intent intent = getIntent();
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         finish();
         startActivity(intent);
     }
@@ -230,9 +228,8 @@ public class MainActivity
                          ContentResolver.SYNC_OBSERVER_TYPE_ACTIVE;
         mSyncHandle = ContentResolver.addStatusChangeListener(mask, mSyncStatusObserver);
 
-        if (app.isAccountDeleted()) {
-            mViewState = VIEW_STATE_ACCOUNT;
-            setActivityView();
+        if (app.isAccountAdded() || app.isAccountDeleted()) {
+            refreshActivityView();
         }
 
         if (app.isMapReloaded()) {
@@ -267,11 +264,6 @@ public class MainActivity
     @Override
     public void onAccountAdded()
     {
-        try {
-            TimeUnit.MILLISECONDS.sleep(500);
-        } catch (InterruptedException e) {
-            Log.d(Constants.TAG, e.getLocalizedMessage());
-        }
         refreshActivityView();
     }
 
@@ -279,8 +271,7 @@ public class MainActivity
     @Override
     public void onAccountDeleted()
     {
-        mViewState = VIEW_STATE_ACCOUNT;
-        setActivityView();
+        refreshActivityView();
     }
 
 
@@ -304,7 +295,6 @@ public class MainActivity
 
         switch (mViewState) {
             case VIEW_STATE_1ST_SYNC:
-                menu.findItem(R.id.menu_settings).setEnabled(false);
             case VIEW_STATE_ACCOUNT:
                 menu.findItem(R.id.menu_sync).setEnabled(false);
                 break;
@@ -370,15 +360,11 @@ public class MainActivity
         Account account = app.getAccount();
 
         if (null == account) {
-            Toast.makeText(this, getString(R.string.no_connection), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.no_account), Toast.LENGTH_LONG).show();
             return;
         }
 
-        Bundle settingsBundle = new Bundle();
-        settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
-        settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-
-        ContentResolver.requestSync(account, FoclSettingsConstants.AUTHORITY, settingsBundle);
+        app.runSync(account);
     }
 
 

@@ -23,15 +23,17 @@
 package com.nextgis.ngm_clink_monitoring.map;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteException;
 import android.util.Base64;
 import android.util.Log;
-import android.widget.Toast;
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.api.INGWLayer;
+import com.nextgis.maplib.datasource.ngw.SyncAdapter;
 import com.nextgis.maplib.map.LayerFactory;
 import com.nextgis.maplib.map.LayerGroup;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.NetworkUtil;
+import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -63,6 +65,8 @@ public class FoclProject
     protected String mURL         = "";
     protected String mLogin       = "";
     protected String mPassword    = "";
+
+    protected SyncAdapter mSyncAdapter;
 
 
     public FoclProject(
@@ -167,7 +171,7 @@ public class FoclProject
     public FoclStruct addOrUpdateFoclStruct(
             JSONObject jsonStruct,
             JSONArray jsonLayers)
-            throws JSONException
+            throws JSONException, SQLiteException
     {
         long structId = jsonStruct.getLong(Constants.JSON_ID_KEY);
         String structName = jsonStruct.getString(Constants.JSON_NAME_KEY);
@@ -213,7 +217,7 @@ public class FoclProject
     public void addOrUpdateFoclVectorLayer(
             JSONObject jsonLayer,
             FoclStruct foclStruct)
-            throws JSONException
+            throws JSONException, SQLiteException
     {
         int layerId = jsonLayer.getInt(Constants.JSON_ID_KEY);
         String layerName = jsonLayer.getString(Constants.JSON_NAME_KEY);
@@ -256,7 +260,7 @@ public class FoclProject
             String error = foclVectorLayer.download();
 
             if (null != error && error.length() > 0) {
-                Toast.makeText(getContext(), error, Toast.LENGTH_LONG).show();
+                // TODO: work error
             }
         }
     }
@@ -282,29 +286,47 @@ public class FoclProject
             }
 
             for (int i = 0; i < jsonArray.length(); i++) {
+                if (null != mSyncAdapter && mSyncAdapter.isCanceled()) {
+                    return getContext().getString(R.string.sync_canceled);
+                }
+
                 JSONObject jsonStruct = jsonArray.getJSONObject(i);
                 JSONArray jsonLayers = jsonStruct.getJSONArray(Constants.JSON_LAYERS_KEY);
 
                 FoclStruct foclStruct = addOrUpdateFoclStruct(jsonStruct, jsonLayers);
 
                 for (int jj = 0; jj < jsonLayers.length(); jj++) {
+                    if (null != mSyncAdapter && mSyncAdapter.isCanceled()) {
+                        return getContext().getString(R.string.sync_canceled);
+                    }
                     JSONObject jsonLayer = jsonLayers.getJSONObject(jj);
                     addOrUpdateFoclVectorLayer(jsonLayer, foclStruct);
                 }
             }
 
+            if (null != mSyncAdapter && mSyncAdapter.isCanceled()) {
+                return getContext().getString(R.string.sync_canceled);
+            }
             save();
             return "";
 
         } catch (JSONException e) {
             e.printStackTrace();
             return e.getLocalizedMessage();
+        } catch (SQLiteException e) {
+            return getContext().getString(R.string.sync_canceled);
         }
     }
 
 
-    public String download()
+    public String download(SyncAdapter syncAdapter)
     {
+        mSyncAdapter = syncAdapter;
+
+        if (null != mSyncAdapter && mSyncAdapter.isCanceled()) {
+            return getContext().getString(R.string.sync_canceled);
+        }
+
         if (!mNet.isNetworkAvailable()) {
             return getContext().getString(com.nextgis.maplib.R.string.error_network_unavailable);
         }
@@ -341,6 +363,10 @@ public class FoclProject
 
             String data = EntityUtils.toString(entity);
             JSONArray jsonArray = new JSONArray(data);
+
+            if (null != mSyncAdapter && mSyncAdapter.isCanceled()) {
+                return getContext().getString(R.string.sync_canceled);
+            }
 
             return createOrUpdateFromJson(jsonArray);
 

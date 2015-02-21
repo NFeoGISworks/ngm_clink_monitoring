@@ -23,6 +23,7 @@
 package com.nextgis.ngm_clink_monitoring.map;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteException;
 import com.nextgis.maplib.map.NGWVectorLayer;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 import org.json.JSONException;
@@ -97,7 +98,7 @@ public class FoclVectorLayer
 
     @Override
     public void fromJSON(JSONObject jsonObject)
-            throws JSONException
+            throws JSONException, SQLiteException
     {
         super.fromJSON(jsonObject);
         mFoclLayerType = jsonObject.getInt(JSON_FOCL_TYPE_KEY);
