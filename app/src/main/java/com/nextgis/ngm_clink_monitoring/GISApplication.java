@@ -37,6 +37,7 @@ import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.datasource.ngw.SyncAdapter;
@@ -120,9 +121,11 @@ public class GISApplication
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(SyncAdapter.SYNC_START);
         intentFilter.addAction(SyncAdapter.SYNC_FINISH);
+        intentFilter.addAction(SyncAdapter.SYNC_CANCELED);
+        intentFilter.addAction(SyncAdapter.SYNC_CHANGES);
         registerReceiver(mSyncReceiver, intentFilter);
 
-        if (!isRanAsService() && null != getAccount() && null != getFoclProject()) {
+        if (!isRanAsService() && null != getAccount()) {
             startPeriodicSync();
         }
     }
@@ -167,7 +170,7 @@ public class GISApplication
 
             final Bitmap bkBitmap = BitmapFactory.decodeResource(
                     getResources(), com.nextgis.maplibui.R.drawable.bk_tile);
-            mMap = new MapDrawable(bkBitmap, this, mapFullPath, new FoclLayerFactory(mapFullPath));
+            mMap = new MapDrawable(bkBitmap, this, mapFullPath, new FoclLayerFactory());
             mMap.setName(mapName);
             mMap.load();
         }
@@ -210,7 +213,7 @@ public class GISApplication
 
         File foclPath = mMap.createLayerStorage();
         FoclProject foclProject =
-                new FoclProject(mMap.getContext(), foclPath, new FoclLayerFactory(foclPath));
+                new FoclProject(mMap.getContext(), foclPath, new FoclLayerFactory());
 
         foclProject.setName(FoclConstants.FOCL_PROJECT);
         foclProject.setAccountName(accountName);
@@ -479,6 +482,7 @@ public class GISApplication
                     break;
 
                 case SyncAdapter.SYNC_CANCELED:
+                    Log.d(Constants.TAG, "SYNC_CANCELED is received");
                     break;
 
                 case SyncAdapter.SYNC_CHANGES:

@@ -23,7 +23,6 @@
 package com.nextgis.ngm_clink_monitoring.adapters;
 
 import android.accounts.Account;
-import android.annotation.TargetApi;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ContentProviderClient;
@@ -31,7 +30,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SyncResult;
 import android.graphics.BitmapFactory;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import com.nextgis.maplib.datasource.ngw.SyncAdapter;
@@ -51,7 +49,6 @@ public class FoclSyncAdapter
 
     private static final int NOTIFY_ID = 1;
 
-    protected Context mContext;
     protected String mError = null;
 
 
@@ -60,24 +57,15 @@ public class FoclSyncAdapter
             boolean autoInitialize)
     {
         super(context, autoInitialize);
-        init(context);
     }
 
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public FoclSyncAdapter(
             Context context,
             boolean autoInitialize,
             boolean allowParallelSyncs)
     {
         super(context, autoInitialize, allowParallelSyncs);
-        init(context);
-    }
-
-
-    protected void init(Context context)
-    {
-        mContext = context;
     }
 
 
@@ -89,21 +77,24 @@ public class FoclSyncAdapter
             ContentProviderClient contentProviderClient,
             SyncResult syncResult)
     {
-        sendNotification(NOTIFICATION_START, null);
+        Context context = getContext();
+        sendNotification(context, NOTIFICATION_START, null);
 
         super.onPerformSync(account, bundle, authority, contentProviderClient, syncResult);
 
-        if (null != mError && mError.length() > 0) {
-
-            if (mError.equals(getContext().getString(R.string.sync_canceled))) {
-                sendNotification(NOTIFICATION_CANCELED, mError);
-            } else {
-                sendNotification(NOTIFICATION_ERROR, mError);
-            }
-
-        } else {
-            sendNotification(NOTIFICATION_FINISH, null);
+        if (isCanceled()) {
+            sendNotification(
+                    context, FoclSyncAdapter.NOTIFICATION_CANCELED,
+                    context.getString(R.string.sync_canceled));
+            return;
         }
+
+        if (null != mError && mError.length() > 0) {
+            sendNotification(context, NOTIFICATION_ERROR, mError);
+            return;
+        }
+
+        sendNotification(context, NOTIFICATION_FINISH, null);
     }
 
 
@@ -117,42 +108,33 @@ public class FoclSyncAdapter
         super.sync(layerGroup, authority, syncResult);
 
         if (isCanceled()) {
-            mError = getContext().getString(R.string.sync_canceled);
             return;
         }
 
         if (layerGroup instanceof FoclProject) {
             // Second, we update FoclProject, can delete some or all layers
             FoclProject foclProject = (FoclProject) layerGroup;
-            mError = foclProject.download(this);
+            mError = foclProject.download();
         }
     }
 
 
-    @Override
-    protected void onCanceled()
-    {
-        // we try do this before thread is killed
-        super.onCanceled();
-        sendNotification(NOTIFICATION_CANCELED, getContext().getString(R.string.sync_canceled));
-    }
-
-
-    public void sendNotification(
+    public static void sendNotification(
+            Context context,
             int notificationType,
             String errorMsg)
     {
-        Intent notificationIntent = new Intent(mContext, MainActivity.class);
+        Intent notificationIntent = new Intent(context, MainActivity.class);
         notificationIntent.setFlags(
                 Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent contentIntent = PendingIntent.getActivity(
-                mContext, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                context, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
 
         builder.setLargeIcon(
                 BitmapFactory.decodeResource(
-                        mContext.getResources(), R.drawable.ic_launcher))
+                        context.getResources(), R.drawable.ic_launcher))
                 .setContentIntent(contentIntent)
                 .setWhen(System.currentTimeMillis())
                 .setAutoCancel(true)
@@ -162,38 +144,38 @@ public class FoclSyncAdapter
             case NOTIFICATION_START:
                 builder.setProgress(0, 0, true)
                         .setSmallIcon(R.drawable.ic_sync_started)
-                        .setTicker(mContext.getString(R.string.sync_started))
-                        .setContentTitle(mContext.getString(R.string.synchronization))
-                        .setContentText(mContext.getString(R.string.sync_progress));
+                        .setTicker(context.getString(R.string.sync_started))
+                        .setContentTitle(context.getString(R.string.synchronization))
+                        .setContentText(context.getString(R.string.sync_progress));
                 break;
 
             case NOTIFICATION_FINISH:
                 builder.setProgress(0, 0, false)
                         .setSmallIcon(R.drawable.ic_sync_finished)
-                        .setTicker(mContext.getString(R.string.sync_finished))
-                        .setContentTitle(mContext.getString(R.string.synchronization))
-                        .setContentText(mContext.getString(R.string.sync_finished));
+                        .setTicker(context.getString(R.string.sync_finished))
+                        .setContentTitle(context.getString(R.string.synchronization))
+                        .setContentText(context.getString(R.string.sync_finished));
                 break;
 
             case NOTIFICATION_CANCELED:
                 builder.setProgress(0, 0, false)
                         .setSmallIcon(R.drawable.ic_sync_error)
-                        .setTicker(mContext.getString(R.string.sync_canceled))
-                        .setContentTitle(mContext.getString(R.string.synchronization))
-                        .setContentText(mContext.getString(R.string.sync_canceled));
+                        .setTicker(context.getString(R.string.sync_canceled))
+                        .setContentTitle(context.getString(R.string.synchronization))
+                        .setContentText(context.getString(R.string.sync_canceled));
                 break;
 
             case NOTIFICATION_ERROR:
                 builder.setProgress(0, 0, false)
                         .setSmallIcon(R.drawable.ic_sync_error)
-                        .setTicker(mContext.getString(R.string.sync_error))
-                        .setContentTitle(mContext.getString(R.string.sync_error))
+                        .setTicker(context.getString(R.string.sync_error))
+                        .setContentTitle(context.getString(R.string.sync_error))
                         .setContentText(errorMsg);
                 break;
         }
 
         NotificationManager notificationManager =
-                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(NOTIFY_ID, builder.build());
     }
 }

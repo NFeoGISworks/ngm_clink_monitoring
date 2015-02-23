@@ -41,12 +41,6 @@ import java.io.IOException;
 public class FoclLayerFactory
         extends LayerFactory
 {
-    public FoclLayerFactory(File mapPath)
-    {
-        super(mapPath);
-    }
-
-
     @Override
     public ILayer createLayer(
             Context context,

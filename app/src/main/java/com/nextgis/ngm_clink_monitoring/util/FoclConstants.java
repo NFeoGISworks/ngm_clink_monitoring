@@ -51,7 +51,7 @@ public interface FoclConstants
     public static final String FIELD_VALUE_MEASURE     = "measure";
 
     public static final String FOCL_PROJECT             = "FOCL_project";
-    public static final String FOCL_ACCOUNT_NAME = "Compulink Monitoring Account";
+    public static final String FOCL_ACCOUNT_NAME        = "Compulink Monitoring Account";
     public static final String FOCL_DEFAULT_ACCOUNT_URL = "http://176.9.38.120/cl";
 
     public static final int DEFAULT_SYNC_PERIOD_SEC = 600;

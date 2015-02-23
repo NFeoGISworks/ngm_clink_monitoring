@@ -28,12 +28,10 @@ import android.util.Base64;
 import android.util.Log;
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.api.INGWLayer;
-import com.nextgis.maplib.datasource.ngw.SyncAdapter;
 import com.nextgis.maplib.map.LayerFactory;
 import com.nextgis.maplib.map.LayerGroup;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.NetworkUtil;
-import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -65,8 +63,6 @@ public class FoclProject
     protected String mURL         = "";
     protected String mLogin       = "";
     protected String mPassword    = "";
-
-    protected SyncAdapter mSyncAdapter;
 
 
     public FoclProject(
@@ -268,6 +264,10 @@ public class FoclProject
 
     public String createOrUpdateFromJson(JSONArray jsonArray)
     {
+        if (Thread.currentThread().isInterrupted()) {
+            return "";
+        }
+
         try {
             List<Long> structIdList = new ArrayList<>(jsonArray.length());
 
@@ -286,8 +286,8 @@ public class FoclProject
             }
 
             for (int i = 0; i < jsonArray.length(); i++) {
-                if (null != mSyncAdapter && mSyncAdapter.isCanceled()) {
-                    return getContext().getString(R.string.sync_canceled);
+                if (Thread.currentThread().isInterrupted()) {
+                    return "";
                 }
 
                 JSONObject jsonStruct = jsonArray.getJSONObject(i);
@@ -296,35 +296,31 @@ public class FoclProject
                 FoclStruct foclStruct = addOrUpdateFoclStruct(jsonStruct, jsonLayers);
 
                 for (int jj = 0; jj < jsonLayers.length(); jj++) {
-                    if (null != mSyncAdapter && mSyncAdapter.isCanceled()) {
-                        return getContext().getString(R.string.sync_canceled);
+                    if (Thread.currentThread().isInterrupted()) {
+                        return "";
                     }
                     JSONObject jsonLayer = jsonLayers.getJSONObject(jj);
                     addOrUpdateFoclVectorLayer(jsonLayer, foclStruct);
                 }
             }
 
-            if (null != mSyncAdapter && mSyncAdapter.isCanceled()) {
-                return getContext().getString(R.string.sync_canceled);
+            if (Thread.currentThread().isInterrupted()) {
+                return "";
             }
             save();
             return "";
 
-        } catch (JSONException e) {
+        } catch (JSONException | SQLiteException e) {
             e.printStackTrace();
             return e.getLocalizedMessage();
-        } catch (SQLiteException e) {
-            return getContext().getString(R.string.sync_canceled);
         }
     }
 
 
-    public String download(SyncAdapter syncAdapter)
+    public String download()
     {
-        mSyncAdapter = syncAdapter;
-
-        if (null != mSyncAdapter && mSyncAdapter.isCanceled()) {
-            return getContext().getString(R.string.sync_canceled);
+        if (Thread.currentThread().isInterrupted()) {
+            return "";
         }
 
         if (!mNet.isNetworkAvailable()) {
@@ -363,10 +359,6 @@ public class FoclProject
 
             String data = EntityUtils.toString(entity);
             JSONArray jsonArray = new JSONArray(data);
-
-            if (null != mSyncAdapter && mSyncAdapter.isCanceled()) {
-                return getContext().getString(R.string.sync_canceled);
-            }
 
             return createOrUpdateFromJson(jsonArray);
 

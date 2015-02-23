@@ -22,8 +22,8 @@
 
 package com.nextgis.ngm_clink_monitoring.services;
 
-import android.content.Intent;
-import android.os.IBinder;
+import android.content.Context;
+import com.nextgis.maplib.datasource.ngw.SyncAdapter;
 import com.nextgis.maplib.service.NGWSyncService;
 import com.nextgis.ngm_clink_monitoring.adapters.FoclSyncAdapter;
 
@@ -31,30 +31,11 @@ import com.nextgis.ngm_clink_monitoring.adapters.FoclSyncAdapter;
 public class FoclSyncService
         extends NGWSyncService
 {
-    // Object to use as a thread-safe lock
-    private static final Object          sSyncAdapterLock = new Object();
-    private static       FoclSyncAdapter foclSyncAdapter  = null;
-
-
     @Override
-    public void onCreate()
+    protected SyncAdapter createSyncAdapter(
+            Context context,
+            boolean autoInitialize)
     {
-        /*
-         * Create the sync adapter as a singleton.
-         * Set the sync adapter as syncable
-         * Disallow parallel syncs
-         */
-        synchronized (sSyncAdapterLock) {
-            if (foclSyncAdapter == null) {
-                foclSyncAdapter = new FoclSyncAdapter(getApplicationContext(), true);
-            }
-        }
-    }
-
-
-    @Override
-    public IBinder onBind(Intent intent)
-    {
-        return foclSyncAdapter.getSyncAdapterBinder();
+        return new FoclSyncAdapter(context, autoInitialize);
     }
 }
