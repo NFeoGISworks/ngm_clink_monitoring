@@ -110,14 +110,15 @@ public class FoclSyncAdapter
         // First, we must upload changes for them saving
         super.sync(layerGroup, authority, syncResult);
 
-        if (isCanceled()) {
-            Log.d(Constants.TAG, "FoclSyncAdapter - downloading is canceled");
-            return;
-        }
-
-        Log.d(Constants.TAG, "FoclSyncAdapter - downloading is in progress");
-
         if (layerGroup instanceof FoclProject) {
+
+            if (isCanceled()) {
+                Log.d(Constants.TAG, "FoclSyncAdapter - downloading is canceled");
+                return;
+            }
+
+            Log.d(Constants.TAG, "FoclSyncAdapter - downloading is in progress");
+
             // Second, we update FoclProject, can delete some or all layers
             FoclProject foclProject = (FoclProject) layerGroup;
             mError = foclProject.download();
