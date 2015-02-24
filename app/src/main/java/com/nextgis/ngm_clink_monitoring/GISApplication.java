@@ -49,11 +49,12 @@ import com.nextgis.maplib.util.SettingsConstants;
 import com.nextgis.maplibui.NGWLoginFragment;
 import com.nextgis.maplibui.NGWSettingsActivity;
 import com.nextgis.maplibui.mapui.RemoteTMSLayerUI;
+import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.ngm_clink_monitoring.activities.SettingsActivity;
 import com.nextgis.ngm_clink_monitoring.map.FoclLayerFactory;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
-import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstants;
+import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
 import com.nextgis.ngm_clink_monitoring.util.UIUpdater;
 
 import java.io.File;
@@ -94,10 +95,10 @@ public class GISApplication
         getMap();
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        if (sharedPreferences.getBoolean(FoclSettingsConstants.KEY_PREF_APP_FIRST_RUN, true)) {
+        if (sharedPreferences.getBoolean(FoclSettingsConstantsUI.KEY_PREF_APP_FIRST_RUN, true)) {
             onFirstRun();
             sharedPreferences.edit()
-                    .putBoolean(FoclSettingsConstants.KEY_PREF_APP_FIRST_RUN, false)
+                    .putBoolean(FoclSettingsConstantsUI.KEY_PREF_APP_FIRST_RUN, false)
                     .commit();
         }
 
@@ -125,8 +126,11 @@ public class GISApplication
         intentFilter.addAction(SyncAdapter.SYNC_CHANGES);
         registerReceiver(mSyncReceiver, intentFilter);
 
-        if (!isRanAsService() && null != getAccount()) {
-            startPeriodicSync();
+        if (sharedPreferences.getBoolean(
+                FoclSettingsConstantsUI.KEY_PREF_AUTO_SYNC_ENABLED, true)) {
+            if (!isRanAsService()) {
+                startPeriodicSync();
+            }
         }
     }
 
@@ -163,8 +167,8 @@ public class GISApplication
                     PreferenceManager.getDefaultSharedPreferences(this);
             String mapPath = sharedPreferences.getString(
                     SettingsConstants.KEY_PREF_MAP_PATH, defaultPath.getPath());
-            String mapName =
-                    sharedPreferences.getString(FoclSettingsConstants.KEY_PREF_MAP_NAME, "default");
+            String mapName = sharedPreferences.getString(
+                    FoclSettingsConstantsUI.KEY_PREF_MAP_NAME, "default");
 
             File mapFullPath = new File(mapPath, mapName + Constants.MAP_EXT);
 
@@ -253,7 +257,7 @@ public class GISApplication
     @Override
     public String getAuthority()
     {
-        return FoclSettingsConstants.AUTHORITY;
+        return FoclSettingsConstantsUI.AUTHORITY;
     }
 
 
@@ -275,11 +279,10 @@ public class GISApplication
     }
 
 
-    public void setSyncPeriod(int seconds)
+    public void setSyncPeriod(long seconds)
     {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        sharedPreferences.edit()
-                .putInt(FoclSettingsConstants.KEY_PREF_SYNC_PERIOD_SEC, seconds)
+        sharedPreferences.edit().putLong(SettingsConstantsUI.KEY_PREF_SYNC_PERIOD_SEC_LONG, seconds)
                 .commit();
 
         mSyncPeriodicRunner.setUpdateInterval(seconds * 1000);
@@ -295,9 +298,9 @@ public class GISApplication
         }
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        int syncPriod = sharedPreferences.getInt(
-                FoclSettingsConstants.KEY_PREF_SYNC_PERIOD_SEC,
-                FoclConstants.DEFAULT_SYNC_PERIOD_SEC);
+        long syncPriod = sharedPreferences.getLong(
+                SettingsConstantsUI.KEY_PREF_SYNC_PERIOD_SEC_LONG,
+                FoclConstants.DEFAULT_SYNC_PERIOD_SEC_LONG);
 
         mSyncPeriodicRunner = new UIUpdater(
                 new Runnable()
@@ -334,7 +337,7 @@ public class GISApplication
         settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
         settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
 
-        ContentResolver.requestSync(account, FoclSettingsConstants.AUTHORITY, settingsBundle);
+        ContentResolver.requestSync(account, FoclSettingsConstantsUI.AUTHORITY, settingsBundle);
         return true;
     }
 
@@ -471,6 +474,10 @@ public class GISApplication
                 Context context,
                 Intent intent)
         {
+            if (isRanAsService()) {
+                return;
+            }
+
             String action = intent.getAction();
 
             switch (action) {

@@ -25,14 +25,24 @@ package com.nextgis.ngm_clink_monitoring.activities;
 import android.accounts.Account;
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.ListPreference;
 import android.preference.Preference;
+import android.preference.PreferenceCategory;
+import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
+import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplibui.NGWSettingsActivity;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
+import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
+import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
 
 import java.util.List;
+
+import static com.nextgis.maplibui.util.SettingsConstantsUI.KEY_PREF_SYNC_PERIOD;
+import static com.nextgis.maplibui.util.SettingsConstantsUI.KEY_PREF_SYNC_PERIOD_SEC_LONG;
 
 
 public class NGWSettingsActivityProxy
@@ -110,6 +120,110 @@ public class NGWSettingsActivityProxy
     protected boolean isValidFragment(String fragmentName)
     {
         return super.isValidFragment(fragmentName);
+    }
+
+
+    @Override
+    protected boolean isAccountSyncEnabled(
+            Account account,
+            String authority)
+    {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        return sharedPreferences.getBoolean(
+                FoclSettingsConstantsUI.KEY_PREF_AUTO_SYNC_ENABLED, true);
+    }
+
+
+    @Override
+    protected void setAccountSyncEnabled(
+            Account account,
+            String authority,
+            boolean isEnabled)
+    {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences.edit()
+                .putBoolean(FoclSettingsConstantsUI.KEY_PREF_AUTO_SYNC_ENABLED, isEnabled)
+                .commit();
+
+        GISApplication app = (GISApplication) getApplication();
+        if (isEnabled) {
+            app.startPeriodicSync();
+        } else {
+            app.stopPeriodicSync();
+        }
+    }
+
+
+    @Override
+    protected void addPeriodicSyncTime(
+            final Account account,
+            final IGISApplication application,
+            PreferenceCategory syncCategory)
+    {
+        final SharedPreferences sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(this);
+        String prefValue = "" + sharedPreferences.getLong(
+                KEY_PREF_SYNC_PERIOD_SEC_LONG, FoclConstants.DEFAULT_SYNC_PERIOD_SEC_LONG);
+
+        final CharSequence[] keys = {
+                getString(com.nextgis.maplibui.R.string.five_minutes),
+                getString(com.nextgis.maplibui.R.string.ten_minutes),
+                getString(com.nextgis.maplibui.R.string.fifteen_minutes),
+                getString(com.nextgis.maplibui.R.string.thirty_minutes),
+                getString(com.nextgis.maplibui.R.string.one_hour),
+                getString(com.nextgis.maplibui.R.string.two_hours)};
+        final CharSequence[] values = {
+                "" + FoclConstants.DEFAULT_SYNC_PERIOD_SEC_LONG,
+                "600",
+                "900",
+                "1800",
+                "3600",
+                "7200"};
+
+        final ListPreference timeInterval = new ListPreference(this);
+        timeInterval.setKey(KEY_PREF_SYNC_PERIOD);
+        timeInterval.setTitle(com.nextgis.maplibui.R.string.sync_interval);
+        timeInterval.setDialogTitle(com.nextgis.maplibui.R.string.sync_set_interval);
+        timeInterval.setEntries(keys);
+        timeInterval.setEntryValues(values);
+//        timeInterval.setDefaultValue(getString(com.nextgis.maplibui.R.string.ten_minutes));
+
+        for (int i = 0; i < values.length; i++) {
+            if (values[i].equals(prefValue)) {
+                timeInterval.setValueIndex(i);
+                timeInterval.setSummary(keys[i]);
+                break;
+            }
+        }
+
+        timeInterval.setOnPreferenceChangeListener(
+                new Preference.OnPreferenceChangeListener()
+                {
+                    @Override
+                    public boolean onPreferenceChange(
+                            Preference preference,
+                            Object newValue)
+                    {
+                        long interval = Long.parseLong((String) newValue);
+
+                        for (int i = 0; i < values.length; i++) {
+                            if (values[i].equals(newValue)) {
+                                timeInterval.setSummary(keys[i]);
+                                break;
+                            }
+                        }
+
+                        GISApplication app = (GISApplication) application;
+                        app.setSyncPeriod(interval);
+
+                        //set KEY_PREF_SYNC_PERIOD_SEC_LONG
+                        return sharedPreferences.edit()
+                                .putLong(KEY_PREF_SYNC_PERIOD_SEC_LONG, interval)
+                                .commit();
+                    }
+                });
+
+        syncCategory.addPreference(timeInterval);
     }
 
 

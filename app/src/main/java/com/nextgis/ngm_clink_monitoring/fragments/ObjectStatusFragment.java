@@ -55,7 +55,7 @@ import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 import com.nextgis.ngm_clink_monitoring.map.FoclStruct;
 import com.nextgis.ngm_clink_monitoring.map.FoclVectorLayer;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
-import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstants;
+import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
 import com.nextgis.ngm_clink_monitoring.util.LocationUtil;
 
 import java.io.File;
@@ -261,7 +261,7 @@ public class ObjectStatusFragment
             mObjectLayerName = layer.getPath().getName();
 
             Uri uri = Uri.parse(
-                    "content://" + FoclSettingsConstants.AUTHORITY + "/" + mObjectLayerName);
+                    "content://" + FoclSettingsConstantsUI.AUTHORITY + "/" + mObjectLayerName);
 
             String proj[] = {
                     VectorLayer.FIELD_ID,
@@ -339,7 +339,7 @@ public class ObjectStatusFragment
                 }
 
                 Uri uri = Uri.parse(
-                        "content://" + FoclSettingsConstants.AUTHORITY + "/" + mObjectLayerName);
+                        "content://" + FoclSettingsConstantsUI.AUTHORITY + "/" + mObjectLayerName);
                 Uri updateUri = ContentUris.withAppendedId(uri, mObjectId);
 
                 ContentValues values = new ContentValues();

@@ -33,7 +33,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.fragments.SettingsFragment;
-import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstants;
+import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
 
 import java.util.List;
 
@@ -74,7 +74,7 @@ public class SettingsActivity
         if (action != null) {
 
             switch (action) {
-                case FoclSettingsConstants.ACTION_PREFS_MAP:
+                case FoclSettingsConstantsUI.ACTION_PREFS_MAP:
                     addPreferencesFromResource(R.xml.preferences_map);
                     break;
             }

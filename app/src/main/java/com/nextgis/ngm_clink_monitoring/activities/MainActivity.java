@@ -47,7 +47,7 @@ import com.nextgis.ngm_clink_monitoring.fragments.FoclLoginFragment;
 import com.nextgis.ngm_clink_monitoring.fragments.ObjectTypesFragment;
 import com.nextgis.ngm_clink_monitoring.fragments.PerformSyncFragment;
 import com.nextgis.ngm_clink_monitoring.fragments.StatusBarFragment;
-import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstants;
+import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
 
 import java.io.File;
 
@@ -98,8 +98,8 @@ public class MainActivity
                                 Account account = app.getAccount();
 
                                 if (null != account) {
-                                    mIsSyncing =
-                                            isSyncActive(account, FoclSettingsConstants.AUTHORITY);
+                                    mIsSyncing = isSyncActive(
+                                            account, FoclSettingsConstantsUI.AUTHORITY);
                                     switchMenuView();
                                 }
                             }

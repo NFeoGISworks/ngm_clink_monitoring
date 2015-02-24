@@ -36,7 +36,7 @@ import android.widget.TextView;
 import com.nextgis.maplib.api.GpsEventListener;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
-import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstants;
+import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
 import com.nextgis.ngm_clink_monitoring.util.LocationUtil;
 
 import java.text.DecimalFormat;
@@ -121,7 +121,7 @@ public class StatusBarFragment
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         int nFormat = prefs.getInt(
-                FoclSettingsConstants.KEY_PREF_COORD_FORMAT + "_int", Location.FORMAT_DEGREES);
+                FoclSettingsConstantsUI.KEY_PREF_COORD_FORMAT + "_int", Location.FORMAT_DEGREES);
 
         mLatText = LocationUtil.formatLatitude(location.getLatitude(), nFormat, getResources()) +
                    getString(R.string.coord_lat);

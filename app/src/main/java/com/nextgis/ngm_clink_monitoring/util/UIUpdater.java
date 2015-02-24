@@ -35,7 +35,7 @@ public class UIUpdater
     private Handler mHandler = new Handler(Looper.getMainLooper());
 
     private Runnable mStatusChecker;
-    private int      mUpdateInterval;
+    private long mUpdateInterval;
 
 
     /**
@@ -49,7 +49,7 @@ public class UIUpdater
      */
     public UIUpdater(
             final Runnable runnable,
-            int interval)
+            long interval)
     {
         mUpdateInterval = interval;
         mStatusChecker = new Runnable()
@@ -66,7 +66,7 @@ public class UIUpdater
     }
 
 
-    public void setUpdateInterval(int updateInterval)
+    public void setUpdateInterval(long updateInterval)
     {
         mUpdateInterval = updateInterval;
     }

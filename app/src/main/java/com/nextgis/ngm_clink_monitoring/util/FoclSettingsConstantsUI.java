@@ -22,7 +22,7 @@
 
 package com.nextgis.ngm_clink_monitoring.util;
 
-public interface FoclSettingsConstants
+public interface FoclSettingsConstantsUI
 {
     public final static String AUTHORITY = "com.nextgis.ngm_clink_monitoring.provider";
 
@@ -84,5 +84,5 @@ public interface FoclSettingsConstants
     public static final String KEY_PREF_SYNC_PERIODICALLY   = "sync_periodically";
     public static final String KEY_PREF_SYNC_PERIOD         = "sync_period";
 
-    public static final String KEY_PREF_SYNC_PERIOD_SEC = "sync_period_sec";
+    public static final String KEY_PREF_AUTO_SYNC_ENABLED = "auto_sync_enabled";
 }

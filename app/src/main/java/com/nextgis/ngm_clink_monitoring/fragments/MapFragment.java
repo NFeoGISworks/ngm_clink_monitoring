@@ -38,7 +38,7 @@ import com.nextgis.maplib.api.MapEventListener;
 import com.nextgis.maplib.datasource.GeoPoint;
 import com.nextgis.maplibui.MapView;
 import com.nextgis.ngm_clink_monitoring.R;
-import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstants;
+import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
 import com.nextgis.ngm_clink_monitoring.util.ViewUtil;
 
 
@@ -93,7 +93,7 @@ public class MapFragment
                 SharedPreferences sharedPreferences =
                         PreferenceManager.getDefaultSharedPreferences(getActivity());
                 if (sharedPreferences.getBoolean(
-                        FoclSettingsConstants.KEY_PREF_SHOW_ZOOM_CONTROLS, false)) {
+                        FoclSettingsConstantsUI.KEY_PREF_SHOW_ZOOM_CONTROLS, false)) {
                     addMapButtons(view.getContext(), mMapRelativeLayout);
                 }
             }
@@ -268,13 +268,13 @@ public class MapFragment
         final SharedPreferences.Editor edit =
                 PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
         if (null != mMap) {
-            edit.putFloat(FoclSettingsConstants.KEY_PREF_ZOOM_LEVEL, mMap.getZoomLevel());
+            edit.putFloat(FoclSettingsConstantsUI.KEY_PREF_ZOOM_LEVEL, mMap.getZoomLevel());
             GeoPoint point = mMap.getMapCenter();
             edit.putLong(
-                    FoclSettingsConstants.KEY_PREF_SCROLL_X,
+                    FoclSettingsConstantsUI.KEY_PREF_SCROLL_X,
                     Double.doubleToRawLongBits(point.getX()));
             edit.putLong(
-                    FoclSettingsConstants.KEY_PREF_SCROLL_Y,
+                    FoclSettingsConstantsUI.KEY_PREF_SCROLL_Y,
                     Double.doubleToRawLongBits(point.getY()));
         }
         edit.putBoolean(KEY_PREF_WAS_ZOOM_CONTROLS_SHOWN, mShowZoomControls);
@@ -293,17 +293,17 @@ public class MapFragment
                 PreferenceManager.getDefaultSharedPreferences(getActivity());
         if (null != mMap) {
             float mMapZoom =
-                    prefs.getFloat(FoclSettingsConstants.KEY_PREF_ZOOM_LEVEL, mMap.getMinZoom());
+                    prefs.getFloat(FoclSettingsConstantsUI.KEY_PREF_ZOOM_LEVEL, mMap.getMinZoom());
             double mMapScrollX = Double.longBitsToDouble(
-                    prefs.getLong(FoclSettingsConstants.KEY_PREF_SCROLL_X, 0));
+                    prefs.getLong(FoclSettingsConstantsUI.KEY_PREF_SCROLL_X, 0));
             double mMapScrollY = Double.longBitsToDouble(
-                    prefs.getLong(FoclSettingsConstants.KEY_PREF_SCROLL_Y, 0));
+                    prefs.getLong(FoclSettingsConstantsUI.KEY_PREF_SCROLL_Y, 0));
             mMap.setZoomAndCenter(mMapZoom, new GeoPoint(mMapScrollX, mMapScrollY));
         }
 
         //change zoom controls visibility
         boolean showControls =
-                prefs.getBoolean(FoclSettingsConstants.KEY_PREF_SHOW_ZOOM_CONTROLS, false);
+                prefs.getBoolean(FoclSettingsConstantsUI.KEY_PREF_SHOW_ZOOM_CONTROLS, false);
         if (prefs.getBoolean(KEY_PREF_WAS_ZOOM_CONTROLS_SHOWN, false) != showControls) {
             if (showControls) {
                 addMapButtons(getActivity(), mMapRelativeLayout);
