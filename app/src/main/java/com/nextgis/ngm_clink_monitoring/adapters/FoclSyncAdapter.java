@@ -32,8 +32,10 @@ import android.content.SyncResult;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import com.nextgis.maplib.datasource.ngw.SyncAdapter;
 import com.nextgis.maplib.map.LayerGroup;
+import com.nextgis.maplib.util.Constants;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.activities.MainActivity;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
@@ -86,6 +88,7 @@ public class FoclSyncAdapter
             sendNotification(
                     context, FoclSyncAdapter.NOTIFICATION_CANCELED,
                     context.getString(R.string.sync_canceled));
+            Log.d(Constants.TAG, "FoclSyncAdapter - NOTIFICATION_CANCELED is sent");
             return;
         }
 
@@ -108,8 +111,11 @@ public class FoclSyncAdapter
         super.sync(layerGroup, authority, syncResult);
 
         if (isCanceled()) {
+            Log.d(Constants.TAG, "FoclSyncAdapter - downloading is canceled");
             return;
         }
+
+        Log.d(Constants.TAG, "FoclSyncAdapter - downloading is in progress");
 
         if (layerGroup instanceof FoclProject) {
             // Second, we update FoclProject, can delete some or all layers

@@ -23,12 +23,9 @@
 package com.nextgis.ngm_clink_monitoring.activities;
 
 import android.accounts.Account;
-import android.annotation.TargetApi;
 import android.content.ContentResolver;
 import android.content.Intent;
-import android.content.SyncInfo;
 import android.content.SyncStatusObserver;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -41,6 +38,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 import com.nextgis.maplib.api.IGISApplication;
+import com.nextgis.maplib.util.AccountUtil;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.fragments.FoclLoginFragment;
@@ -98,7 +96,7 @@ public class MainActivity
                                 Account account = app.getAccount();
 
                                 if (null != account) {
-                                    mIsSyncing = isSyncActive(
+                                    mIsSyncing = AccountUtil.isSyncActive(
                                             account, FoclSettingsConstantsUI.AUTHORITY);
                                     switchMenuView();
                                 }
@@ -379,33 +377,5 @@ public class MainActivity
     {
         Intent intentAbout = new Intent(this, AboutActivity.class);
         startActivity(intentAbout);
-    }
-
-
-    private static boolean isSyncActive(
-            Account account,
-            String authority)
-    {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            return isSyncActiveHoneycomb(account, authority);
-        } else {
-            SyncInfo currentSync = ContentResolver.getCurrentSync();
-            return currentSync != null && currentSync.account.equals(account) &&
-                   currentSync.authority.equals(authority);
-        }
-    }
-
-
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    private static boolean isSyncActiveHoneycomb(
-            Account account,
-            String authority)
-    {
-        for (SyncInfo syncInfo : ContentResolver.getCurrentSyncs()) {
-            if (syncInfo.account.equals(account) && syncInfo.authority.equals(authority)) {
-                return true;
-            }
-        }
-        return false;
     }
 }

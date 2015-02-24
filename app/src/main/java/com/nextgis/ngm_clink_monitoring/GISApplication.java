@@ -489,7 +489,7 @@ public class GISApplication
                     break;
 
                 case SyncAdapter.SYNC_CANCELED:
-                    Log.d(Constants.TAG, "SYNC_CANCELED is received");
+                    Log.d(Constants.TAG, "GISApplication - SYNC_CANCELED is received");
                     break;
 
                 case SyncAdapter.SYNC_CHANGES:
