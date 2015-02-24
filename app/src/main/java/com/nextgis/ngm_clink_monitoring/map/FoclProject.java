@@ -189,6 +189,10 @@ public class FoclProject
             }
 
             for (ILayer layer : foclStruct.getLayers()) {
+                if (Thread.currentThread().isInterrupted()) {
+                    break;
+                }
+
                 FoclVectorLayer foclVectorLayer = (FoclVectorLayer) layer;
 
                 if (!layerIdList.contains(foclVectorLayer.getRemoteId())) {
@@ -278,6 +282,9 @@ public class FoclProject
             }
 
             for (ILayer layer : mLayers) {
+                if (Thread.currentThread().isInterrupted()) {
+                    break;
+                }
                 FoclStruct foclStruct = (FoclStruct) layer;
 
                 if (!structIdList.contains(foclStruct.getRemoteId())) {
@@ -287,7 +294,7 @@ public class FoclProject
 
             for (int i = 0; i < jsonArray.length(); i++) {
                 if (Thread.currentThread().isInterrupted()) {
-                    return "";
+                    break;
                 }
 
                 JSONObject jsonStruct = jsonArray.getJSONObject(i);
@@ -297,16 +304,13 @@ public class FoclProject
 
                 for (int jj = 0; jj < jsonLayers.length(); jj++) {
                     if (Thread.currentThread().isInterrupted()) {
-                        return "";
+                        break;
                     }
                     JSONObject jsonLayer = jsonLayers.getJSONObject(jj);
                     addOrUpdateFoclVectorLayer(jsonLayer, foclStruct);
                 }
             }
 
-            if (Thread.currentThread().isInterrupted()) {
-                return "";
-            }
             save();
             return "";
 
@@ -319,10 +323,6 @@ public class FoclProject
 
     public String download()
     {
-        if (Thread.currentThread().isInterrupted()) {
-            return "";
-        }
-
         if (!mNet.isNetworkAvailable()) {
             return getContext().getString(com.nextgis.maplib.R.string.error_network_unavailable);
         }
