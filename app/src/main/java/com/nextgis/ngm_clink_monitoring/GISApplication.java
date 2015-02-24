@@ -279,28 +279,33 @@ public class GISApplication
     }
 
 
-    public void setSyncPeriod(long seconds)
+    public Long getSyncPeriod()
     {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        sharedPreferences.edit().putLong(SettingsConstantsUI.KEY_PREF_SYNC_PERIOD_SEC_LONG, seconds)
-                .commit();
-
-        mSyncPeriodicRunner.setUpdateInterval(seconds * 1000);
+        return PreferenceManager.getDefaultSharedPreferences(this).getLong(
+                SettingsConstantsUI.KEY_PREF_SYNC_PERIOD_SEC_LONG,
+                FoclConstants.DEFAULT_SYNC_PERIOD_SEC_LONG);
     }
 
 
-    public boolean startPeriodicSync()
+    public void setSyncPeriod(Long seconds)
     {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        if (null != seconds) {
+            sharedPreferences.edit()
+                    .putLong(SettingsConstantsUI.KEY_PREF_SYNC_PERIOD_SEC_LONG, seconds)
+                    .commit();
+        } else {
+            seconds = sharedPreferences.getLong(
+                    SettingsConstantsUI.KEY_PREF_SYNC_PERIOD_SEC_LONG,
+                    FoclConstants.DEFAULT_SYNC_PERIOD_SEC_LONG);
+        }
+
         final Account account = getAccount();
 
         if (null == account) {
-            return false;
+            return;
         }
-
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        long syncPriod = sharedPreferences.getLong(
-                SettingsConstantsUI.KEY_PREF_SYNC_PERIOD_SEC_LONG,
-                FoclConstants.DEFAULT_SYNC_PERIOD_SEC_LONG);
 
         mSyncPeriodicRunner = new UIUpdater(
                 new Runnable()
@@ -310,10 +315,15 @@ public class GISApplication
                     {
                         runSync(account);
                     }
-                }, syncPriod * 1000);
+                }, seconds * 1000);
 
         mSyncPeriodicRunner.startUpdates();
-        return true;
+    }
+
+
+    public void startPeriodicSync()
+    {
+        setSyncPeriod(null);
     }
 
 

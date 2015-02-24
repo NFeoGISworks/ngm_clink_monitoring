@@ -42,7 +42,6 @@ import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
 import java.util.List;
 
 import static com.nextgis.maplibui.util.SettingsConstantsUI.KEY_PREF_SYNC_PERIOD;
-import static com.nextgis.maplibui.util.SettingsConstantsUI.KEY_PREF_SYNC_PERIOD_SEC_LONG;
 
 
 public class NGWSettingsActivityProxy
@@ -160,10 +159,8 @@ public class NGWSettingsActivityProxy
             final IGISApplication application,
             PreferenceCategory syncCategory)
     {
-        final SharedPreferences sharedPreferences =
-                PreferenceManager.getDefaultSharedPreferences(this);
-        String prefValue = "" + sharedPreferences.getLong(
-                KEY_PREF_SYNC_PERIOD_SEC_LONG, FoclConstants.DEFAULT_SYNC_PERIOD_SEC_LONG);
+        final GISApplication app = (GISApplication) application;
+        String prefValue = "" + app.getSyncPeriod();
 
         final CharSequence[] keys = {
                 getString(com.nextgis.maplibui.R.string.five_minutes),
@@ -186,7 +183,6 @@ public class NGWSettingsActivityProxy
         timeInterval.setDialogTitle(com.nextgis.maplibui.R.string.sync_set_interval);
         timeInterval.setEntries(keys);
         timeInterval.setEntryValues(values);
-//        timeInterval.setDefaultValue(getString(com.nextgis.maplibui.R.string.ten_minutes));
 
         for (int i = 0; i < values.length; i++) {
             if (values[i].equals(prefValue)) {
@@ -204,7 +200,7 @@ public class NGWSettingsActivityProxy
                             Preference preference,
                             Object newValue)
                     {
-                        long interval = Long.parseLong((String) newValue);
+                        app.setSyncPeriod(Long.parseLong((String) newValue));
 
                         for (int i = 0; i < values.length; i++) {
                             if (values[i].equals(newValue)) {
@@ -213,13 +209,7 @@ public class NGWSettingsActivityProxy
                             }
                         }
 
-                        GISApplication app = (GISApplication) application;
-                        app.setSyncPeriod(interval);
-
-                        //set KEY_PREF_SYNC_PERIOD_SEC_LONG
-                        return sharedPreferences.edit()
-                                .putLong(KEY_PREF_SYNC_PERIOD_SEC_LONG, interval)
-                                .commit();
+                        return true;
                     }
                 });
 
