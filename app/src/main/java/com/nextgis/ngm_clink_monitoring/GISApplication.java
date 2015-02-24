@@ -289,6 +289,8 @@ public class GISApplication
 
     public void setSyncPeriod(Long seconds)
     {
+        stopPeriodicSync();
+
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         if (null != seconds) {
