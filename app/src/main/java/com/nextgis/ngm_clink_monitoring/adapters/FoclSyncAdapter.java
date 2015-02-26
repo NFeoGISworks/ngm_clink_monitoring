@@ -101,11 +101,12 @@ public class FoclSyncAdapter
     }
 
 
+    // has recursive call in super.sync()
     @Override
-    protected void sync( // has recursive call in super.sync()
-                         LayerGroup layerGroup,
-                         String authority,
-                         SyncResult syncResult)
+    protected void sync(
+            LayerGroup layerGroup,
+            String authority,
+            SyncResult syncResult)
     {
         // First, we must upload changes for them saving
         super.sync(layerGroup, authority, syncResult);

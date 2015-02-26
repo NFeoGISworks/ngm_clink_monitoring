@@ -67,6 +67,7 @@
     <string name="line_measuring">Line measuring</string>
 
     <string name="communication_line">Communication line:</string>
+    <string name="work_status">Work status:</string>
 
     <string name="optical_cables">Optical cables:</string>
     <string name="foscs">FOSC:</string>

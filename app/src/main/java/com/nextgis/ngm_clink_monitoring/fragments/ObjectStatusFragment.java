@@ -27,9 +27,7 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
@@ -42,6 +40,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.nextgis.maplib.map.VectorLayer;
@@ -76,8 +75,8 @@ public class ObjectStatusFragment
     protected TextView     mLineName;
     protected TextView     mObjectNameCaption;
     protected TextView     mObjectName;
-    protected TextView     mStatusButtonNotBuilted;
-    protected TextView     mStatusButtonBuilted;
+    protected RadioButton mStatusButtonNotBuilted;
+    protected RadioButton mStatusButtonBuilted;
     protected TextView     mPhotoHintText;
     protected Button       mMakePhotoButton;
     protected RecyclerView mPhotoGallery;
@@ -181,8 +180,8 @@ public class ObjectStatusFragment
         mLineName = (TextView) view.findViewById(R.id.line_name_st);
         mObjectNameCaption = (TextView) view.findViewById(R.id.object_name_caption_st);
         mObjectName = (TextView) view.findViewById(R.id.object_name);
-        mStatusButtonNotBuilted = (TextView) view.findViewById(R.id.status_not_builted);
-        mStatusButtonBuilted = (TextView) view.findViewById(R.id.status_builted);
+        mStatusButtonNotBuilted = (RadioButton) view.findViewById(R.id.status_not_builted);
+        mStatusButtonBuilted = (RadioButton) view.findViewById(R.id.status_builted);
         mPhotoHintText = (TextView) view.findViewById(R.id.photo_hint_text);
         mMakePhotoButton = (Button) view.findViewById(R.id.btn_make_photo);
         mPhotoGallery = (RecyclerView) view.findViewById(R.id.photo_gallery);
@@ -233,12 +232,19 @@ public class ObjectStatusFragment
             mObjectName.setVisibility(View.VISIBLE);
         }
 
+        mStatusButtonNotBuilted.setText(activity.getString(R.string.not_complete));
+        mStatusButtonBuilted.setText(activity.getString(R.string.complete));
+
         GISApplication app = (GISApplication) getActivity().getApplication();
         final FoclProject foclProject = app.getFoclProject();
 
         if (null == foclProject) {
             mLineName.setText("");
             mObjectName.setText("");
+            mStatusButtonNotBuilted.setChecked(false);
+            mStatusButtonNotBuilted.setEnabled(false);
+            mStatusButtonBuilted.setChecked(false);
+            mStatusButtonBuilted.setEnabled(false);
             mMakePhotoButton.setEnabled(false);
             mMakePhotoButton.setOnClickListener(null);
             mPhotoGallery.setEnabled(false);
@@ -251,9 +257,6 @@ public class ObjectStatusFragment
         mLineName.setText(mLineNameText);
 
         if (FoclConstants.LAYERTYPE_FOCL_ENDPOINT == mFoclStructLayerType) {
-            mStatusButtonNotBuilted.setText(activity.getString(R.string.not_complete));
-            mStatusButtonBuilted.setText(activity.getString(R.string.complete));
-
             FoclStruct foclStruct = (FoclStruct) foclProject.getLayer(mLineId);
             FoclVectorLayer layer = (FoclVectorLayer) foclStruct.getLayerByFoclType(
                     mFoclStructLayerType);
@@ -298,11 +301,10 @@ public class ObjectStatusFragment
             }
 
             setStatusButtonView(found);
+            mMakePhotoButton.setEnabled(found);
 
         } else {
             mObjectName.setText(mObjectNameText);
-            mStatusButtonNotBuilted.setText(activity.getString(R.string.not_builted));
-            mStatusButtonBuilted.setText(activity.getString(R.string.builted));
             setStatusButtonView(true);
         }
 
@@ -418,9 +420,6 @@ public class ObjectStatusFragment
 
     protected void setStatusButtonView(boolean enabled)
     {
-        Drawable backgroundNotBuilted;
-        Drawable backgroundBuilted;
-
         if (enabled) {
 
             switch (mObjectStatus) {
@@ -428,34 +427,20 @@ public class ObjectStatusFragment
                 case FoclConstants.FIELD_VALUE_NOT_MEASURE:
                 case FoclConstants.FIELD_VALUE_UNKNOWN:
                 default:
-                    backgroundNotBuilted =
-                            getActivity().getResources().getDrawable(R.drawable.border_status_red);
-                    backgroundBuilted =
-                            getActivity().getResources().getDrawable(R.drawable.border_status_grey);
+                    mStatusButtonNotBuilted.setChecked(true);
+                    mStatusButtonBuilted.setChecked(false);
                     break;
 
                 case FoclConstants.FIELD_VALUE_BUILT:
                 case FoclConstants.FIELD_VALUE_MEASURE:
-                    backgroundNotBuilted =
-                            getActivity().getResources().getDrawable(R.drawable.border_status_grey);
-                    backgroundBuilted = getActivity().getResources()
-                            .getDrawable(R.drawable.border_status_green);
+                    mStatusButtonNotBuilted.setChecked(false);
+                    mStatusButtonBuilted.setChecked(true);
                     break;
             }
 
         } else {
-            backgroundNotBuilted =
-                    getActivity().getResources().getDrawable(R.drawable.border_status_grey);
-            backgroundBuilted =
-                    getActivity().getResources().getDrawable(R.drawable.border_status_grey);
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            mStatusButtonNotBuilted.setBackground(backgroundNotBuilted);
-            mStatusButtonBuilted.setBackground(backgroundBuilted);
-        } else {
-            mStatusButtonNotBuilted.setBackgroundDrawable(backgroundNotBuilted);
-            mStatusButtonBuilted.setBackgroundDrawable(backgroundBuilted);
+            mStatusButtonNotBuilted.setChecked(false);
+            mStatusButtonBuilted.setChecked(false);
         }
 
         mStatusButtonNotBuilted.setEnabled(enabled);

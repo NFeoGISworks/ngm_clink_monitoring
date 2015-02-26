@@ -67,6 +67,7 @@
     <string name="line_measuring">Измерения линии</string>
 
     <string name="communication_line">Линия связи:</string>
+    <string name="work_status">Статус работ:</string>
 
     <string name="optical_cables">Строительные длины:</string>
     <string name="foscs">Муфты:</string>
