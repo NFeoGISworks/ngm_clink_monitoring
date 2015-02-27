@@ -21,26 +21,11 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ***************************************************************************-->
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
-
-    <TextView
-        android:gravity="center"
-        android:id="@+id/type_work"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_width="match_parent"
-        android:text="@string/perform_sync"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/text_color"
-        android:textStyle="bold"
-        />
-
-</LinearLayout>
+<resources>
+    <!--Grey and Teal color palettes from http://www.google.co.uk/design/spec/style/color.html#color-color-palette -->
+    <color name="primary_color">#ff757575</color>
+    <color name="primary_dark_color">#ff212121</color>
+    <color name="accent_color">#ff009688</color>
+    <color name="text_color">#ff000000</color>
+    <color name="action_bar_color">#ff757575</color>
+</resources>

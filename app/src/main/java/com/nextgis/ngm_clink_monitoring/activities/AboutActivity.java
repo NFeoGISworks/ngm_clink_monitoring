@@ -43,7 +43,7 @@ public class AboutActivity
 
         setContentView(R.layout.activity_about);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.about_toolbar);
         toolbar.getBackground().setAlpha(255);
         setSupportActionBar(toolbar);
 

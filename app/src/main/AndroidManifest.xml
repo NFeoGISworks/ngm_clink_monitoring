@@ -113,7 +113,6 @@
         <activity
             android:label="@string/action_about"
             android:name=".activities.AboutActivity"
-            android:theme="@style/AppBaseTheme"
             />
 
         <service

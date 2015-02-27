@@ -49,7 +49,7 @@
         android:paddingBottom="5dp"
         android:paddingTop="5dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="#ff000000"
+        android:textColor="@color/text_color"
         />
 
     <TextView
@@ -71,7 +71,7 @@
         android:paddingRight="5dp"
         android:paddingTop="5dp"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="#ff000000"
+        android:textColor="@color/text_color"
         />
 
 </RelativeLayout>

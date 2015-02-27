@@ -74,7 +74,7 @@
                     android:paddingRight="10dp"
                     android:background="@drawable/border_object_type_name"
                     android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textColor="#ff000000"
+                    android:textColor="@color/text_color"
                     />
 
                 <TextView
@@ -85,7 +85,7 @@
                     android:paddingRight="10dp"
                     android:text="@string/communication_line"
                     android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textColor="#ff000000"
+                    android:textColor="@color/text_color"
                     />
 
                 <TextView
@@ -98,7 +98,7 @@
                     android:paddingRight="20dp"
                     android:text="@string/communication_line"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="#ff000000"
+                    android:textColor="@color/text_color"
                     />
 
                 <TextView
@@ -110,7 +110,7 @@
                     android:paddingRight="10dp"
                     android:text="@string/optical_cable"
                     android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textColor="#ff000000"
+                    android:textColor="@color/text_color"
                     android:visibility="visible"
                     />
 
@@ -124,7 +124,7 @@
                     android:paddingRight="20dp"
                     android:text="@string/optical_cable"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="#ff000000"
+                    android:textColor="@color/text_color"
                     android:visibility="visible"
                     />
 
@@ -136,7 +136,7 @@
                     android:paddingRight="10dp"
                     android:text="@string/work_status"
                     android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textColor="#ff000000"
+                    android:textColor="@color/text_color"
                     android:visibility="visible"
                     />
 
@@ -162,6 +162,7 @@
                         android:paddingRight="10dp"
                         android:text="@string/not_builted"
                         android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/text_color"
                         android:gravity="start|center_vertical"
                         android:ellipsize="end"
                         android:maxLines="1"
@@ -179,6 +180,7 @@
                         android:paddingRight="10dp"
                         android:text="@string/builted"
                         android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/text_color"
                         android:gravity="start|center_vertical"
                         android:ellipsize="end"
                         android:maxLines="1"
@@ -198,7 +200,7 @@
                     android:background="#ffe4c2b4"
                     android:text="@string/take_photos_to_confirm"
                     android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textColor="#ff000000"
+                    android:textColor="@color/text_color"
                     />
 
                 <Button

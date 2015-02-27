@@ -49,7 +49,7 @@
                 android:layout_width="match_parent"
                 android:text="@string/select_work_type"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="#ff000000"
+                android:textColor="@color/text_color"
                 />
 
             <LinearLayout

@@ -62,7 +62,7 @@
             android:paddingRight="10dp"
             android:background="@drawable/border_object_type_name"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="#ff000000"
+            android:textColor="@color/text_color"
             />
 
         <TextView
@@ -73,7 +73,7 @@
             android:paddingRight="10dp"
             android:text="@string/communication_line"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="#ff000000"
+            android:textColor="@color/text_color"
             />
 
         <TextView
@@ -86,7 +86,7 @@
             android:paddingRight="10dp"
             android:text="@string/optical_cables"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="#ff000000"
+            android:textColor="@color/text_color"
             />
 
         <TextView
@@ -99,7 +99,7 @@
             android:paddingRight="10dp"
             android:text="@string/optical_cables"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="#ff000000"
+            android:textColor="@color/text_color"
             />
 
         <ListView
