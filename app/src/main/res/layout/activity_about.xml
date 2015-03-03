@@ -128,7 +128,6 @@
                 android:layout_margin="10dp"
                 android:text="@string/credits"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColorLink="@color/accent_color"
                 android:linksClickable="true"
                 />
 
@@ -140,7 +139,6 @@
                 android:layout_gravity="center_horizontal"
                 android:text="@string/copyright"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColorLink="@color/accent_color"
                 android:linksClickable="true"
                 />
 

@@ -22,6 +22,16 @@
 
 <resources>
 
+    <!-- Application theme. -->
+    <style name="AppTheme"
+           parent="AppBaseTheme">
+
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+        <item name="windowActionBarOverlay">true</item>
+
+    </style>
+
+
     <!--
         Base application theme, dependent on API level. This theme is replaced
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
@@ -38,21 +48,37 @@
         <item name="colorPrimaryDark">@color/primary_dark_color</item>
         <item name="colorAccent">@color/accent_color</item>
 
+        <item name="android:buttonStyle">@style/buttonStyle</item>
+        <item name="android:textViewStyle">@style/textViewStyle</item>
     </style>
 
-    <!-- Application theme. -->
 
-    <style name="AppTheme"
-           parent="AppBaseTheme">
-
-        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
-        <item name="windowActionBarOverlay">true</item>
-
+    <style name="buttonStyle"
+           parent="@android:style/Widget.Button">
+        <item name="android:background">@drawable/btn_default</item>
+        <item name="android:textColor">@color/button_text_color</item>
     </style>
 
-    <style name="menu_labels_style">
-        <item name="android:background">@drawable/abc_popup_background_mtrl_mult</item>
-        <item name="android:textColor">@color/primary_text_default_material_light</item>
+    <style name="mainButton"
+           parent="@style/buttonStyle">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <item name="android:padding">5dp</item>
+        <item name="android:lines">2</item>
+        <item name="android:minLines">2</item>
+        <item name="android:maxLines">2</item>
+    </style>
+
+    <style name="mainButtonMiddle"
+           parent="@style/mainButton">
+        <item name="android:layout_marginTop">10dp</item>
+    </style>
+
+    <style name="textViewStyle"
+           parent="@android:style/Widget.TextView">
+        <item name="android:textColor">@color/text_view_text_color</item>
+        <item name="android:textColorLink">@color/text_view_text_color_link</item>
     </style>
 
 </resources>

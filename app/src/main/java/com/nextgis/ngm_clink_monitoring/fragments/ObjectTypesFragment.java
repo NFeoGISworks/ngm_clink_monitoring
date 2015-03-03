@@ -35,6 +35,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
@@ -65,6 +66,7 @@ public class ObjectTypesFragment
 
         final LinearLayout buttonsLayout = (LinearLayout) view.findViewById(R.id.buttons_layout);
 
+        final ScrollView scrollView = (ScrollView) view.findViewById(R.id.scroll_view);
         final Button btnCableLaying = (Button) view.findViewById(R.id.btn_cable_laying);
         final Button btnFoscMounting = (Button) view.findViewById(R.id.btn_fosc_mounting);
         final Button btnCrossMounting = (Button) view.findViewById(R.id.btn_cross_mounting);
@@ -89,14 +91,21 @@ public class ObjectTypesFragment
 
                         // measure your views here
 
-                        int rootViewH = rootView.getHeight();
+                        int[] locations_0 = new int[2];
+                        rootView.getLocationInWindow(locations_0);
+                        int rootViewTop = locations_0[1];
 
-                        int[] locations = new int[2];
-                        buttonsLayout.getLocationInWindow(locations);
-                        int buttonsLayoutTop = locations[1];
+                        int rootViewBottom = rootViewTop + rootView.getHeight();
 
-                        int buttonMinH = btnCableLaying.getHeight(); // with layout_margins
-                        int buttonMaxH = (rootViewH - buttonsLayoutTop) / 3; // with layout_margins
+                        int[] locations_1 = new int[2];
+                        btnCableLaying.getLocationInWindow(locations_1);
+                        int buttonsTop = locations_1[1];
+
+                        int buttonMinH = btnCableLaying.getHeight();
+
+                        int buttonMaxH =
+                                (rootViewBottom - ViewUtil.getViewBottomMargin(scrollView) -
+                                 buttonsTop - 2 * ViewUtil.getViewTopMargin(btnCrossMounting)) / 3;
 
                         if (buttonMaxH > buttonMinH) {
                             ViewUtil.setViewHeight(btnCableLaying, buttonMaxH);

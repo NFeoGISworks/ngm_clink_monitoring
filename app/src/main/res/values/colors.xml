@@ -22,10 +22,47 @@
   ***************************************************************************-->
 
 <resources>
-    <!--Grey and Teal color palettes from http://www.google.co.uk/design/spec/style/color.html#color-color-palette -->
-    <color name="primary_color">#ff757575</color>
-    <color name="primary_dark_color">#ff212121</color>
-    <color name="accent_color">#ff009688</color>
-    <color name="text_color">#ff000000</color>
-    <color name="action_bar_color">#ff757575</color>
+    <color name="color_black">#000000</color>
+    <color name="color_white">#ffffff</color>
+
+    <!--Blue Grey color palette--><!--http://www.google.co.uk/design/spec/style/color.html#color-color-palette -->
+    <color name="color_50">#eceff1</color>
+    <color name="color_100">#cfd8dc</color>
+    <color name="color_200">#b0bec5</color>
+    <color name="color_300">#90a4ae</color>
+    <color name="color_400">#78909c</color>
+    <color name="color_500">#607d8b</color>
+    <color name="color_600">#546e7a</color>
+    <color name="color_700">#455a64</color>
+    <color name="color_800">#37474f</color>
+    <color name="color_900">#263238</color>
+
+    <!--Teal color palettes--><!--http://www.google.co.uk/design/spec/style/color.html#color-color-palette -->
+    <color name="color_2nd_500">#009688</color>
+
+
+    <color name="border_status_line_color">@color/color_500</color>
+
+    <color name="primary_color">@color/color_500</color>
+    <color name="primary_dark_color">@color/color_900</color>
+    <color name="accent_color">@color/color_2nd_500</color>
+
+    <color name="text_view_text_color">@color/color_900</color>
+    <color name="text_view_text_color_link">@color/color_2nd_500</color>
+
+    <color name="button_normal_text_color">@color/color_50</color>
+    <color name="button_normal_color_start">@color/color_500</color>
+    <color name="button_normal_color_end">@color/color_500</color>
+    <color name="button_normal_color_stroke">@color/color_600</color>
+
+    <color name="button_pressed_text_color">@color/color_700</color>
+    <color name="button_pressed_color_start">@color/color_100</color>
+    <color name="button_pressed_color_end">@color/color_100</color>
+    <color name="button_pressed_color_stroke">@color/color_300</color>
+
+    <color name="button_disabled_text_color">@color/color_400</color>
+    <color name="button_normal_disabled_color_start">@color/color_200</color>
+    <color name="button_normal_disabled_color_end">@color/color_200</color>
+    <color name="button_normal_disabled_color_stroke">@color/color_400</color>
+
 </resources>

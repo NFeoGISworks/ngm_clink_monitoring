@@ -39,7 +39,6 @@
         android:layout_width="match_parent"
         android:text="@string/perform_sync"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/text_color"
         android:textStyle="bold"
         />
 

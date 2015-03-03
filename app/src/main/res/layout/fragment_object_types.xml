@@ -22,13 +22,13 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/maprl"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     >
 
     <ScrollView
         xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/scroll_view"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:layout_marginBottom="10dp"
@@ -44,109 +44,73 @@
 
             <TextView
                 android:id="@+id/work_type_caption"
-                android:layout_gravity="start"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
+                android:layout_gravity="start"
                 android:text="@string/select_work_type"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@color/text_color"
                 />
 
             <LinearLayout
                 android:id="@+id/buttons_layout"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
+                android:layout_marginTop="10dp"
                 android:orientation="horizontal"
                 >
 
                 <LinearLayout
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="3dp"
-                    android:layout_weight=".5"
                     android:layout_width="0dip"
+                    android:layout_weight=".5"
+                    android:layout_marginRight="7dp"
                     android:orientation="vertical"
                     >
 
                     <Button
                         android:id="@+id/btn_cable_laying"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:layout_width="match_parent"
                         android:text="@string/cable_laying"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:lines="2"
-                        android:minLines="2"
-                        android:maxLines="2"
+                        style="@style/mainButton"
                         />
 
                     <Button
                         android:id="@+id/btn_cross_mounting"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:layout_width="match_parent"
                         android:text="@string/cross_mounting"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:lines="2"
-                        android:minLines="2"
-                        android:maxLines="2"
+                        style="@style/mainButtonMiddle"
                         />
 
                     <Button
                         android:id="@+id/btn_pole_mounting"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:layout_width="match_parent"
                         android:text="@string/pole_mounting"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:lines="2"
-                        android:minLines="2"
-                        android:maxLines="2"
+                        style="@style/mainButtonMiddle"
                         />
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="3dp"
-                    android:layout_weight=".5"
                     android:layout_width="0dip"
+                    android:layout_weight=".5"
+                    android:layout_marginLeft="7dp"
                     android:orientation="vertical"
                     >
 
                     <Button
                         android:id="@+id/btn_fosc_mounting"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:layout_width="match_parent"
                         android:text="@string/fosc_mounting"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:lines="2"
-                        android:minLines="2"
-                        android:maxLines="2"
+                        style="@style/mainButton"
                         />
 
                     <Button
                         android:id="@+id/btn_cabinet_mounting"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:layout_width="match_parent"
                         android:text="@string/cabinet_mounting"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:lines="2"
-                        android:minLines="2"
-                        android:maxLines="2"
+                        style="@style/mainButtonMiddle"
                         />
 
                     <Button
                         android:id="@+id/btn_line_measuring"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:layout_width="match_parent"
                         android:text="@string/line_measuring"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:lines="2"
-                        android:minLines="2"
-                        android:maxLines="2"
+                        style="@style/mainButtonMiddle"
                         />
 
                 </LinearLayout>

@@ -24,6 +24,7 @@ package com.nextgis.ngm_clink_monitoring.util;
 
 import android.os.Build;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -105,8 +106,22 @@ public class ViewUtil
             View view,
             int height)
     {
-        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) view.getLayoutParams();
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
         params.height = height;
         view.setLayoutParams(params);
+    }
+
+
+    public static int getViewTopMargin(View view)
+    {
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+        return params.topMargin;
+    }
+
+
+    public static int getViewBottomMargin(View view)
+    {
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+        return params.bottomMargin;
     }
 }
