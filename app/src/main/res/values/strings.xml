@@ -66,6 +66,7 @@
     <string name="pole_mounting">Pole mounting</string>
     <string name="line_measuring">Line measuring</string>
 
+    <string name="communication_lines">Communication lines:</string>
     <string name="communication_line">Communication line:</string>
     <string name="work_status">Work status:</string>
 
@@ -109,8 +110,8 @@
 
     <string name="project">Project</string>
     <string name="built">Built</string>
-    <string name="complete">Complete</string>
-    <string name="not_complete">NOT complete</string>
+    <string name="completed">Complete</string>
+    <string name="not_completed">NOT complete</string>
 
     <string name="builted">Builted</string>
     <string name="not_builted">NOT builted</string>

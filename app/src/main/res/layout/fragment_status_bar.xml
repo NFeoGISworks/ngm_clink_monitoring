@@ -30,17 +30,17 @@
 
     <TableLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:background="@drawable/border_status_line"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
+        android:paddingTop="5dp"
         android:paddingBottom="5dp"
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
-        android:paddingTop="5dp"
+        android:background="@drawable/status_line_background"
         android:stretchColumns="0,1,2,3"
         >
 
@@ -51,33 +51,33 @@
 
             <TextView
                 android:id="@+id/latitude_view"
-                android:layout_gravity="center"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
+                android:layout_gravity="center"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 />
 
             <TextView
                 android:id="@+id/longitude_view"
-                android:layout_gravity="center"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
+                android:layout_gravity="center"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 />
 
             <TextView
                 android:id="@+id/altitude_view"
-                android:layout_gravity="center"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
+                android:layout_gravity="center"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 />
 
             <TextView
                 android:id="@+id/accuracy_view"
-                android:layout_gravity="center"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
+                android:layout_gravity="center"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 />
 

@@ -41,28 +41,39 @@
     <color name="color_2nd_500">#009688</color>
 
 
-    <color name="border_status_line_color">@color/color_500</color>
-
     <color name="primary_color">@color/color_500</color>
     <color name="primary_dark_color">@color/color_900</color>
     <color name="accent_color">@color/color_2nd_500</color>
 
     <color name="text_view_text_color">@color/color_900</color>
-    <color name="text_view_text_color_link">@color/color_2nd_500</color>
+    <color name="text_view_text_link_color">@color/color_2nd_500</color>
 
     <color name="button_normal_text_color">@color/color_50</color>
     <color name="button_normal_color_start">@color/color_500</color>
     <color name="button_normal_color_end">@color/color_500</color>
-    <color name="button_normal_color_stroke">@color/color_600</color>
+    <color name="button_normal_stroke_color">@color/color_600</color>
 
     <color name="button_pressed_text_color">@color/color_700</color>
     <color name="button_pressed_color_start">@color/color_100</color>
     <color name="button_pressed_color_end">@color/color_100</color>
-    <color name="button_pressed_color_stroke">@color/color_300</color>
+    <color name="button_pressed_stroke_color">@color/color_300</color>
 
-    <color name="button_disabled_text_color">@color/color_400</color>
-    <color name="button_normal_disabled_color_start">@color/color_200</color>
-    <color name="button_normal_disabled_color_end">@color/color_200</color>
-    <color name="button_normal_disabled_color_stroke">@color/color_400</color>
+    <color name="button_disabled_text_color">@color/color_100</color>
+    <color name="button_disabled_color_start">@color/color_400</color>
+    <color name="button_disabled_color_end">@color/color_400</color>
+    <color name="button_disabled_stroke_color">@color/color_600</color>
+
+    <color name="list_view_list_selector_color">@color/color_50</color>
+    <color name="list_item_divider_color">@color/color_100</color>
+
+    <color name="status_line_stroke_color">@color/color_500</color>
+
+    <color name="selected_object_text_color">@color/color_700</color>
+    <color name="selected_object_solid_color">@color/color_100</color>
+    <color name="selected_object_stroke_color">@color/color_300</color>
+
+    <color name="photo_hint_text_color">@color/text_view_text_color</color>
+    <color name="photo_hint_solid_color">@color/color_100</color>
+    <color name="photo_hint_stroke_color">@color/color_300</color>
 
 </resources>

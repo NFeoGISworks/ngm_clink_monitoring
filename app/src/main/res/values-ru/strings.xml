@@ -66,6 +66,7 @@
     <string name="pole_mounting">Установка опоры</string>
     <string name="line_measuring">Измерения линии</string>
 
+    <string name="communication_lines">Линии связи:</string>
     <string name="communication_line">Линия связи:</string>
     <string name="work_status">Статус работ:</string>
 
@@ -112,8 +113,8 @@
 
     <string name="builted">Построен</string>
     <string name="not_builted">НЕ построен</string>
-    <string name="complete">Выполнено</string>
-    <string name="not_complete">НЕ выполнено</string>
+    <string name="completed">Выполнено</string>
+    <string name="not_completed">НЕ выполнено</string>
 
     <string name="app_description">Мобильное приложение для ввода данных о ходе строительства ВОЛС.</string>
 

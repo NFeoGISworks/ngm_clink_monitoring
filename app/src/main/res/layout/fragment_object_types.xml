@@ -49,6 +49,7 @@
                 android:layout_gravity="start"
                 android:text="@string/select_work_type"
                 android:textAppearance="?android:attr/textAppearanceMedium"
+                android:gravity="center"
                 />
 
             <LinearLayout
@@ -70,19 +71,19 @@
                     <Button
                         android:id="@+id/btn_cable_laying"
                         android:text="@string/cable_laying"
-                        style="@style/mainButton"
+                        style="@style/startButton"
                         />
 
                     <Button
                         android:id="@+id/btn_cross_mounting"
                         android:text="@string/cross_mounting"
-                        style="@style/mainButtonMiddle"
+                        style="@style/startButtonMiddle"
                         />
 
                     <Button
                         android:id="@+id/btn_pole_mounting"
                         android:text="@string/pole_mounting"
-                        style="@style/mainButtonMiddle"
+                        style="@style/startButtonMiddle"
                         />
 
                 </LinearLayout>
@@ -98,19 +99,19 @@
                     <Button
                         android:id="@+id/btn_fosc_mounting"
                         android:text="@string/fosc_mounting"
-                        style="@style/mainButton"
+                        style="@style/startButton"
                         />
 
                     <Button
                         android:id="@+id/btn_cabinet_mounting"
                         android:text="@string/cabinet_mounting"
-                        style="@style/mainButtonMiddle"
+                        style="@style/startButtonMiddle"
                         />
 
                     <Button
                         android:id="@+id/btn_line_measuring"
                         android:text="@string/line_measuring"
-                        style="@style/mainButtonMiddle"
+                        style="@style/startButtonMiddle"
                         />
 
                 </LinearLayout>

@@ -56,21 +56,15 @@
             android:id="@+id/work_type_name_ln"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:background="@drawable/border_object_type_name"
-            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:gravity="center"
             />
 
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:paddingTop="5dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:text="@string/communication_line"
+            android:layout_marginTop="5dp"
+            android:text="@string/communication_lines"
             android:textAppearance="?android:attr/textAppearanceSmall"
             />
 
@@ -78,6 +72,7 @@
             android:id="@+id/line_list_ln"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
+            android:layout_marginTop="5dp"
             />
 
     </LinearLayout>

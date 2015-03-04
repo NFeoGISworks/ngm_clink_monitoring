@@ -56,44 +56,29 @@
             android:id="@+id/work_type_name_ls"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:background="@drawable/border_object_type_name"
-            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:gravity="center"
             />
 
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:paddingTop="5dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
+            android:layout_marginTop="5dp"
             android:text="@string/communication_line"
             android:textAppearance="?android:attr/textAppearanceSmall"
             />
 
         <TextView
             android:id="@+id/line_name_ls"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
             android:text="@string/optical_cables"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            style="@style/selectedObjectStyle"
             />
 
         <TextView
             android:id="@+id/object_list_caption_ls"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
+            android:layout_marginTop="10dp"
             android:text="@string/optical_cables"
             android:textAppearance="?android:attr/textAppearanceSmall"
             />
@@ -102,6 +87,7 @@
             android:id="@+id/object_list_ls"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
+            android:layout_marginTop="5dp"
             />
 
     </LinearLayout>

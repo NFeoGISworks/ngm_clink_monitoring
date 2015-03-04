@@ -29,7 +29,7 @@
 
     <item android:state_window_focused="false"
           android:state_enabled="false"
-          android:drawable="@drawable/btn_default_normal_disable"/>
+          android:drawable="@drawable/btn_default_disable"/>
 
     <item android:state_pressed="true"
           android:drawable="@drawable/btn_default_pressed"/>
@@ -42,9 +42,9 @@
           android:drawable="@drawable/btn_default_normal"/>
 
     <item android:state_focused="true"
-          android:drawable="@drawable/btn_default_normal_disable"/>
+          android:drawable="@drawable/btn_default_disable"/>
 
     <item
-        android:drawable="@drawable/btn_default_normal_disable"/>
+        android:drawable="@drawable/btn_default_disable"/>
 
 </selector>

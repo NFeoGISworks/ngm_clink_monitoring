@@ -29,8 +29,12 @@
 
     <corners android:radius="2dp"/>
 
+    <solid
+        android:color="@color/selected_object_solid_color"
+        />
+
     <stroke
-        android:color="@color/border_status_line_color"
+        android:color="@color/selected_object_stroke_color"
         android:width="1dp"
         />
 

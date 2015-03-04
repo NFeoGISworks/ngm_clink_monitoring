@@ -36,6 +36,7 @@
         Base application theme, dependent on API level. This theme is replaced
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
     -->
+
     <style name="AppBaseTheme"
            parent="Theme.AppCompat.Light.NoActionBar">
 
@@ -49,36 +50,119 @@
         <item name="colorAccent">@color/accent_color</item>
 
         <item name="android:buttonStyle">@style/buttonStyle</item>
+        <item name="android:listViewStyle">@style/listViewStyle</item>
         <item name="android:textViewStyle">@style/textViewStyle</item>
+
     </style>
 
 
     <style name="buttonStyle"
            parent="@android:style/Widget.Button">
+
         <item name="android:background">@drawable/btn_default</item>
         <item name="android:textColor">@color/button_text_color</item>
+
     </style>
 
-    <style name="mainButton"
+    <style name="startButton"
            parent="@style/buttonStyle">
+
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
-        <item name="android:padding">5dp</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:paddingRight">10dp</item>
         <item name="android:lines">2</item>
         <item name="android:minLines">2</item>
         <item name="android:maxLines">2</item>
+
     </style>
 
-    <style name="mainButtonMiddle"
-           parent="@style/mainButton">
+    <style name="startButtonMiddle"
+           parent="@style/startButton">
+
         <item name="android:layout_marginTop">10dp</item>
+
+    </style>
+
+    <style name="listViewStyle"
+           parent="@android:style/Widget.ListView">
+
+        <item name="android:listSelector">@color/list_view_list_selector_color</item>
+        <item name="android:divider">@null</item>
+
     </style>
 
     <style name="textViewStyle"
            parent="@android:style/Widget.TextView">
+
         <item name="android:textColor">@color/text_view_text_color</item>
-        <item name="android:textColorLink">@color/text_view_text_color_link</item>
+        <item name="android:textColorLink">@color/text_view_text_link_color</item>
+
+    </style>
+
+    <style name="listItemStyle"
+           parent="@style/textViewStyle">
+
+        <item name="android:layout_height">52dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_marginTop">5dp</item>
+        <item name="android:layout_marginBottom">5dp</item>
+        <item name="android:layout_marginLeft">0dp</item>
+        <item name="android:layout_marginRight">0dp</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:paddingRight">10dp</item>
+        <item name="android:background">@drawable/list_item_background</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <item name="android:textColor">@color/button_text_color</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:lines">2</item>
+        <item name="android:minLines">2</item>
+        <item name="android:maxLines">2</item>
+
+    </style>
+
+    <style name="listItemCheckedStyle"
+           parent="@style/listItemStyle">
+
+        <!-- TODO: --><!--<item name="android:checkMark">?android:attr/listChoiceIndicatorMultiple</item>-->
+        <item name="android:checkMark">?android:attr/textCheckMark</item>
+
+    </style>
+
+    <style name="selectedObjectStyle"
+           parent="@style/listItemStyle">
+
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginBottom">0dp</item>
+        <item name="android:background">@drawable/selected_object_background</item>
+        <item name="android:textColor">@color/selected_object_text_color</item>
+        <item name="android:lines">1</item>
+        <item name="android:minLines">1</item>
+        <item name="android:maxLines">1</item>
+
+        <!-- TODO: --><!--
+                <item name="android:layout_height">wrap_content</item>
+                <item name="android:layout_marginTop">5dp</item>
+                <item name="android:layout_marginBottom">0dp</item>
+                <item name="android:paddingTop">0dp</item>
+                <item name="android:paddingBottom">0dp</item>
+                <item name="android:paddingLeft">10dp</item>
+                <item name="android:paddingRight">10dp</item>
+                <item name="android:background">@drawable/selected_object_background</item>
+                <item name="android:textColor">@color/text_view_text_color</item>
+                <item name="android:lines">1</item>
+                <item name="android:minLines">1</item>
+                <item name="android:maxLines">1</item>
+        -->
+
     </style>
 
 </resources>
