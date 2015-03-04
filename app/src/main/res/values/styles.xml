@@ -131,8 +131,8 @@
     <style name="listItemCheckedStyle"
            parent="@style/listItemStyle">
 
-        <!-- TODO: --><!--<item name="android:checkMark">?android:attr/listChoiceIndicatorMultiple</item>-->
-        <item name="android:checkMark">?android:attr/textCheckMark</item>
+        <!-- TODO: --><!--<item name="android:checkMark">?android:attr/listChoiceIndicatorMultiple</item>--><!--<item name="android:checkMark">?android:attr/textCheckMark</item>-->
+        <item name="android:checkMark">@drawable/check_mark</item>
 
     </style>
 
