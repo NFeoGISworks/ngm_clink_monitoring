@@ -82,8 +82,8 @@
     <string name="telecom_cabinet">Телеком. шкаф:</string>
     <string name="pole">Столб/оконеч. опора:</string>
 
-    <string name="take_photos_to_confirm">Сделайте фотографии для подтверждения выполнения работ.</string>
-    <string name="take_photos_to_confirm_fosc">Для подтверждения выполнения работ сфотографируйте муфту, подвешенную на опоре.</string>
+    <string name="take_photos_to_confirm">Сделайте фотографии для подтверждения выполненных работ.</string>
+    <string name="take_photos_to_confirm_fosc">Для подтверждения выполненных работ сфотографируйте муфту, подвешенную на опоре.</string>
 
     <string name="make_photo">Сделать фото</string>
     <string name="save">Сохранить</string>

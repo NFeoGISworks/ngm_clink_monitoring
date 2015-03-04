@@ -82,8 +82,8 @@
     <string name="telecom_cabinet">Telecom. cabinet:</string>
     <string name="pole">Pole:</string>
 
-    <string name="take_photos_to_confirm">Take photos to confirm the execution of works.</string>
-    <string name="take_photos_to_confirm_fosc">Take photos of FOSC on a pole to confirm the execution of works.</string>
+    <string name="take_photos_to_confirm">Take photos to confirm of the executed works.</string>
+    <string name="take_photos_to_confirm_fosc">Take photos of FOSC on a pole to confirm of the executed works.</string>
 
     <string name="make_photo">Make photo</string>
     <string name="save">Save</string>
