@@ -23,7 +23,6 @@
 package com.nextgis.ngm_clink_monitoring.adapters;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
@@ -39,13 +38,11 @@ import java.util.List;
 public class ObjectPhotoAdapter
         extends RecyclerView.Adapter<ObjectPhotoAdapter.ViewHolder>
 {
-    protected static final int IMAGE_SIZE_DP = 120;
+    protected static final int IMAGE_SIZE_DP = 100;
     protected final int IMAGE_SIZE_PX;
 
     protected Context      mContext;
     protected List<String> mImagePathList;
-
-    protected int mItemBackground;
 
 
     public ObjectPhotoAdapter(
@@ -56,12 +53,6 @@ public class ObjectPhotoAdapter
         mImagePathList = imagePathList;
 
         IMAGE_SIZE_PX = (int) (IMAGE_SIZE_DP * mContext.getResources().getDisplayMetrics().density);
-
-        // sets a grey background; wraps around the images
-        TypedArray typedArray = mContext.obtainStyledAttributes(R.styleable.photo_gallery);
-        mItemBackground = typedArray.getResourceId(
-                R.styleable.photo_gallery_android_galleryItemBackground, 0);
-        typedArray.recycle();
     }
 
 
@@ -87,7 +78,6 @@ public class ObjectPhotoAdapter
         layoutParams.width = IMAGE_SIZE_PX;
 
         viewHolder.mImageView.setLayoutParams(layoutParams);
-        viewHolder.mImageView.setBackgroundResource(mItemBackground);
         viewHolder.mImageView.setImageBitmap(createImagePreview(mImagePathList.get(i)));
     }
 

@@ -131,8 +131,9 @@
     <style name="listItemCheckedStyle"
            parent="@style/listItemStyle">
 
-        <!-- TODO: --><!--<item name="android:checkMark">?android:attr/listChoiceIndicatorMultiple</item>--><!--<item name="android:checkMark">?android:attr/textCheckMark</item>-->
-        <item name="android:checkMark">@drawable/check_mark</item>
+        <!--<item name="android:checkMark">?android:attr/listChoiceIndicatorMultiple</item>-->
+        <item name="android:checkMark">?android:attr/textCheckMark</item>
+        <!--<item name="android:checkMark">@drawable/check_mark</item>-->
 
     </style>
 
@@ -147,21 +148,6 @@
         <item name="android:lines">1</item>
         <item name="android:minLines">1</item>
         <item name="android:maxLines">1</item>
-
-        <!-- TODO: --><!--
-                <item name="android:layout_height">wrap_content</item>
-                <item name="android:layout_marginTop">5dp</item>
-                <item name="android:layout_marginBottom">0dp</item>
-                <item name="android:paddingTop">0dp</item>
-                <item name="android:paddingBottom">0dp</item>
-                <item name="android:paddingLeft">10dp</item>
-                <item name="android:paddingRight">10dp</item>
-                <item name="android:background">@drawable/selected_object_background</item>
-                <item name="android:textColor">@color/text_view_text_color</item>
-                <item name="android:lines">1</item>
-                <item name="android:minLines">1</item>
-                <item name="android:maxLines">1</item>
-        -->
 
     </style>
 

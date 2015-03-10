@@ -40,7 +40,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.nextgis.maplib.map.VectorLayer;
@@ -75,8 +74,7 @@ public class ObjectStatusFragment
     protected TextView     mLineName;
     protected TextView     mObjectNameCaption;
     protected TextView     mObjectName;
-    protected RadioButton mStatusButtonNotBuilted;
-    protected RadioButton mStatusButtonBuilted;
+    protected Button mCompleteStatusButton;
     protected TextView     mPhotoHintText;
     protected Button       mMakePhotoButton;
     protected RecyclerView mPhotoGallery;
@@ -180,8 +178,7 @@ public class ObjectStatusFragment
         mLineName = (TextView) view.findViewById(R.id.line_name_st);
         mObjectNameCaption = (TextView) view.findViewById(R.id.object_name_caption_st);
         mObjectName = (TextView) view.findViewById(R.id.object_name);
-        mStatusButtonNotBuilted = (RadioButton) view.findViewById(R.id.status_not_builted);
-        mStatusButtonBuilted = (RadioButton) view.findViewById(R.id.status_builted);
+        mCompleteStatusButton = (Button) view.findViewById(R.id.complete_status);
         mPhotoHintText = (TextView) view.findViewById(R.id.photo_hint_text);
         mMakePhotoButton = (Button) view.findViewById(R.id.btn_make_photo);
         mPhotoGallery = (RecyclerView) view.findViewById(R.id.photo_gallery);
@@ -232,8 +229,7 @@ public class ObjectStatusFragment
             mObjectName.setVisibility(View.VISIBLE);
         }
 
-        mStatusButtonNotBuilted.setText(activity.getString(R.string.not_complete));
-        mStatusButtonBuilted.setText(activity.getString(R.string.complete));
+        mCompleteStatusButton.setText(activity.getString(R.string.completed));
 
         GISApplication app = (GISApplication) getActivity().getApplication();
         final FoclProject foclProject = app.getFoclProject();
@@ -241,15 +237,11 @@ public class ObjectStatusFragment
         if (null == foclProject) {
             mLineName.setText("");
             mObjectName.setText("");
-            mStatusButtonNotBuilted.setChecked(false);
-            mStatusButtonNotBuilted.setEnabled(false);
-            mStatusButtonBuilted.setChecked(false);
-            mStatusButtonBuilted.setEnabled(false);
+            setStatusButtonView(false);
             mMakePhotoButton.setEnabled(false);
             mMakePhotoButton.setOnClickListener(null);
             mPhotoGallery.setEnabled(false);
             mPhotoGallery.setAdapter(null);
-            setStatusButtonView(false);
             return view;
         }
 
@@ -372,8 +364,7 @@ public class ObjectStatusFragment
             }
         };
 
-        mStatusButtonNotBuilted.setOnClickListener(statusButtonOnClickListener);
-        mStatusButtonBuilted.setOnClickListener(statusButtonOnClickListener);
+        mCompleteStatusButton.setOnClickListener(statusButtonOnClickListener);
 
         mMakePhotoButton.setOnClickListener(
                 new View.OnClickListener()
@@ -427,24 +418,23 @@ public class ObjectStatusFragment
                 case FoclConstants.FIELD_VALUE_NOT_MEASURE:
                 case FoclConstants.FIELD_VALUE_UNKNOWN:
                 default:
-                    mStatusButtonNotBuilted.setChecked(true);
-                    mStatusButtonBuilted.setChecked(false);
+                    mCompleteStatusButton.setCompoundDrawablesWithIntrinsicBounds(
+                            0, 0, R.drawable.btn_check_buttonless_off, 0);
                     break;
 
                 case FoclConstants.FIELD_VALUE_BUILT:
                 case FoclConstants.FIELD_VALUE_MEASURE:
-                    mStatusButtonNotBuilted.setChecked(false);
-                    mStatusButtonBuilted.setChecked(true);
+                    mCompleteStatusButton.setCompoundDrawablesWithIntrinsicBounds(
+                            0, 0, R.drawable.btn_check_buttonless_on, 0);
                     break;
             }
 
         } else {
-            mStatusButtonNotBuilted.setChecked(false);
-            mStatusButtonBuilted.setChecked(false);
+            mCompleteStatusButton.setCompoundDrawablesWithIntrinsicBounds(
+                    0, 0, R.drawable.btn_check_buttonless_off, 0);
         }
 
-        mStatusButtonNotBuilted.setEnabled(enabled);
-        mStatusButtonBuilted.setEnabled(enabled);
+        mCompleteStatusButton.setEnabled(enabled);
     }
 
 

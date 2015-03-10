@@ -112,66 +112,27 @@
                     android:visibility="visible"
                     />
 
-                <CheckedTextView
-                    android:id="@+id/status_completed"
-                    android:layout_marginTop="10dp"
-                    android:checked="false"
-                    android:text="@string/completed"
-                    style="@style/listItemCheckedStyle"
-                    />
-
-                <!-- TODO: --><!--
-                <LinearLayout
-                    xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:layout_height="wrap_content"
+                <Button
+                    android:id="@+id/complete_status"
+                    android:layout_height="52dp"
                     android:layout_width="match_parent"
-                    android:layout_marginTop="5dp"
-                    android:gravity="center_vertical"
-                    android:orientation="vertical"
-                    >
-
-                    <RadioButton
-                        android:id="@+id/status_not_builted"
-                        android:layout_height="match_parent"
-                        android:layout_width="match_parent"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="5dp"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="10dp"
-                        android:paddingLeft="10dp"
-                        android:paddingRight="10dp"
-                        android:text="@string/not_builted"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:gravity="start|center_vertical"
-                        android:ellipsize="end"
-                        android:maxLines="1"
-                        android:checked="true"
-                        />
-
-                    <RadioButton
-                        android:id="@+id/status_builted"
-                        android:layout_height="match_parent"
-                        android:layout_width="match_parent"
-                        android:layout_marginBottom="5dp"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="10dp"
-                        android:paddingLeft="10dp"
-                        android:paddingRight="10dp"
-                        android:text="@string/builted"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:gravity="start|center_vertical"
-                        android:ellipsize="end"
-                        android:maxLines="1"
-                        />
-
-                </LinearLayout>
--->
+                    android:layout_marginTop="10dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:drawableRight="@drawable/btn_check_buttonless_off"
+                    android:drawablePadding="8dp"
+                    android:text="@string/completed"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:gravity="center_vertical|start"
+                    />
 
                 <TextView
                     android:id="@+id/photo_hint_text"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="15dp"
                     android:paddingTop="5dp"
                     android:paddingBottom="5dp"
                     android:paddingLeft="10dp"

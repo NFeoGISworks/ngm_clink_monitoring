@@ -25,13 +25,11 @@ package com.nextgis.ngm_clink_monitoring.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.CheckedTextView;
 import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
@@ -85,8 +83,7 @@ public class ObjectCursorAdapter
         ViewHolder viewHolder = new ViewHolder();
         view.setTag(viewHolder);
 
-        viewHolder.mObjectName = (TextView) view.findViewById(R.id.item_object_name);
-        viewHolder.mObjectStatus = (TextView) view.findViewById(R.id.item_object_status);
+        viewHolder.mObjectItem = (CheckedTextView) view.findViewById(R.id.item_object);
 
         return view;
     }
@@ -103,36 +100,26 @@ public class ObjectCursorAdapter
         }
 
         ViewHolder viewHolder = (ViewHolder) view.getTag();
-        viewHolder.mObjectName.setText(getObjectName(cursor));
+        viewHolder.mObjectItem.setText(getObjectName(cursor));
 
         String status = cursor.getString(cursor.getColumnIndex(FoclConstants.FIELD_STATUS_BUILT));
 
-        Drawable background;
-
         switch (status) {
             case FoclConstants.FIELD_VALUE_PROJECT:
-                viewHolder.mObjectStatus.setText(mContext.getString(R.string.project));
             default:
-                background = mContext.getResources().getDrawable(R.drawable.border_status_red);
+                viewHolder.mObjectItem.setChecked(false);
+
                 break;
 
             case FoclConstants.FIELD_VALUE_BUILT:
-                viewHolder.mObjectStatus.setText(mContext.getString(R.string.built));
-                background = mContext.getResources().getDrawable(R.drawable.border_status_green);
+                viewHolder.mObjectItem.setChecked(true);
                 break;
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            viewHolder.mObjectStatus.setBackground(background);
-        } else {
-            viewHolder.mObjectStatus.setBackgroundDrawable(background);
         }
     }
 
 
     public static class ViewHolder
     {
-        public TextView mObjectName;
-        public TextView mObjectStatus;
+        public CheckedTextView mObjectItem;
     }
 }
