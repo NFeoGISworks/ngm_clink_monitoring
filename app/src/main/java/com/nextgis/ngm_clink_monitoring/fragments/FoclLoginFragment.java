@@ -24,10 +24,13 @@ package com.nextgis.ngm_clink_monitoring.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import com.nextgis.maplibui.NGWLoginFragment;
+import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 
 
@@ -52,6 +55,17 @@ public class FoclLoginFragment
     {
         View view = super.onCreateView(inflater, container, savedInstanceState);
         mURL.setText(FoclConstants.FOCL_DEFAULT_ACCOUNT_URL);
+
+        // button's theme applying
+        View viewStyle = inflater.inflate(R.layout.button_login_style, null, false);
+        Button buttonStyle = (Button) viewStyle.findViewById(R.id.btn_login_style);
+        ViewGroup.LayoutParams styleParams = buttonStyle.getLayoutParams();
+        mSignInButton.setLayoutParams(styleParams);
+        mSignInButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 22);
+        // 14sp == android:textAppearance="?android:attr/textAppearanceSmall"
+        // 18sp == android:textAppearance="?android:attr/textAppearanceMedium"
+        // 22sp == android:textAppearance="?android:attr/textAppearanceLarge"
+
         return view;
     }
 
