@@ -233,7 +233,7 @@ public class ObjectStatusFragment
             mMakePhotoButton.setOnClickListener(null);
             mPhotoGallery.setEnabled(false);
             mPhotoGallery.setAdapter(null);
-            mPhotoHintText.setVisibility(View.GONE);
+            setPhotoGalleryVisibility(false);
             return view;
         }
 
@@ -286,7 +286,7 @@ public class ObjectStatusFragment
 
             setStatusButtonView(found);
             mMakePhotoButton.setEnabled(found);
-            mPhotoHintText.setVisibility(found ? View.VISIBLE : View.GONE);
+            setPhotoGalleryVisibility(found);
 
         } else {
             mObjectName.setText(mObjectNameText);
@@ -398,7 +398,28 @@ public class ObjectStatusFragment
         mPhotoGallery.setAdapter(mObjectPhotoAdapter);
         mPhotoGallery.setHasFixedSize(true);
 
+        setPhotoGalleryVisibility(true);
+
         return view;
+    }
+
+
+    protected void setPhotoGalleryVisibility(boolean visible)
+    {
+        if (visible) {
+            if (mPhotoList.size() > 0) {
+                mPhotoHintText.setVisibility(View.GONE);
+                mPhotoGallery.setVisibility(View.VISIBLE);
+            } else {
+                if (mPhotoList.size() > 0) {
+                    mPhotoHintText.setVisibility(View.VISIBLE);
+                    mPhotoGallery.setVisibility(View.GONE);
+                }
+            }
+        } else {
+            mPhotoHintText.setVisibility(View.GONE);
+            mPhotoGallery.setVisibility(View.GONE);
+        }
     }
 
 
@@ -450,8 +471,7 @@ public class ObjectStatusFragment
             mPhotoList.add(mCurrentPhotoPath);
             mObjectPhotoAdapter.notifyDataSetChanged();
 
-            mPhotoHintText.setVisibility(View.GONE);
-            mPhotoGallery.setVisibility(View.VISIBLE);
+            setPhotoGalleryVisibility(true);
         }
     }
 
