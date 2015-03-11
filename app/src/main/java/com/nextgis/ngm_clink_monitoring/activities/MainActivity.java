@@ -167,6 +167,7 @@ public class MainActivity
             case VIEW_STATE_OBJECTS:
                 if (null == statusBarFragment) {
                     statusBarFragment = new StatusBarFragment();
+                    ft.replace(R.id.status_bar_fragment, statusBarFragment, "StatusBar");
                 }
 
                 ObjectTypesFragment objectTypesFragment =
@@ -174,10 +175,9 @@ public class MainActivity
 
                 if (null == objectTypesFragment) {
                     objectTypesFragment = new ObjectTypesFragment();
+                    ft.replace(R.id.object_fragment, objectTypesFragment, "ObjectTypes");
                 }
 
-                ft.replace(R.id.status_bar_fragment, statusBarFragment, "StatusBar");
-                ft.replace(R.id.object_fragment, objectTypesFragment, "ObjectTypes");
                 break;
         }
 

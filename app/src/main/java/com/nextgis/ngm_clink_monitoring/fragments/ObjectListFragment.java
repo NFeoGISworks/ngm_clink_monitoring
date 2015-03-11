@@ -97,6 +97,7 @@ public class ObjectListFragment
 
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.object_list_toolbar);
         toolbar.getBackground().setAlpha(255);
+        toolbar.setTitle(""); // needed for screen rotation
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
 
         activity.setSupportActionBar(toolbar);
@@ -209,6 +210,5 @@ public class ObjectListFragment
         ft.replace(R.id.object_fragment, objectStatusFragment, "ObjectStatus");
         ft.addToBackStack(null);
         ft.commit();
-        fm.executePendingTransactions();
     }
 }

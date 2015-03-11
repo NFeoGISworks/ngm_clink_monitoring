@@ -37,6 +37,7 @@ public class SettingsFragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
 
         String settings = getArguments().getString("settings");
 

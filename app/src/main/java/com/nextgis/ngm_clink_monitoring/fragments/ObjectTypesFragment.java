@@ -50,6 +50,14 @@ public class ObjectTypesFragment
 
 
     @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
+
+    @Override
     public View onCreateView(
             LayoutInflater inflater,
             ViewGroup container,
@@ -209,6 +217,5 @@ public class ObjectTypesFragment
         ft.replace(R.id.object_fragment, lineListFragment, "LineList");
         ft.addToBackStack(null);
         ft.commit();
-        fm.executePendingTransactions();
     }
 }

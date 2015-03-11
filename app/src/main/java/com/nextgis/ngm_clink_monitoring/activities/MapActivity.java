@@ -91,8 +91,6 @@ public class MapActivity
         } else {
             mMapFragment.onInit(mMap);
         }
-
-        getSupportFragmentManager().executePendingTransactions();
     }
 
 

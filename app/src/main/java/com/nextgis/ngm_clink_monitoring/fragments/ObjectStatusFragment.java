@@ -166,7 +166,7 @@ public class ObjectStatusFragment
 
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.object_status_toolbar);
         toolbar.getBackground().setAlpha(255);
-        toolbar.setTitle(activity.getString(R.string.set_status));
+        toolbar.setTitle(""); // needed for screen rotation
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
 
         activity.setSupportActionBar(toolbar);
