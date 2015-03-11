@@ -138,19 +138,20 @@ public class MainActivity
 
                 if (null == foclLoginFragment) {
                     foclLoginFragment = new FoclLoginFragment();
+                    foclLoginFragment.setOnAddAccountListener(app);
+                    ft.replace(R.id.object_fragment, foclLoginFragment, "FoclLogin");
                 }
-
-                foclLoginFragment.setOnAddAccountListener(app);
 
                 if (null != statusBarFragment) {
                     ft.hide(statusBarFragment);
                 }
-                ft.replace(R.id.object_fragment, foclLoginFragment, "FoclLogin");
+
                 break;
 
             case VIEW_STATE_1ST_SYNC:
                 if (null == statusBarFragment) {
                     statusBarFragment = new StatusBarFragment();
+                    ft.replace(R.id.status_bar_fragment, statusBarFragment, "StatusBar");
                 }
 
                 PerformSyncFragment performSyncFragment =
@@ -158,10 +159,9 @@ public class MainActivity
 
                 if (null == performSyncFragment) {
                     performSyncFragment = new PerformSyncFragment();
+                    ft.replace(R.id.object_fragment, performSyncFragment, "PerformSync");
                 }
 
-                ft.replace(R.id.status_bar_fragment, statusBarFragment, "StatusBar");
-                ft.replace(R.id.object_fragment, performSyncFragment, "PerformSync");
                 break;
 
             case VIEW_STATE_OBJECTS:
