@@ -24,12 +24,12 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:state_checked="true"
-          android:drawable="@drawable/ic_checked_50"/>
+          android:drawable="@drawable/ic_checked_green"/>
 
     <item android:state_checked="false"
-          android:drawable="@drawable/ic_unchecked_50"/>
+          android:drawable="@drawable/ic_unchecked_sunken"/>
 
     <item
-        android:drawable="@drawable/ic_unchecked_50"/>
+        android:drawable="@drawable/ic_unchecked_sunken"/>
 
 </selector>
