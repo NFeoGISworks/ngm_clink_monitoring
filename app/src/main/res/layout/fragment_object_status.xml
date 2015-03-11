@@ -113,7 +113,7 @@
                     android:paddingBottom="5dp"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
-                    android:drawableRight="@drawable/btn_check_buttonless_off"
+                    android:drawableRight="@drawable/ic_unchecked_50"
                     android:drawablePadding="8dp"
                     android:text="@string/completed"
                     android:textAppearance="?android:attr/textAppearanceMedium"
