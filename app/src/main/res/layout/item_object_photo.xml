@@ -40,7 +40,7 @@
         android:paddingBottom="2dp"
         android:paddingLeft="2dp"
         android:paddingRight="2dp"
+        android:background="@drawable/gallery_item_background"
         />
-    <!--android:background="@drawable/gallery_item_background"-->
 
 </RelativeLayout>
