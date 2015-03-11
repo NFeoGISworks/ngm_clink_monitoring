@@ -57,64 +57,38 @@
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_marginTop="10dp"
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 >
 
-                <LinearLayout
-                    android:layout_height="wrap_content"
-                    android:layout_width="0dip"
-                    android:layout_weight=".5"
-                    android:layout_marginRight="7dp"
-                    android:orientation="vertical"
-                    >
+                <Button
+                    android:id="@+id/btn_cable_laying"
+                    android:text="@string/cable_laying"
+                    style="@style/startButton"
+                    />
 
-                    <Button
-                        android:id="@+id/btn_cable_laying"
-                        android:text="@string/cable_laying"
-                        style="@style/startButton"
-                        />
+                <Button
+                    android:id="@+id/btn_fosc_mounting"
+                    android:text="@string/fosc_mounting"
+                    style="@style/startButtonMiddle"
+                    />
 
-                    <Button
-                        android:id="@+id/btn_cross_mounting"
-                        android:text="@string/cross_mounting"
-                        style="@style/startButtonMiddle"
-                        />
+                <Button
+                    android:id="@+id/btn_cross_mounting"
+                    android:text="@string/cross_mounting"
+                    style="@style/startButtonMiddle"
+                    />
 
-                    <Button
-                        android:id="@+id/btn_pole_mounting"
-                        android:text="@string/pole_mounting"
-                        style="@style/startButtonMiddle"
-                        />
+                <Button
+                    android:id="@+id/btn_access_point_mounting"
+                    android:text="@string/access_point_mounting"
+                    style="@style/startButtonMiddle"
+                    />
 
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_height="wrap_content"
-                    android:layout_width="0dip"
-                    android:layout_weight=".5"
-                    android:layout_marginLeft="7dp"
-                    android:orientation="vertical"
-                    >
-
-                    <Button
-                        android:id="@+id/btn_fosc_mounting"
-                        android:text="@string/fosc_mounting"
-                        style="@style/startButton"
-                        />
-
-                    <Button
-                        android:id="@+id/btn_cabinet_mounting"
-                        android:text="@string/cabinet_mounting"
-                        style="@style/startButtonMiddle"
-                        />
-
-                    <Button
-                        android:id="@+id/btn_line_measuring"
-                        android:text="@string/line_measuring"
-                        style="@style/startButtonMiddle"
-                        />
-
-                </LinearLayout>
+                <Button
+                    android:id="@+id/btn_line_measuring"
+                    android:text="@string/line_measuring"
+                    style="@style/startButtonMiddle"
+                    />
 
             </LinearLayout>
 

@@ -62,17 +62,17 @@
     <string name="cable_laying">Cable laying</string>
     <string name="fosc_mounting">FOSC mounting</string>
     <string name="cross_mounting">Cross mounting</string>
+    <string name="access_point_mounting">Access point mounting</string>
     <string name="cabinet_mounting">Cabinet mounting</string>
     <string name="pole_mounting">Pole mounting</string>
     <string name="line_measuring">Line measuring</string>
 
-    <string name="communication_lines">Communication lines:</string>
+    <string name="select_line_colon">Select line:</string>
     <string name="communication_line">Communication line:</string>
-    <string name="work_status">Work status:</string>
 
-    <string name="optical_cables">Optical cables:</string>
-    <string name="foscs">FOSC:</string>
-    <string name="crosses">Crosses:</string>
+    <string name="select_optical_cables_colon">Select optical cables:</string>
+    <string name="select_fosc_colon">Select FOSC:</string>
+    <string name="select_cross_colon">Select cross:</string>
     <string name="telecom_cabinets">Telecom. cabinets:</string>
     <string name="poles">Poles:</string>
 
@@ -81,6 +81,8 @@
     <string name="cross">Cross:</string>
     <string name="telecom_cabinet">Telecom. cabinet:</string>
     <string name="pole">Pole:</string>
+
+    <string name="specify_work_status">Specify work status:</string>
 
     <string name="take_photos_to_confirm">Take photos to confirm of the executed works.</string>
     <string name="take_photos_to_confirm_fosc">Take photos of FOSC on a pole to confirm of the executed works.</string>

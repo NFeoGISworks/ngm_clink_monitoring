@@ -70,11 +70,11 @@ public class ObjectTypesFragment
         final Button btnCableLaying = (Button) view.findViewById(R.id.btn_cable_laying);
         final Button btnFoscMounting = (Button) view.findViewById(R.id.btn_fosc_mounting);
         final Button btnCrossMounting = (Button) view.findViewById(R.id.btn_cross_mounting);
-        final Button btnCabinetMounting = (Button) view.findViewById(R.id.btn_cabinet_mounting);
-        final Button btnPoleMounting = (Button) view.findViewById(R.id.btn_pole_mounting);
+        final Button btnAccessPointMounting =
+                (Button) view.findViewById(R.id.btn_access_point_mounting);
         final Button btnLineMeasuring = (Button) view.findViewById(R.id.btn_line_measuring);
 
-        // Set button height to 1/3 of button's display part.
+        // Set button height to 1/n of button's display part.
         // Set a global layout listener which will be called
         // when the layout pass is completed and the view is drawn
         buttonsLayout.getViewTreeObserver().addOnGlobalLayoutListener(
@@ -105,14 +105,13 @@ public class ObjectTypesFragment
 
                         int buttonMaxH =
                                 (rootViewBottom - ViewUtil.getViewBottomMargin(scrollView) -
-                                 buttonsTop - 2 * ViewUtil.getViewTopMargin(btnCrossMounting)) / 3;
+                                 buttonsTop - 4 * ViewUtil.getViewTopMargin(btnCrossMounting)) / 5;
 
                         if (buttonMaxH > buttonMinH) {
                             ViewUtil.setViewHeight(btnCableLaying, buttonMaxH);
                             ViewUtil.setViewHeight(btnFoscMounting, buttonMaxH);
                             ViewUtil.setViewHeight(btnCrossMounting, buttonMaxH);
-                            ViewUtil.setViewHeight(btnCabinetMounting, buttonMaxH);
-                            ViewUtil.setViewHeight(btnPoleMounting, buttonMaxH);
+                            ViewUtil.setViewHeight(btnAccessPointMounting, buttonMaxH);
                             ViewUtil.setViewHeight(btnLineMeasuring, buttonMaxH);
                         }
                     }
@@ -126,8 +125,7 @@ public class ObjectTypesFragment
             btnCableLaying.setEnabled(false);
             btnFoscMounting.setEnabled(false);
             btnCrossMounting.setEnabled(false);
-            btnCabinetMounting.setEnabled(false);
-            btnPoleMounting.setEnabled(false);
+            btnAccessPointMounting.setEnabled(false);
             btnLineMeasuring.setEnabled(false);
             return view;
         }
@@ -162,7 +160,9 @@ public class ObjectTypesFragment
                     }
                 });
 
-        btnCabinetMounting.setOnClickListener(
+// TODO:
+/*
+        btnAccessPointMounting.setOnClickListener(
                 new View.OnClickListener()
                 {
                     @Override
@@ -171,16 +171,7 @@ public class ObjectTypesFragment
                         onButtonClick(FoclConstants.LAYERTYPE_FOCL_TELECOM_CABINET);
                     }
                 });
-
-        btnPoleMounting.setOnClickListener(
-                new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View v)
-                    {
-                        onButtonClick(FoclConstants.LAYERTYPE_FOCL_POLE);
-                    }
-                });
+*/
 
         btnLineMeasuring.setOnClickListener(
                 new View.OnClickListener()

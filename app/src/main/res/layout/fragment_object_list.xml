@@ -53,14 +53,6 @@
         >
 
         <TextView
-            android:id="@+id/work_type_name_ls"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:gravity="center"
-            />
-
-        <TextView
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:layout_marginTop="5dp"
@@ -70,7 +62,7 @@
 
         <TextView
             android:id="@+id/line_name_ls"
-            android:text="@string/optical_cables"
+            android:text="@string/select_optical_cables_colon"
             style="@style/selectedObjectStyle"
             />
 
@@ -79,8 +71,9 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:layout_marginTop="10dp"
-            android:text="@string/optical_cables"
-            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/select_optical_cables_colon"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:gravity="center"
             />
 
         <ListView

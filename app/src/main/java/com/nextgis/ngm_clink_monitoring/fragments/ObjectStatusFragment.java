@@ -70,7 +70,6 @@ public class ObjectStatusFragment
 {
     protected static final int REQUEST_TAKE_PHOTO = 1;
 
-    protected TextView     mWorkTypeName;
     protected TextView     mLineName;
     protected TextView     mObjectNameCaption;
     protected TextView     mObjectName;
@@ -167,14 +166,11 @@ public class ObjectStatusFragment
 
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.object_status_toolbar);
         toolbar.getBackground().setAlpha(255);
-        toolbar.setTitle(
-                activity.getString(R.string.backward) + "  -  " + activity.getString(
-                        R.string.set_status));
+        toolbar.setTitle(activity.getString(R.string.set_status));
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
 
         activity.setSupportActionBar(toolbar);
 
-        mWorkTypeName = (TextView) view.findViewById(R.id.work_type_name_st);
         mLineName = (TextView) view.findViewById(R.id.line_name_st);
         mObjectNameCaption = (TextView) view.findViewById(R.id.object_name_caption_st);
         mObjectName = (TextView) view.findViewById(R.id.object_name);
@@ -185,38 +181,32 @@ public class ObjectStatusFragment
 
         switch (mFoclStructLayerType) {
             case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CABLE:
-                mWorkTypeName.setText(R.string.cable_laying);
+                toolbar.setTitle(activity.getString(R.string.cable_laying));
                 mObjectNameCaption.setText(R.string.optical_cable);
-                mPhotoHintText.setText(R.string.take_photos_to_confirm);
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_FOSC:
-                mWorkTypeName.setText(R.string.fosc_mounting);
+                toolbar.setTitle(activity.getString(R.string.fosc_mounting));
                 mObjectNameCaption.setText(R.string.fosc);
-                mPhotoHintText.setText(R.string.take_photos_to_confirm_fosc);
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CROSS:
-                mWorkTypeName.setText(R.string.cross_mounting);
+                toolbar.setTitle(activity.getString(R.string.cross_mounting));
                 mObjectNameCaption.setText(R.string.cross);
-                mPhotoHintText.setText(R.string.take_photos_to_confirm);
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_TELECOM_CABINET:
-                mWorkTypeName.setText(R.string.cabinet_mounting);
+                toolbar.setTitle(activity.getString(R.string.cabinet_mounting));
                 mObjectNameCaption.setText(R.string.telecom_cabinet);
-                mPhotoHintText.setText(R.string.take_photos_to_confirm);
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_POLE:
-                mWorkTypeName.setText(R.string.pole_mounting);
+                toolbar.setTitle(activity.getString(R.string.pole_mounting));
                 mObjectNameCaption.setText(R.string.pole);
-                mPhotoHintText.setText(R.string.take_photos_to_confirm);
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_ENDPOINT:
-                mWorkTypeName.setText(R.string.line_measuring);
-                mPhotoHintText.setText(R.string.take_photos_to_confirm);
+                toolbar.setTitle(activity.getString(R.string.line_measuring));
                 break;
         }
 
@@ -230,6 +220,7 @@ public class ObjectStatusFragment
         }
 
         mCompleteStatusButton.setText(activity.getString(R.string.completed));
+        mPhotoHintText.setText(R.string.take_photos_to_confirm);
 
         GISApplication app = (GISApplication) getActivity().getApplication();
         final FoclProject foclProject = app.getFoclProject();

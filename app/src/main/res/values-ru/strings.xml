@@ -62,17 +62,17 @@
     <string name="cable_laying">Прокладка кабеля</string>
     <string name="fosc_mounting">Разварка муфты</string>
     <string name="cross_mounting">Разварка кросса</string>
+    <string name="access_point_mounting">Монтаж точки доступа</string>
     <string name="cabinet_mounting">Монтаж шкафа</string>
     <string name="pole_mounting">Установка опоры</string>
     <string name="line_measuring">Измерения линии</string>
 
-    <string name="communication_lines">Линии связи:</string>
+    <string name="select_line_colon">Выберите линию:</string>
     <string name="communication_line">Линия связи:</string>
-    <string name="work_status">Статус работ:</string>
 
-    <string name="optical_cables">Строительные длины:</string>
-    <string name="foscs">Муфты:</string>
-    <string name="crosses">Кроссы:</string>
+    <string name="select_optical_cables_colon">Выберите строительную длину:</string>
+    <string name="select_fosc_colon">Выберите муфту:</string>
+    <string name="select_cross_colon">Выберите кросс:</string>
     <string name="telecom_cabinets">Телеком. шкафы:</string>
     <string name="poles">Столбы/оконеч. опоры:</string>
 
@@ -82,7 +82,9 @@
     <string name="telecom_cabinet">Телеком. шкаф:</string>
     <string name="pole">Столб/оконеч. опора:</string>
 
-    <string name="take_photos_to_confirm">Сделайте фотографии для подтверждения выполненных работ.</string>
+    <string name="specify_work_status">Укажите статус работ:</string>
+
+    <string name="take_photos_to_confirm">Сделайте фотографии, подтверждающие выполнение работ.</string>
     <string name="take_photos_to_confirm_fosc">Для подтверждения выполненных работ сфотографируйте муфту, подвешенную на опоре.</string>
 
     <string name="make_photo">Сделать фото</string>

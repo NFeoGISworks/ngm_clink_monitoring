@@ -51,7 +51,6 @@ import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
 public class ObjectListFragment
         extends Fragment
 {
-    protected TextView mWorkTypeName;
     protected TextView mLineName;
     protected TextView mObjectListCaption;
     protected ListView mObjectList;
@@ -98,41 +97,37 @@ public class ObjectListFragment
 
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.object_list_toolbar);
         toolbar.getBackground().setAlpha(255);
-        toolbar.setTitle(
-                activity.getString(R.string.backward) + "  -  " + activity.getString(
-                        R.string.select_object));
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
 
         activity.setSupportActionBar(toolbar);
 
-        mWorkTypeName = (TextView) view.findViewById(R.id.work_type_name_ls);
         mLineName = (TextView) view.findViewById(R.id.line_name_ls);
         mObjectListCaption = (TextView) view.findViewById(R.id.object_list_caption_ls);
         mObjectList = (ListView) view.findViewById(R.id.object_list_ls);
 
         switch (mFoclStructLayerType) {
             case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CABLE:
-                mWorkTypeName.setText(R.string.cable_laying);
-                mObjectListCaption.setText(R.string.optical_cables);
+                toolbar.setTitle(activity.getString(R.string.cable_laying));
+                mObjectListCaption.setText(R.string.select_optical_cables_colon);
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_FOSC:
-                mWorkTypeName.setText(R.string.fosc_mounting);
-                mObjectListCaption.setText(R.string.foscs);
+                toolbar.setTitle(activity.getString(R.string.fosc_mounting));
+                mObjectListCaption.setText(R.string.select_fosc_colon);
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CROSS:
-                mWorkTypeName.setText(R.string.cross_mounting);
-                mObjectListCaption.setText(R.string.crosses);
+                toolbar.setTitle(activity.getString(R.string.cross_mounting));
+                mObjectListCaption.setText(R.string.select_cross_colon);
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_TELECOM_CABINET:
-                mWorkTypeName.setText(R.string.cabinet_mounting);
+                toolbar.setTitle(activity.getString(R.string.cabinet_mounting));
                 mObjectListCaption.setText(R.string.telecom_cabinets);
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_POLE:
-                mWorkTypeName.setText(R.string.pole_mounting);
+                toolbar.setTitle(activity.getString(R.string.pole_mounting));
                 mObjectListCaption.setText(R.string.poles);
                 break;
         }

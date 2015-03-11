@@ -33,7 +33,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.adapters.LineNameAdapter;
@@ -45,7 +44,6 @@ import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 public class LineListFragment
         extends Fragment
 {
-    protected TextView mWorkTypeName;
     protected ListView mLineNameList;
 
     protected Integer mFoclStructLayerType = FoclConstants.LAYERTYPE_FOCL_UNKNOWN;
@@ -85,39 +83,35 @@ public class LineListFragment
 
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.line_list_toolbar);
         toolbar.getBackground().setAlpha(255);
-        toolbar.setTitle(
-                activity.getString(R.string.backward) + "  -  " + activity.getString(
-                        R.string.select_line));
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
 
         activity.setSupportActionBar(toolbar);
 
-        mWorkTypeName = (TextView) view.findViewById(R.id.work_type_name_ln);
         mLineNameList = (ListView) view.findViewById(R.id.line_list_ln);
 
         switch (mFoclStructLayerType) {
             case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CABLE:
-                mWorkTypeName.setText(R.string.cable_laying);
+                toolbar.setTitle(activity.getString(R.string.cable_laying));
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_FOSC:
-                mWorkTypeName.setText(R.string.fosc_mounting);
+                toolbar.setTitle(activity.getString(R.string.fosc_mounting));
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CROSS:
-                mWorkTypeName.setText(R.string.cross_mounting);
+                toolbar.setTitle(activity.getString(R.string.cross_mounting));
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_TELECOM_CABINET:
-                mWorkTypeName.setText(R.string.cabinet_mounting);
+                toolbar.setTitle(activity.getString(R.string.cabinet_mounting));
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_POLE:
-                mWorkTypeName.setText(R.string.pole_mounting);
+                toolbar.setTitle(activity.getString(R.string.pole_mounting));
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_ENDPOINT:
-                mWorkTypeName.setText(R.string.line_measuring);
+                toolbar.setTitle(activity.getString(R.string.line_measuring));
                 break;
         }
 

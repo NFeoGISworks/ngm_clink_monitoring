@@ -53,19 +53,11 @@
         >
 
         <TextView
-            android:id="@+id/work_type_name_ln"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
+            android:text="@string/select_line_colon"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:gravity="center"
-            />
-
-        <TextView
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:layout_marginTop="5dp"
-            android:text="@string/communication_lines"
-            android:textAppearance="?android:attr/textAppearanceSmall"
             />
 
         <ListView
