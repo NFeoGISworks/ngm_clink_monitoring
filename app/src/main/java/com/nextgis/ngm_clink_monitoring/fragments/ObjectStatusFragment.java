@@ -233,6 +233,7 @@ public class ObjectStatusFragment
             mMakePhotoButton.setOnClickListener(null);
             mPhotoGallery.setEnabled(false);
             mPhotoGallery.setAdapter(null);
+            mPhotoHintText.setVisibility(View.GONE);
             return view;
         }
 
@@ -285,6 +286,7 @@ public class ObjectStatusFragment
 
             setStatusButtonView(found);
             mMakePhotoButton.setEnabled(found);
+            mPhotoHintText.setVisibility(found ? View.VISIBLE : View.GONE);
 
         } else {
             mObjectName.setText(mObjectNameText);
@@ -447,6 +449,9 @@ public class ObjectStatusFragment
 
             mPhotoList.add(mCurrentPhotoPath);
             mObjectPhotoAdapter.notifyDataSetChanged();
+
+            mPhotoHintText.setVisibility(View.GONE);
+            mPhotoGallery.setVisibility(View.VISIBLE);
         }
     }
 

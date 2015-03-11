@@ -120,21 +120,6 @@
                     android:gravity="center_vertical|start"
                     />
 
-                <TextView
-                    android:id="@+id/photo_hint_text"
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:layout_marginTop="15dp"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:background="@drawable/photo_hint_background"
-                    android:text="@string/take_photos_to_confirm"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textColor="@color/photo_hint_text_color"
-                    />
-
                 <Button
                     android:id="@+id/btn_make_photo"
                     android:layout_height="42dp"
@@ -152,12 +137,29 @@
                     android:gravity="center_vertical|start"
                     />
 
+                <TextView
+                    android:id="@+id/photo_hint_text"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="15dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:background="@drawable/photo_hint_background"
+                    android:text="@string/take_photos_to_confirm"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/photo_hint_text_color"
+                    android:visibility="visible"
+                    />
+
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/photo_gallery"
                     android:layout_height="104dp"
                     android:layout_width="match_parent"
                     android:layout_marginTop="15dp"
                     android:scrollbars="horizontal"
+                    android:visibility="gone"
                     />
 
             </LinearLayout>
