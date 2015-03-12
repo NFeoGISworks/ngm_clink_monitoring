@@ -64,6 +64,14 @@
 
     </style>
 
+    <style name="statusButton"
+           parent="@style/buttonStyle">
+
+        <item name="android:background">@drawable/btn_status</item>
+        <item name="android:textColor">@color/button_status_text_color</item>
+
+    </style>
+
     <style name="startButton"
            parent="@style/buttonStyle">
 

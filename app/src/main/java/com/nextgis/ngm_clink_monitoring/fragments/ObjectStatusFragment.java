@@ -433,19 +433,19 @@ public class ObjectStatusFragment
                 case FoclConstants.FIELD_VALUE_UNKNOWN:
                 default:
                     mCompleteStatusButton.setCompoundDrawablesWithIntrinsicBounds(
-                            0, 0, R.drawable.ic_unchecked_50, 0);
+                            0, 0, R.drawable.ic_unchecked_500, 0);
                     break;
 
                 case FoclConstants.FIELD_VALUE_BUILT:
                 case FoclConstants.FIELD_VALUE_MEASURE:
                     mCompleteStatusButton.setCompoundDrawablesWithIntrinsicBounds(
-                            0, 0, R.drawable.ic_checked_50, 0);
+                            0, 0, R.drawable.ic_checked_500, 0);
                     break;
             }
 
         } else {
             mCompleteStatusButton.setCompoundDrawablesWithIntrinsicBounds(
-                    0, 0, R.drawable.ic_unchecked_50, 0);
+                    0, 0, R.drawable.ic_unchecked_500, 0);
         }
 
         mCompleteStatusButton.setEnabled(enabled);
