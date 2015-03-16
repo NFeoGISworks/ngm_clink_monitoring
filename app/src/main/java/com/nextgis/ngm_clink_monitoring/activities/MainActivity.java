@@ -46,6 +46,7 @@ import com.nextgis.ngm_clink_monitoring.fragments.ObjectTypesFragment;
 import com.nextgis.ngm_clink_monitoring.fragments.PerformSyncFragment;
 import com.nextgis.ngm_clink_monitoring.fragments.StatusBarFragment;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
+import com.nextgis.ngm_clink_monitoring.util.LocationUtil;
 
 import java.io.File;
 
@@ -211,6 +212,10 @@ public class MainActivity
     protected void onResume()
     {
         super.onResume();
+
+        if (!LocationUtil.isLocationEnabled(this)) {
+            LocationUtil.showSettingsLocationAlert(this);
+        }
 
         GISApplication app = (GISApplication) getApplication();
 

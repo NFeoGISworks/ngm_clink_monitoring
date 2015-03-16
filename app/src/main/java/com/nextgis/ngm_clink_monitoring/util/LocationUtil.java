@@ -22,9 +22,16 @@
 
 package com.nextgis.ngm_clink_monitoring.util;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.location.Location;
 import android.media.ExifInterface;
+import android.os.Build;
+import android.provider.Settings;
+import android.text.TextUtils;
 import com.nextgis.ngm_clink_monitoring.R;
 
 import java.io.File;
@@ -153,5 +160,54 @@ public class LocationUtil
         exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, lon > 0 ? "E" : "W");
 
         exif.saveAttributes();
+    }
+
+
+    public static boolean isLocationEnabled(Context context)
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            int locationMode;
+
+            try {
+                locationMode = Settings.Secure.getInt(
+                        context.getContentResolver(), Settings.Secure.LOCATION_MODE);
+
+            } catch (Settings.SettingNotFoundException e) {
+                return false;
+            }
+
+            return locationMode != Settings.Secure.LOCATION_MODE_OFF;
+
+        } else {
+            String locationProviders = Settings.Secure.getString(
+                    context.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+
+            return !TextUtils.isEmpty(locationProviders);
+        }
+    }
+
+
+    public static void showSettingsLocationAlert(final Context context)
+    {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+
+        alertDialog.setIcon(R.drawable.ic_action_warning)
+                .setTitle(context.getResources().getString(R.string.location_off))
+                .setMessage(context.getResources().getString(R.string.location_off_message))
+                .setPositiveButton(
+                        context.getResources().getString(R.string.ok),
+
+                        new DialogInterface.OnClickListener()
+                        {
+                            public void onClick(
+                                    DialogInterface dialog,
+                                    int which)
+                            {
+                                Intent intent = new Intent(
+                                        Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                context.startActivity(intent);
+                            }
+                        })
+                .show();
     }
 }

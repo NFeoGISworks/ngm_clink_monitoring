@@ -46,6 +46,8 @@
     <string name="show_zoom_controls">Show zoom controls</string>
     <string name="show_zoom_controls_summary">Show zoom in and zoom out control on map</string>
 
+    <string name="location_off">Location is turned off</string>
+    <string name="location_off_message">Please enable location in the system settings.</string>
     <string name="no_account">NO account</string>
     <string name="perform_sync">Initial synchronization is performed, please wait.</string>
 
