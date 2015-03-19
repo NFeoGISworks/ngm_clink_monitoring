@@ -65,24 +65,20 @@
     <string name="fosc_mounting">FOSC mounting</string>
     <string name="cross_mounting">Cross mounting</string>
     <string name="access_point_mounting">Access point mounting</string>
-    <string name="cabinet_mounting">Cabinet mounting</string>
-    <string name="pole_mounting">Pole mounting</string>
     <string name="line_measuring">Line measuring</string>
 
     <string name="select_line_colon">Select line:</string>
-    <string name="communication_line">Communication line:</string>
+    <string name="communication_line_colon">Communication line:</string>
 
     <string name="select_optical_cables_colon">Select optical cables:</string>
     <string name="select_fosc_colon">Select FOSC:</string>
     <string name="select_cross_colon">Select cross:</string>
-    <string name="telecom_cabinets">Telecom. cabinets:</string>
-    <string name="poles">Poles:</string>
+    <string name="select_access_points_colon">Select access point:</string>
 
-    <string name="optical_cable">Optical cable:</string>
-    <string name="fosc">FOSC:</string>
-    <string name="cross">Cross:</string>
-    <string name="telecom_cabinet">Telecom. cabinet:</string>
-    <string name="pole">Pole:</string>
+    <string name="optical_cable_colon">Optical cable:</string>
+    <string name="fosc_colon">FOSC:</string>
+    <string name="cross_colon">Cross:</string>
+    <string name="access_point_colon">Access point:</string>
 
     <string name="specify_work_status">Specify work status:</string>
 

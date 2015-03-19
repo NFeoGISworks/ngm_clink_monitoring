@@ -122,14 +122,9 @@ public class ObjectListFragment
                 mObjectListCaption.setText(R.string.select_cross_colon);
                 break;
 
-            case FoclConstants.LAYERTYPE_FOCL_TELECOM_CABINET:
-                toolbar.setTitle(activity.getString(R.string.cabinet_mounting));
-                mObjectListCaption.setText(R.string.telecom_cabinets);
-                break;
-
-            case FoclConstants.LAYERTYPE_FOCL_POLE:
-                toolbar.setTitle(activity.getString(R.string.pole_mounting));
-                mObjectListCaption.setText(R.string.poles);
+            case FoclConstants.LAYERTYPE_FOCL_ACCESS_POINT:
+                toolbar.setTitle(activity.getString(R.string.access_point_mounting));
+                mObjectListCaption.setText(R.string.select_access_points_colon);
                 break;
         }
 

@@ -73,7 +73,7 @@ public class ObjectStatusFragment
     protected TextView     mLineName;
     protected TextView     mObjectNameCaption;
     protected TextView     mObjectName;
-    protected Button mCompleteStatusButton;
+    protected Button       mCompleteStatusButton;
     protected TextView     mPhotoHintText;
     protected Button       mMakePhotoButton;
     protected RecyclerView mPhotoGallery;
@@ -182,27 +182,22 @@ public class ObjectStatusFragment
         switch (mFoclStructLayerType) {
             case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CABLE:
                 toolbar.setTitle(activity.getString(R.string.cable_laying));
-                mObjectNameCaption.setText(R.string.optical_cable);
+                mObjectNameCaption.setText(R.string.optical_cable_colon);
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_FOSC:
                 toolbar.setTitle(activity.getString(R.string.fosc_mounting));
-                mObjectNameCaption.setText(R.string.fosc);
+                mObjectNameCaption.setText(R.string.fosc_colon);
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CROSS:
                 toolbar.setTitle(activity.getString(R.string.cross_mounting));
-                mObjectNameCaption.setText(R.string.cross);
+                mObjectNameCaption.setText(R.string.cross_colon);
                 break;
 
-            case FoclConstants.LAYERTYPE_FOCL_TELECOM_CABINET:
-                toolbar.setTitle(activity.getString(R.string.cabinet_mounting));
-                mObjectNameCaption.setText(R.string.telecom_cabinet);
-                break;
-
-            case FoclConstants.LAYERTYPE_FOCL_POLE:
-                toolbar.setTitle(activity.getString(R.string.pole_mounting));
-                mObjectNameCaption.setText(R.string.pole);
+            case FoclConstants.LAYERTYPE_FOCL_ACCESS_POINT:
+                toolbar.setTitle(activity.getString(R.string.access_point_mounting));
+                mObjectNameCaption.setText(R.string.access_point_colon);
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_ENDPOINT:
@@ -494,12 +489,8 @@ public class ObjectStatusFragment
                 prefix = "Cross_Mounting_";
                 break;
 
-            case FoclConstants.LAYERTYPE_FOCL_TELECOM_CABINET:
-                prefix = "Telecom_Cabinet_Mounting_";
-                break;
-
-            case FoclConstants.LAYERTYPE_FOCL_POLE:
-                prefix = "Pole_Mounting_";
+            case FoclConstants.LAYERTYPE_FOCL_ACCESS_POINT:
+                prefix = "Access_Point_Mounting_";
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_ENDPOINT:

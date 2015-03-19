@@ -168,18 +168,15 @@ public class ObjectTypesFragment
                     }
                 });
 
-// TODO:
-/*
         btnAccessPointMounting.setOnClickListener(
                 new View.OnClickListener()
                 {
                     @Override
                     public void onClick(View v)
                     {
-                        onButtonClick(FoclConstants.LAYERTYPE_FOCL_TELECOM_CABINET);
+                        onButtonClick(FoclConstants.LAYERTYPE_FOCL_ACCESS_POINT);
                     }
                 });
-*/
 
         btnLineMeasuring.setOnClickListener(
                 new View.OnClickListener()

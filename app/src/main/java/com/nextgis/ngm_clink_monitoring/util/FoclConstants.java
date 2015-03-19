@@ -28,13 +28,12 @@ public interface FoclConstants
     public static final int LAYERTYPE_FOCL_STRUCT  = 1002;
     public static final int LAYERTYPE_FOCL_PROJECT = 1003;
 
-    public static final int LAYERTYPE_FOCL_UNKNOWN         = 1100;
-    public static final int LAYERTYPE_FOCL_OPTICAL_CABLE   = 1101;
-    public static final int LAYERTYPE_FOCL_FOSC            = 1102;
-    public static final int LAYERTYPE_FOCL_OPTICAL_CROSS   = 1103;
-    public static final int LAYERTYPE_FOCL_TELECOM_CABINET = 1104;
-    public static final int LAYERTYPE_FOCL_POLE            = 1105;
-    public static final int LAYERTYPE_FOCL_ENDPOINT        = 1106;
+    public static final int LAYERTYPE_FOCL_UNKNOWN       = 1100;
+    public static final int LAYERTYPE_FOCL_OPTICAL_CABLE = 1101;
+    public static final int LAYERTYPE_FOCL_FOSC          = 1102;
+    public static final int LAYERTYPE_FOCL_OPTICAL_CROSS = 1103;
+    public static final int LAYERTYPE_FOCL_ACCESS_POINT  = 1104;
+    public static final int LAYERTYPE_FOCL_ENDPOINT      = 1105;
 
     public static final String FIELD_NAME              = "name";
     public static final String FIELD_TYPE_ENDPOINT     = "type_endpoint";
@@ -52,7 +51,7 @@ public interface FoclConstants
 
     public static final String FOCL_PROJECT             = "FOCL_project";
     public static final String FOCL_ACCOUNT_NAME        = "Compulink Monitoring Account";
-    public static final String FOCL_DEFAULT_ACCOUNT_URL = "http://176.9.38.120/cl";
+    public static final String FOCL_DEFAULT_ACCOUNT_URL = "http://176.9.38.120/cl2";
 
     public static final long DEFAULT_SYNC_PERIOD_SEC_LONG = 300;
 }

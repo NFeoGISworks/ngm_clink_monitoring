@@ -103,12 +103,8 @@ public class LineListFragment
                 toolbar.setTitle(activity.getString(R.string.cross_mounting));
                 break;
 
-            case FoclConstants.LAYERTYPE_FOCL_TELECOM_CABINET:
-                toolbar.setTitle(activity.getString(R.string.cabinet_mounting));
-                break;
-
-            case FoclConstants.LAYERTYPE_FOCL_POLE:
-                toolbar.setTitle(activity.getString(R.string.pole_mounting));
+            case FoclConstants.LAYERTYPE_FOCL_ACCESS_POINT:
+                toolbar.setTitle(activity.getString(R.string.access_point_mounting));
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_ENDPOINT:

@@ -65,24 +65,20 @@
     <string name="fosc_mounting">Разварка муфты</string>
     <string name="cross_mounting">Разварка кросса</string>
     <string name="access_point_mounting">Монтаж точки доступа</string>
-    <string name="cabinet_mounting">Монтаж шкафа</string>
-    <string name="pole_mounting">Установка опоры</string>
     <string name="line_measuring">Измерения линии</string>
 
     <string name="select_line_colon">Выберите линию:</string>
-    <string name="communication_line">Линия связи:</string>
+    <string name="communication_line_colon">Линия связи:</string>
 
     <string name="select_optical_cables_colon">Выберите строительную длину:</string>
     <string name="select_fosc_colon">Выберите муфту:</string>
     <string name="select_cross_colon">Выберите кросс:</string>
-    <string name="telecom_cabinets">Телеком. шкафы:</string>
-    <string name="poles">Столбы/оконеч. опоры:</string>
+    <string name="select_access_points_colon">Выберите точку доступа:</string>
 
-    <string name="optical_cable">Строительная длина:</string>
-    <string name="fosc">Муфта:</string>
-    <string name="cross">Кросс:</string>
-    <string name="telecom_cabinet">Телеком. шкаф:</string>
-    <string name="pole">Столб/оконеч. опора:</string>
+    <string name="optical_cable_colon">Строительная длина:</string>
+    <string name="fosc_colon">Муфта:</string>
+    <string name="cross_colon">Кросс:</string>
+    <string name="access_point_colon">Точка доступа:</string>
 
     <string name="specify_work_status">Укажите статус работ:</string>
 

@@ -57,14 +57,11 @@ public class FoclVectorLayer
         if (type.equals("optical_cross")) {
             return FoclConstants.LAYERTYPE_FOCL_OPTICAL_CROSS;
         }
-        if (type.equals("pole")) {
-            return FoclConstants.LAYERTYPE_FOCL_POLE;
-        }
         if (type.equals("optical_cable")) {
             return FoclConstants.LAYERTYPE_FOCL_OPTICAL_CABLE;
         }
-        if (type.equals("telecom_cabinet")) {
-            return FoclConstants.LAYERTYPE_FOCL_TELECOM_CABINET;
+        if (type.equals("access_point")) {
+            return FoclConstants.LAYERTYPE_FOCL_ACCESS_POINT;
         }
         if (type.equals("endpoint")) {
             return FoclConstants.LAYERTYPE_FOCL_ENDPOINT;
