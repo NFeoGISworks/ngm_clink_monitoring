@@ -58,7 +58,7 @@ public class NGWSettingsActivityProxy
 
 
     @Override
-    protected void fillPreferences()
+    protected void fillPreferences(PreferenceScreen screen)
     {
         GISApplication app = (GISApplication) getApplication();
         Account account = app.getAccount();
@@ -83,7 +83,7 @@ public class NGWSettingsActivityProxy
             preference.setSummary(com.nextgis.maplibui.R.string.add_account_summary);
         }
 
-        getPreferenceScreen().addPreference(preference);
+        screen.addPreference(preference);
     }
 
 
