@@ -106,7 +106,9 @@
     <style name="textViewStyle"
            parent="@android:style/Widget.TextView">
 
-        <!--TODO: make textColor depending on the state (enabled, disabled ...)--><item name="android:textColor">@color/text_view_text_color</item>
+        <!--TODO: make textColor depending on the state (enabled, disabled ...)-->
+
+        <item name="android:textColor">@color/text_view_text_color</item>
         <item name="android:textColorLink">@color/text_view_text_link_color</item>
 
     </style>
@@ -139,7 +141,10 @@
     <style name="listItemCheckedStyle"
            parent="@style/listItemStyle">
 
-        <!--<item name="android:checkMark">?android:attr/listChoiceIndicatorMultiple</item>--><!--<item name="android:checkMark">?android:attr/textCheckMark</item>-->
+        <!--<item name="android:checkMark">?android:attr/listChoiceIndicatorMultiple</item>-->
+
+        <!--<item name="android:checkMark">?android:attr/textCheckMark</item>-->
+
         <item name="android:checkMark">@drawable/check_mark</item>
 
     </style>
