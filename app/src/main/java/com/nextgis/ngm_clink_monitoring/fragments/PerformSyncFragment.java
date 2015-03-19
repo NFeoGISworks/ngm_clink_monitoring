@@ -28,6 +28,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.nextgis.ngm_clink_monitoring.R;
+import com.nextgis.ngm_clink_monitoring.activities.MainActivity;
 
 
 public class PerformSyncFragment
@@ -47,6 +48,9 @@ public class PerformSyncFragment
             ViewGroup container,
             Bundle savedInstanceState)
     {
+        MainActivity activity = (MainActivity) getActivity();
+        activity.setBarsView(MainActivity.FT_1ST_SYNC, null);
+
         return inflater.inflate(R.layout.fragment_perform_sync, null);
     }
 }

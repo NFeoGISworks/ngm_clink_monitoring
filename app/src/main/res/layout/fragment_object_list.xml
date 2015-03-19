@@ -27,20 +27,6 @@
     android:orientation="vertical"
     >
 
-    <android.support.v7.widget.Toolbar
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/object_list_toolbar"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:minHeight="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        >
-
-    </android.support.v7.widget.Toolbar>
-
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_height="match_parent"

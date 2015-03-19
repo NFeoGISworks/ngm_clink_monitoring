@@ -31,10 +31,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -155,21 +153,8 @@ public class ObjectStatusFragment
             ViewGroup container,
             Bundle savedInstanceState)
     {
-        ActionBarActivity activity = (ActionBarActivity) getActivity();
-
-        ViewGroup rootView =
-                (ViewGroup) activity.getWindow().getDecorView().findViewById(android.R.id.content);
-        Toolbar typesToolbar = (Toolbar) rootView.findViewById(R.id.object_types_toolbar);
-        typesToolbar.setVisibility(View.GONE);
-
+        MainActivity activity = (MainActivity) getActivity();
         View view = inflater.inflate(R.layout.fragment_object_status, null);
-
-        Toolbar toolbar = (Toolbar) view.findViewById(R.id.object_status_toolbar);
-        toolbar.getBackground().setAlpha(255);
-        toolbar.setTitle(""); // needed for screen rotation
-        toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-
-        activity.setSupportActionBar(toolbar);
 
         mLineName = (TextView) view.findViewById(R.id.line_name_st);
         mObjectNameCaption = (TextView) view.findViewById(R.id.object_name_caption_st);
@@ -179,31 +164,35 @@ public class ObjectStatusFragment
         mMakePhotoButton = (Button) view.findViewById(R.id.btn_make_photo);
         mPhotoGallery = (RecyclerView) view.findViewById(R.id.photo_gallery);
 
+        String toolbarTitle = "";
+
         switch (mFoclStructLayerType) {
             case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CABLE:
-                toolbar.setTitle(activity.getString(R.string.cable_laying));
+                toolbarTitle = activity.getString(R.string.cable_laying);
                 mObjectNameCaption.setText(R.string.optical_cable_colon);
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_FOSC:
-                toolbar.setTitle(activity.getString(R.string.fosc_mounting));
+                toolbarTitle = activity.getString(R.string.fosc_mounting);
                 mObjectNameCaption.setText(R.string.fosc_colon);
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CROSS:
-                toolbar.setTitle(activity.getString(R.string.cross_mounting));
+                toolbarTitle = activity.getString(R.string.cross_mounting);
                 mObjectNameCaption.setText(R.string.cross_colon);
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_ACCESS_POINT:
-                toolbar.setTitle(activity.getString(R.string.access_point_mounting));
+                toolbarTitle = activity.getString(R.string.access_point_mounting);
                 mObjectNameCaption.setText(R.string.access_point_colon);
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_ENDPOINT:
-                toolbar.setTitle(activity.getString(R.string.line_measuring));
+                toolbarTitle = activity.getString(R.string.line_measuring);
                 break;
         }
+
+        activity.setBarsView(MainActivity.FT_OBJECT_STATUS, toolbarTitle);
 
         if (FoclConstants.LAYERTYPE_FOCL_ENDPOINT == mFoclStructLayerType) {
             mObjectNameCaption.setVisibility(View.GONE);

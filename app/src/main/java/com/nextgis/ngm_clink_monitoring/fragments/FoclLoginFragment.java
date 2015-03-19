@@ -31,6 +31,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import com.nextgis.maplibui.NGWLoginFragment;
 import com.nextgis.ngm_clink_monitoring.R;
+import com.nextgis.ngm_clink_monitoring.activities.MainActivity;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 
 
@@ -53,6 +54,9 @@ public class FoclLoginFragment
             @Nullable
             Bundle savedInstanceState)
     {
+        MainActivity activity = (MainActivity) getActivity();
+        activity.setBarsView(MainActivity.FT_LOGIN, null);
+
         View view = super.onCreateView(inflater, container, savedInstanceState);
         mURL.setText(FoclConstants.FOCL_DEFAULT_ACCOUNT_URL);
 

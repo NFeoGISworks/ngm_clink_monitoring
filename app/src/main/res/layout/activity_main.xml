@@ -52,7 +52,7 @@
         />
 
     <FrameLayout
-        android:id="@+id/object_fragment"
+        android:id="@+id/main_fragment"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         tools:layout="@layout/fragment_object_types"

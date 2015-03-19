@@ -42,6 +42,7 @@ import com.nextgis.maplib.util.AccountUtil;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.fragments.FoclLoginFragment;
+import com.nextgis.ngm_clink_monitoring.fragments.MapFragment;
 import com.nextgis.ngm_clink_monitoring.fragments.ObjectTypesFragment;
 import com.nextgis.ngm_clink_monitoring.fragments.PerformSyncFragment;
 import com.nextgis.ngm_clink_monitoring.fragments.StatusBarFragment;
@@ -60,6 +61,14 @@ public class MainActivity
     protected static final int VIEW_STATE_1ST_SYNC = 2;
     protected static final int VIEW_STATE_OBJECTS  = 3;
 
+    public static final int FT_OBJECT_TYPES  = 1;
+    public static final int FT_LINE_LIST     = 2;
+    public static final int FT_OBJECT_LIST   = 3;
+    public static final int FT_OBJECT_STATUS = 4;
+    public static final int FT_LOGIN         = 5;
+    public static final int FT_1ST_SYNC      = 6;
+    public static final int FT_MAP           = 7;
+
     public static final String DATA_DIR_PATH =
             Environment.getExternalStorageDirectory().getAbsolutePath() +
             File.separator + "ngm_clink_monitoring";
@@ -71,6 +80,9 @@ public class MainActivity
 
     protected int     mViewState = VIEW_STATE_ACCOUNT;
     protected boolean mIsSyncing = false;
+
+    protected Toolbar           mToolbar;
+    protected StatusBarFragment mStatusBarFragment;
 
 
     @Override
@@ -108,9 +120,19 @@ public class MainActivity
 
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.object_types_toolbar);
-        toolbar.getBackground().setAlpha(255);
-        setSupportActionBar(toolbar);
+        mToolbar = (Toolbar) findViewById(R.id.object_types_toolbar);
+        mToolbar.setTitle(""); // needed for screen rotation
+        mToolbar.getBackground().setAlpha(255);
+        setSupportActionBar(mToolbar);
+
+        FragmentManager fm = getSupportFragmentManager();
+        mStatusBarFragment = (StatusBarFragment) fm.findFragmentByTag("StatusBar");
+        if (null == mStatusBarFragment) {
+            mStatusBarFragment = new StatusBarFragment();
+            FragmentTransaction ft = fm.beginTransaction();
+            ft.replace(R.id.status_bar_fragment, mStatusBarFragment, "StatusBar");
+            ft.commit();
+        }
 
         if (null == app.getAccount()) {
             mViewState = VIEW_STATE_ACCOUNT;
@@ -130,8 +152,6 @@ public class MainActivity
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
 
-        StatusBarFragment statusBarFragment = (StatusBarFragment) fm.findFragmentByTag("StatusBar");
-
         switch (mViewState) {
             case VIEW_STATE_ACCOUNT:
                 FoclLoginFragment foclLoginFragment =
@@ -140,43 +160,29 @@ public class MainActivity
                 if (null == foclLoginFragment) {
                     foclLoginFragment = new FoclLoginFragment();
                     foclLoginFragment.setOnAddAccountListener(app);
-                    ft.replace(R.id.object_fragment, foclLoginFragment, "FoclLogin");
-                }
-
-                if (null != statusBarFragment) {
-                    ft.hide(statusBarFragment);
+                    ft.replace(R.id.main_fragment, foclLoginFragment, "FoclLogin");
                 }
 
                 break;
 
             case VIEW_STATE_1ST_SYNC:
-                if (null == statusBarFragment) {
-                    statusBarFragment = new StatusBarFragment();
-                    ft.replace(R.id.status_bar_fragment, statusBarFragment, "StatusBar");
-                }
-
                 PerformSyncFragment performSyncFragment =
                         (PerformSyncFragment) fm.findFragmentByTag("PerformSync");
 
                 if (null == performSyncFragment) {
                     performSyncFragment = new PerformSyncFragment();
-                    ft.replace(R.id.object_fragment, performSyncFragment, "PerformSync");
+                    ft.replace(R.id.main_fragment, performSyncFragment, "PerformSync");
                 }
 
                 break;
 
             case VIEW_STATE_OBJECTS:
-                if (null == statusBarFragment) {
-                    statusBarFragment = new StatusBarFragment();
-                    ft.replace(R.id.status_bar_fragment, statusBarFragment, "StatusBar");
-                }
-
                 ObjectTypesFragment objectTypesFragment =
                         (ObjectTypesFragment) fm.findFragmentByTag("ObjectTypes");
 
                 if (null == objectTypesFragment) {
                     objectTypesFragment = new ObjectTypesFragment();
-                    ft.replace(R.id.object_fragment, objectTypesFragment, "ObjectTypes");
+                    ft.replace(R.id.main_fragment, objectTypesFragment, "ObjectTypes");
                 }
 
                 break;
@@ -187,9 +193,56 @@ public class MainActivity
     }
 
 
+    public void setBarsView(
+            int fragmentType,
+            String toolbarTitle)
+    {
+        if (null == mToolbar || null == mStatusBarFragment) {
+            return;
+        }
+
+        mToolbar.setTitle(toolbarTitle == null ? getTitle() : toolbarTitle);
+
+        switch (fragmentType) {
+            case FT_LOGIN:
+            case FT_1ST_SYNC:
+            case FT_OBJECT_TYPES:
+                mToolbar.setNavigationIcon(null);
+                break;
+
+            case FT_LINE_LIST:
+            case FT_OBJECT_LIST:
+            case FT_OBJECT_STATUS:
+            case FT_MAP:
+                mToolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+                break;
+        }
+
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+
+        switch (fragmentType) {
+            case FT_LOGIN:
+            case FT_LINE_LIST:
+            case FT_OBJECT_LIST:
+            case FT_OBJECT_STATUS:
+                ft.hide(mStatusBarFragment);
+                break;
+
+            case FT_1ST_SYNC:
+            case FT_OBJECT_TYPES:
+            case FT_MAP:
+                ft.show(mStatusBarFragment);
+                break;
+        }
+
+        ft.commit();
+    }
+
+
     public void refreshFragmentView()
     {
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.object_fragment);
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_fragment);
         if (!fragment.isDetached()) {
             getSupportFragmentManager().beginTransaction()
                     .detach(fragment)
@@ -298,6 +351,7 @@ public class MainActivity
 
         switch (mViewState) {
             case VIEW_STATE_1ST_SYNC:
+                menu.findItem(R.id.menu_map).setEnabled(false);
             case VIEW_STATE_ACCOUNT:
                 menu.findItem(R.id.menu_sync).setEnabled(false);
                 break;
@@ -352,8 +406,17 @@ public class MainActivity
 
     public void onMenuMapClick()
     {
-        Intent intent = new Intent(this, MapActivity.class);
-        startActivity(intent);
+        final FragmentManager fm = getSupportFragmentManager();
+        MapFragment mapFragment = (MapFragment) fm.findFragmentByTag("Map");
+
+        if (mapFragment == null) {
+            mapFragment = new MapFragment();
+
+            FragmentTransaction ft = fm.beginTransaction();
+            ft.replace(R.id.main_fragment, mapFragment, "Map");
+            ft.addToBackStack(null);
+            ft.commit();
+        }
     }
 
 

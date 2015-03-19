@@ -27,8 +27,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +36,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
+import com.nextgis.ngm_clink_monitoring.activities.MainActivity;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 import com.nextgis.ngm_clink_monitoring.util.ViewUtil;
@@ -63,12 +62,11 @@ public class ObjectTypesFragment
             ViewGroup container,
             Bundle savedInstanceState)
     {
-        final ActionBarActivity activity = (ActionBarActivity) getActivity();
+        final MainActivity activity = (MainActivity) getActivity();
+        activity.setBarsView(MainActivity.FT_OBJECT_TYPES, null);
 
         final ViewGroup rootView =
                 (ViewGroup) activity.getWindow().getDecorView().findViewById(android.R.id.content);
-        final Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.object_types_toolbar);
-        toolbar.setVisibility(View.VISIBLE);
 
         final View view = inflater.inflate(R.layout.fragment_object_types, null);
 
@@ -211,7 +209,7 @@ public class ObjectTypesFragment
 
         lineListFragment.setParams(foclStructLayerType);
 
-        ft.replace(R.id.object_fragment, lineListFragment, "LineList");
+        ft.replace(R.id.main_fragment, lineListFragment, "LineList");
         ft.addToBackStack(null);
         ft.commit();
     }

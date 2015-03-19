@@ -106,7 +106,7 @@
     <style name="textViewStyle"
            parent="@android:style/Widget.TextView">
 
-        <item name="android:textColor">@color/text_view_text_color</item>
+        <!--TODO: make textColor depending on the state (enabled, disabled ...)--><item name="android:textColor">@color/text_view_text_color</item>
         <item name="android:textColorLink">@color/text_view_text_link_color</item>
 
     </style>

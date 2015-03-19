@@ -26,8 +26,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +33,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
+import com.nextgis.ngm_clink_monitoring.activities.MainActivity;
 import com.nextgis.ngm_clink_monitoring.adapters.LineNameAdapter;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 import com.nextgis.ngm_clink_monitoring.map.FoclStruct;
@@ -72,45 +71,36 @@ public class LineListFragment
             ViewGroup container,
             Bundle savedInstanceState)
     {
-        ActionBarActivity activity = (ActionBarActivity) getActivity();
-
-        ViewGroup rootView =
-                (ViewGroup) activity.getWindow().getDecorView().findViewById(android.R.id.content);
-        Toolbar typesToolbar = (Toolbar) rootView.findViewById(R.id.object_types_toolbar);
-        typesToolbar.setVisibility(View.GONE);
-
+        MainActivity activity = (MainActivity) getActivity();
         View view = inflater.inflate(R.layout.fragment_line_list, null);
-
-        Toolbar toolbar = (Toolbar) view.findViewById(R.id.line_list_toolbar);
-        toolbar.getBackground().setAlpha(255);
-        toolbar.setTitle(""); // needed for screen rotation
-        toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-
-        activity.setSupportActionBar(toolbar);
 
         mLineNameList = (ListView) view.findViewById(R.id.line_list_ln);
 
+        String toolbarTitle = "";
+
         switch (mFoclStructLayerType) {
             case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CABLE:
-                toolbar.setTitle(activity.getString(R.string.cable_laying));
+                toolbarTitle = activity.getString(R.string.cable_laying);
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_FOSC:
-                toolbar.setTitle(activity.getString(R.string.fosc_mounting));
+                toolbarTitle = activity.getString(R.string.fosc_mounting);
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CROSS:
-                toolbar.setTitle(activity.getString(R.string.cross_mounting));
+                toolbarTitle = activity.getString(R.string.cross_mounting);
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_ACCESS_POINT:
-                toolbar.setTitle(activity.getString(R.string.access_point_mounting));
+                toolbarTitle = activity.getString(R.string.access_point_mounting);
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_ENDPOINT:
-                toolbar.setTitle(activity.getString(R.string.line_measuring));
+                toolbarTitle = activity.getString(R.string.line_measuring);
                 break;
         }
+
+        activity.setBarsView(MainActivity.FT_LINE_LIST, toolbarTitle);
 
         GISApplication app = (GISApplication) getActivity().getApplication();
         final FoclProject foclProject = app.getFoclProject();
@@ -161,7 +151,7 @@ public class LineListFragment
             objectMeasureFragment.setParams(
                     mFoclStructLayerType, mLineId, mLineNameText, null, null);
 
-            ft.replace(R.id.object_fragment, objectMeasureFragment, "ObjectMeasure");
+            ft.replace(R.id.main_fragment, objectMeasureFragment, "ObjectMeasure");
 
         } else {
             ObjectListFragment objectListFragment =
@@ -173,7 +163,7 @@ public class LineListFragment
 
             objectListFragment.setParams(mFoclStructLayerType, mLineId);
 
-            ft.replace(R.id.object_fragment, objectListFragment, "ObjectList");
+            ft.replace(R.id.main_fragment, objectListFragment, "ObjectList");
         }
 
         ft.addToBackStack(null);

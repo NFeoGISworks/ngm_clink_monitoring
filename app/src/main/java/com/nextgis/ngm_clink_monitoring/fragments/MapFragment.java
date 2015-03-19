@@ -44,7 +44,9 @@ import com.nextgis.maplib.util.VectorCacheItem;
 import com.nextgis.maplibui.MapView;
 import com.nextgis.maplibui.api.MapViewEventListener;
 import com.nextgis.maplibui.util.ConstantsUI;
+import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
+import com.nextgis.ngm_clink_monitoring.activities.MainActivity;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
 import com.nextgis.ngm_clink_monitoring.util.ViewUtil;
 
@@ -58,17 +60,24 @@ public class MapFragment
     protected final static int mMargins = 10;
     protected float mTolerancePX;
 
-    protected MapView   mMap;
+    protected MapView mMapView;
     protected ImageView mivZoomIn;
     protected ImageView mivZoomOut;
 
     protected RelativeLayout mMapRelativeLayout;
+    protected RelativeLayout mButtonsRelativeLayout;
+    protected final int mButtonsRelativeLayoutId = ViewUtil.generateViewId();
 
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+
+        GISApplication app = (GISApplication) getActivity().getApplication();
+        mMapView = new MapView(app, app.getMap());
+
         mTolerancePX =
                 getActivity().getResources().getDisplayMetrics().density * ConstantsUI.TOLERANCE_DP;
     }
@@ -80,18 +89,21 @@ public class MapFragment
             ViewGroup container,
             Bundle savedInstanceState)
     {
+        MainActivity activity = (MainActivity) getActivity();
+        activity.setBarsView(MainActivity.FT_MAP, null);
+
         View view = inflater.inflate(R.layout.fragment_map, container, false);
+        mMapRelativeLayout = (RelativeLayout) view.findViewById(R.id.maprl);
 
         //search relative view of map, if not found - add it
-        if (mMap != null) {
-            mMapRelativeLayout = (RelativeLayout) view.findViewById(R.id.maprl);
+        if (mMapView != null) {
             if (mMapRelativeLayout != null) {
                 mMapRelativeLayout.addView(
-                        mMap, 0, new RelativeLayout.LayoutParams(
+                        mMapView, 0, new RelativeLayout.LayoutParams(
                                 RelativeLayout.LayoutParams.MATCH_PARENT,
                                 RelativeLayout.LayoutParams.MATCH_PARENT));
             }
-            mMap.invalidate();
+            mMapView.invalidate();
         }
 
         return view;
@@ -101,10 +113,12 @@ public class MapFragment
     @Override
     public void onDestroyView()
     {
-        if (mMap != null) {
-            mMap.removeListener(this);
+        if (mMapView != null) {
+            mMapView.removeListener(this);
+
             if (mMapRelativeLayout != null) {
-                mMapRelativeLayout.removeView(mMap);
+                removeMapButtonsInLayout();
+                mMapRelativeLayout.removeView(mMapView);
             }
         }
 
@@ -112,70 +126,92 @@ public class MapFragment
     }
 
 
-    protected void removeMapButtons(RelativeLayout rl)
+    protected void removeMapButtonsInLayout()
     {
-        rl.removeViewInLayout(mivZoomIn);
-        rl.removeViewInLayout(mivZoomOut);
-        mivZoomIn = null;
-        mivZoomOut = null;
-        rl.invalidate();
+        if (null != mMapRelativeLayout && null != mButtonsRelativeLayout) {
+            mButtonsRelativeLayout.removeViewInLayout(mivZoomIn);
+            mButtonsRelativeLayout.removeViewInLayout(mivZoomOut);
+            mMapRelativeLayout.removeViewInLayout(mButtonsRelativeLayout);
+        }
     }
 
 
-    protected void addMapButtons(
-            Context context,
-            RelativeLayout rl)
+    protected void removeMapButtons()
     {
-        mivZoomIn = new ImageView(context);
-        mivZoomIn.setImageResource(R.drawable.ic_plus);
-        ViewUtil.setGeneratedId(mivZoomIn);
+        removeMapButtonsInLayout();
 
-        mivZoomOut = new ImageView(context);
-        mivZoomOut.setImageResource(R.drawable.ic_minus);
-        ViewUtil.setGeneratedId(mivZoomOut);
+        mivZoomIn = null;
+        mivZoomOut = null;
+        mButtonsRelativeLayout = null;
 
-        mivZoomIn.setOnClickListener(
-                new OnClickListener()
-                {
-                    public void onClick(View v)
+        mMapRelativeLayout.invalidate();
+    }
+
+
+    protected void addMapButtons()
+    {
+        Context context = getActivity();
+
+        if (mivZoomIn == null || mivZoomOut == null) {
+            mivZoomIn = new ImageView(context);
+            mivZoomIn.setImageResource(R.drawable.ic_plus);
+            ViewUtil.setGeneratedId(mivZoomIn);
+
+            mivZoomOut = new ImageView(context);
+            mivZoomOut.setImageResource(R.drawable.ic_minus);
+            ViewUtil.setGeneratedId(mivZoomOut);
+
+            mivZoomIn.setOnClickListener(
+                    new OnClickListener()
                     {
-                        mMap.zoomIn();
-                    }
-                });
+                        public void onClick(View v)
+                        {
+                            mMapView.zoomIn();
+                        }
+                    });
 
-        mivZoomOut.setOnClickListener(
-                new OnClickListener()
-                {
-                    public void onClick(View v)
+            mivZoomOut.setOnClickListener(
+                    new OnClickListener()
                     {
-                        mMap.zoomOut();
-                    }
-                });
+                        public void onClick(View v)
+                        {
+                            mMapView.zoomOut();
+                        }
+                    });
+        }
 
 
-        RelativeLayout buttonsRl = new RelativeLayout(context);
+        mButtonsRelativeLayout =
+                (RelativeLayout) mMapRelativeLayout.findViewById(mButtonsRelativeLayoutId);
 
-        RelativeLayout.LayoutParams paramsButtonIn = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        RelativeLayout.LayoutParams paramsButtonOut = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        RelativeLayout.LayoutParams paramsButtonsRl = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        if (null == mButtonsRelativeLayout) {
+            mButtonsRelativeLayout = new RelativeLayout(context);
+            mButtonsRelativeLayout.setId(mButtonsRelativeLayoutId);
 
-        paramsButtonIn.setMargins(mMargins + 5, mMargins - 5, mMargins + 5, mMargins + 5);
-        paramsButtonOut.setMargins(mMargins + 5, mMargins + 5, mMargins + 5, mMargins - 5);
+            RelativeLayout.LayoutParams paramsButtonIn = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT);
+            RelativeLayout.LayoutParams paramsButtonOut = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT);
+            RelativeLayout.LayoutParams paramsButtonsRl = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT);
 
-        paramsButtonOut.addRule(RelativeLayout.BELOW, mivZoomIn.getId());
-        paramsButtonsRl.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-        paramsButtonsRl.addRule(RelativeLayout.CENTER_IN_PARENT);
+            paramsButtonIn.setMargins(mMargins + 5, mMargins - 5, mMargins + 5, mMargins + 5);
+            paramsButtonOut.setMargins(mMargins + 5, mMargins + 5, mMargins + 5, mMargins - 5);
 
-        buttonsRl.addView(mivZoomIn, paramsButtonIn);
-        buttonsRl.addView(mivZoomOut, paramsButtonOut);
-        rl.addView(buttonsRl, paramsButtonsRl);
+            paramsButtonOut.addRule(RelativeLayout.BELOW, mivZoomIn.getId());
+            paramsButtonsRl.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+            paramsButtonsRl.addRule(RelativeLayout.CENTER_IN_PARENT);
 
+            mButtonsRelativeLayout.addView(mivZoomIn, paramsButtonIn);
+            mButtonsRelativeLayout.addView(mivZoomOut, paramsButtonOut);
+            mMapRelativeLayout.addView(mButtonsRelativeLayout, paramsButtonsRl);
+        }
 
-        setZoomInEnabled(mMap.canZoomIn());
-        setZoomOutEnabled(mMap.canZoomOut());
+        setZoomInEnabled(mMapView.canZoomIn());
+        setZoomOutEnabled(mMapView.canZoomOut());
     }
 
 
@@ -205,8 +241,8 @@ public class MapFragment
             float zoom,
             GeoPoint center)
     {
-        setZoomInEnabled(mMap.canZoomIn());
-        setZoomOutEnabled(mMap.canZoomOut());
+        setZoomInEnabled(mMapView.canZoomIn());
+        setZoomOutEnabled(mMapView.canZoomOut());
     }
 
 
@@ -226,36 +262,37 @@ public class MapFragment
     }
 
 
-    protected void setZoomInEnabled(boolean bEnabled)
+    protected void setZoomInEnabled(boolean isEnabled)
     {
-        if (mivZoomIn == null) {
-            return;
-        }
-        if (bEnabled) {
-            mivZoomIn.getDrawable().setAlpha(255);
-        } else {
-            mivZoomIn.getDrawable().setAlpha(50);
-        }
+        setZoomEnabled(mivZoomIn, isEnabled);
     }
 
 
-    protected void setZoomOutEnabled(boolean bEnabled)
+    protected void setZoomOutEnabled(boolean isEnabled)
     {
-        if (mivZoomOut == null) {
+        setZoomEnabled(mivZoomOut, isEnabled);
+    }
+
+
+    protected void setZoomEnabled(
+            ImageView ivZoom,
+            boolean isEnabled)
+    {
+        if (ivZoom == null) {
             return;
         }
-        if (bEnabled) {
-            mivZoomOut.getDrawable().setAlpha(255);
+        if (isEnabled) {
+            ivZoom.getDrawable().setAlpha(255);
         } else {
-            mivZoomOut.getDrawable().setAlpha(50);
+            ivZoom.getDrawable().setAlpha(50);
         }
     }
 
 
     public boolean onInit(MapView map)
     {
-        mMap = map;
-        mMap.addListener(this);
+        mMapView = map;
+        mMapView.addListener(this);
         return true;
     }
 
@@ -265,9 +302,12 @@ public class MapFragment
     {
         final SharedPreferences.Editor edit =
                 PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
-        if (null != mMap) {
-            edit.putFloat(FoclSettingsConstantsUI.KEY_PREF_ZOOM_LEVEL, mMap.getZoomLevel());
-            GeoPoint point = mMap.getMapCenter();
+
+        if (null != mMapView) {
+            mMapView.removeListener(this);
+
+            edit.putFloat(FoclSettingsConstantsUI.KEY_PREF_ZOOM_LEVEL, mMapView.getZoomLevel());
+            GeoPoint point = mMapView.getMapCenter();
             edit.putLong(
                     FoclSettingsConstantsUI.KEY_PREF_SCROLL_X,
                     Double.doubleToRawLongBits(point.getX()));
@@ -275,6 +315,7 @@ public class MapFragment
                     FoclSettingsConstantsUI.KEY_PREF_SCROLL_Y,
                     Double.doubleToRawLongBits(point.getY()));
         }
+
         edit.commit();
 
         super.onPause();
@@ -288,25 +329,25 @@ public class MapFragment
 
         final SharedPreferences prefs =
                 PreferenceManager.getDefaultSharedPreferences(getActivity());
-        if (null != mMap) {
-            float mMapZoom =
-                    prefs.getFloat(FoclSettingsConstantsUI.KEY_PREF_ZOOM_LEVEL, mMap.getMinZoom());
+        if (null != mMapView) {
+            mMapView.addListener(this);
+
+            float mMapZoom = prefs.getFloat(
+                    FoclSettingsConstantsUI.KEY_PREF_ZOOM_LEVEL, mMapView.getMinZoom());
             double mMapScrollX = Double.longBitsToDouble(
                     prefs.getLong(FoclSettingsConstantsUI.KEY_PREF_SCROLL_X, 0));
             double mMapScrollY = Double.longBitsToDouble(
                     prefs.getLong(FoclSettingsConstantsUI.KEY_PREF_SCROLL_Y, 0));
-            mMap.setZoomAndCenter(mMapZoom, new GeoPoint(mMapScrollX, mMapScrollY));
+            mMapView.setZoomAndCenter(mMapZoom, new GeoPoint(mMapScrollX, mMapScrollY));
         }
 
         //change zoom controls visibility
         boolean showControls =
                 prefs.getBoolean(FoclSettingsConstantsUI.KEY_PREF_SHOW_ZOOM_CONTROLS, false);
         if (showControls) {
-            if (mivZoomIn == null || mivZoomOut == null) {
-                addMapButtons(getActivity(), mMapRelativeLayout);
-            }
+            addMapButtons();
         } else {
-            removeMapButtons(mMapRelativeLayout);
+            removeMapButtons();
         }
     }
 
@@ -319,13 +360,13 @@ public class MapFragment
         double dMinY = event.getY() - mTolerancePX;
         double dMaxY = event.getY() + mTolerancePX;
 
-        GeoEnvelope mapEnv = mMap.screenToMap(new GeoEnvelope(dMinX, dMaxX, dMinY, dMaxY));
+        GeoEnvelope mapEnv = mMapView.screenToMap(new GeoEnvelope(dMinX, dMaxX, dMinY, dMaxY));
         if (null == mapEnv) {
             return;
         }
 
         //show actions dialog
-        List<ILayer> layers = mMap.getVectorLayersByType(GeoConstants.GTAnyCheck);
+        List<ILayer> layers = mMapView.getVectorLayersByType(GeoConstants.GTAnyCheck);
         List<VectorCacheItem> items = null;
         VectorLayer vectorLayer = null;
         boolean intersects = false;
@@ -347,7 +388,7 @@ public class MapFragment
         }
 
         if (intersects) {
-            mMap.postInvalidate();
+            mMapView.postInvalidate();
         }
     }
 

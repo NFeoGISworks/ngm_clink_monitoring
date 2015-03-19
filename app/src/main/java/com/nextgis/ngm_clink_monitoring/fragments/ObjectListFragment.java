@@ -29,8 +29,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.CursorAdapter;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +38,7 @@ import android.widget.TextView;
 import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
+import com.nextgis.ngm_clink_monitoring.activities.MainActivity;
 import com.nextgis.ngm_clink_monitoring.adapters.ObjectCursorAdapter;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 import com.nextgis.ngm_clink_monitoring.map.FoclStruct;
@@ -86,47 +85,38 @@ public class ObjectListFragment
             ViewGroup container,
             Bundle savedInstanceState)
     {
-        ActionBarActivity activity = (ActionBarActivity) getActivity();
-
-        ViewGroup rootView =
-                (ViewGroup) activity.getWindow().getDecorView().findViewById(android.R.id.content);
-        Toolbar typesToolbar = (Toolbar) rootView.findViewById(R.id.object_types_toolbar);
-        typesToolbar.setVisibility(View.GONE);
-
+        MainActivity activity = (MainActivity) getActivity();
         View view = inflater.inflate(R.layout.fragment_object_list, null);
-
-        Toolbar toolbar = (Toolbar) view.findViewById(R.id.object_list_toolbar);
-        toolbar.getBackground().setAlpha(255);
-        toolbar.setTitle(""); // needed for screen rotation
-        toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-
-        activity.setSupportActionBar(toolbar);
 
         mLineName = (TextView) view.findViewById(R.id.line_name_ls);
         mObjectListCaption = (TextView) view.findViewById(R.id.object_list_caption_ls);
         mObjectList = (ListView) view.findViewById(R.id.object_list_ls);
 
+        String toolbarTitle = "";
+
         switch (mFoclStructLayerType) {
             case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CABLE:
-                toolbar.setTitle(activity.getString(R.string.cable_laying));
+                toolbarTitle = activity.getString(R.string.cable_laying);
                 mObjectListCaption.setText(R.string.select_optical_cables_colon);
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_FOSC:
-                toolbar.setTitle(activity.getString(R.string.fosc_mounting));
+                toolbarTitle = activity.getString(R.string.fosc_mounting);
                 mObjectListCaption.setText(R.string.select_fosc_colon);
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CROSS:
-                toolbar.setTitle(activity.getString(R.string.cross_mounting));
+                toolbarTitle = activity.getString(R.string.cross_mounting);
                 mObjectListCaption.setText(R.string.select_cross_colon);
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_ACCESS_POINT:
-                toolbar.setTitle(activity.getString(R.string.access_point_mounting));
+                toolbarTitle = activity.getString(R.string.access_point_mounting);
                 mObjectListCaption.setText(R.string.select_access_points_colon);
                 break;
         }
+
+        activity.setBarsView(MainActivity.FT_OBJECT_LIST, toolbarTitle);
 
         GISApplication app = (GISApplication) getActivity().getApplication();
         final FoclProject foclProject = app.getFoclProject();
@@ -202,7 +192,7 @@ public class ObjectListFragment
         objectStatusFragment.setParams(
                 mFoclStructLayerType, null, mLineNameText, mObjectLayerName, mObjectCursor);
 
-        ft.replace(R.id.object_fragment, objectStatusFragment, "ObjectStatus");
+        ft.replace(R.id.main_fragment, objectStatusFragment, "ObjectStatus");
         ft.addToBackStack(null);
         ft.commit();
     }
