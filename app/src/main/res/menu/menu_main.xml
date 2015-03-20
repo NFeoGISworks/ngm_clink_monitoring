@@ -56,4 +56,15 @@
         app:showAsAction="never"
         />
 
+    <!--for debug-->
+
+    <!--
+        <item
+            android:id="@+id/menu_test"
+            android:orderInCategory="100"
+            android:title="test"
+            app:showAsAction="never"
+            />
+    -->
+
 </menu>

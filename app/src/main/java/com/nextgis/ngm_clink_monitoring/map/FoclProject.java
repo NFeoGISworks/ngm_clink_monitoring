@@ -254,7 +254,7 @@ public class FoclProject
             foclVectorLayer.setLogin(mLogin);
             foclVectorLayer.setPassword(mPassword);
             foclVectorLayer.setVisible(true);
-            foclVectorLayer.setSyncType(Constants.SYNC_ATTRIBUTES);
+            foclVectorLayer.setSyncType(Constants.SYNC_ATTRIBUTES | Constants.SYNC_ATTACH);
             foclStruct.addLayer(foclVectorLayer);
 
             String error = foclVectorLayer.download();

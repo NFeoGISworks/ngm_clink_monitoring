@@ -398,6 +398,24 @@ public class MainActivity
                 onMenuAboutClick();
                 return true;
 
+// for debug
+/*
+            case R.id.menu_test:
+                new Thread()
+                {
+                    @Override
+                    public void run()
+                    {
+                        testAttachInsert();
+//                        testAttachUpdate();
+//                        testAttachDelete();
+
+                        testSync();
+                    }
+                }.start();
+                return true;
+*/
+
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -446,4 +464,266 @@ public class MainActivity
         Intent intentAbout = new Intent(this, AboutActivity.class);
         startActivity(intentAbout);
     }
+
+
+// for debug
+/*
+    void testSync()
+    {
+        IGISApplication application = (IGISApplication) getApplication();
+        sync(application.getMap(), application.getAuthority(), new SyncResult());
+    }
+
+    protected void sync(
+            LayerGroup layerGroup,
+            String authority,
+            SyncResult syncResult)
+    {
+        for (int i = 0; i < layerGroup.getLayerCount(); i++) {
+            ILayer layer = layerGroup.getLayer(i);
+            if (layer instanceof LayerGroup) {
+                sync((LayerGroup) layer, authority, syncResult);
+            } else if (layer instanceof NGWVectorLayer) {
+                NGWVectorLayer ngwVectorLayer = (NGWVectorLayer) layer;
+                ngwVectorLayer.sync(authority, syncResult);
+            }
+        }
+    }
+
+
+    void testInsert()
+    {
+        //test sync
+        IGISApplication application = (IGISApplication) getApplication();
+        MapBase map = application.getMap();
+        NGWVectorLayer ngwVectorLayer = null;
+        for (int i = 0; i < map.getLayerCount(); i++) {
+            ILayer layer = map.getLayer(i);
+            if (layer instanceof NGWVectorLayer) {
+                ngwVectorLayer = (NGWVectorLayer) layer;
+            }
+        }
+        if (null != ngwVectorLayer) {
+            Uri uri = Uri.parse(
+                    "content://" + FoclSettingsConstantsUI.AUTHORITY + "/" +
+                    ngwVectorLayer.getPath().getName());
+            ContentValues values = new ContentValues();
+            //values.put(VectorLayer.FIELD_ID, 26);
+            values.put("width", 1);
+            values.put("azimuth", 2.0);
+            values.put("status", "grot");
+            values.put("temperatur", -13);
+            values.put("name", "get");
+
+            Calendar calendar = new GregorianCalendar(2015, Calendar.JANUARY, 23);
+            values.put("datetime", calendar.getTimeInMillis());
+
+            try {
+                GeoPoint pt = new GeoPoint(37, 55);
+                pt.setCRS(CRS_WGS84);
+                pt.project(CRS_WEB_MERCATOR);
+                GeoMultiPoint mpt = new GeoMultiPoint();
+                mpt.add(pt);
+                values.put(VectorLayer.FIELD_GEOM, mpt.toBlob());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Uri result = getContentResolver().insert(uri, values);
+            if (result == null) {
+                Log.d(TAG, "insert failed");
+            } else {
+                Log.d(TAG, result.toString());
+            }
+        }
+    }
+
+
+    void testUpdate()
+    {
+        //test sync
+        IGISApplication application = (IGISApplication) getApplication();
+        MapBase map = application.getMap();
+        NGWVectorLayer ngwVectorLayer = null;
+        for (int i = 0; i < map.getLayerCount(); i++) {
+            ILayer layer = map.getLayer(i);
+            if (layer instanceof NGWVectorLayer) {
+                ngwVectorLayer = (NGWVectorLayer) layer;
+            }
+        }
+        if (null != ngwVectorLayer) {
+            Uri uri = Uri.parse(
+                    "content://" + FoclSettingsConstantsUI.AUTHORITY + "/" +
+                    ngwVectorLayer.getPath().getName());
+            Uri updateUri = ContentUris.withAppendedId(uri, 29);
+            ContentValues values = new ContentValues();
+            values.put("width", 4);
+            values.put("azimuth", 8.0);
+            values.put("status", "test4");
+            values.put("temperatur", -10);
+            values.put("name", "xxx");
+
+            Calendar calendar = new GregorianCalendar(2014, Calendar.JANUARY, 23);
+            values.put("datetime", calendar.getTimeInMillis());
+            try {
+                GeoPoint pt = new GeoPoint(67, 65);
+                pt.setCRS(CRS_WGS84);
+                pt.project(CRS_WEB_MERCATOR);
+                GeoMultiPoint mpt = new GeoMultiPoint();
+                mpt.add(pt);
+                values.put(VectorLayer.FIELD_GEOM, mpt.toBlob());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            int result = getContentResolver().update(updateUri, values, null, null);
+            if (result == 0) {
+                Log.d(TAG, "update failed");
+            } else {
+                Log.d(TAG, "" + result);
+            }
+        }
+    }
+
+
+    void testDelete()
+    {
+        IGISApplication application = (IGISApplication) getApplication();
+        MapBase map = application.getMap();
+        NGWVectorLayer ngwVectorLayer = null;
+        for (int i = 0; i < map.getLayerCount(); i++) {
+            ILayer layer = map.getLayer(i);
+            if (layer instanceof NGWVectorLayer) {
+                ngwVectorLayer = (NGWVectorLayer) layer;
+            }
+        }
+        if (null != ngwVectorLayer) {
+            Uri uri = Uri.parse(
+                    "content://" + FoclSettingsConstantsUI.AUTHORITY + "/" +
+                    ngwVectorLayer.getPath().getName());
+            Uri deleteUri = ContentUris.withAppendedId(uri, 27);
+            int result = getContentResolver().delete(deleteUri, null, null);
+            if (result == 0) {
+                Log.d(TAG, "delete failed");
+            } else {
+                Log.d(TAG, "" + result);
+            }
+        }
+    }
+
+
+    void testAttachInsert()
+    {
+        IGISApplication application = (IGISApplication) getApplication();
+        */
+/*MapBase map = application.getMap();
+        NGWVectorLayer ngwVectorLayer = null;
+        for(int i = 0; i < map.getLayerCount(); i++){
+            ILayer layer = map.getLayer(i);
+            if(layer instanceof NGWVectorLayer)
+            {
+                ngwVectorLayer = (NGWVectorLayer)layer;
+            }
+        }
+        if(null != ngwVectorLayer) {
+            Uri uri = Uri.parse("content://" + FoclSettingsConstantsUI.AUTHORITY + "/" + ngwVectorLayer.getPath().getName() + "/36/attach");
+        *//*
+
+
+        Uri uri = Uri.parse(
+                "content://" + FoclSettingsConstantsUI.AUTHORITY +
+                "/layer_20150320215025293/1/attach");
+
+        ContentValues values = new ContentValues();
+        values.put(VectorLayer.ATTACH_DISPLAY_NAME, "test_image.jpg");
+        values.put(VectorLayer.ATTACH_MIME_TYPE, "image/jpeg");
+        values.put(VectorLayer.ATTACH_DESCRIPTION, "test image description");
+
+        Uri result = getContentResolver().insert(uri, values);
+
+        if (result == null) {
+            Log.d(TAG, "insert failed");
+
+        } else {
+
+            try {
+                OutputStream outStream = getContentResolver().openOutputStream(result);
+                Bitmap sourceBitmap = BitmapFactory.decodeResource(
+                        getResources(), com.nextgis.maplibui.R.drawable.bk_tile);
+                sourceBitmap.compress(Bitmap.CompressFormat.JPEG, 75, outStream);
+                outStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            Log.d(TAG, result.toString());
+        }
+        //}
+    }
+
+
+    void testAttachUpdate()
+    {
+        IGISApplication application = (IGISApplication) getApplication();
+        */
+/*MapBase map = application.getMap();
+        NGWVectorLayer ngwVectorLayer = null;
+        for(int i = 0; i < map.getLayerCount(); i++){
+            ILayer layer = map.getLayer(i);
+            if(layer instanceof NGWVectorLayer)
+            {
+                ngwVectorLayer = (NGWVectorLayer)layer;
+            }
+        }
+        if(null != ngwVectorLayer) {
+            Uri updateUri = Uri.parse("content://" + SettingsConstants.AUTHORITY + "/" +
+                                      ngwVectorLayer.getPath().getName() + "/36/attach/1000");
+        *//*
+
+        Uri updateUri = Uri.parse(
+                "content://" + FoclSettingsConstantsUI.AUTHORITY +
+                "/layer_20150210140455993/36/attach/2");
+
+        ContentValues values = new ContentValues();
+        values.put(VectorLayer.ATTACH_DISPLAY_NAME, "no_image.jpg");
+        values.put(VectorLayer.ATTACH_DESCRIPTION, "simple update description");
+        //    values.put(VectorLayer.ATTACH_ID, 999);
+        int result = getContentResolver().update(updateUri, values, null, null);
+        if (result == 0) {
+            Log.d(TAG, "update failed");
+        } else {
+            Log.d(TAG, "" + result);
+        }
+        //}
+    }
+
+
+    void testAttachDelete()
+    {
+        IGISApplication application = (IGISApplication) getApplication();
+        */
+/*MapBase map = application.getMap();
+        NGWVectorLayer ngwVectorLayer = null;
+        for(int i = 0; i < map.getLayerCount(); i++){
+            ILayer layer = map.getLayer(i);
+            if(layer instanceof NGWVectorLayer)
+            {
+                ngwVectorLayer = (NGWVectorLayer)layer;
+            }
+        }
+        if(null != ngwVectorLayer) {
+            Uri deleteUri = Uri.parse("content://" + SettingsConstants.AUTHORITY + "/" +
+                                ngwVectorLayer.getPath().getName() + "/36/attach/1000");
+        *//*
+
+        Uri deleteUri = Uri.parse(
+                "content://" + FoclSettingsConstantsUI.AUTHORITY +
+                "/layer_20150210140455993/36/attach/1");
+        int result = getContentResolver().delete(deleteUri, null, null);
+        if (result == 0) {
+            Log.d(TAG, "delete failed");
+        } else {
+            Log.d(TAG, "" + result);
+        }
+        //}
+    }
+*/
 }
