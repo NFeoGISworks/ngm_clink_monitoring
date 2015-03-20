@@ -111,6 +111,10 @@ public class ObjectStatusFragment
             mObjectNameText = ObjectCursorAdapter.getObjectName(objectCursor);
             mObjectStatus = objectCursor.getString(
                     objectCursor.getColumnIndex(FoclConstants.FIELD_STATUS_BUILT));
+
+            if (null == mObjectStatus) {
+                mObjectStatus = FoclConstants.FIELD_VALUE_UNKNOWN;
+            }
         }
     }
 

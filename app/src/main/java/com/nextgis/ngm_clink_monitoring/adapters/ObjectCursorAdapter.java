@@ -104,8 +104,13 @@ public class ObjectCursorAdapter
 
         String status = cursor.getString(cursor.getColumnIndex(FoclConstants.FIELD_STATUS_BUILT));
 
+        if (null == status) {
+            status = FoclConstants.FIELD_VALUE_UNKNOWN;
+        }
+
         switch (status) {
             case FoclConstants.FIELD_VALUE_PROJECT:
+            case FoclConstants.FIELD_VALUE_UNKNOWN:
             default:
                 viewHolder.mObjectItem.setChecked(false);
 
