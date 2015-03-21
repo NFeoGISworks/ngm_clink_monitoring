@@ -24,8 +24,14 @@ package com.nextgis.ngm_clink_monitoring.activities;
 
 import android.accounts.Account;
 import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SyncResult;
 import android.content.SyncStatusObserver;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -34,10 +40,18 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 import com.nextgis.maplib.api.IGISApplication;
+import com.nextgis.maplib.api.ILayer;
+import com.nextgis.maplib.datasource.GeoMultiPoint;
+import com.nextgis.maplib.datasource.GeoPoint;
+import com.nextgis.maplib.map.LayerGroup;
+import com.nextgis.maplib.map.MapBase;
+import com.nextgis.maplib.map.NGWVectorLayer;
+import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.util.AccountUtil;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
@@ -50,6 +64,14 @@ import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
 import com.nextgis.ngm_clink_monitoring.util.LocationUtil;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
+import static com.nextgis.maplib.util.Constants.TAG;
+import static com.nextgis.maplib.util.GeoConstants.CRS_WEB_MERCATOR;
+import static com.nextgis.maplib.util.GeoConstants.CRS_WGS84;
 
 
 public class MainActivity
@@ -401,18 +423,19 @@ public class MainActivity
 // for debug
 /*
             case R.id.menu_test:
+                testAttachInsert();
+//                testAttachUpdate();
+//                testAttachDelete();
+
                 new Thread()
                 {
                     @Override
                     public void run()
                     {
-                        testAttachInsert();
-//                        testAttachUpdate();
-//                        testAttachDelete();
-
                         testSync();
                     }
                 }.start();
+
                 return true;
 */
 
@@ -467,12 +490,14 @@ public class MainActivity
 
 
 // for debug
-/*
+
+
     void testSync()
     {
         IGISApplication application = (IGISApplication) getApplication();
         sync(application.getMap(), application.getAuthority(), new SyncResult());
     }
+
 
     protected void sync(
             LayerGroup layerGroup,
@@ -613,20 +638,21 @@ public class MainActivity
     void testAttachInsert()
     {
         IGISApplication application = (IGISApplication) getApplication();
-        */
-/*MapBase map = application.getMap();
+
+/*
+        MapBase map = application.getMap();
         NGWVectorLayer ngwVectorLayer = null;
-        for(int i = 0; i < map.getLayerCount(); i++){
+        for (int i = 0; i < map.getLayerCount(); i++) {
             ILayer layer = map.getLayer(i);
-            if(layer instanceof NGWVectorLayer)
-            {
-                ngwVectorLayer = (NGWVectorLayer)layer;
+            if (layer instanceof NGWVectorLayer) {
+                ngwVectorLayer = (NGWVectorLayer) layer;
             }
         }
-        if(null != ngwVectorLayer) {
-            Uri uri = Uri.parse("content://" + FoclSettingsConstantsUI.AUTHORITY + "/" + ngwVectorLayer.getPath().getName() + "/36/attach");
-        *//*
-
+        if (null != ngwVectorLayer) {
+            Uri uri = Uri.parse(
+                    "content://" + FoclSettingsConstantsUI.AUTHORITY + "/" +
+                    ngwVectorLayer.getPath().getName() + "/36/attach");
+*/
 
         Uri uri = Uri.parse(
                 "content://" + FoclSettingsConstantsUI.AUTHORITY +
@@ -663,20 +689,21 @@ public class MainActivity
     void testAttachUpdate()
     {
         IGISApplication application = (IGISApplication) getApplication();
-        */
-/*MapBase map = application.getMap();
+
+/*
+        MapBase map = application.getMap();
         NGWVectorLayer ngwVectorLayer = null;
-        for(int i = 0; i < map.getLayerCount(); i++){
+        for (int i = 0; i < map.getLayerCount(); i++) {
             ILayer layer = map.getLayer(i);
-            if(layer instanceof NGWVectorLayer)
-            {
-                ngwVectorLayer = (NGWVectorLayer)layer;
+            if (layer instanceof NGWVectorLayer) {
+                ngwVectorLayer = (NGWVectorLayer) layer;
             }
         }
-        if(null != ngwVectorLayer) {
-            Uri updateUri = Uri.parse("content://" + SettingsConstants.AUTHORITY + "/" +
-                                      ngwVectorLayer.getPath().getName() + "/36/attach/1000");
-        *//*
+        if (null != ngwVectorLayer) {
+            Uri updateUri = Uri.parse(
+                    "content://" + SettingsConstants.AUTHORITY + "/" +
+                    ngwVectorLayer.getPath().getName() + "/36/attach/1000");
+*/
 
         Uri updateUri = Uri.parse(
                 "content://" + FoclSettingsConstantsUI.AUTHORITY +
@@ -699,20 +726,21 @@ public class MainActivity
     void testAttachDelete()
     {
         IGISApplication application = (IGISApplication) getApplication();
-        */
-/*MapBase map = application.getMap();
+
+/*
+        MapBase map = application.getMap();
         NGWVectorLayer ngwVectorLayer = null;
-        for(int i = 0; i < map.getLayerCount(); i++){
+        for (int i = 0; i < map.getLayerCount(); i++) {
             ILayer layer = map.getLayer(i);
-            if(layer instanceof NGWVectorLayer)
-            {
-                ngwVectorLayer = (NGWVectorLayer)layer;
+            if (layer instanceof NGWVectorLayer) {
+                ngwVectorLayer = (NGWVectorLayer) layer;
             }
         }
-        if(null != ngwVectorLayer) {
-            Uri deleteUri = Uri.parse("content://" + SettingsConstants.AUTHORITY + "/" +
-                                ngwVectorLayer.getPath().getName() + "/36/attach/1000");
-        *//*
+        if (null != ngwVectorLayer) {
+            Uri deleteUri = Uri.parse(
+                    "content://" + SettingsConstants.AUTHORITY + "/" +
+                    ngwVectorLayer.getPath().getName() + "/36/attach/1000");
+*/
 
         Uri deleteUri = Uri.parse(
                 "content://" + FoclSettingsConstantsUI.AUTHORITY +
@@ -725,5 +753,4 @@ public class MainActivity
         }
         //}
     }
-*/
 }
