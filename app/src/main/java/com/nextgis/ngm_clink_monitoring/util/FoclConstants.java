@@ -54,4 +54,7 @@ public interface FoclConstants
     public static final String FOCL_DEFAULT_ACCOUNT_URL = "http://176.9.38.120/cl2";
 
     public static final long DEFAULT_SYNC_PERIOD_SEC_LONG = 300;
+
+    public static final int PHOTO_MAX_SIZE_PX           = 640;
+    public static final int PHOTO_JPEG_COMPRESS_QUALITY = 75;
 }

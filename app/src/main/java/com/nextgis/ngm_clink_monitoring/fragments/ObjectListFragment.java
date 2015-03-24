@@ -190,7 +190,8 @@ public class ObjectListFragment
         }
 
         objectStatusFragment.setParams(
-                mFoclStructLayerType, null, mLineNameText, mObjectLayerName, mObjectCursor);
+                getActivity(), mFoclStructLayerType, null, mLineNameText, mObjectLayerName,
+                mObjectCursor);
 
         ft.replace(R.id.main_fragment, objectStatusFragment, "ObjectStatus");
         ft.addToBackStack(null);

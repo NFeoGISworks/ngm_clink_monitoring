@@ -25,8 +25,12 @@ package com.nextgis.ngm_clink_monitoring.fragments;
 import android.app.Activity;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -56,17 +60,20 @@ import com.nextgis.ngm_clink_monitoring.util.LocationUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
+
+import static com.nextgis.maplib.util.Constants.TAG;
 
 
 public class ObjectStatusFragment
         extends Fragment
 {
     protected static final int REQUEST_TAKE_PHOTO = 1;
+
+    protected Context mContext;
 
     protected TextView     mLineName;
     protected TextView     mObjectNameCaption;
@@ -86,19 +93,20 @@ public class ObjectStatusFragment
 
     protected String mObjectStatus = FoclConstants.FIELD_VALUE_UNKNOWN;
 
-    protected List<String>       mPhotoList;
     protected ObjectPhotoAdapter mObjectPhotoAdapter;
 
     protected String mCurrentPhotoPath = null;
 
 
     public void setParams(
+            Context context,
             Integer foclStructLayerType,
             Integer lineId,
             String lineName,
             String objectLayerName,
             Cursor objectCursor)
     {
+        mContext = context;
         mFoclStructLayerType = foclStructLayerType;
         mLineNameText = lineName;
 
@@ -125,8 +133,6 @@ public class ObjectStatusFragment
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
 
-        mPhotoList = new ArrayList<>();
-
         // TODO
 /*
         if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
@@ -146,8 +152,6 @@ public class ObjectStatusFragment
             }
         }
 */
-
-        mObjectPhotoAdapter = new ObjectPhotoAdapter(getActivity(), mPhotoList);
     }
 
 
@@ -356,8 +360,9 @@ public class ObjectStatusFragment
                         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
                         // Ensure that there's a camera activity to handle the intent
-                        if (cameraIntent.resolveActivity(getActivity().getPackageManager()) !=
-                            null) {
+                        if (null !=
+                                cameraIntent.resolveActivity(getActivity().getPackageManager())) {
+
                             File photoFile = null;
 
                             try {
@@ -383,31 +388,12 @@ public class ObjectStatusFragment
                 new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
 
         mPhotoGallery.setLayoutManager(layoutManager);
-        mPhotoGallery.setAdapter(mObjectPhotoAdapter);
         mPhotoGallery.setHasFixedSize(true);
+        setPhotoGalleryAdapter();
 
         setPhotoGalleryVisibility(true);
 
         return view;
-    }
-
-
-    protected void setPhotoGalleryVisibility(boolean visible)
-    {
-        if (visible) {
-            if (mPhotoList.size() > 0) {
-                mPhotoHintText.setVisibility(View.GONE);
-                mPhotoGallery.setVisibility(View.VISIBLE);
-            } else {
-                if (mPhotoList.size() > 0) {
-                    mPhotoHintText.setVisibility(View.VISIBLE);
-                    mPhotoGallery.setVisibility(View.GONE);
-                }
-            }
-        } else {
-            mPhotoHintText.setVisibility(View.GONE);
-            mPhotoGallery.setVisibility(View.GONE);
-        }
     }
 
 
@@ -440,6 +426,39 @@ public class ObjectStatusFragment
     }
 
 
+    private void setPhotoGalleryAdapter()
+    {
+        Uri attachesUri = Uri.parse(
+                "content://" + FoclSettingsConstantsUI.AUTHORITY + "/" + mObjectLayerName + "/" +
+                        mObjectId + "/attach");
+
+        String proj[] = {VectorLayer.ATTACH_ID};
+
+        Cursor attachesCursor =
+                mContext.getContentResolver().query(attachesUri, proj, null, null, null);
+
+        mObjectPhotoAdapter = new ObjectPhotoAdapter(mContext, attachesUri, attachesCursor);
+        mPhotoGallery.setAdapter(mObjectPhotoAdapter);
+    }
+
+
+    protected void setPhotoGalleryVisibility(boolean visible)
+    {
+        if (visible) {
+            if (mObjectPhotoAdapter.getItemCount() > 0) {
+                mPhotoHintText.setVisibility(View.GONE);
+                mPhotoGallery.setVisibility(View.VISIBLE);
+            } else {
+                mPhotoHintText.setVisibility(View.VISIBLE);
+                mPhotoGallery.setVisibility(View.GONE);
+            }
+        } else {
+            mPhotoHintText.setVisibility(View.GONE);
+            mPhotoGallery.setVisibility(View.GONE);
+        }
+    }
+
+
     @Override
     public void onActivityResult(
             int requestCode,
@@ -449,16 +468,51 @@ public class ObjectStatusFragment
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
             GISApplication app = (GISApplication) getActivity().getApplication();
 
+            File photoFile = new File(mCurrentPhotoPath);
+
             try {
-                LocationUtil.writeLocationToExif(
-                        new File(mCurrentPhotoPath), app.getCurrentLocation());
+                LocationUtil.writeLocationToExif(photoFile, app.getCurrentLocation());
             } catch (IOException e) {
+                // TODO: work of error
                 e.printStackTrace();
             }
 
-            mPhotoList.add(mCurrentPhotoPath);
-            mObjectPhotoAdapter.notifyDataSetChanged();
+            Uri uri = Uri.parse(
+                    "content://" + FoclSettingsConstantsUI.AUTHORITY +
+                            "/" + mObjectLayerName + "/" + mObjectId + "/attach");
 
+            ContentValues values = new ContentValues();
+            values.put(VectorLayer.ATTACH_DISPLAY_NAME, photoFile.getName());
+            values.put(VectorLayer.ATTACH_MIME_TYPE, "image/jpeg");
+            values.put(VectorLayer.ATTACH_DESCRIPTION, photoFile.getName());
+
+            Uri result = getActivity().getContentResolver().insert(uri, values);
+
+            if (result == null) {
+                Log.d(TAG, "insert attach failed");
+
+            } else {
+
+                try {
+                    OutputStream outStream = getActivity().getContentResolver().openOutputStream(
+                            result);
+                    Bitmap sourceBitmap = BitmapFactory.decodeFile(photoFile.getPath());
+                    sourceBitmap = getResizedBitmap(
+                            sourceBitmap, FoclConstants.PHOTO_MAX_SIZE_PX,
+                            FoclConstants.PHOTO_MAX_SIZE_PX);
+                    sourceBitmap.compress(
+                            Bitmap.CompressFormat.JPEG, FoclConstants.PHOTO_JPEG_COMPRESS_QUALITY,
+                            outStream);
+                    outStream.close();
+                } catch (IOException e) {
+                    // TODO: work of error
+                    e.printStackTrace();
+                }
+
+                Log.d(TAG, result.toString());
+            }
+
+            setPhotoGalleryAdapter();
             setPhotoGalleryVisibility(true);
         }
     }
@@ -504,5 +558,33 @@ public class ObjectStatusFragment
         emptyFile.createNewFile();
 
         return emptyFile;
+    }
+
+
+    public Bitmap getResizedBitmap(
+            Bitmap bm,
+            int newWidth,
+            int newHeight)
+    {
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+
+        if (scaleWidth < scaleHeight) {
+            scaleHeight = scaleWidth;
+        } else {
+            scaleWidth = scaleHeight;
+        }
+
+        // create a matrix for the manipulation
+        Matrix matrix = new Matrix();
+        // resize the bit map
+        matrix.postScale(scaleWidth, scaleHeight);
+
+        // "recreate" the new bitmap
+        Bitmap resizedBitmap = Bitmap.createBitmap(bm, 0, 0, width, height, matrix, false);
+        bm.recycle();
+        return resizedBitmap;
     }
 }

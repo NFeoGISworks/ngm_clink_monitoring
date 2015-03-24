@@ -22,17 +22,26 @@
 
 package com.nextgis.ngm_clink_monitoring.adapters;
 
+import android.content.ContentUris;
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import com.nextgis.maplib.map.VectorLayer;
+import com.nextgis.maplib.util.Constants;
 import com.nextgis.ngm_clink_monitoring.R;
 
-import java.util.List;
+import java.io.BufferedInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 
 
 public class ObjectPhotoAdapter
@@ -41,16 +50,19 @@ public class ObjectPhotoAdapter
     protected static final int IMAGE_SIZE_DP = 100;
     protected final int IMAGE_SIZE_PX;
 
-    protected Context      mContext;
-    protected List<String> mImagePathList;
+    protected Context mContext;
+    protected Cursor  mAttachesCursor;
+    protected Uri     mAttachesUri;
 
 
     public ObjectPhotoAdapter(
             Context context,
-            List<String> imagePathList)
+            Uri attachesUri,
+            Cursor attachesCursor)
     {
         mContext = context;
-        mImagePathList = imagePathList;
+        mAttachesUri = attachesUri;
+        mAttachesCursor = attachesCursor;
 
         IMAGE_SIZE_PX = (int) (IMAGE_SIZE_DP * mContext.getResources().getDisplayMetrics().density);
     }
@@ -59,7 +71,7 @@ public class ObjectPhotoAdapter
     @Override
     public ObjectPhotoAdapter.ViewHolder onCreateViewHolder(
             ViewGroup viewGroup,
-            int i)
+            int viewType)
     {
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.item_object_photo, viewGroup, false);
@@ -71,48 +83,85 @@ public class ObjectPhotoAdapter
     @Override
     public void onBindViewHolder(
             ViewHolder viewHolder,
-            int i)
+            int position)
     {
         ViewGroup.LayoutParams layoutParams = viewHolder.mImageView.getLayoutParams();
         layoutParams.height = IMAGE_SIZE_PX;
         layoutParams.width = IMAGE_SIZE_PX;
 
         viewHolder.mImageView.setLayoutParams(layoutParams);
-        viewHolder.mImageView.setImageBitmap(createImagePreview(mImagePathList.get(i)));
+        viewHolder.mImageView.setImageBitmap(createImagePreview(getAttachInputStream(position)));
     }
 
 
     public long getItemId(int position)
     {
-        return position;
+        if (null == mAttachesCursor) {
+            return -1;
+        }
+
+        mAttachesCursor.moveToPosition(position);
+        return mAttachesCursor.getLong(mAttachesCursor.getColumnIndex(VectorLayer.ATTACH_ID));
     }
 
 
     @Override
     public int getItemCount()
     {
-        return mImagePathList.size();
+        return (mAttachesCursor == null) ? 0 : mAttachesCursor.getCount();
     }
 
 
-    protected Bitmap createImagePreview(String imagePath)
+    private InputStream getAttachInputStream(int position)
     {
-        int targetW = IMAGE_SIZE_PX;
-        int targetH = IMAGE_SIZE_PX;
+        Uri attachUri = ContentUris.withAppendedId(mAttachesUri, getItemId(position));
+        InputStream inputStream;
 
+        try {
+            inputStream = mContext.getContentResolver().openInputStream(attachUri);
+
+        } catch (FileNotFoundException e) {
+            Log.d(Constants.TAG, "position = " + position + ", ERROR: " + e.getLocalizedMessage());
+            return null;
+        }
+
+        Log.d(Constants.TAG, "position = " + position + ", URI = " + attachUri.toString());
+        return inputStream;
+    }
+
+
+    protected Bitmap createImagePreview(InputStream inputStream)
+    {
+        BufferedInputStream bis = new BufferedInputStream(inputStream);
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        bmOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(imagePath, bmOptions);
-        int photoW = bmOptions.outWidth;
-        int photoH = bmOptions.outHeight;
+        Bitmap bitmap = null;
 
-        int scaleFactor = Math.min(photoW / targetW, photoH / targetH);
+        try {
+            bis.mark(bis.available());
 
-        bmOptions.inJustDecodeBounds = false;
-        bmOptions.inSampleSize = scaleFactor;
-        bmOptions.inPurgeable = true;
+            int targetW = IMAGE_SIZE_PX;
+            int targetH = IMAGE_SIZE_PX;
 
-        return BitmapFactory.decodeFile(imagePath, bmOptions);
+            bmOptions.inJustDecodeBounds = true;
+            BitmapFactory.decodeStream(bis, null, bmOptions);
+            int photoW = bmOptions.outWidth;
+            int photoH = bmOptions.outHeight;
+
+            int scaleFactor = Math.min(photoW / targetW, photoH / targetH);
+
+            bmOptions.inJustDecodeBounds = false;
+            bmOptions.inSampleSize = scaleFactor;
+            bmOptions.inPurgeable = true;
+
+            bis.reset();
+            bitmap = BitmapFactory.decodeStream(bis, null, bmOptions);
+            bis.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return bitmap;
     }
 
 

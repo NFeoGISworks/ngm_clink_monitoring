@@ -149,7 +149,7 @@ public class LineListFragment
             }
 
             objectMeasureFragment.setParams(
-                    mFoclStructLayerType, mLineId, mLineNameText, null, null);
+                    getActivity(), mFoclStructLayerType, mLineId, mLineNameText, null, null);
 
             ft.replace(R.id.main_fragment, objectMeasureFragment, "ObjectMeasure");
 
