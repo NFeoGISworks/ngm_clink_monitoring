@@ -436,13 +436,14 @@ public class ObjectStatusFragment
                 "content://" + FoclSettingsConstantsUI.AUTHORITY + "/" + mObjectLayerName + "/" +
                         mObjectId + "/attach");
 
-        String proj[] = {VectorLayer.ATTACH_ID};
+        String proj[] = {VectorLayer.ATTACH_ID, VectorLayer.ATTACH_DISPLAY_NAME};
+        String orderBy = VectorLayer.ATTACH_DISPLAY_NAME;
 
         Cursor attachesCursor =
-                mContext.getContentResolver().query(attachesUri, proj, null, null, null);
+                mContext.getContentResolver().query(attachesUri, proj, null, null, orderBy);
 
         mObjectPhotoAdapter = new ObjectPhotoAdapter(mContext, attachesUri, attachesCursor);
-        mPhotoGallery.setAdapter(mObjectPhotoAdapter);
+        mPhotoGallery.swapAdapter(mObjectPhotoAdapter, false);
     }
 
 

@@ -90,10 +90,19 @@ public class ObjectPhotoAdapter
         layoutParams.width = IMAGE_SIZE_PX;
 
         viewHolder.mImageView.setLayoutParams(layoutParams);
-        viewHolder.mImageView.setImageBitmap(createImagePreview(getAttachInputStream(position)));
+
+        InputStream attachInputStream = getAttachInputStream(position);
+        viewHolder.mImageView.setImageBitmap(createImagePreview(attachInputStream));
+
+        try {
+            attachInputStream.close();
+        } catch (IOException e) {
+            Log.d(Constants.TAG, e.getLocalizedMessage());
+        }
     }
 
 
+    @Override
     public long getItemId(int position)
     {
         if (null == mAttachesCursor) {
