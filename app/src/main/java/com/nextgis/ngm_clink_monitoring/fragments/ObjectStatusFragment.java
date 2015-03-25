@@ -56,10 +56,13 @@ import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 import com.nextgis.ngm_clink_monitoring.map.FoclStruct;
 import com.nextgis.ngm_clink_monitoring.map.FoclVectorLayer;
 import com.nextgis.ngm_clink_monitoring.util.BitmapUtil;
+import com.nextgis.ngm_clink_monitoring.util.FileUtil;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
@@ -502,24 +505,17 @@ public class ObjectStatusFragment
                     Bitmap rotatedBitmap = BitmapUtil.rotateBitmap(resizedBitmap, exifOrientation);
 
                     // jpeg compress
-                    OutputStream attachOutStream = contentResolver.openOutputStream(attachUri);
+                    File tempPhotoFile = File.createTempFile("attach", null, app.getCacheDir());
+                    OutputStream tempOutStream = new FileOutputStream(tempPhotoFile);
                     rotatedBitmap.compress(
                             Bitmap.CompressFormat.JPEG, FoclConstants.PHOTO_JPEG_COMPRESS_QUALITY,
-                            attachOutStream);
-                    attachOutStream.close();
-
-                    // get file path of new file
-                    String proj[] = {VectorLayer.ATTACH_ID, VectorLayer.ATTACH_DATA};
-                    Cursor attachCursor = contentResolver.query(attachUri, proj, null, null, null);
-                    attachCursor.moveToFirst();
-                    int column_index = attachCursor.getColumnIndex(VectorLayer.ATTACH_DATA);
-
-                    File dstPhotoFile = new File(attachCursor.getString(column_index));
+                            tempOutStream);
+                    tempOutStream.close();
 
                     // write EXIF to new file
-                    BitmapUtil.copyExifData(srcPhotoFile, dstPhotoFile);
+                    BitmapUtil.copyExifData(srcPhotoFile, tempPhotoFile);
 
-                    ExifInterface dstExif = new ExifInterface(dstPhotoFile.getCanonicalPath());
+                    ExifInterface dstExif = new ExifInterface(tempPhotoFile.getCanonicalPath());
 
                     dstExif.setAttribute(
                             ExifInterface.TAG_ORIENTATION, "" + ExifInterface.ORIENTATION_NORMAL);
@@ -531,7 +527,13 @@ public class ObjectStatusFragment
                     dstExif.saveAttributes();
 
                     rotatedBitmap.recycle();
-                    attachCursor.close();
+
+                    // attach data from tempPhotoFile
+                    OutputStream attachOutStream = contentResolver.openOutputStream(attachUri);
+                    FileUtil.copy(new FileInputStream(srcPhotoFile), attachOutStream);
+                    attachOutStream.close();
+
+                    tempPhotoFile.delete();
 
                 } catch (IOException e) {
                     // TODO: work of error
