@@ -26,6 +26,7 @@ import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.location.Location;
 import android.media.ExifInterface;
+import android.os.Build;
 
 import java.io.File;
 import java.io.IOException;
@@ -163,5 +164,132 @@ public class BitmapUtil
         exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, lon > 0 ? "E" : "W");
 
         exif.saveAttributes();
+    }
+
+
+    public static void copyExifData(
+            File srcImgFile,
+            File dstImgFile)
+            throws IOException
+    {
+        ExifInterface srcExif = new ExifInterface(srcImgFile.getCanonicalPath());
+        ExifInterface dstExif = new ExifInterface(dstImgFile.getCanonicalPath());
+
+        int buildSDKVersion = Build.VERSION.SDK_INT;
+
+        // From API 11
+        if (buildSDKVersion >= Build.VERSION_CODES.HONEYCOMB) {
+            if (srcExif.getAttribute(ExifInterface.TAG_APERTURE) != null) {
+                dstExif.setAttribute(
+                        ExifInterface.TAG_APERTURE,
+                        srcExif.getAttribute(ExifInterface.TAG_APERTURE));
+            }
+            if (srcExif.getAttribute(ExifInterface.TAG_EXPOSURE_TIME) != null) {
+                dstExif.setAttribute(
+                        ExifInterface.TAG_EXPOSURE_TIME,
+                        srcExif.getAttribute(ExifInterface.TAG_EXPOSURE_TIME));
+            }
+            if (srcExif.getAttribute(ExifInterface.TAG_ISO) != null) {
+                dstExif.setAttribute(
+                        ExifInterface.TAG_ISO, srcExif.getAttribute(ExifInterface.TAG_ISO));
+            }
+        }
+
+        // From API 9
+        if (buildSDKVersion >= Build.VERSION_CODES.GINGERBREAD) {
+            if (srcExif.getAttribute(ExifInterface.TAG_GPS_ALTITUDE) != null) {
+                dstExif.setAttribute(
+                        ExifInterface.TAG_GPS_ALTITUDE,
+                        srcExif.getAttribute(ExifInterface.TAG_GPS_ALTITUDE));
+            }
+            if (srcExif.getAttribute(ExifInterface.TAG_GPS_ALTITUDE_REF) != null) {
+                dstExif.setAttribute(
+                        ExifInterface.TAG_GPS_ALTITUDE_REF,
+                        srcExif.getAttribute(ExifInterface.TAG_GPS_ALTITUDE_REF));
+            }
+        }
+
+        // From API 8
+        if (buildSDKVersion >= Build.VERSION_CODES.FROYO) {
+            if (srcExif.getAttribute(ExifInterface.TAG_FOCAL_LENGTH) != null) {
+                dstExif.setAttribute(
+                        ExifInterface.TAG_FOCAL_LENGTH,
+                        srcExif.getAttribute(ExifInterface.TAG_FOCAL_LENGTH));
+            }
+            if (srcExif.getAttribute(ExifInterface.TAG_GPS_DATESTAMP) != null) {
+                dstExif.setAttribute(
+                        ExifInterface.TAG_GPS_DATESTAMP,
+                        srcExif.getAttribute(ExifInterface.TAG_GPS_DATESTAMP));
+            }
+            if (srcExif.getAttribute(ExifInterface.TAG_GPS_PROCESSING_METHOD) != null) {
+                dstExif.setAttribute(
+                        ExifInterface.TAG_GPS_PROCESSING_METHOD,
+                        srcExif.getAttribute(ExifInterface.TAG_GPS_PROCESSING_METHOD));
+            }
+            if (srcExif.getAttribute(ExifInterface.TAG_GPS_TIMESTAMP) != null) {
+                dstExif.setAttribute(
+                        ExifInterface.TAG_GPS_TIMESTAMP,
+                        srcExif.getAttribute(ExifInterface.TAG_GPS_TIMESTAMP));
+            }
+        }
+
+        if (srcExif.getAttribute(ExifInterface.TAG_DATETIME) != null) {
+            dstExif.setAttribute(
+                    ExifInterface.TAG_DATETIME, srcExif.getAttribute(ExifInterface.TAG_DATETIME));
+        }
+        if (srcExif.getAttribute(ExifInterface.TAG_FLASH) != null) {
+            dstExif.setAttribute(
+                    ExifInterface.TAG_FLASH, srcExif.getAttribute(ExifInterface.TAG_FLASH));
+        }
+        if (srcExif.getAttribute(ExifInterface.TAG_GPS_LATITUDE) != null) {
+            dstExif.setAttribute(
+                    ExifInterface.TAG_GPS_LATITUDE,
+                    srcExif.getAttribute(ExifInterface.TAG_GPS_LATITUDE));
+        }
+        if (srcExif.getAttribute(ExifInterface.TAG_GPS_LATITUDE_REF) != null) {
+            dstExif.setAttribute(
+                    ExifInterface.TAG_GPS_LATITUDE_REF,
+                    srcExif.getAttribute(ExifInterface.TAG_GPS_LATITUDE_REF));
+        }
+        if (srcExif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE) != null) {
+            dstExif.setAttribute(
+                    ExifInterface.TAG_GPS_LONGITUDE,
+                    srcExif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE));
+        }
+        if (srcExif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF) != null) {
+            dstExif.setAttribute(
+                    ExifInterface.TAG_GPS_LONGITUDE_REF,
+                    srcExif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF));
+        }
+        if (srcExif.getAttribute(ExifInterface.TAG_IMAGE_LENGTH) != null) {
+            dstExif.setAttribute(
+                    ExifInterface.TAG_IMAGE_LENGTH,
+                    srcExif.getAttribute(ExifInterface.TAG_IMAGE_LENGTH));
+        }
+        if (srcExif.getAttribute(ExifInterface.TAG_IMAGE_WIDTH) != null) {
+            dstExif.setAttribute(
+                    ExifInterface.TAG_IMAGE_WIDTH,
+                    srcExif.getAttribute(ExifInterface.TAG_IMAGE_WIDTH));
+        }
+        if (srcExif.getAttribute(ExifInterface.TAG_MAKE) != null) {
+            dstExif.setAttribute(
+                    ExifInterface.TAG_MAKE, srcExif.getAttribute(ExifInterface.TAG_MAKE));
+        }
+        if (srcExif.getAttribute(ExifInterface.TAG_MODEL) != null) {
+            dstExif.setAttribute(
+                    ExifInterface.TAG_MODEL, srcExif.getAttribute(ExifInterface.TAG_MODEL));
+        }
+        if (srcExif.getAttribute(ExifInterface.TAG_ORIENTATION) != null) {
+            dstExif.setAttribute(
+                    ExifInterface.TAG_ORIENTATION,
+                    srcExif.getAttribute(ExifInterface.TAG_ORIENTATION));
+        }
+        if (srcExif.getAttribute(ExifInterface.TAG_WHITE_BALANCE) != null) {
+            dstExif.setAttribute(
+                    ExifInterface.TAG_WHITE_BALANCE,
+                    srcExif.getAttribute(ExifInterface.TAG_WHITE_BALANCE));
+        }
+
+        dstExif.saveAttributes();
     }
 }

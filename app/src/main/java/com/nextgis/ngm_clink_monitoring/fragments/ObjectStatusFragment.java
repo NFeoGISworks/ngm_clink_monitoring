@@ -23,6 +23,7 @@
 package com.nextgis.ngm_clink_monitoring.fragments;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
@@ -30,6 +31,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -466,52 +468,77 @@ public class ObjectStatusFragment
     {
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
             GISApplication app = (GISApplication) getActivity().getApplication();
-            File photoFile = new File(mCurrentPhotoPath);
+            ContentResolver contentResolver = app.getContentResolver();
+            File srcPhotoFile = new File(mCurrentPhotoPath);
 
             try {
-                BitmapUtil.writeLocationToExif(photoFile, app.getCurrentLocation());
+                BitmapUtil.writeLocationToExif(srcPhotoFile, app.getCurrentLocation());
             } catch (IOException e) {
                 // TODO: work of error
                 e.printStackTrace();
             }
 
-            Uri uri = Uri.parse(
+            Uri allAttachesUri = Uri.parse(
                     "content://" + FoclSettingsConstantsUI.AUTHORITY +
                             "/" + mObjectLayerName + "/" + mObjectId + "/attach");
 
             ContentValues values = new ContentValues();
-            values.put(VectorLayer.ATTACH_DISPLAY_NAME, photoFile.getName());
+            values.put(VectorLayer.ATTACH_DISPLAY_NAME, srcPhotoFile.getName());
             values.put(VectorLayer.ATTACH_MIME_TYPE, "image/jpeg");
-            values.put(VectorLayer.ATTACH_DESCRIPTION, photoFile.getName());
+            values.put(VectorLayer.ATTACH_DESCRIPTION, srcPhotoFile.getName());
 
-            Uri result = getActivity().getContentResolver().insert(uri, values);
+            Uri attachUri = contentResolver.insert(allAttachesUri, values);
 
-            if (null != result) {
+            if (null != attachUri) {
 
                 try {
-                    int exifOrientation = BitmapUtil.getOrientationFromExif(photoFile);
+                    int exifOrientation = BitmapUtil.getOrientationFromExif(srcPhotoFile);
 
-                    Bitmap sourceBitmap = BitmapFactory.decodeFile(photoFile.getPath());
+                    // resize and rotate
+                    Bitmap sourceBitmap = BitmapFactory.decodeFile(srcPhotoFile.getPath());
                     Bitmap resizedBitmap = BitmapUtil.getResizedBitmap(
                             sourceBitmap, FoclConstants.PHOTO_MAX_SIZE_PX,
                             FoclConstants.PHOTO_MAX_SIZE_PX);
                     Bitmap rotatedBitmap = BitmapUtil.rotateBitmap(resizedBitmap, exifOrientation);
 
-                    OutputStream attachOutStream =
-                            getActivity().getContentResolver().openOutputStream(result);
+                    // jpeg compress
+                    OutputStream attachOutStream = contentResolver.openOutputStream(attachUri);
                     rotatedBitmap.compress(
                             Bitmap.CompressFormat.JPEG, FoclConstants.PHOTO_JPEG_COMPRESS_QUALITY,
                             attachOutStream);
                     attachOutStream.close();
 
+                    // get file path of new file
+                    String proj[] = {VectorLayer.ATTACH_ID, VectorLayer.ATTACH_DATA};
+                    Cursor attachCursor = contentResolver.query(attachUri, proj, null, null, null);
+                    attachCursor.moveToFirst();
+                    int column_index = attachCursor.getColumnIndex(VectorLayer.ATTACH_DATA);
+
+                    File dstPhotoFile = new File(attachCursor.getString(column_index));
+
+                    // write EXIF to new file
+                    BitmapUtil.copyExifData(srcPhotoFile, dstPhotoFile);
+
+                    ExifInterface dstExif = new ExifInterface(dstPhotoFile.getCanonicalPath());
+
+                    dstExif.setAttribute(
+                            ExifInterface.TAG_ORIENTATION, "" + ExifInterface.ORIENTATION_NORMAL);
+                    dstExif.setAttribute(
+                            ExifInterface.TAG_IMAGE_LENGTH, "" + rotatedBitmap.getHeight());
+                    dstExif.setAttribute(
+                            ExifInterface.TAG_IMAGE_WIDTH, "" + rotatedBitmap.getWidth());
+
+                    dstExif.saveAttributes();
+
                     rotatedBitmap.recycle();
+                    attachCursor.close();
 
                 } catch (IOException e) {
                     // TODO: work of error
                     e.printStackTrace();
                 }
 
-                Log.d(TAG, result.toString());
+                Log.d(TAG, attachUri.toString());
 
             } else {
                 Log.d(TAG, "insert attach failed");
