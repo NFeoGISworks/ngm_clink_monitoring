@@ -30,7 +30,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -54,9 +53,9 @@ import com.nextgis.ngm_clink_monitoring.adapters.ObjectPhotoAdapter;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 import com.nextgis.ngm_clink_monitoring.map.FoclStruct;
 import com.nextgis.ngm_clink_monitoring.map.FoclVectorLayer;
+import com.nextgis.ngm_clink_monitoring.util.BitmapUtil;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
-import com.nextgis.ngm_clink_monitoring.util.LocationUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -339,11 +338,11 @@ public class ObjectStatusFragment
                 if (result == 0) {
                     Log.d(
                             Constants.TAG, "Layer: " + mObjectLayerName + ", id: " + mObjectId +
-                                           ", update FAILED");
+                                    ", update FAILED");
                 } else {
                     Log.d(
                             Constants.TAG, "Layer: " + mObjectLayerName + ", id: " + mObjectId +
-                                           ", update result: " + result);
+                                    ", update result: " + result);
                     setStatusButtonView(true);
                 }
             }
@@ -467,11 +466,10 @@ public class ObjectStatusFragment
     {
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
             GISApplication app = (GISApplication) getActivity().getApplication();
-
             File photoFile = new File(mCurrentPhotoPath);
 
             try {
-                LocationUtil.writeLocationToExif(photoFile, app.getCurrentLocation());
+                BitmapUtil.writeLocationToExif(photoFile, app.getCurrentLocation());
             } catch (IOException e) {
                 // TODO: work of error
                 e.printStackTrace();
@@ -488,28 +486,35 @@ public class ObjectStatusFragment
 
             Uri result = getActivity().getContentResolver().insert(uri, values);
 
-            if (result == null) {
-                Log.d(TAG, "insert attach failed");
-
-            } else {
+            if (null != result) {
 
                 try {
-                    OutputStream outStream = getActivity().getContentResolver().openOutputStream(
-                            result);
+                    int exifOrientation = BitmapUtil.getOrientationFromExif(photoFile);
+
                     Bitmap sourceBitmap = BitmapFactory.decodeFile(photoFile.getPath());
-                    sourceBitmap = getResizedBitmap(
+                    Bitmap resizedBitmap = BitmapUtil.getResizedBitmap(
                             sourceBitmap, FoclConstants.PHOTO_MAX_SIZE_PX,
                             FoclConstants.PHOTO_MAX_SIZE_PX);
-                    sourceBitmap.compress(
+                    Bitmap rotatedBitmap = BitmapUtil.rotateBitmap(resizedBitmap, exifOrientation);
+
+                    OutputStream attachOutStream =
+                            getActivity().getContentResolver().openOutputStream(result);
+                    rotatedBitmap.compress(
                             Bitmap.CompressFormat.JPEG, FoclConstants.PHOTO_JPEG_COMPRESS_QUALITY,
-                            outStream);
-                    outStream.close();
+                            attachOutStream);
+                    attachOutStream.close();
+
+                    rotatedBitmap.recycle();
+
                 } catch (IOException e) {
                     // TODO: work of error
                     e.printStackTrace();
                 }
 
                 Log.d(TAG, result.toString());
+
+            } else {
+                Log.d(TAG, "insert attach failed");
             }
 
             setPhotoGalleryAdapter();
@@ -558,33 +563,5 @@ public class ObjectStatusFragment
         emptyFile.createNewFile();
 
         return emptyFile;
-    }
-
-
-    public Bitmap getResizedBitmap(
-            Bitmap bm,
-            int newWidth,
-            int newHeight)
-    {
-        int width = bm.getWidth();
-        int height = bm.getHeight();
-        float scaleWidth = ((float) newWidth) / width;
-        float scaleHeight = ((float) newHeight) / height;
-
-        if (scaleWidth < scaleHeight) {
-            scaleHeight = scaleWidth;
-        } else {
-            scaleWidth = scaleHeight;
-        }
-
-        // create a matrix for the manipulation
-        Matrix matrix = new Matrix();
-        // resize the bit map
-        matrix.postScale(scaleWidth, scaleHeight);
-
-        // "recreate" the new bitmap
-        Bitmap resizedBitmap = Bitmap.createBitmap(bm, 0, 0, width, height, matrix, false);
-        bm.recycle();
-        return resizedBitmap;
     }
 }
