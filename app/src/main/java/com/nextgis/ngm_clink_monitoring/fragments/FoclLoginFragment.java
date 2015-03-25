@@ -54,8 +54,10 @@ public class FoclLoginFragment
             @Nullable
             Bundle savedInstanceState)
     {
-        MainActivity activity = (MainActivity) getActivity();
-        activity.setBarsView(MainActivity.FT_LOGIN, null);
+        if (getActivity() instanceof MainActivity) {
+            MainActivity activity = (MainActivity) getActivity();
+            activity.setBarsView(MainActivity.FT_LOGIN, activity.getString(R.string.account_setup));
+        }
 
         View view = super.onCreateView(inflater, container, savedInstanceState);
         mURL.setText(FoclConstants.FOCL_DEFAULT_ACCOUNT_URL);
