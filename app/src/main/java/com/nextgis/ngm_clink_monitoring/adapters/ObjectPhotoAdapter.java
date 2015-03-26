@@ -28,6 +28,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -82,23 +83,43 @@ public class ObjectPhotoAdapter
 
     @Override
     public void onBindViewHolder(
-            ViewHolder viewHolder,
-            int position)
+            final ViewHolder viewHolder,
+            final int position)
     {
         ViewGroup.LayoutParams layoutParams = viewHolder.mImageView.getLayoutParams();
         layoutParams.height = IMAGE_SIZE_PX;
         layoutParams.width = IMAGE_SIZE_PX;
 
+        viewHolder.position = position;
         viewHolder.mImageView.setLayoutParams(layoutParams);
 
-        InputStream attachInputStream = getAttachInputStream(position);
-        viewHolder.mImageView.setImageBitmap(createImagePreview(attachInputStream));
+        new AsyncTask<Void, Void, Bitmap>()
+        {
+            @Override
+            protected Bitmap doInBackground(Void... params)
+            {
+                InputStream attachInputStream = getAttachInputStream(position);
+                Bitmap bitmap = createImagePreview(attachInputStream);
 
-        try {
-            attachInputStream.close();
-        } catch (IOException e) {
-            Log.d(Constants.TAG, e.getLocalizedMessage());
-        }
+                try {
+                    attachInputStream.close();
+                } catch (IOException e) {
+                    Log.d(Constants.TAG, e.getLocalizedMessage());
+                }
+
+                return bitmap;
+            }
+
+
+            @Override
+            protected void onPostExecute(Bitmap result)
+            {
+                super.onPostExecute(result);
+                if (viewHolder.position == position) {
+                    viewHolder.mImageView.setImageBitmap(result);
+                }
+            }
+        }.execute();
     }
 
 
@@ -177,6 +198,7 @@ public class ObjectPhotoAdapter
     public static class ViewHolder
             extends RecyclerView.ViewHolder
     {
+        public int       position;
         public ImageView mImageView;
 
 

@@ -98,6 +98,7 @@ public class ObjectStatusFragment
     protected String mObjectStatus = FoclConstants.FIELD_VALUE_UNKNOWN;
 
     protected ObjectPhotoAdapter mObjectPhotoAdapter;
+    protected Cursor mAttachesCursor;
 
     protected String mCurrentPhotoPath = null;
 
@@ -127,6 +128,8 @@ public class ObjectStatusFragment
             if (null == mObjectStatus) {
                 mObjectStatus = FoclConstants.FIELD_VALUE_UNKNOWN;
             }
+
+            objectCursor.close();
         }
     }
 
@@ -256,29 +259,36 @@ public class ObjectStatusFragment
 
             boolean found = false;
 
-            if (null != objectCursor && objectCursor.getCount() > 0) {
-                objectCursor.moveToFirst();
+            if (null != objectCursor) {
 
-                do {
-                    String typeEndpoint = objectCursor.getString(
-                            objectCursor.getColumnIndex(FoclConstants.FIELD_TYPE_ENDPOINT));
+                if (objectCursor.getCount() > 0) {
+                    objectCursor.moveToFirst();
 
-                    if (typeEndpoint.equals(FoclConstants.FIELD_VALUE_POINT_B)) {
-                        mObjectId = objectCursor.getLong(
-                                objectCursor.getColumnIndex(VectorLayer.FIELD_ID));
+                    do {
+                        String typeEndpoint = objectCursor.getString(
+                                objectCursor.getColumnIndex(FoclConstants.FIELD_TYPE_ENDPOINT));
 
-                        mObjectStatus = objectCursor.getString(
-                                objectCursor.getColumnIndex(FoclConstants.FIELD_STATUS_MEASURE));
+                        if (typeEndpoint.equals(FoclConstants.FIELD_VALUE_POINT_B)) {
+                            mObjectId = objectCursor.getLong(
+                                    objectCursor.getColumnIndex(VectorLayer.FIELD_ID));
 
-                        if (null == mObjectStatus) {
-                            mObjectStatus = FoclConstants.FIELD_VALUE_UNKNOWN;
+                            mObjectStatus = objectCursor.getString(
+                                    objectCursor.getColumnIndex(
+                                            FoclConstants.FIELD_STATUS_MEASURE));
+
+                            if (null == mObjectStatus) {
+                                mObjectStatus = FoclConstants.FIELD_VALUE_UNKNOWN;
+                            }
+
+                            found = true;
+                            break;
                         }
+                    } while (objectCursor.moveToNext());
+                }
 
-                        found = true;
-                        break;
-                    }
-                } while (objectCursor.moveToNext());
+                objectCursor.close();
             }
+
 
             setStatusButtonView(found);
             mMakePhotoButton.setEnabled(found);
@@ -401,6 +411,14 @@ public class ObjectStatusFragment
     }
 
 
+    @Override
+    public void onDestroyView()
+    {
+        mAttachesCursor.close();
+        super.onDestroyView();
+    }
+
+
     protected void setStatusButtonView(boolean enabled)
     {
         if (enabled) {
@@ -439,10 +457,10 @@ public class ObjectStatusFragment
         String proj[] = {VectorLayer.ATTACH_ID, VectorLayer.ATTACH_DISPLAY_NAME};
         String orderBy = VectorLayer.ATTACH_DISPLAY_NAME;
 
-        Cursor attachesCursor =
+        mAttachesCursor =
                 mContext.getContentResolver().query(attachesUri, proj, null, null, orderBy);
 
-        mObjectPhotoAdapter = new ObjectPhotoAdapter(mContext, attachesUri, attachesCursor);
+        mObjectPhotoAdapter = new ObjectPhotoAdapter(mContext, attachesUri, mAttachesCursor);
         mPhotoGallery.swapAdapter(mObjectPhotoAdapter, false);
     }
 

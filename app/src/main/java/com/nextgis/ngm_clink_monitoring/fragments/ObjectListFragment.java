@@ -58,6 +58,7 @@ public class ObjectListFragment
     protected String  mLineNameText;
     protected String  mObjectLayerName;
     protected Cursor  mObjectCursor;
+    protected Cursor  mAdapterCursor;
 
     protected Integer mFoclStructLayerType = FoclConstants.LAYERTYPE_FOCL_UNKNOWN;
 
@@ -143,9 +144,9 @@ public class ObjectListFragment
         String proj[] = {
                 VectorLayer.FIELD_ID, FoclConstants.FIELD_NAME, FoclConstants.FIELD_STATUS_BUILT};
 
-        Cursor cursor = getActivity().getContentResolver().query(uri, proj, null, null, null);
+        mAdapterCursor = getActivity().getContentResolver().query(uri, proj, null, null, null);
 
-        if (null != cursor && cursor.getCount() > 0) {
+        if (null != mAdapterCursor && mAdapterCursor.getCount() > 0) {
             mObjectList.setEnabled(true);
         } else {
             mObjectList.setEnabled(false);
@@ -155,7 +156,7 @@ public class ObjectListFragment
 
 
         ObjectCursorAdapter cursorAdapter = new ObjectCursorAdapter(
-                getActivity(), cursor, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+                getActivity(), mAdapterCursor, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
 
         mObjectList.setAdapter(cursorAdapter);
         mObjectList.setOnItemClickListener(
@@ -174,6 +175,14 @@ public class ObjectListFragment
                 });
 
         return view;
+    }
+
+
+    @Override
+    public void onDestroyView()
+    {
+        mAdapterCursor.close();
+        super.onDestroyView();
     }
 
 
