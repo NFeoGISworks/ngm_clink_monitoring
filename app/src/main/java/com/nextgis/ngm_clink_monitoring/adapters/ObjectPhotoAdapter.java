@@ -92,6 +92,7 @@ public class ObjectPhotoAdapter
 
         viewHolder.position = position;
         viewHolder.mImageView.setLayoutParams(layoutParams);
+        viewHolder.mImageView.setImageBitmap(null);
 
         new AsyncTask<Void, Void, Bitmap>()
         {
