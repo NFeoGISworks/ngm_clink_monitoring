@@ -45,12 +45,11 @@
     <color name="primary_dark_color">@color/color_900</color>
     <color name="accent_color">@color/color_2nd_500</color>
 
-    <color name="text_view_text_color">@color/color_900</color>
-    <color name="text_view_text_link_color">@color/color_2nd_500</color>
-
     <color name="primary_text_normal_color">@color/color_900</color>
     <color name="primary_text_inverse_color">@color/color_400</color>
     <color name="primary_text_disabled_color">@color/color_100</color>
+
+    <color name="secondary_text_normal_color">@color/color_2nd_500</color>
 
     <color name="button_normal_text_color">@color/color_50</color>
     <color name="button_normal_color_start">@color/color_500</color>
@@ -91,7 +90,7 @@
     <color name="selected_object_solid_color">@color/color_100</color>
     <color name="selected_object_stroke_color">@color/color_300</color>
 
-    <color name="photo_hint_text_color">@color/text_view_text_color</color>
+    <color name="photo_hint_text_color">@color/primary_text_normal_color</color>
     <color name="photo_hint_solid_color">@color/color_100</color>
     <color name="photo_hint_stroke_color">@color/color_300</color>
 
