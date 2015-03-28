@@ -40,6 +40,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -178,6 +179,8 @@ public class ObjectStatusFragment
         mPhotoHintText = (TextView) view.findViewById(R.id.photo_hint_text);
         mMakePhotoButton = (Button) view.findViewById(R.id.btn_make_photo);
         mPhotoGallery = (RecyclerView) view.findViewById(R.id.photo_gallery);
+
+        registerForContextMenu(mPhotoGallery);
 
         String toolbarTitle = "";
 
@@ -419,6 +422,42 @@ public class ObjectStatusFragment
     }
 
 
+    public boolean onContextItemSelected(MenuItem menuItem)
+    {
+        long itemId;
+
+        try {
+            itemId = ((ObjectPhotoAdapter) mPhotoGallery.getAdapter()).getSelectedItemId();
+
+        } catch (Exception e) {
+            Log.d(TAG, e.getLocalizedMessage());
+            return super.onContextItemSelected(menuItem);
+        }
+
+        switch (menuItem.getItemId()) {
+            case R.id.menu_delete_photo:
+                Uri deleteUri = Uri.parse(
+                        "content://" + FoclSettingsConstantsUI.AUTHORITY + "/" + mObjectLayerName +
+                                "/" + mObjectId + "/attach/" + itemId);
+
+                int result = getActivity().getContentResolver().delete(deleteUri, null, null);
+
+                if (result == 0) {
+                    Log.d(TAG, "delete failed");
+                } else {
+                    Log.d(TAG, "deleted " + result);
+                }
+
+                setPhotoGalleryAdapter();
+                setPhotoGalleryVisibility(true);
+
+                break;
+        }
+
+        return super.onContextItemSelected(menuItem);
+    }
+
+
     protected void setStatusButtonView(boolean enabled)
     {
         if (enabled) {
@@ -461,7 +500,7 @@ public class ObjectStatusFragment
                 mContext.getContentResolver().query(attachesUri, proj, null, null, orderBy);
 
         mObjectPhotoAdapter = new ObjectPhotoAdapter(mContext, attachesUri, mAttachesCursor);
-        mPhotoGallery.swapAdapter(mObjectPhotoAdapter, false);
+        mPhotoGallery.setAdapter(mObjectPhotoAdapter);
     }
 
 

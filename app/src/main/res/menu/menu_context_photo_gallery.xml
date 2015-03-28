@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--****************************************************************************
   * Project:  NextGIS mobile apps for Compulink
   * Purpose:  Mobile GIS for Android
@@ -28,43 +29,10 @@
     >
 
     <item
-        android:id="@+id/menu_map"
-        android:title="@string/action_map"
-        android:icon="@drawable/ic_action_map"
-        android:orderInCategory="0"
+        android:id="@+id/menu_delete_photo"
+        android:title="@string/action_delete_photo"
+        android:orderInCategory="1"
         app:showAsAction="never"
         />
-
-    <item
-        android:id="@+id/menu_sync"
-        android:title="@string/action_sync"
-        android:orderInCategory="10"
-        app:showAsAction="never"
-        />
-
-    <item
-        android:id="@+id/menu_settings"
-        android:title="@string/action_settings"
-        android:orderInCategory="100"
-        app:showAsAction="never"
-        />
-
-    <item
-        android:id="@+id/menu_about"
-        android:title="@string/action_about"
-        android:orderInCategory="100"
-        app:showAsAction="never"
-        />
-
-    <!--for debug-->
-
-    <!--
-        <item
-            android:id="@+id/menu_test"
-            android:title="test"
-            android:orderInCategory="100"
-            app:showAsAction="never"
-            />
-    -->
 
 </menu>

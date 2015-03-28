@@ -22,6 +22,7 @@
 
 package com.nextgis.ngm_clink_monitoring.adapters;
 
+import android.app.Activity;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
@@ -31,7 +32,9 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -54,6 +57,8 @@ public class ObjectPhotoAdapter
     protected Context mContext;
     protected Cursor  mAttachesCursor;
     protected Uri     mAttachesUri;
+    protected int  mSelectedItemPosition;
+    protected long mSelectedItemId;
 
 
     public ObjectPhotoAdapter(
@@ -77,7 +82,7 @@ public class ObjectPhotoAdapter
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.item_object_photo, viewGroup, false);
 
-        return new ViewHolder(view);
+        return new ViewHolder(mContext, view);
     }
 
 
@@ -90,9 +95,21 @@ public class ObjectPhotoAdapter
         layoutParams.height = IMAGE_SIZE_PX;
         layoutParams.width = IMAGE_SIZE_PX;
 
-        viewHolder.position = position;
+        viewHolder.mPosition = position;
         viewHolder.mImageView.setLayoutParams(layoutParams);
         viewHolder.mImageView.setImageBitmap(null);
+
+        viewHolder.itemView.setOnLongClickListener(
+                new View.OnLongClickListener()
+                {
+                    @Override
+                    public boolean onLongClick(View v)
+                    {
+                        setSelectedItemPosition(viewHolder.getAdapterPosition());
+                        setSelectedItemId(getItemId(viewHolder.getAdapterPosition()));
+                        return false;
+                    }
+                });
 
         new AsyncTask<Void, Void, Bitmap>()
         {
@@ -116,7 +133,7 @@ public class ObjectPhotoAdapter
             protected void onPostExecute(Bitmap result)
             {
                 super.onPostExecute(result);
-                if (viewHolder.position == position) {
+                if (viewHolder.mPosition == position) {
                     viewHolder.mImageView.setImageBitmap(result);
                 }
             }
@@ -196,17 +213,70 @@ public class ObjectPhotoAdapter
     }
 
 
+    public int getSelectedItemPosition()
+    {
+        return mSelectedItemPosition;
+    }
+
+
+    public void setSelectedItemPosition(int selectedItemPosition)
+    {
+        mSelectedItemPosition = selectedItemPosition;
+    }
+
+
+    public long getSelectedItemId()
+    {
+        return mSelectedItemId;
+    }
+
+
+    public void setSelectedItemId(long selectedItemId)
+    {
+        mSelectedItemId = selectedItemId;
+    }
+
+
     public static class ViewHolder
             extends RecyclerView.ViewHolder
+            implements View.OnClickListener, View.OnCreateContextMenuListener
     {
-        public int       position;
+        public int mPosition;
         public ImageView mImageView;
 
+        private Context mContext;
 
-        public ViewHolder(View itemView)
+
+        public ViewHolder(
+                Context context,
+                View itemView)
         {
             super(itemView);
+
+            mContext = context;
             mImageView = (ImageView) itemView.findViewById(R.id.photo_item);
+
+            itemView.setOnClickListener(this);
+            itemView.setOnCreateContextMenuListener(this);
+        }
+
+
+        @Override
+        public void onClick(View v)
+        {
+
+        }
+
+
+        @Override
+        public void onCreateContextMenu(
+                ContextMenu menu,
+                View v,
+                ContextMenu.ContextMenuInfo menuInfo)
+        {
+            MenuInflater inflater = ((Activity) mContext).getMenuInflater();
+            inflater.inflate(R.menu.menu_context_photo_gallery, menu);
+            menu.setHeaderTitle(R.string.select_action);
         }
     }
 }
