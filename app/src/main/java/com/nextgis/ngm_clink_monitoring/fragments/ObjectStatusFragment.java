@@ -435,6 +435,10 @@ public class ObjectStatusFragment
         }
 
         switch (menuItem.getItemId()) {
+            case R.id.menu_show_photo:
+                showPhoto(itemId);
+                break;
+
             case R.id.menu_delete_photo:
                 Uri deleteUri = Uri.parse(
                         "content://" + FoclSettingsConstantsUI.AUTHORITY + "/" + mObjectLayerName +
@@ -450,11 +454,31 @@ public class ObjectStatusFragment
 
                 setPhotoGalleryAdapter();
                 setPhotoGalleryVisibility(true);
-
                 break;
         }
 
         return super.onContextItemSelected(menuItem);
+    }
+
+
+    protected void showPhoto(long itemId)
+    {
+        Uri attachUri = Uri.parse(
+                "content://" + FoclSettingsConstantsUI.AUTHORITY + "/" + mObjectLayerName +
+                        "/" + mObjectId + "/attach/" + itemId);
+
+        // get file path of photo file
+        String proj[] = {VectorLayer.ATTACH_ID, VectorLayer.ATTACH_DATA};
+        Cursor attachCursor = getActivity().getContentResolver().query(
+                attachUri, proj, null, null, null);
+        attachCursor.moveToFirst();
+        int columnIndex = attachCursor.getColumnIndex(VectorLayer.ATTACH_DATA);
+
+        // show photo in system program
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(
+                Uri.parse("file://" + attachCursor.getString(columnIndex)), "image/*");
+        startActivity(intent);
     }
 
 
@@ -500,6 +524,17 @@ public class ObjectStatusFragment
                 mContext.getContentResolver().query(attachesUri, proj, null, null, orderBy);
 
         mObjectPhotoAdapter = new ObjectPhotoAdapter(mContext, attachesUri, mAttachesCursor);
+
+        mObjectPhotoAdapter.setOnPhotoClickListener(
+                new ObjectPhotoAdapter.OnPhotoClickListener()
+                {
+                    @Override
+                    public void onPhotoClick(long itemId)
+                    {
+                        showPhoto(itemId);
+                    }
+                });
+
         mPhotoGallery.setAdapter(mObjectPhotoAdapter);
     }
 

@@ -31,6 +31,7 @@
     <string name="action_about">About</string>
 
     <string name="select_action">Select action</string>
+    <string name="action_show_photo">Show photo</string>
     <string name="action_delete_photo">Delete photo</string>
 
     <string name="backward">Backward</string>

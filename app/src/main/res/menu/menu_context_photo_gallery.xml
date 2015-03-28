@@ -29,6 +29,13 @@
     >
 
     <item
+        android:id="@+id/menu_show_photo"
+        android:title="@string/action_show_photo"
+        android:orderInCategory="1"
+        app:showAsAction="never"
+        />
+
+    <item
         android:id="@+id/menu_delete_photo"
         android:title="@string/action_delete_photo"
         android:orderInCategory="1"

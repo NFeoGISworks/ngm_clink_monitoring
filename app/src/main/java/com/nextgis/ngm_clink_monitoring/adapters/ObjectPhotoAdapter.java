@@ -60,6 +60,8 @@ public class ObjectPhotoAdapter
     protected int  mSelectedItemPosition;
     protected long mSelectedItemId;
 
+    protected OnPhotoClickListener mOnPhotoClickListener;
+
 
     public ObjectPhotoAdapter(
             Context context,
@@ -98,6 +100,19 @@ public class ObjectPhotoAdapter
         viewHolder.mPosition = position;
         viewHolder.mImageView.setLayoutParams(layoutParams);
         viewHolder.mImageView.setImageBitmap(null);
+
+        viewHolder.itemView.setOnClickListener(
+                new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        if (null != mOnPhotoClickListener) {
+                            mOnPhotoClickListener.onPhotoClick(
+                                    getItemId(viewHolder.getAdapterPosition()));
+                        }
+                    }
+                });
 
         viewHolder.itemView.setOnLongClickListener(
                 new View.OnLongClickListener()
@@ -237,9 +252,21 @@ public class ObjectPhotoAdapter
     }
 
 
+    public void setOnPhotoClickListener(OnPhotoClickListener onPhotoClickListener)
+    {
+        mOnPhotoClickListener = onPhotoClickListener;
+    }
+
+
+    public interface OnPhotoClickListener
+    {
+        public void onPhotoClick(long itemId);
+    }
+
+
     public static class ViewHolder
             extends RecyclerView.ViewHolder
-            implements View.OnClickListener, View.OnCreateContextMenuListener
+            implements View.OnCreateContextMenuListener
     {
         public int mPosition;
         public ImageView mImageView;
@@ -256,15 +283,7 @@ public class ObjectPhotoAdapter
             mContext = context;
             mImageView = (ImageView) itemView.findViewById(R.id.photo_item);
 
-            itemView.setOnClickListener(this);
             itemView.setOnCreateContextMenuListener(this);
-        }
-
-
-        @Override
-        public void onClick(View v)
-        {
-
         }
 
 
