@@ -34,6 +34,9 @@
     <string name="action_show_photo">Show photo</string>
     <string name="action_delete_photo">Delete photo</string>
 
+    <string name="delete_photo_ask">Delete photo?</string>
+    <string name="delete_photo_message">Photo will also be deleted on the server during the next synchronization.</string>
+
     <string name="backward">Backward</string>
     <string name="select_line">Select the line</string>
     <string name="select_object">Select the object</string>

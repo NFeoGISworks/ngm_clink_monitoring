@@ -23,10 +23,12 @@
 package com.nextgis.ngm_clink_monitoring.fragments;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -424,7 +426,7 @@ public class ObjectStatusFragment
 
     public boolean onContextItemSelected(MenuItem menuItem)
     {
-        long itemId;
+        final long itemId;
 
         try {
             itemId = ((ObjectPhotoAdapter) mPhotoGallery.getAdapter()).getSelectedItemId();
@@ -440,20 +442,25 @@ public class ObjectStatusFragment
                 break;
 
             case R.id.menu_delete_photo:
-                Uri deleteUri = Uri.parse(
-                        "content://" + FoclSettingsConstantsUI.AUTHORITY + "/" + mObjectLayerName +
-                                "/" + mObjectId + "/attach/" + itemId);
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
+                alertDialog.setIcon(R.drawable.ic_action_warning)
+                        .setTitle(mContext.getResources().getString(R.string.delete_photo_ask))
+                        .setMessage(
+                                mContext.getResources().getString(R.string.delete_photo_message))
+                        .setNegativeButton(mContext.getResources().getString(R.string.cancel), null)
+                        .setPositiveButton(
+                                mContext.getResources().getString(R.string.ok),
 
-                int result = getActivity().getContentResolver().delete(deleteUri, null, null);
-
-                if (result == 0) {
-                    Log.d(TAG, "delete failed");
-                } else {
-                    Log.d(TAG, "deleted " + result);
-                }
-
-                setPhotoGalleryAdapter();
-                setPhotoGalleryVisibility(true);
+                                new DialogInterface.OnClickListener()
+                                {
+                                    public void onClick(
+                                            DialogInterface dialog,
+                                            int which)
+                                    {
+                                        deletePhoto(itemId);
+                                    }
+                                })
+                        .show();
                 break;
         }
 
@@ -479,6 +486,25 @@ public class ObjectStatusFragment
         intent.setDataAndType(
                 Uri.parse("file://" + attachCursor.getString(columnIndex)), "image/*");
         startActivity(intent);
+    }
+
+
+    protected void deletePhoto(long itemId)
+    {
+        Uri deleteUri = Uri.parse(
+                "content://" + FoclSettingsConstantsUI.AUTHORITY + "/" + mObjectLayerName +
+                        "/" + mObjectId + "/attach/" + itemId);
+
+        int result = getActivity().getContentResolver().delete(deleteUri, null, null);
+
+        if (result == 0) {
+            Log.d(TAG, "delete failed");
+        } else {
+            Log.d(TAG, "deleted " + result);
+        }
+
+        setPhotoGalleryAdapter();
+        setPhotoGalleryVisibility(true);
     }
 
 
