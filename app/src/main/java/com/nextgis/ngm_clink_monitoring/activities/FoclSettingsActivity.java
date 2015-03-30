@@ -46,14 +46,14 @@ import android.widget.LinearLayout;
 import ar.com.daidalos.afiledialog.FileChooserActivity;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
-import com.nextgis.ngm_clink_monitoring.fragments.SettingsFragment;
+import com.nextgis.ngm_clink_monitoring.fragments.FoclSettingsFragment;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
 
 import java.io.File;
 import java.util.List;
 
 
-public class SettingsActivity
+public class FoclSettingsActivity
         extends PreferenceActivity
         implements SharedPreferences.OnSharedPreferenceChangeListener
 {
@@ -84,7 +84,7 @@ public class SettingsActivity
                     @Override
                     public void onClick(View v)
                     {
-                        SettingsActivity.this.finish();
+                        FoclSettingsActivity.this.finish();
                     }
                 });
 
@@ -137,7 +137,7 @@ public class SettingsActivity
     @Override
     protected boolean isValidFragment(String fragmentName)
     {
-        return SettingsFragment.class.getName().equals(fragmentName);
+        return FoclSettingsFragment.class.getName().equals(fragmentName);
         //return super.isValidFragment(fragmentName);
     }
 
@@ -165,7 +165,7 @@ public class SettingsActivity
 
     public static void initDataPathPreference(
             final PreferenceActivity activity,
-            final SettingsFragment fragment,
+            final FoclSettingsFragment fragment,
             final Preference dataPathPreference)
     {
         if (null != dataPathPreference) {
@@ -190,6 +190,8 @@ public class SettingsActivity
             Activity activity,
             Fragment fragment)
     {
+        // TODO: dialog "Folder ngm_clink_monitoring will move to ..."
+
         GISApplication app = (GISApplication) activity.getApplication();
         Intent intent = new Intent(activity, FileChooserActivity.class);
 
@@ -223,8 +225,8 @@ public class SettingsActivity
 
 
     public static void executeBackgroundMoveTask(
-            SettingsActivity activity,
-            SettingsFragment fragment,
+            FoclSettingsActivity activity,
+            FoclSettingsFragment fragment,
             Bundle bundle)
     {
         if (bundle != null) {
@@ -264,8 +266,8 @@ public class SettingsActivity
 
     // workaround for onSharedPreferenceChanged()
     private static void refreshPreferences(
-            SettingsActivity activity,
-            SettingsFragment fragment)
+            FoclSettingsActivity activity,
+            FoclSettingsFragment fragment)
     {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(activity);
         PreferenceScreen preferenceScreen;

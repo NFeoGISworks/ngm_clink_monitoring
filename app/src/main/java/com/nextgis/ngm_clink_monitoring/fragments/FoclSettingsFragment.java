@@ -35,12 +35,12 @@ import android.preference.PreferenceScreen;
 import android.widget.BaseAdapter;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
-import com.nextgis.ngm_clink_monitoring.activities.SettingsActivity;
+import com.nextgis.ngm_clink_monitoring.activities.FoclSettingsActivity;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
 
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-public class SettingsFragment
+public class FoclSettingsFragment
         extends PreferenceFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener
 {
@@ -57,7 +57,7 @@ public class SettingsFragment
                 addPreferencesFromResource(R.xml.preferences_general);
                 Preference dataPathPreference =
                         findPreference(FoclSettingsConstantsUI.KEY_PREF_DATA_PARENT_PATH);
-                SettingsActivity.initDataPathPreference(
+                FoclSettingsActivity.initDataPathPreference(
                         (PreferenceActivity) getActivity(), this, dataPathPreference);
                 break;
 
@@ -74,11 +74,11 @@ public class SettingsFragment
             int resultCode,
             Intent data)
     {
-        if (requestCode == SettingsActivity.DATA_FOLDER_SELECT_CODE &&
+        if (requestCode == FoclSettingsActivity.DATA_FOLDER_SELECT_CODE &&
                 resultCode == Activity.RESULT_OK) {
 
-            SettingsActivity.executeBackgroundMoveTask(
-                    (SettingsActivity) getActivity(), this, data.getExtras());
+            FoclSettingsActivity.executeBackgroundMoveTask(
+                    (FoclSettingsActivity) getActivity(), this, data.getExtras());
         }
     }
 

@@ -26,7 +26,7 @@
     <header
         android:title="@string/general"
         android:summary="@string/general_summary"
-        android:fragment="com.nextgis.ngm_clink_monitoring.fragments.SettingsFragment"
+        android:fragment="com.nextgis.ngm_clink_monitoring.fragments.FoclSettingsFragment"
         >
         <extra
             android:name="com.nextgis.ngm_clink_monitoring.PREFS_SETTINGS"
@@ -37,7 +37,7 @@
     <header
         android:title="@string/map"
         android:summary="@string/map_summary"
-        android:fragment="com.nextgis.ngm_clink_monitoring.fragments.SettingsFragment"
+        android:fragment="com.nextgis.ngm_clink_monitoring.fragments.FoclSettingsFragment"
         >
         <extra
             android:name="com.nextgis.ngm_clink_monitoring.PREFS_SETTINGS"

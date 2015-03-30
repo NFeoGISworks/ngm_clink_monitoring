@@ -52,7 +52,7 @@ import com.nextgis.maplibui.NGWLoginFragment;
 import com.nextgis.maplibui.NGWSettingsActivity;
 import com.nextgis.maplibui.mapui.RemoteTMSLayerUI;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
-import com.nextgis.ngm_clink_monitoring.activities.SettingsActivity;
+import com.nextgis.ngm_clink_monitoring.activities.FoclSettingsActivity;
 import com.nextgis.ngm_clink_monitoring.map.FoclLayerFactory;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
@@ -389,7 +389,7 @@ public class GISApplication
     @Override
     public void showSettings()
     {
-        Intent intentSet = new Intent(this, SettingsActivity.class);
+        Intent intentSet = new Intent(this, FoclSettingsActivity.class);
         intentSet.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);//Intent.FLAG_ACTIVITY_CLEAR_TOP |
         startActivity(intentSet);
     }
