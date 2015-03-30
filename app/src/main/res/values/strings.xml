@@ -37,12 +37,18 @@
     <string name="delete_photo_ask">Delete photo?</string>
     <string name="delete_photo_message">Photo will also be deleted on the server during the next synchronization.</string>
 
+    <string name="data_path">Program data path</string>
+    <string name="data_path_summary">The path to data program folder.</string>
+
+    <string name="moving">Moving…</string>
+    <string name="warning_data_moving">Dangerous operation! Don\'t cancel it or kill the application during the data moving to new location! You data may be broken or lost!</string>
+
     <string name="backward">Backward</string>
     <string name="select_line">Select the line</string>
     <string name="select_object">Select the object</string>
     <string name="set_status">Set status</string>
 
-    <string name="general">General</string>
+    <string name="general">General settings</string>
     <string name="general_summary">The application general settings</string>
     <string name="map">Map</string>
     <string name="map_summary">Map settings</string>

@@ -56,6 +56,7 @@
         android:name="android.hardware.telephony"
         android:required="false"
         />
+
     <uses-feature
         android:name="android.hardware.wifi"
         android:required="false"
@@ -108,6 +109,11 @@
         <activity
             android:label="@string/action_about"
             android:name=".activities.AboutActivity"
+            />
+
+        <activity
+            android:name="ar.com.daidalos.afiledialog.FileChooserActivity"
+            android:theme="@style/AppTheme"
             />
 
         <service

@@ -698,8 +698,10 @@ public class ObjectStatusFragment
                 break;
         }
 
+        final GISApplication app = (GISApplication) getActivity().getApplication();
+
         String timeStamp = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-        File dataDir = new File(MainActivity.PHOTO_DIR_PATH + File.separator + timeStamp);
+        File dataDir = new File(app.getPhotoPath() + File.separator + timeStamp);
 
         if (!dataDir.exists()) {
             dataDir.mkdirs();

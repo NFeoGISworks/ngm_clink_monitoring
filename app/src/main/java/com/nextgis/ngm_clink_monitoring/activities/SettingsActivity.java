@@ -23,24 +23,43 @@
 package com.nextgis.ngm_clink_monitoring.activities;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
+import android.app.Fragment;
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
+import android.preference.PreferenceScreen;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
+import ar.com.daidalos.afiledialog.FileChooserActivity;
+import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.fragments.SettingsFragment;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
 
+import java.io.File;
 import java.util.List;
 
 
 public class SettingsActivity
         extends PreferenceActivity
+        implements SharedPreferences.OnSharedPreferenceChangeListener
 {
+    public static final int DATA_FOLDER_SELECT_CODE = 1232;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -74,6 +93,13 @@ public class SettingsActivity
         if (action != null) {
 
             switch (action) {
+                case FoclSettingsConstantsUI.ACTION_PREFS_GENERAL:
+                    addPreferencesFromResource(R.xml.preferences_general);
+                    final Preference dataPathPreference =
+                            findPreference(FoclSettingsConstantsUI.KEY_PREF_DATA_PARENT_PATH);
+                    initDataPathPreference(this, null, dataPathPreference);
+                    break;
+
                 case FoclSettingsConstantsUI.ACTION_PREFS_MAP:
                     addPreferencesFromResource(R.xml.preferences_map);
                     break;
@@ -113,5 +139,218 @@ public class SettingsActivity
     {
         return SettingsFragment.class.getName().equals(fragmentName);
         //return super.isValidFragment(fragmentName);
+    }
+
+
+    @Override
+    public void onSharedPreferenceChanged(
+            SharedPreferences sharedPreferences,
+            String key)
+    {
+        if (key.equals(FoclSettingsConstantsUI.KEY_PREF_DATA_PARENT_PATH)) {
+            GISApplication app = (GISApplication) getApplication();
+
+            Preference preference = findPreference(key);
+            preference.setSummary(app.getDataPath());
+
+            PreferenceScreen prefScr = (PreferenceScreen) findPreference(
+                    "general_prefs_root");
+
+            if (prefScr != null) {
+                ((BaseAdapter) prefScr.getRootAdapter()).notifyDataSetChanged();
+            }
+        }
+    }
+
+
+    public static void initDataPathPreference(
+            final PreferenceActivity activity,
+            final SettingsFragment fragment,
+            final Preference dataPathPreference)
+    {
+        if (null != dataPathPreference) {
+            final GISApplication app = (GISApplication) activity.getApplication();
+            dataPathPreference.setSummary(app.getDataPath());
+
+            dataPathPreference.setOnPreferenceClickListener(
+                    new Preference.OnPreferenceClickListener()
+                    {
+                        @Override
+                        public boolean onPreferenceClick(Preference preference)
+                        {
+                            showFolderChooser(activity, fragment);
+                            return true;
+                        }
+                    });
+        }
+    }
+
+
+    public static void showFolderChooser(
+            Activity activity,
+            Fragment fragment)
+    {
+        GISApplication app = (GISApplication) activity.getApplication();
+        Intent intent = new Intent(activity, FileChooserActivity.class);
+
+        intent.putExtra(FileChooserActivity.INPUT_START_FOLDER, app.getDataParentPath());
+
+        intent.putExtra(FileChooserActivity.INPUT_FOLDER_MODE, true);
+        intent.putExtra(FileChooserActivity.INPUT_SHOW_ONLY_SELECTABLE, true);
+        intent.putExtra(FileChooserActivity.INPUT_CAN_CREATE_FILES, true);
+        intent.putExtra(FileChooserActivity.INPUT_SHOW_CONFIRMATION_ON_SELECT, true);
+        intent.putExtra(FileChooserActivity.INPUT_SHOW_CONFIRMATION_ON_CREATE, true);
+
+        if (null == fragment) {
+            activity.startActivityForResult(intent, DATA_FOLDER_SELECT_CODE);
+        } else {
+            // for API > 11
+            fragment.startActivityForResult(intent, DATA_FOLDER_SELECT_CODE);
+        }
+    }
+
+
+    @Override
+    protected void onActivityResult(
+            int requestCode,
+            int resultCode,
+            Intent data)
+    {
+        if (requestCode == DATA_FOLDER_SELECT_CODE && resultCode == Activity.RESULT_OK) {
+            executeBackgroundMoveTask(this, null, data.getExtras());
+        }
+    }
+
+
+    public static void executeBackgroundMoveTask(
+            SettingsActivity activity,
+            SettingsFragment fragment,
+            Bundle bundle)
+    {
+        if (bundle != null) {
+
+                /*
+                * Note that if a file has been created, then the value, inside the Bundle object,
+                * represented by the key FileChooserActivity.OUTPUT_NEW_FILE_NAME
+                * is going to contain the name of the file (or folder) and
+                * the value represented by the key FileChooserActivity.OUTPUT_FILE_OBJECT
+                * is going to contain the folder in which the file must be created.
+                * Otherwise, if a file has only been selected,
+                * FileChooserActivity.OUTPUT_NEW_FILE_NAME is going to be null and
+                * FileChooserActivity.OUTPUT_FILE_OBJECT is going to contain
+                * the file (or folder) selected.
+                * */
+
+            File folder = (File) bundle.get(FileChooserActivity.OUTPUT_FILE_OBJECT);
+            String newDataParentPath = folder.getAbsolutePath();
+
+            if (bundle.containsKey(FileChooserActivity.OUTPUT_NEW_FILE_NAME)) {
+                String name = bundle.getString(FileChooserActivity.OUTPUT_NEW_FILE_NAME);
+                newDataParentPath += File.separator + name;
+            }
+
+            GISApplication app = (GISApplication) activity.getApplication();
+
+            String oldDataParentPath = app.getDataParentPath();
+            app.setDataParentPath(newDataParentPath);
+
+            // workaround for onSharedPreferenceChanged()
+            refreshPreferences(activity, fragment);
+
+            new BackgroundMoveTask(activity, oldDataParentPath, newDataParentPath).execute();
+        }
+    }
+
+
+    // workaround for onSharedPreferenceChanged()
+    private static void refreshPreferences(
+            SettingsActivity activity,
+            SettingsFragment fragment)
+    {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(activity);
+        PreferenceScreen preferenceScreen;
+
+        if (null == fragment) {
+            preferenceScreen = activity.getPreferenceScreen();
+
+            for (int i = 0; i < preferenceScreen.getPreferenceCount(); i++) {
+                activity.onSharedPreferenceChanged(sp, preferenceScreen.getPreference(i).getKey());
+            }
+
+        } else { // for API > 11
+            preferenceScreen = fragment.getPreferenceScreen();
+
+            for (int i = 0; i < preferenceScreen.getPreferenceCount(); i++) {
+                fragment.onSharedPreferenceChanged(sp, preferenceScreen.getPreference(i).getKey());
+            }
+        }
+    }
+
+
+    private static class BackgroundMoveTask
+            extends AsyncTask<Void, Void, Void>
+    {
+        protected Activity       mActivity;
+        protected ProgressDialog mProgressDialog;
+        protected String         mOldDataParentPath;
+        protected String         mNewDataParentPath;
+
+
+        public BackgroundMoveTask(
+                Activity activity,
+                String oldDataParentPath,
+                String newDataParentPath)
+        {
+            mActivity = activity;
+            mOldDataParentPath = oldDataParentPath;
+            mNewDataParentPath = newDataParentPath;
+        }
+
+
+        @Override
+        protected Void doInBackground(Void... voids)
+        {
+            GISApplication app = (GISApplication) mActivity.getApplication();
+            app.moveData(mOldDataParentPath, mNewDataParentPath);
+            return null;
+        }
+
+
+        @Override
+        protected void onPreExecute()
+        {
+            //not good solution but rare used so let it be
+            lockScreenOrientation();
+            mProgressDialog = ProgressDialog.show(
+                    mActivity, mActivity.getString(R.string.moving),
+                    mActivity.getString(R.string.warning_data_moving), true);
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.setIcon(R.drawable.ic_action_warning);
+        }
+
+
+        @Override
+        protected void onPostExecute(Void aVoid)
+        {
+            mProgressDialog.dismiss();
+            unlockScreenOrientation();
+        }
+
+
+        protected void lockScreenOrientation()
+        {
+            int currentOrientation = mActivity.getResources().getConfiguration().orientation;
+            if (currentOrientation == Configuration.ORIENTATION_PORTRAIT) {
+                mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            } else {
+                mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            }
+        }
+
+
+        protected void unlockScreenOrientation()
+        {
+            mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+        }
     }
 }

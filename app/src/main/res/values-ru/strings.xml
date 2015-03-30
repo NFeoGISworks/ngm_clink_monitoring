@@ -37,6 +37,12 @@
     <string name="delete_photo_ask">Удалить фото?</string>
     <string name="delete_photo_message">Фотография будет также удалена на сервере при очередной синхронизации.</string>
 
+    <string name="data_path">Путь к данным программы</string>
+    <string name="data_path_summary">Путь к папке с данными программы.</string>
+
+    <string name="moving">Перемещение…</string>
+    <string name="warning_data_moving">Внимание! Не отменяйте операцию и не останавливайте приложение в процессе перемещения данных на новое место. Может привести к потере данных!</string>
+
     <string name="backward">Назад</string>
     <string name="select_line">Выберите линию</string>
     <string name="select_object">Выберите объект</string>

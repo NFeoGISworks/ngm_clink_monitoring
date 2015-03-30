@@ -33,7 +33,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -63,7 +62,6 @@ import com.nextgis.ngm_clink_monitoring.fragments.StatusBarFragment;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
 import com.nextgis.ngm_clink_monitoring.util.LocationUtil;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Calendar;
@@ -90,12 +88,6 @@ public class MainActivity
     public static final int FT_LOGIN         = 5;
     public static final int FT_1ST_SYNC      = 6;
     public static final int FT_MAP           = 7;
-
-    public static final String DATA_DIR_PATH =
-            Environment.getExternalStorageDirectory().getAbsolutePath() +
-            File.separator + "ngm_clink_monitoring";
-
-    public static final String PHOTO_DIR_PATH = DATA_DIR_PATH + File.separator + "foto";
 
     protected SyncStatusObserver mSyncStatusObserver;
     protected Object             mSyncHandle;
@@ -303,7 +295,7 @@ public class MainActivity
 
         // Watch for synchronization status changes
         final int mask = ContentResolver.SYNC_OBSERVER_TYPE_PENDING |
-                         ContentResolver.SYNC_OBSERVER_TYPE_ACTIVE;
+                ContentResolver.SYNC_OBSERVER_TYPE_ACTIVE;
         mSyncHandle = ContentResolver.addStatusChangeListener(mask, mSyncStatusObserver);
 
         if (app.isAccountAdded() || app.isAccountDeleted()) {
@@ -531,7 +523,7 @@ public class MainActivity
         if (null != ngwVectorLayer) {
             Uri uri = Uri.parse(
                     "content://" + FoclSettingsConstantsUI.AUTHORITY + "/" +
-                    ngwVectorLayer.getPath().getName());
+                            ngwVectorLayer.getPath().getName());
             ContentValues values = new ContentValues();
             //values.put(VectorLayer.FIELD_ID, 26);
             values.put("width", 1);
@@ -578,7 +570,7 @@ public class MainActivity
         if (null != ngwVectorLayer) {
             Uri uri = Uri.parse(
                     "content://" + FoclSettingsConstantsUI.AUTHORITY + "/" +
-                    ngwVectorLayer.getPath().getName());
+                            ngwVectorLayer.getPath().getName());
             Uri updateUri = ContentUris.withAppendedId(uri, 29);
             ContentValues values = new ContentValues();
             values.put("width", 4);
@@ -623,7 +615,7 @@ public class MainActivity
         if (null != ngwVectorLayer) {
             Uri uri = Uri.parse(
                     "content://" + FoclSettingsConstantsUI.AUTHORITY + "/" +
-                    ngwVectorLayer.getPath().getName());
+                            ngwVectorLayer.getPath().getName());
             Uri deleteUri = ContentUris.withAppendedId(uri, 27);
             int result = getContentResolver().delete(deleteUri, null, null);
             if (result == 0) {
@@ -656,7 +648,7 @@ public class MainActivity
 
         Uri uri = Uri.parse(
                 "content://" + FoclSettingsConstantsUI.AUTHORITY +
-                "/layer_20150320215025293/1/attach");
+                        "/layer_20150320215025293/1/attach");
 
         ContentValues values = new ContentValues();
         values.put(VectorLayer.ATTACH_DISPLAY_NAME, "test_image.jpg");
@@ -707,7 +699,7 @@ public class MainActivity
 
         Uri updateUri = Uri.parse(
                 "content://" + FoclSettingsConstantsUI.AUTHORITY +
-                "/layer_20150210140455993/36/attach/2");
+                        "/layer_20150210140455993/36/attach/2");
 
         ContentValues values = new ContentValues();
         values.put(VectorLayer.ATTACH_DISPLAY_NAME, "no_image.jpg");
@@ -744,7 +736,7 @@ public class MainActivity
 
         Uri deleteUri = Uri.parse(
                 "content://" + FoclSettingsConstantsUI.AUTHORITY +
-                "/layer_20150210140455993/36/attach/1");
+                        "/layer_20150210140455993/36/attach/1");
         int result = getContentResolver().delete(deleteUri, null, null);
         if (result == 0) {
             Log.d(TAG, "delete failed");

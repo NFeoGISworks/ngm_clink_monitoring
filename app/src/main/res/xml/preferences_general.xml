@@ -22,7 +22,14 @@
   ***************************************************************************-->
 
 <PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:key="prefs_general_root"
     >
 
+    <Preference
+        android:key="data_parent_path"
+        android:title="@string/data_path"
+        android:summary="@string/data_path_summary"
+        />
 
 </PreferenceScreen>

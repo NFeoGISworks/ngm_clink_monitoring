@@ -23,15 +23,26 @@
 package com.nextgis.ngm_clink_monitoring.fragments;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.Preference;
+import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceScreen;
+import android.widget.BaseAdapter;
+import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
+import com.nextgis.ngm_clink_monitoring.activities.SettingsActivity;
+import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
 
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class SettingsFragment
         extends PreferenceFragment
+        implements SharedPreferences.OnSharedPreferenceChangeListener
 {
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -39,12 +50,56 @@ public class SettingsFragment
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
 
-        String settings = getArguments().getString("settings");
+        String settings = getArguments().getString(FoclSettingsConstantsUI.PREFS_SETTINGS);
 
         switch (settings) {
-            case "map":
+            case FoclSettingsConstantsUI.ACTION_PREFS_GENERAL:
+                addPreferencesFromResource(R.xml.preferences_general);
+                Preference dataPathPreference =
+                        findPreference(FoclSettingsConstantsUI.KEY_PREF_DATA_PARENT_PATH);
+                SettingsActivity.initDataPathPreference(
+                        (PreferenceActivity) getActivity(), this, dataPathPreference);
+                break;
+
+            case FoclSettingsConstantsUI.ACTION_PREFS_MAP:
                 addPreferencesFromResource(R.xml.preferences_map);
                 break;
+        }
+    }
+
+
+    @Override
+    public void onActivityResult(
+            int requestCode,
+            int resultCode,
+            Intent data)
+    {
+        if (requestCode == SettingsActivity.DATA_FOLDER_SELECT_CODE &&
+                resultCode == Activity.RESULT_OK) {
+
+            SettingsActivity.executeBackgroundMoveTask(
+                    (SettingsActivity) getActivity(), this, data.getExtras());
+        }
+    }
+
+
+    @Override
+    public void onSharedPreferenceChanged(
+            SharedPreferences sharedPreferences,
+            String key)
+    {
+        if (key.equals(FoclSettingsConstantsUI.KEY_PREF_DATA_PARENT_PATH)) {
+            GISApplication app = (GISApplication) getActivity().getApplication();
+
+            Preference preference = findPreference(key);
+            preference.setSummary(app.getDataPath());
+
+            PreferenceScreen prefScr = (PreferenceScreen) findPreference(
+                    FoclSettingsConstantsUI.KEY_PREF_GENERAL_ROOT);
+
+            if (prefScr != null) {
+                ((BaseAdapter) prefScr.getRootAdapter()).notifyDataSetChanged();
+            }
         }
     }
 }

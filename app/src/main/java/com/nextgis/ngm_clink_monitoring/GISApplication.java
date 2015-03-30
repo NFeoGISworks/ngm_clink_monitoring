@@ -36,6 +36,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import com.nextgis.maplib.api.IGISApplication;
@@ -44,6 +45,7 @@ import com.nextgis.maplib.datasource.ngw.SyncAdapter;
 import com.nextgis.maplib.location.GpsEventSource;
 import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplib.util.Constants;
+import com.nextgis.maplib.util.FileUtil;
 import com.nextgis.maplib.util.GeoConstants;
 import com.nextgis.maplib.util.SettingsConstants;
 import com.nextgis.maplibui.NGWLoginFragment;
@@ -273,6 +275,36 @@ public class GISApplication
     }
 
 
+    public void setDataParentPath(String newDataParentPath)
+    {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences.edit().putString(
+                FoclSettingsConstantsUI.KEY_PREF_DATA_PARENT_PATH, newDataParentPath).commit();
+    }
+
+
+    public String getDataParentPath()
+    {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String defaultDataParentPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+
+        return sharedPreferences.getString(
+                FoclSettingsConstantsUI.KEY_PREF_DATA_PARENT_PATH, defaultDataParentPath);
+    }
+
+
+    public String getDataPath()
+    {
+        return getDataParentPath() + File.separator + FoclConstants.FOCL_DATA_DIR;
+    }
+
+
+    public String getPhotoPath()
+    {
+        return getDataPath() + File.separator + FoclConstants.FOCL_PHOTO_DIR;
+    }
+
+
     public GpsEventSource getGpsEventSource()
     {
         return mGpsEventSource;
@@ -415,6 +447,30 @@ public class GISApplication
         if (null != mOnReloadMapListener) {
             mOnReloadMapListener.onReloadMap();
         }
+    }
+
+
+    public void moveData(
+            String oldDataParentPath,
+            String newDataParentPath)
+    {
+        File oldDataPath =
+                new File(oldDataParentPath + File.separator + FoclConstants.FOCL_DATA_DIR);
+        File newDataPath =
+                new File(newDataParentPath + File.separator + FoclConstants.FOCL_DATA_DIR);
+
+        if (oldDataPath.equals(newDataPath)) {
+            return;
+        }
+
+        if (!newDataPath.exists()) {
+            if (!newDataPath.mkdirs()) {
+                // TODO: make Toast
+                return;
+            }
+        }
+
+        FileUtil.move(oldDataPath, newDataPath);
     }
 
 

@@ -29,6 +29,8 @@ public interface FoclSettingsConstantsUI
     /**
      * preference pages
      */
+    public final static String PREFS_SETTINGS = "com.nextgis.ngm_clink_monitoring.PREFS_SETTINGS";
+
     public final static String ACTION_PREFS_GENERAL  =
             "com.nextgis.ngm_clink_monitoring.PREFS_GENERAL";
     public final static String ACTION_PREFS_MAP      = "com.nextgis.ngm_clink_monitoring.PREFS_MAP";
@@ -83,6 +85,9 @@ public interface FoclSettingsConstantsUI
     public static final String KEY_PREF_SHOW_ZOOM_CONTROLS  = "show_zoom_controls";
     public static final String KEY_PREF_SYNC_PERIODICALLY   = "sync_periodically";
     public static final String KEY_PREF_SYNC_PERIOD         = "sync_period";
+
+    public static final String KEY_PREF_GENERAL_ROOT     = "prefs_general_root";
+    public static final String KEY_PREF_DATA_PARENT_PATH = "data_parent_path";
 
     public static final String KEY_PREF_AUTO_SYNC_ENABLED = "auto_sync_enabled";
 }

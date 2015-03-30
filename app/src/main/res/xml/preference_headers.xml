@@ -22,19 +22,32 @@
   ***************************************************************************-->
 
 <preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
+
     <header
+        android:title="@string/general"
+        android:summary="@string/general_summary"
         android:fragment="com.nextgis.ngm_clink_monitoring.fragments.SettingsFragment"
-        android:summary="@string/map_summary"
-        android:title="@string/map"
         >
         <extra
-            android:name="settings"
-            android:value="map"
+            android:name="com.nextgis.ngm_clink_monitoring.PREFS_SETTINGS"
+            android:value="com.nextgis.ngm_clink_monitoring.PREFS_GENERAL"
             />
     </header>
+
     <header
-        android:summary="@string/ngw_summary"
+        android:title="@string/map"
+        android:summary="@string/map_summary"
+        android:fragment="com.nextgis.ngm_clink_monitoring.fragments.SettingsFragment"
+        >
+        <extra
+            android:name="com.nextgis.ngm_clink_monitoring.PREFS_SETTINGS"
+            android:value="com.nextgis.ngm_clink_monitoring.PREFS_MAP"
+            />
+    </header>
+
+    <header
         android:title="@string/ngw"
+        android:summary="@string/ngw_summary"
         >
         <intent
             android:action="com.nextgis.ngm_clink_monitoring.PREFS_NGW"
@@ -42,4 +55,5 @@
             android:targetPackage="com.nextgis.ngm_clink_monitoring"
             />
     </header>
+
 </preference-headers>
