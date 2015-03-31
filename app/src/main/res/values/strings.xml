@@ -56,8 +56,8 @@
     <string name="ngw">NextGIS Web</string>
     <string name="ngw_summary">NextGIS Web settings</string>
 
-    <string name="save_photo">Save full-size photo</string>
-    <string name="save_photo_summary">Save full-size photo in the data program folder.</string>
+    <string name="save_orig_photo">Save full-size photo</string>
+    <string name="save_orig_photo_summary">Save full-size photo in the data program folder.</string>
     <string name="data_path">Program data folder</string>
     <string name="data_path_summary">Path to the data program folder.</string>
 

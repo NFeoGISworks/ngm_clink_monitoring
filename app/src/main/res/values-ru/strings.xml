@@ -56,8 +56,8 @@
     <string name="ngw">NextGIS Web</string>
     <string name="ngw_summary">Настройки NextGIS Web</string>
 
-    <string name="save_photo">Сохранять полноразмерные фото</string>
-    <string name="save_photo_summary">Сохранять полноразмерные фото в папке с данными программы.</string>
+    <string name="save_orig_photo">Сохранять полноразмерные фото</string>
+    <string name="save_orig_photo_summary">Сохранять полноразмерные фото в папке с данными программы.</string>
     <string name="data_path">Папка с данными программы</string>
     <string name="data_path_summary">Путь к папке с данными программы.</string>
 

@@ -28,8 +28,8 @@
 
     <CheckBoxPreference
         android:key="original_photo_saving"
-        android:title="@string/save_photo"
-        android:summary="@string/save_photo_summary"
+        android:title="@string/save_orig_photo"
+        android:summary="@string/save_orig_photo_summary"
         android:defaultValue="false"
         />
 
