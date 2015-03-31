@@ -25,19 +25,16 @@ package com.nextgis.ngm_clink_monitoring.activities;
 import android.accounts.Account;
 import android.annotation.TargetApi;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
-import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplibui.NGWSettingsActivity;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
-import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
 
 import java.util.List;
 
@@ -127,9 +124,8 @@ public class NGWSettingsActivityProxy
             Account account,
             String authority)
     {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        return sharedPreferences.getBoolean(
-                FoclSettingsConstantsUI.KEY_PREF_AUTO_SYNC_ENABLED, true);
+        GISApplication app = (GISApplication) getApplication();
+        return app.isAutoSyncEnabled();
     }
 
 
@@ -139,17 +135,8 @@ public class NGWSettingsActivityProxy
             String authority,
             boolean isEnabled)
     {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        sharedPreferences.edit()
-                .putBoolean(FoclSettingsConstantsUI.KEY_PREF_AUTO_SYNC_ENABLED, isEnabled)
-                .commit();
-
         GISApplication app = (GISApplication) getApplication();
-        if (isEnabled) {
-            app.startPeriodicSync();
-        } else {
-            app.stopPeriodicSync();
-        }
+        app.setAutoSyncEnabled(isEnabled);
     }
 
 
@@ -160,7 +147,7 @@ public class NGWSettingsActivityProxy
             PreferenceCategory syncCategory)
     {
         final GISApplication app = (GISApplication) application;
-        String prefValue = "" + app.getSyncPeriod();
+        String prefValue = "" + app.getSyncPeriodSec();
 
         final CharSequence[] keys = {
                 getString(com.nextgis.maplibui.R.string.five_minutes),
@@ -200,7 +187,7 @@ public class NGWSettingsActivityProxy
                             Preference preference,
                             Object newValue)
                     {
-                        app.setSyncPeriod(Long.parseLong((String) newValue));
+                        app.setSyncPeriodSec(Long.parseLong((String) newValue));
 
                         for (int i = 0; i < values.length; i++) {
                             if (values[i].equals(newValue)) {

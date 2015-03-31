@@ -40,18 +40,18 @@ public class UIUpdater
 
     /**
      * Creates an UIUpdater object, that can be used to perform UIUpdates on a specified time
-     * interval.
+     * intervalMillisec.
      *
      * @param runnable
      *         A runnable containing the update routine.
-     * @param interval
-     *         The interval over which the routine should run (milliseconds).
+     * @param intervalMillisec
+     *         The intervalMillisec over which the routine should run (milliseconds).
      */
     public UIUpdater(
             final Runnable runnable,
-            long interval)
+            final long intervalMillisec)
     {
-        mUpdateInterval = interval;
+        mUpdateInterval = intervalMillisec;
         mStatusChecker = new Runnable()
         {
             @Override
@@ -59,16 +59,23 @@ public class UIUpdater
             {
                 // Run the passed runnable
                 runnable.run();
-                // Re-run it after the update interval
+                // Re-run it after the update intervalMillisec
                 mHandler.postDelayed(this, mUpdateInterval);
             }
         };
     }
 
 
-    public void setUpdateInterval(long updateInterval)
+    public void setUpdateIntervalMillisec(long millisec)
     {
-        mUpdateInterval = updateInterval;
+        mUpdateInterval = millisec;
+    }
+
+
+    public void refreshUpdaterQueue()
+    {
+        mHandler.removeCallbacks(mStatusChecker);
+        mHandler.postDelayed(mStatusChecker, mUpdateInterval);
     }
 
 

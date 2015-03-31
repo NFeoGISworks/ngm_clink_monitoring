@@ -128,8 +128,7 @@ public class GISApplication
         intentFilter.addAction(SyncAdapter.SYNC_CHANGES);
         registerReceiver(mSyncReceiver, intentFilter);
 
-        if (sharedPreferences.getBoolean(
-                FoclSettingsConstantsUI.KEY_PREF_AUTO_SYNC_ENABLED, true)) {
+        if (isAutoSyncEnabled()) {
             if (!isRanAsService()) {
                 startPeriodicSync();
             }
@@ -319,7 +318,30 @@ public class GISApplication
     }
 
 
-    public Long getSyncPeriod()
+    public boolean isAutoSyncEnabled()
+    {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        return sharedPreferences.getBoolean(
+                FoclSettingsConstantsUI.KEY_PREF_AUTO_SYNC_ENABLED, true);
+    }
+
+
+    public void setAutoSyncEnabled(boolean isEnabled)
+    {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences.edit()
+                .putBoolean(FoclSettingsConstantsUI.KEY_PREF_AUTO_SYNC_ENABLED, isEnabled)
+                .commit();
+
+        if (isEnabled) {
+            startPeriodicSync();
+        } else {
+            stopPeriodicSync();
+        }
+    }
+
+
+    public long getSyncPeriodSec()
     {
         return PreferenceManager.getDefaultSharedPreferences(this).getLong(
                 SettingsConstantsUI.KEY_PREF_SYNC_PERIOD_SEC_LONG,
@@ -327,27 +349,42 @@ public class GISApplication
     }
 
 
-    public void setSyncPeriod(Long seconds)
+    public void setSyncPeriodSec(long seconds)
     {
-        stopPeriodicSync();
-
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences.edit()
+                .putLong(SettingsConstantsUI.KEY_PREF_SYNC_PERIOD_SEC_LONG, seconds)
+                .commit();
 
-        if (null != seconds) {
-            sharedPreferences.edit()
-                    .putLong(SettingsConstantsUI.KEY_PREF_SYNC_PERIOD_SEC_LONG, seconds)
-                    .commit();
-        } else {
-            seconds = sharedPreferences.getLong(
-                    SettingsConstantsUI.KEY_PREF_SYNC_PERIOD_SEC_LONG,
-                    FoclConstants.DEFAULT_SYNC_PERIOD_SEC_LONG);
+        refreshSyncQueue(seconds);
+    }
+
+
+    public void refreshSyncQueue(Long seconds)
+    {
+        if (null == mSyncPeriodicRunner) {
+            return;
         }
 
+        if (null != seconds) {
+            mSyncPeriodicRunner.setUpdateIntervalMillisec(seconds * 1000);
+        }
+
+        if (isAutoSyncEnabled()) {
+            mSyncPeriodicRunner.refreshUpdaterQueue();
+        }
+    }
+
+
+    public void startPeriodicSync()
+    {
         final Account account = getAccount();
 
         if (null == account) {
             return;
         }
+
+        stopPeriodicSync();
 
         mSyncPeriodicRunner = new UIUpdater(
                 new Runnable()
@@ -357,15 +394,9 @@ public class GISApplication
                     {
                         runSync(account);
                     }
-                }, seconds * 1000);
+                }, getSyncPeriodSec() * 1000);
 
         mSyncPeriodicRunner.startUpdates();
-    }
-
-
-    public void startPeriodicSync()
-    {
-        setSyncPeriod(null);
     }
 
 
@@ -379,7 +410,14 @@ public class GISApplication
     }
 
 
-    public boolean runSync(Account account)
+    public boolean runSyncManually(Account account)
+    {
+        refreshSyncQueue(null);
+        return runSync(account);
+    }
+
+
+    protected boolean runSync(Account account)
     {
         if (null == account) {
             return false;

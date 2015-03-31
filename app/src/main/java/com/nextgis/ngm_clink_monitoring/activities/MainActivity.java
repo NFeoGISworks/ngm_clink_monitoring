@@ -463,7 +463,7 @@ public class MainActivity
             return;
         }
 
-        app.runSync(account);
+        app.runSyncManually(account);
     }
 
 
