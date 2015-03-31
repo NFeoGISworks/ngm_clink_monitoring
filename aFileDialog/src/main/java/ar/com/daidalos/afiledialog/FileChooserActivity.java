@@ -19,10 +19,12 @@
 
 package ar.com.daidalos.afiledialog;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -33,7 +35,7 @@ import java.io.File;
  * A file chooser implemented in an Activity.
  */
 public class FileChooserActivity
-        extends Activity
+        extends ActionBarActivity
         implements FileChooser
 {
 
@@ -155,9 +157,16 @@ public class FileChooserActivity
         // Set layout.
         this.setContentView(R.layout.daidalos_file_chooser);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.select_folder_toolbar);
+        toolbar.getBackground().setAlpha(255);
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         // Set the background color.
-        LinearLayout layout = (LinearLayout) this.findViewById(R.id.rootLayout);
-        layout.setBackgroundColor(getResources().getColor(R.color.daidalos_backgroud));
+//        LinearLayout layout = (LinearLayout) this.findViewById(R.id.rootLayout);
+//        layout.setBackgroundColor(getResources().getColor(R.color.daidalos_backgroud));
 
         // Initialize fields.
         this.useBackButton = false;
@@ -259,6 +268,20 @@ public class FileChooserActivity
             this.core.loadFolder(current.getParent());
         }
     }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
 
     // ----- FileChooser methods ----- //
 

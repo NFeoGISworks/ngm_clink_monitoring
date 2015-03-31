@@ -237,11 +237,11 @@ public class FileItem
         this.icon.setImageDrawable(getResources().getDrawable(icon));
 
         // Change the color of the text.
-        if (icon != R.drawable.document_gray) {
-            this.label.setTextColor(getResources().getColor(R.color.daidalos_active_file));
-        } else {
-            this.label.setTextColor(getResources().getColor(R.color.daidalos_inactive_file));
-        }
+//        if (icon != R.drawable.document_gray) {
+//            this.label.setTextColor(getResources().getColor(R.color.daidalos_active_file));
+//        } else {
+//            this.label.setTextColor(getResources().getColor(R.color.daidalos_inactive_file));
+//        }
     }
 
     // ----- Events ----- //

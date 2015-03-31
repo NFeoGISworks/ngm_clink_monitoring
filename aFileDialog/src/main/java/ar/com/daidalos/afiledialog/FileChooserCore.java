@@ -183,7 +183,7 @@ class FileChooserCore
             String posButton = (FileChooserCore.this.labels != null &&
                     FileChooserCore.this.labels.createFileDialogAcceptButton != null)
                                ? FileChooserCore.this.labels.createFileDialogAcceptButton
-                               : context.getString(R.string.daidalos_accept);
+                               : context.getString(R.string.daidalos_ok);
             String negButton = (FileChooserCore.this.labels != null &&
                     FileChooserCore.this.labels.createFileDialogCancelButton != null)
                                ? FileChooserCore.this.labels.createFileDialogCancelButton
@@ -356,10 +356,15 @@ class FileChooserCore
                           : FileChooserCore.this.labels.messageConfirmSelection;
             } else {
                 if (FileChooserCore.this.folderMode) {
-                    message = context.getString(
-                            creation
-                            ? R.string.daidalos_confirm_create_folder
-                            : R.string.daidalos_confirm_select_folder);
+//                    message = context.getString(
+//                            creation
+//                            ? R.string.daidalos_confirm_create_folder
+//                            : R.string.daidalos_confirm_select_folder);
+                    message = String.format(
+                            context.getString(R.string.daidalos_confirm_move_to_folder),
+                            name != null
+                            ? file.getAbsolutePath() + File.separator + name
+                            : file.getAbsolutePath());
                 } else {
                     message = context.getString(
                             creation
@@ -373,11 +378,11 @@ class FileChooserCore
             String posButton = (FileChooserCore.this.labels != null &&
                     FileChooserCore.this.labels.labelConfirmYesButton != null)
                                ? FileChooserCore.this.labels.labelConfirmYesButton
-                               : context.getString(R.string.daidalos_yes);
+                               : context.getString(R.string.daidalos_ok);
             String negButton = (FileChooserCore.this.labels != null &&
                     FileChooserCore.this.labels.labelConfirmNoButton != null)
                                ? FileChooserCore.this.labels.labelConfirmNoButton
-                               : context.getString(R.string.daidalos_no);
+                               : context.getString(R.string.daidalos_cancel);
 
             // Set the message and the 'yes' and 'no' buttons.
             alert.setMessage(message);

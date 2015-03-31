@@ -47,6 +47,9 @@ public class AboutActivity
         toolbar.getBackground().setAlpha(255);
         setSupportActionBar(toolbar);
 
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         TextView txtVersion = (TextView) findViewById(R.id.app_version);
         try {
             String pkgName = this.getPackageName();
@@ -67,9 +70,6 @@ public class AboutActivity
         TextView txtCopyrightText = (TextView) findViewById(R.id.copyright);
         txtCopyrightText.setText(Html.fromHtml(getString(R.string.copyright)));
         txtCopyrightText.setMovementMethod(LinkMovementMethod.getInstance());
-
-        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
 

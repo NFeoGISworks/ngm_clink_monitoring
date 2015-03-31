@@ -98,8 +98,8 @@ public class FileChooserDialog
         this.listeners = new LinkedList<>();
 
         // Set the background color.
-        LinearLayout layout = (LinearLayout) this.findViewById(R.id.rootLayout);
-        layout.setBackgroundColor(context.getResources().getColor(R.color.daidalos_backgroud));
+//        LinearLayout layout = (LinearLayout) this.findViewById(R.id.rootLayout);
+//        layout.setBackgroundColor(context.getResources().getColor(R.color.daidalos_backgroud));
 
         // Add a listener for when a file is selected.
         core.addListener(

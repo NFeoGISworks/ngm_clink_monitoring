@@ -112,8 +112,8 @@
             />
 
         <activity
+            android:label="@string/action_select_folder"
             android:name="ar.com.daidalos.afiledialog.FileChooserActivity"
-            android:theme="@style/AppTheme"
             />
 
         <service

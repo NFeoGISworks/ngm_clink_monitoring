@@ -227,6 +227,11 @@ public class FoclSettingsActivity
                                 intent.putExtra(
                                         FileChooserActivity.INPUT_SHOW_CONFIRMATION_ON_CREATE,
                                         true);
+                                intent.putExtra(
+                                        FileChooserActivity.INPUT_SHOW_FULL_PATH_IN_TITLE, true);
+                                intent.putExtra(
+                                        FileChooserActivity.INPUT_USE_BACK_BUTTON_TO_NAVIGATE,
+                                        false);
 
                                 if (null == fragment) {
                                     activity.startActivityForResult(
