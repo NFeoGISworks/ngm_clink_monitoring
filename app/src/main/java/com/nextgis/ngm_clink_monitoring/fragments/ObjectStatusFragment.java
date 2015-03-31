@@ -103,7 +103,7 @@ public class ObjectStatusFragment
     protected ObjectPhotoAdapter mObjectPhotoAdapter;
     protected Cursor mAttachesCursor;
 
-    protected String mCurrentPhotoPath = null;
+    protected String mTempPhotoPath = null;
 
 
     public void setParams(
@@ -226,7 +226,7 @@ public class ObjectStatusFragment
         mCompleteStatusButton.setText(activity.getString(R.string.completed));
         mPhotoHintText.setText(R.string.take_photos_to_confirm);
 
-        GISApplication app = (GISApplication) getActivity().getApplication();
+        final GISApplication app = (GISApplication) getActivity().getApplication();
         final FoclProject foclProject = app.getFoclProject();
 
         if (null == foclProject) {
@@ -382,22 +382,24 @@ public class ObjectStatusFragment
                         if (null !=
                                 cameraIntent.resolveActivity(getActivity().getPackageManager())) {
 
-                            File photoFile = null;
-
                             try {
-                                photoFile = createImageFile();
+                                File tempFile = new File(app.getDataPath(), "temp-photo.jpg");
+
+                                if (!tempFile.exists() && tempFile.createNewFile() ||
+                                        tempFile.exists() && tempFile.delete() &&
+                                                tempFile.createNewFile()) {
+
+                                    mTempPhotoPath = tempFile.getAbsolutePath();
+
+                                    cameraIntent.putExtra(
+                                            MediaStore.EXTRA_OUTPUT, Uri.fromFile(tempFile));
+                                    startActivityForResult(cameraIntent, REQUEST_TAKE_PHOTO);
+                                }
+
                             } catch (IOException e) {
                                 Toast.makeText(
                                         getActivity(), e.getLocalizedMessage(), Toast.LENGTH_LONG)
                                         .show();
-                            }
-
-                            if (photoFile != null) {
-                                mCurrentPhotoPath = photoFile.getAbsolutePath();
-
-                                cameraIntent.putExtra(
-                                        MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
-                                startActivityForResult(cameraIntent, REQUEST_TAKE_PHOTO);
                             }
                         }
                     }
@@ -537,7 +539,7 @@ public class ObjectStatusFragment
     }
 
 
-    private void setPhotoGalleryAdapter()
+    protected void setPhotoGalleryAdapter()
     {
         Uri attachesUri = Uri.parse(
                 "content://" + FoclSettingsConstantsUI.AUTHORITY + "/" + mObjectLayerName + "/" +
@@ -588,13 +590,14 @@ public class ObjectStatusFragment
             int resultCode,
             Intent data)
     {
+        File tempPhotoFile = new File(mTempPhotoPath);
+
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
             GISApplication app = (GISApplication) getActivity().getApplication();
             ContentResolver contentResolver = app.getContentResolver();
-            File srcPhotoFile = new File(mCurrentPhotoPath);
 
             try {
-                BitmapUtil.writeLocationToExif(srcPhotoFile, app.getCurrentLocation());
+                BitmapUtil.writeLocationToExif(tempPhotoFile, app.getCurrentLocation());
             } catch (IOException e) {
                 // TODO: work of error
                 e.printStackTrace();
@@ -605,54 +608,54 @@ public class ObjectStatusFragment
                             "/" + mObjectLayerName + "/" + mObjectId + "/attach");
 
             ContentValues values = new ContentValues();
-            values.put(VectorLayer.ATTACH_DISPLAY_NAME, srcPhotoFile.getName());
+            values.put(VectorLayer.ATTACH_DISPLAY_NAME, tempPhotoFile.getName());
             values.put(VectorLayer.ATTACH_MIME_TYPE, "image/jpeg");
-            values.put(VectorLayer.ATTACH_DESCRIPTION, srcPhotoFile.getName());
+            values.put(VectorLayer.ATTACH_DESCRIPTION, tempPhotoFile.getName());
 
             Uri attachUri = contentResolver.insert(allAttachesUri, values);
 
             if (null != attachUri) {
 
                 try {
-                    int exifOrientation = BitmapUtil.getOrientationFromExif(srcPhotoFile);
+                    int exifOrientation = BitmapUtil.getOrientationFromExif(tempPhotoFile);
 
                     // resize and rotate
-                    Bitmap sourceBitmap = BitmapFactory.decodeFile(srcPhotoFile.getPath());
+                    Bitmap sourceBitmap = BitmapFactory.decodeFile(tempPhotoFile.getPath());
                     Bitmap resizedBitmap = BitmapUtil.getResizedBitmap(
                             sourceBitmap, FoclConstants.PHOTO_MAX_SIZE_PX,
                             FoclConstants.PHOTO_MAX_SIZE_PX);
                     Bitmap rotatedBitmap = BitmapUtil.rotateBitmap(resizedBitmap, exifOrientation);
 
                     // jpeg compress
-                    File tempPhotoFile = File.createTempFile("attach", null, app.getCacheDir());
-                    OutputStream tempOutStream = new FileOutputStream(tempPhotoFile);
+                    File tempAttachFile = File.createTempFile("attach", null, app.getCacheDir());
+                    OutputStream tempOutStream = new FileOutputStream(tempAttachFile);
                     rotatedBitmap.compress(
                             Bitmap.CompressFormat.JPEG, FoclConstants.PHOTO_JPEG_COMPRESS_QUALITY,
                             tempOutStream);
                     tempOutStream.close();
 
                     // write EXIF to new file
-                    BitmapUtil.copyExifData(srcPhotoFile, tempPhotoFile);
+                    BitmapUtil.copyExifData(tempPhotoFile, tempAttachFile);
 
-                    ExifInterface dstExif = new ExifInterface(tempPhotoFile.getCanonicalPath());
+                    ExifInterface attachExif = new ExifInterface(tempAttachFile.getCanonicalPath());
 
-                    dstExif.setAttribute(
+                    attachExif.setAttribute(
                             ExifInterface.TAG_ORIENTATION, "" + ExifInterface.ORIENTATION_NORMAL);
-                    dstExif.setAttribute(
+                    attachExif.setAttribute(
                             ExifInterface.TAG_IMAGE_LENGTH, "" + rotatedBitmap.getHeight());
-                    dstExif.setAttribute(
+                    attachExif.setAttribute(
                             ExifInterface.TAG_IMAGE_WIDTH, "" + rotatedBitmap.getWidth());
 
-                    dstExif.saveAttributes();
+                    attachExif.saveAttributes();
 
                     rotatedBitmap.recycle();
 
-                    // attach data from tempPhotoFile
+                    // attach data from tempAttachFile
                     OutputStream attachOutStream = contentResolver.openOutputStream(attachUri);
-                    FileUtil.copy(new FileInputStream(srcPhotoFile), attachOutStream);
+                    FileUtil.copy(new FileInputStream(tempAttachFile), attachOutStream);
                     attachOutStream.close();
 
-                    tempPhotoFile.delete();
+                    tempAttachFile.delete();
 
                 } catch (IOException e) {
                     // TODO: work of error
@@ -665,14 +668,24 @@ public class ObjectStatusFragment
                 Log.d(TAG, "insert attach failed");
             }
 
+            if (app.isOriginalPhotoSaving()) {
+                File origPhotoFile = new File(getDailyPhotoFolder(), getPhotoFileName());
+                com.nextgis.maplib.util.FileUtil.move(tempPhotoFile, origPhotoFile);
+            } else {
+                tempPhotoFile.delete();
+            }
+
             setPhotoGalleryAdapter();
             setPhotoGalleryVisibility(true);
+        }
+
+        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_CANCELED) {
+            tempPhotoFile.delete();
         }
     }
 
 
-    private File createImageFile()
-            throws IOException
+    protected String getPhotoFileName()
     {
         String prefix = "";
 
@@ -698,20 +711,22 @@ public class ObjectStatusFragment
                 break;
         }
 
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        return prefix + timeStamp + ".jpg";
+    }
+
+
+    protected File getDailyPhotoFolder()
+    {
         final GISApplication app = (GISApplication) getActivity().getApplication();
 
         String timeStamp = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-        File dataDir = new File(app.getPhotoPath() + File.separator + timeStamp);
+        File photoFolder = new File(app.getPhotoPath() + File.separator + timeStamp);
 
-        if (!dataDir.exists()) {
-            dataDir.mkdirs();
+        if (!photoFolder.exists()) {
+            photoFolder.mkdirs();
         }
 
-        timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = prefix + timeStamp + ".jpg";
-        File emptyFile = new File(dataDir, imageFileName);
-        emptyFile.createNewFile();
-
-        return emptyFile;
+        return photoFolder;
     }
 }

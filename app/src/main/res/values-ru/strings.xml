@@ -38,9 +38,6 @@
     <string name="delete_photo_ask">Удалить фото?</string>
     <string name="delete_photo_message">Фотография будет также удалена на сервере при очередной синхронизации.</string>
 
-    <string name="data_path">Путь к данным программы</string>
-    <string name="data_path_summary">Путь к папке с данными программы.</string>
-
     <string name="hint">Пояснение</string>
     <string name="hint_folder_moving">Папка \"%s\" с данными программы будет перемещена в выбранную папку.</string>
 
@@ -58,6 +55,12 @@
     <string name="map_summary">Настройки карты</string>
     <string name="ngw">NextGIS Web</string>
     <string name="ngw_summary">Настройки NextGIS Web</string>
+
+    <string name="save_photo">Сохранять полноразмерные фото</string>
+    <string name="save_photo_summary">Сохранять полноразмерные фото в папке с данными программы.</string>
+    <string name="data_path">Папка с данными программы</string>
+    <string name="data_path_summary">Путь к папке с данными программы.</string>
+
     <string name="keep_screen_on">Удерживать экран включенным</string>
     <string name="keep_screen_on_summary">Предотвращать отключение экрана при показе карты</string>
     <string name="show_zoom_controls">Кнопки масштабирования</string>

@@ -275,6 +275,14 @@ public class GISApplication
     }
 
 
+    public boolean isOriginalPhotoSaving()
+    {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        return sharedPreferences.getBoolean(
+                FoclSettingsConstantsUI.KEY_PREF_ORIGINAL_PHOTO_SAVING, false);
+    }
+
+
     public void setDataParentPath(String newDataParentPath)
     {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
