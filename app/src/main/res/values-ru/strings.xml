@@ -40,6 +40,9 @@
     <string name="data_path">Путь к данным программы</string>
     <string name="data_path_summary">Путь к папке с данными программы.</string>
 
+    <string name="hint">Пояснение</string>
+    <string name="hint_folder_moving">Папка \"%s\" с данными программы будет перемещена в выбранную папку.</string>
+
     <string name="moving">Перемещение…</string>
     <string name="warning_data_moving">Внимание! Не отменяйте операцию и не останавливайте приложение в процессе перемещения данных на новое место. Может привести к потере данных!</string>
 

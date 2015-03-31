@@ -24,8 +24,10 @@ package com.nextgis.ngm_clink_monitoring.activities;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -47,6 +49,7 @@ import ar.com.daidalos.afiledialog.FileChooserActivity;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.fragments.FoclSettingsFragment;
+import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
 
 import java.io.File;
@@ -187,28 +190,54 @@ public class FoclSettingsActivity
 
 
     public static void showFolderChooser(
-            Activity activity,
-            Fragment fragment)
+            final Activity activity,
+            final Fragment fragment)
     {
-        // TODO: dialog "Folder ngm_clink_monitoring will move to ..."
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(activity);
+        alertDialog.setTitle(activity.getResources().getString(R.string.hint))
 
-        GISApplication app = (GISApplication) activity.getApplication();
-        Intent intent = new Intent(activity, FileChooserActivity.class);
+                .setMessage(
+                        String.format(
+                                activity.getResources().getString(R.string.hint_folder_moving),
+                                FoclConstants.FOCL_DATA_DIR))
 
-        intent.putExtra(FileChooserActivity.INPUT_START_FOLDER, app.getDataParentPath());
+                .setPositiveButton(
+                        activity.getResources().getString(R.string.ok),
 
-        intent.putExtra(FileChooserActivity.INPUT_FOLDER_MODE, true);
-        intent.putExtra(FileChooserActivity.INPUT_SHOW_ONLY_SELECTABLE, true);
-        intent.putExtra(FileChooserActivity.INPUT_CAN_CREATE_FILES, true);
-        intent.putExtra(FileChooserActivity.INPUT_SHOW_CONFIRMATION_ON_SELECT, true);
-        intent.putExtra(FileChooserActivity.INPUT_SHOW_CONFIRMATION_ON_CREATE, true);
+                        new DialogInterface.OnClickListener()
+                        {
+                            public void onClick(
+                                    DialogInterface dialog,
+                                    int which)
+                            {
+                                GISApplication app = (GISApplication) activity.getApplication();
+                                Intent intent = new Intent(activity, FileChooserActivity.class);
 
-        if (null == fragment) {
-            activity.startActivityForResult(intent, DATA_FOLDER_SELECT_CODE);
-        } else {
-            // for API > 11
-            fragment.startActivityForResult(intent, DATA_FOLDER_SELECT_CODE);
-        }
+                                intent.putExtra(
+                                        FileChooserActivity.INPUT_START_FOLDER,
+                                        app.getDataParentPath());
+
+                                intent.putExtra(FileChooserActivity.INPUT_FOLDER_MODE, true);
+                                intent.putExtra(
+                                        FileChooserActivity.INPUT_SHOW_ONLY_SELECTABLE, true);
+                                intent.putExtra(FileChooserActivity.INPUT_CAN_CREATE_FILES, true);
+                                intent.putExtra(
+                                        FileChooserActivity.INPUT_SHOW_CONFIRMATION_ON_SELECT,
+                                        true);
+                                intent.putExtra(
+                                        FileChooserActivity.INPUT_SHOW_CONFIRMATION_ON_CREATE,
+                                        true);
+
+                                if (null == fragment) {
+                                    activity.startActivityForResult(
+                                            intent, DATA_FOLDER_SELECT_CODE);
+                                } else {
+                                    // for API > 11
+                                    fragment.startActivityForResult(
+                                            intent, DATA_FOLDER_SELECT_CODE);
+                                }
+                            }
+                        }).show();
     }
 
 

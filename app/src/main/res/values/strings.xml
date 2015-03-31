@@ -40,6 +40,9 @@
     <string name="data_path">Program data path</string>
     <string name="data_path_summary">The path to data program folder.</string>
 
+    <string name="hint">Hint</string>
+    <string name="hint_folder_moving">Program data folder \"%s\" will be moved to selected folder.</string>
+
     <string name="moving">Moving…</string>
     <string name="warning_data_moving">Dangerous operation! Don\'t cancel it or kill the application during the data moving to new location! You data may be broken or lost!</string>
 
