@@ -617,7 +617,6 @@ public class GISApplication
                     break;
 
                 case SyncAdapter.SYNC_FINISH:
-                    stopSync(getAccount()); // reset system queue
                     reloadMap();
                     break;
 
