@@ -411,7 +411,7 @@ public class GISApplication
     public void stopPeriodicSync()
     {
         clearSyncQueue();
-        stopSync(getAccount());
+        resetSystemSyncQueue(getAccount());
     }
 
 
@@ -437,7 +437,7 @@ public class GISApplication
     }
 
 
-    protected boolean stopSync(Account account)
+    protected boolean resetSystemSyncQueue(Account account)
     {
         if (null == account) {
             return false;
@@ -445,7 +445,6 @@ public class GISApplication
 
         ContentResolver.removePeriodicSync(account, getAuthority(), Bundle.EMPTY);
         ContentResolver.setSyncAutomatically(account, getAuthority(), false);
-        ContentResolver.cancelSync(account, getAuthority());
         return true;
     }
 
@@ -617,6 +616,7 @@ public class GISApplication
                     break;
 
                 case SyncAdapter.SYNC_FINISH:
+                    resetSystemSyncQueue(getAccount());
                     reloadMap();
                     break;
 
