@@ -123,6 +123,11 @@ public class ObjectStatusFragment
 
         } else {
             mObjectLayerName = objectLayerName;
+
+            if (null == objectCursor) {
+                return;
+            }
+
             mObjectId = objectCursor.getLong(objectCursor.getColumnIndex(VectorLayer.FIELD_ID));
             mObjectNameText = ObjectCursorAdapter.getObjectName(objectCursor);
             mObjectStatus = objectCursor.getString(
@@ -249,6 +254,17 @@ public class ObjectStatusFragment
             FoclVectorLayer layer = (FoclVectorLayer) foclStruct.getLayerByFoclType(
                     mFoclStructLayerType);
 
+            if (null == layer) {
+                mObjectName.setText("");
+                setStatusButtonView(false);
+                mMakePhotoButton.setEnabled(false);
+                mMakePhotoButton.setOnClickListener(null);
+                mPhotoGallery.setEnabled(false);
+                mPhotoGallery.setAdapter(null);
+                setPhotoGalleryVisibility(false);
+                return view;
+            }
+
             mObjectLayerName = layer.getPath().getName();
 
             Uri uri = Uri.parse(
@@ -293,7 +309,6 @@ public class ObjectStatusFragment
 
                 objectCursor.close();
             }
-
 
             setStatusButtonView(found);
             mMakePhotoButton.setEnabled(found);
@@ -421,7 +436,9 @@ public class ObjectStatusFragment
     @Override
     public void onDestroyView()
     {
-        mAttachesCursor.close();
+        if (null != mAttachesCursor) {
+            mAttachesCursor.close();
+        }
         super.onDestroyView();
     }
 

@@ -136,6 +136,13 @@ public class ObjectListFragment
 
         FoclVectorLayer layer = (FoclVectorLayer) foclStruct.getLayerByFoclType(
                 mFoclStructLayerType);
+
+        if (null == layer) {
+            mObjectList.setEnabled(false);
+            mObjectList.setAdapter(null);
+            return view;
+        }
+
         mObjectLayerName = layer.getPath().getName();
 
         Uri uri = Uri.parse(
@@ -181,7 +188,10 @@ public class ObjectListFragment
     @Override
     public void onDestroyView()
     {
-        mAdapterCursor.close();
+        if (null != mAdapterCursor) {
+            mAdapterCursor.close();
+        }
+
         super.onDestroyView();
     }
 

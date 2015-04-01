@@ -188,7 +188,9 @@ public class FoclProject
                 layerIdList.add(layerId);
             }
 
-            for (ILayer layer : foclStruct.getLayers()) {
+            List<ILayer> layers = foclStruct.getLayers();
+            for (int i = 0; i < layers.size(); ++i) {
+                ILayer layer = layers.get(i);
                 if (Thread.currentThread().isInterrupted()) {
                     break;
                 }
@@ -197,6 +199,7 @@ public class FoclProject
 
                 if (!layerIdList.contains(foclVectorLayer.getRemoteId())) {
                     foclVectorLayer.delete();
+                    --i;
                 }
             }
 
@@ -228,7 +231,7 @@ public class FoclProject
 
         if (foclVectorLayer != null) {
             if (foclVectorLayer.getFoclLayerType() !=
-                FoclVectorLayer.getFoclLayerTypeFromString(layerType)) {
+                    FoclVectorLayer.getFoclLayerTypeFromString(layerType)) {
 
                 foclVectorLayer.delete();
                 createNewVectorLayer = true;
@@ -275,13 +278,14 @@ public class FoclProject
         try {
             List<Long> structIdList = new ArrayList<>(jsonArray.length());
 
-            for (int i = 0; i < jsonArray.length(); i++) {
+            for (int i = 0; i < jsonArray.length(); ++i) {
                 JSONObject jsonStruct = jsonArray.getJSONObject(i);
                 long structId = jsonStruct.getLong(Constants.JSON_ID_KEY);
                 structIdList.add(structId);
             }
 
-            for (ILayer layer : mLayers) {
+            for (int i = 0; i < mLayers.size(); ++i) {
+                ILayer layer = mLayers.get(i);
                 if (Thread.currentThread().isInterrupted()) {
                     break;
                 }
@@ -289,10 +293,11 @@ public class FoclProject
 
                 if (!structIdList.contains(foclStruct.getRemoteId())) {
                     foclStruct.delete();
+                    --i;
                 }
             }
 
-            for (int i = 0; i < jsonArray.length(); i++) {
+            for (int i = 0; i < jsonArray.length(); ++i) {
                 if (Thread.currentThread().isInterrupted()) {
                     break;
                 }
@@ -302,7 +307,7 @@ public class FoclProject
 
                 FoclStruct foclStruct = addOrUpdateFoclStruct(jsonStruct, jsonLayers);
 
-                for (int jj = 0; jj < jsonLayers.length(); jj++) {
+                for (int jj = 0; jj < jsonLayers.length(); ++jj) {
                     if (Thread.currentThread().isInterrupted()) {
                         break;
                     }
@@ -332,7 +337,7 @@ public class FoclProject
             final HttpGet get = new HttpGet(getFoclUrl(mURL)); //get as GeoJSON
             //basic auth
             if (null != mLogin && mLogin.length() > 0 && null != mPassword &&
-                mPassword.length() > 0) {
+                    mPassword.length() > 0) {
                 get.setHeader("Accept", "*/*");
                 final String basicAuth = "Basic " + Base64.encodeToString(
                         (mLogin + ":" + mPassword).getBytes(), Base64.NO_WRAP);
@@ -347,7 +352,7 @@ public class FoclProject
             if (line.getStatusCode() != 200) {
                 Log.d(
                         Constants.TAG, "Problem downloading FOCL: " + mURL + " HTTP response: " +
-                                       line);
+                                line);
                 return getContext().getString(com.nextgis.maplib.R.string.error_download_data);
             }
 
@@ -365,7 +370,7 @@ public class FoclProject
         } catch (IOException e) {
             Log.d(
                     Constants.TAG, "Problem downloading FOCL: " + mURL + " Error: " +
-                                   e.getLocalizedMessage());
+                            e.getLocalizedMessage());
             return getContext().getString(com.nextgis.maplib.R.string.error_download_data);
         } catch (JSONException e) {
             e.printStackTrace();

@@ -57,8 +57,8 @@ public class ObjectPhotoAdapter
     protected Context mContext;
     protected Cursor  mAttachesCursor;
     protected Uri     mAttachesUri;
-    protected int  mSelectedItemPosition;
-    protected long mSelectedItemId;
+    protected int     mSelectedItemPosition;
+    protected long    mSelectedItemId;
 
     protected OnPhotoClickListener mOnPhotoClickListener;
 
@@ -132,6 +132,11 @@ public class ObjectPhotoAdapter
             protected Bitmap doInBackground(Void... params)
             {
                 InputStream attachInputStream = getAttachInputStream(position);
+
+                if (null == attachInputStream) {
+                    return null;
+                }
+
                 Bitmap bitmap = createImagePreview(attachInputStream);
 
                 try {
@@ -268,7 +273,7 @@ public class ObjectPhotoAdapter
             extends RecyclerView.ViewHolder
             implements View.OnCreateContextMenuListener
     {
-        public int mPosition;
+        public int       mPosition;
         public ImageView mImageView;
 
         private Context mContext;
