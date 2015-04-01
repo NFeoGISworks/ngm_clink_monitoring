@@ -69,7 +69,7 @@ public class FoclSettingsActivity
         super.onCreate(savedInstanceState);
 
         ViewGroup root = ((ViewGroup) findViewById(android.R.id.content));
-        LinearLayout content = (LinearLayout) root.getChildAt(0);
+        View content = root.getChildAt(0);
         LinearLayout toolbarContainer =
                 (LinearLayout) View.inflate(this, R.layout.activity_settings, null);
 

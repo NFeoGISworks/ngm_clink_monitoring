@@ -29,7 +29,7 @@
         >
         <intent
             android:action="com.nextgis.ngm_clink_monitoring.PREFS_GENERAL"
-            android:targetClass="com.nextgis.ngm_clink_monitoring.activities.SettingsActivity"
+            android:targetClass="com.nextgis.ngm_clink_monitoring.activities.FoclSettingsActivity"
             android:targetPackage="com.nextgis.ngm_clink_monitoring"
             />
     </Preference>
@@ -40,7 +40,7 @@
         >
         <intent
             android:action="com.nextgis.ngm_clink_monitoring.PREFS_MAP"
-            android:targetClass="com.nextgis.ngm_clink_monitoring.activities.SettingsActivity"
+            android:targetClass="com.nextgis.ngm_clink_monitoring.activities.FoclSettingsActivity"
             android:targetPackage="com.nextgis.ngm_clink_monitoring"
             />
     </Preference>
