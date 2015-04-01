@@ -64,7 +64,7 @@ public class NGWSettingsActivityProxy
         if (null != account) {
             Bundle bundle = new Bundle();
             bundle.putParcelable("account", account);
-            Intent intent = new Intent(this, NGWSettingsActivity.class);
+            Intent intent = new Intent(this, NGWSettingsActivityProxy.class);
             intent.putExtras(bundle);
             intent.setAction(ACCOUNT_ACTION);
 
