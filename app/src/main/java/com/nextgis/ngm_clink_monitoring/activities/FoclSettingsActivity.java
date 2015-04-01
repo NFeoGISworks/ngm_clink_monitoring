@@ -347,7 +347,7 @@ public class FoclSettingsActivity
         protected Void doInBackground(Void... voids)
         {
             GISApplication app = (GISApplication) mActivity.getApplication();
-            app.moveData(mOldDataParentPath, mNewDataParentPath);
+            app.moveProgramData(mOldDataParentPath, mNewDataParentPath);
             return null;
         }
 

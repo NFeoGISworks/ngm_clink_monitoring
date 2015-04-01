@@ -136,13 +136,13 @@ public class GISApplication
     }
 
 
-    protected boolean isRanAsService()
+    public boolean isRanAsService()
     {
         return getCurrentProcessName().matches(".*:sync$");
     }
 
 
-    protected String getCurrentProcessName()
+    public String getCurrentProcessName()
     {
         int pid = android.os.Process.myPid();
         ActivityManager manager = (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);
@@ -336,7 +336,7 @@ public class GISApplication
         if (isEnabled) {
             startPeriodicSync();
         } else {
-            stopPeriodicSync();
+            clearSyncQueue();
         }
     }
 
@@ -376,6 +376,14 @@ public class GISApplication
     }
 
 
+    public void clearSyncQueue()
+    {
+        if (null != mSyncPeriodicRunner) {
+            mSyncPeriodicRunner.stopUpdates();
+        }
+    }
+
+
     public void startPeriodicSync()
     {
         final Account account = getAccount();
@@ -384,7 +392,7 @@ public class GISApplication
             return;
         }
 
-        stopPeriodicSync();
+        clearSyncQueue();
 
         mSyncPeriodicRunner = new UIUpdater(
                 new Runnable()
@@ -402,11 +410,8 @@ public class GISApplication
 
     public void stopPeriodicSync()
     {
-        if (null == mSyncPeriodicRunner) {
-            return;
-        }
-
-        mSyncPeriodicRunner.stopUpdates();
+        clearSyncQueue();
+        stopSync(getAccount());
     }
 
 
@@ -428,6 +433,19 @@ public class GISApplication
         settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
 
         ContentResolver.requestSync(account, FoclSettingsConstantsUI.AUTHORITY, settingsBundle);
+        return true;
+    }
+
+
+    protected boolean stopSync(Account account)
+    {
+        if (null == account) {
+            return false;
+        }
+
+        ContentResolver.removePeriodicSync(account, getAuthority(), Bundle.EMPTY);
+        ContentResolver.setSyncAutomatically(account, getAuthority(), false);
+        ContentResolver.cancelSync(account, getAuthority());
         return true;
     }
 
@@ -496,7 +514,7 @@ public class GISApplication
     }
 
 
-    public void moveData(
+    public void moveProgramData(
             String oldDataParentPath,
             String newDataParentPath)
     {
@@ -599,6 +617,7 @@ public class GISApplication
                     break;
 
                 case SyncAdapter.SYNC_FINISH:
+                    stopSync(getAccount()); // reset system queue
                     reloadMap();
                     break;
 
