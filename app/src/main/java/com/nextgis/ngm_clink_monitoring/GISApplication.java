@@ -479,7 +479,12 @@ public class GISApplication
         if (accountAdded) {
             mIsAccountCreated = true;
             addFoclProject();
-            startPeriodicSync();
+
+            if (isAutoSyncEnabled()) {
+                startPeriodicSync();
+            } else {
+                runSyncManually(getAccount());
+            }
 
             if (null != mOnAccountAddedListener) {
                 mOnAccountAddedListener.onAccountAdded();
