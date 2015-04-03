@@ -125,19 +125,21 @@ public class ObjectStatusFragment
             mObjectLayerName = objectLayerName;
 
             if (null == objectCursor) {
-                return;
-            }
+                mObjectId = null;
+                mObjectNameText = null;
+                mObjectStatus = FoclConstants.FIELD_VALUE_UNKNOWN;
 
-            mObjectId = objectCursor.getLong(objectCursor.getColumnIndex(VectorLayer.FIELD_ID));
-            mObjectNameText = ObjectCursorAdapter.getObjectName(objectCursor);
-            mObjectStatus = objectCursor.getString(
-                    objectCursor.getColumnIndex(FoclConstants.FIELD_STATUS_BUILT));
+            } else {
+                mObjectId = objectCursor.getLong(objectCursor.getColumnIndex(VectorLayer.FIELD_ID));
+                mObjectNameText = ObjectCursorAdapter.getObjectName(objectCursor);
+                mObjectStatus = objectCursor.getString(
+                        objectCursor.getColumnIndex(FoclConstants.FIELD_STATUS_BUILT));
+                objectCursor.close();
+            }
 
             if (null == mObjectStatus) {
                 mObjectStatus = FoclConstants.FIELD_VALUE_UNKNOWN;
             }
-
-            objectCursor.close();
         }
     }
 
@@ -275,8 +277,14 @@ public class ObjectStatusFragment
                     FoclConstants.FIELD_TYPE_ENDPOINT,
                     FoclConstants.FIELD_STATUS_MEASURE};
 
-            Cursor objectCursor =
-                    getActivity().getContentResolver().query(uri, proj, null, null, null);
+            Cursor objectCursor = null;
+            try {
+                objectCursor =
+                        getActivity().getContentResolver().query(uri, proj, null, null, null);
+
+            } catch (Exception e) {
+                Log.d(Constants.TAG, e.getLocalizedMessage());
+            }
 
             boolean found = false;
 
@@ -367,8 +375,14 @@ public class ObjectStatusFragment
                     values.put(FoclConstants.FIELD_STATUS_BUILT_CH, calendar.getTimeInMillis());
                 }
 
-                int result =
-                        getActivity().getContentResolver().update(updateUri, values, null, null);
+                int result = 0;
+                try {
+                    result = getActivity().getContentResolver()
+                            .update(updateUri, values, null, null);
+
+                } catch (Exception e) {
+                    Log.d(Constants.TAG, e.getLocalizedMessage());
+                }
 
                 if (result == 0) {
                     Log.d(
@@ -495,8 +509,17 @@ public class ObjectStatusFragment
 
         // get file path of photo file
         String proj[] = {VectorLayer.ATTACH_ID, VectorLayer.ATTACH_DATA};
-        Cursor attachCursor = getActivity().getContentResolver().query(
-                attachUri, proj, null, null, null);
+
+        Cursor attachCursor = null;
+        try {
+            attachCursor = getActivity().getContentResolver().query(
+                    attachUri, proj, null, null, null);
+
+        } catch (Exception e) {
+            Log.d(Constants.TAG, e.getLocalizedMessage());
+            return;
+        }
+
         attachCursor.moveToFirst();
         int columnIndex = attachCursor.getColumnIndex(VectorLayer.ATTACH_DATA);
 
@@ -504,6 +527,8 @@ public class ObjectStatusFragment
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setDataAndType(
                 Uri.parse("file://" + attachCursor.getString(columnIndex)), "image/*");
+
+        attachCursor.close();
         startActivity(intent);
     }
 
@@ -514,7 +539,13 @@ public class ObjectStatusFragment
                 "content://" + FoclSettingsConstantsUI.AUTHORITY + "/" + mObjectLayerName +
                         "/" + mObjectId + "/attach/" + itemId);
 
-        int result = getActivity().getContentResolver().delete(deleteUri, null, null);
+        int result = 0;
+        try {
+            result = getActivity().getContentResolver().delete(deleteUri, null, null);
+
+        } catch (Exception e) {
+            Log.d(Constants.TAG, e.getLocalizedMessage());
+        }
 
         if (result == 0) {
             Log.d(TAG, "delete failed");
@@ -565,20 +596,28 @@ public class ObjectStatusFragment
         String proj[] = {VectorLayer.ATTACH_ID, VectorLayer.ATTACH_DISPLAY_NAME};
         String orderBy = VectorLayer.ATTACH_DISPLAY_NAME;
 
-        mAttachesCursor =
-                mContext.getContentResolver().query(attachesUri, proj, null, null, orderBy);
+        try {
+            mAttachesCursor =
+                    mContext.getContentResolver().query(attachesUri, proj, null, null, orderBy);
 
-        mObjectPhotoAdapter = new ObjectPhotoAdapter(mContext, attachesUri, mAttachesCursor);
+        } catch (Exception e) {
+            Log.d(Constants.TAG, e.getLocalizedMessage());
+            mAttachesCursor = null;
+            mObjectPhotoAdapter = null;
+        }
 
-        mObjectPhotoAdapter.setOnPhotoClickListener(
-                new ObjectPhotoAdapter.OnPhotoClickListener()
-                {
-                    @Override
-                    public void onPhotoClick(long itemId)
+        if (null != mAttachesCursor) {
+            mObjectPhotoAdapter = new ObjectPhotoAdapter(mContext, attachesUri, mAttachesCursor);
+            mObjectPhotoAdapter.setOnPhotoClickListener(
+                    new ObjectPhotoAdapter.OnPhotoClickListener()
                     {
-                        showPhoto(itemId);
-                    }
-                });
+                        @Override
+                        public void onPhotoClick(long itemId)
+                        {
+                            showPhoto(itemId);
+                        }
+                    });
+        }
 
         mPhotoGallery.setAdapter(mObjectPhotoAdapter);
     }
@@ -587,13 +626,15 @@ public class ObjectStatusFragment
     protected void setPhotoGalleryVisibility(boolean visible)
     {
         if (visible) {
-            if (mObjectPhotoAdapter.getItemCount() > 0) {
+
+            if (null != mObjectPhotoAdapter && mObjectPhotoAdapter.getItemCount() > 0) {
                 mPhotoHintText.setVisibility(View.GONE);
                 mPhotoGallery.setVisibility(View.VISIBLE);
             } else {
                 mPhotoHintText.setVisibility(View.VISIBLE);
                 mPhotoGallery.setVisibility(View.GONE);
             }
+
         } else {
             mPhotoHintText.setVisibility(View.GONE);
             mPhotoGallery.setVisibility(View.GONE);
@@ -616,8 +657,7 @@ public class ObjectStatusFragment
             try {
                 BitmapUtil.writeLocationToExif(tempPhotoFile, app.getCurrentLocation());
             } catch (IOException e) {
-                // TODO: work of error
-                e.printStackTrace();
+                Log.d(Constants.TAG, e.getLocalizedMessage());
             }
 
             Uri allAttachesUri = Uri.parse(
@@ -629,7 +669,13 @@ public class ObjectStatusFragment
             values.put(VectorLayer.ATTACH_MIME_TYPE, "image/jpeg");
             values.put(VectorLayer.ATTACH_DESCRIPTION, tempPhotoFile.getName());
 
-            Uri attachUri = contentResolver.insert(allAttachesUri, values);
+            Uri attachUri = null;
+            try {
+                attachUri = contentResolver.insert(allAttachesUri, values);
+
+            } catch (Exception e) {
+                Log.d(Constants.TAG, e.getLocalizedMessage());
+            }
 
             if (null != attachUri) {
 
@@ -687,7 +733,12 @@ public class ObjectStatusFragment
 
             if (app.isOriginalPhotoSaving()) {
                 File origPhotoFile = new File(getDailyPhotoFolder(), getPhotoFileName());
-                com.nextgis.maplib.util.FileUtil.move(tempPhotoFile, origPhotoFile);
+
+                if (!com.nextgis.maplib.util.FileUtil.move(tempPhotoFile, origPhotoFile)) {
+                    Toast.makeText(
+                            getActivity(), "Save original photo failed", Toast.LENGTH_LONG).show();
+                }
+
             } else {
                 tempPhotoFile.delete();
             }

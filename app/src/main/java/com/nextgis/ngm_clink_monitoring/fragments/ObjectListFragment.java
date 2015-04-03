@@ -29,6 +29,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.CursorAdapter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +37,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.nextgis.maplib.map.VectorLayer;
+import com.nextgis.maplib.util.Constants;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.activities.MainActivity;
@@ -151,7 +153,13 @@ public class ObjectListFragment
         String proj[] = {
                 VectorLayer.FIELD_ID, FoclConstants.FIELD_NAME, FoclConstants.FIELD_STATUS_BUILT};
 
-        mAdapterCursor = getActivity().getContentResolver().query(uri, proj, null, null, null);
+        try {
+            mAdapterCursor = getActivity().getContentResolver().query(uri, proj, null, null, null);
+
+        } catch (Exception e) {
+            Log.d(Constants.TAG, e.getLocalizedMessage());
+            mAdapterCursor = null;
+        }
 
         if (null != mAdapterCursor && mAdapterCursor.getCount() > 0) {
             mObjectList.setEnabled(true);
