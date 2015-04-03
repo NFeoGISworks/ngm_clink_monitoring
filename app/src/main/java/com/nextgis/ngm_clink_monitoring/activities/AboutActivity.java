@@ -67,6 +67,10 @@ public class AboutActivity
         txtCreditsText.setText(Html.fromHtml(getString(R.string.credits)));
         txtCreditsText.setMovementMethod(LinkMovementMethod.getInstance());
 
+        TextView txtBasedOnText = (TextView) findViewById(R.id.based_on);
+        txtBasedOnText.setText(Html.fromHtml(getString(R.string.based_on)));
+        txtBasedOnText.setMovementMethod(LinkMovementMethod.getInstance());
+
         TextView txtCopyrightText = (TextView) findViewById(R.id.copyright);
         txtCopyrightText.setText(Html.fromHtml(getString(R.string.copyright)));
         txtCopyrightText.setMovementMethod(LinkMovementMethod.getInstance());

@@ -51,7 +51,9 @@ public interface FoclConstants
 
     public static final String FOCL_PROJECT             = "FOCL_project";
     public static final String FOCL_ACCOUNT_NAME        = "Compulink Monitoring Account";
+    //TODO: remove it
     public static final String FOCL_DEFAULT_ACCOUNT_URL = "http://176.9.38.120/cl2";
+    //    public static final String FOCL_DEFAULT_ACCOUNT_URL = "https://gis.compulink.ru";
     public static final String FOCL_DATA_DIR            = "ngm_clink_monitoring";
     public static final String FOCL_PHOTO_DIR           = "photo";
 
