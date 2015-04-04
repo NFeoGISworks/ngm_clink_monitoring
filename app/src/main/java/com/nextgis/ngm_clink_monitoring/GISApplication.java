@@ -274,6 +274,12 @@ public class GISApplication
     }
 
 
+    public boolean hasAccount()
+    {
+        return null != getAccount();
+    }
+
+
     public boolean isOriginalPhotoSaving()
     {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -336,7 +342,7 @@ public class GISApplication
         if (isEnabled) {
             startPeriodicSync();
         } else {
-            clearSyncQueue();
+            stopPeriodicSync();
         }
     }
 
@@ -356,39 +362,22 @@ public class GISApplication
                 .putLong(SettingsConstantsUI.KEY_PREF_SYNC_PERIOD_SEC_LONG, seconds)
                 .commit();
 
-        refreshSyncQueue(seconds);
-    }
-
-
-    public void refreshSyncQueue(Long seconds)
-    {
-        if (null == mSyncPeriodicRunner) {
-            return;
-        }
-
-        if (null != seconds) {
+        if (null != mSyncPeriodicRunner) {
             mSyncPeriodicRunner.setUpdateIntervalMillisec(seconds * 1000);
         }
 
-        if (isAutoSyncEnabled()) {
-            mSyncPeriodicRunner.refreshUpdaterQueue();
-        }
-    }
-
-
-    public void clearSyncQueue()
-    {
-        if (null != mSyncPeriodicRunner) {
-            mSyncPeriodicRunner.stopUpdates();
-        }
+        refreshSyncQueue();
     }
 
 
     public void startPeriodicSync()
     {
-        final Account account = getAccount();
+        if (isRanAsService()) {
+            Log.d(Constants.TAG, "!!! trying run auto sync from service, startPeriodicSync() !!!");
+            return;
+        }
 
-        if (null == account) {
+        if (!hasAccount()) {
             return;
         }
 
@@ -400,7 +389,7 @@ public class GISApplication
                     @Override
                     public void run()
                     {
-                        runSync(account);
+                        runSync();
                     }
                 }, getSyncPeriodSec() * 1000);
 
@@ -411,19 +400,21 @@ public class GISApplication
     public void stopPeriodicSync()
     {
         clearSyncQueue();
-        resetSystemSyncQueue(getAccount());
+        resetSystemSyncQueue();
     }
 
 
-    public boolean runSyncManually(Account account)
+    public boolean runSyncManually()
     {
-        refreshSyncQueue(null);
-        return runSync(account);
+        refreshSyncQueue();
+        return runSync();
     }
 
 
-    protected boolean runSync(Account account)
+    protected boolean runSync()
     {
+        Account account = getAccount();
+
         if (null == account) {
             return false;
         }
@@ -437,8 +428,26 @@ public class GISApplication
     }
 
 
-    protected boolean resetSystemSyncQueue(Account account)
+    public void refreshSyncQueue()
     {
+        if (null != mSyncPeriodicRunner && isAutoSyncEnabled()) {
+            mSyncPeriodicRunner.refreshUpdaterQueue();
+        }
+    }
+
+
+    public void clearSyncQueue()
+    {
+        if (null != mSyncPeriodicRunner) {
+            mSyncPeriodicRunner.stopUpdates();
+        }
+    }
+
+
+    protected boolean resetSystemSyncQueue()
+    {
+        Account account = getAccount();
+
         if (null == account) {
             return false;
         }
@@ -483,7 +492,7 @@ public class GISApplication
             if (isAutoSyncEnabled()) {
                 startPeriodicSync();
             } else {
-                runSyncManually(getAccount());
+                runSyncManually();
             }
 
             if (null != mOnAccountAddedListener) {
@@ -621,7 +630,7 @@ public class GISApplication
                     break;
 
                 case SyncAdapter.SYNC_FINISH:
-                    resetSystemSyncQueue(getAccount());
+                    resetSystemSyncQueue();
                     reloadMap();
                     break;
 

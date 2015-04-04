@@ -24,6 +24,8 @@ package com.nextgis.ngm_clink_monitoring.util;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
+import com.nextgis.maplib.util.Constants;
 
 
 /**
@@ -57,6 +59,7 @@ public class UIUpdater
             @Override
             public void run()
             {
+                Log.d(Constants.TAG, "auto sync started, run()");
                 // Run the passed runnable
                 runnable.run();
                 // Re-run it after the update intervalMillisec
@@ -84,6 +87,7 @@ public class UIUpdater
      */
     public synchronized void startUpdates()
     {
+        Log.d(Constants.TAG, "auto sync started, startUpdates()");
         mStatusChecker.run();
     }
 

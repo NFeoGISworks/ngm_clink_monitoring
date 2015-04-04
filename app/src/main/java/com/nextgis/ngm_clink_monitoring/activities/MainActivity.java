@@ -148,7 +148,7 @@ public class MainActivity
             ft.commit();
         }
 
-        if (null == app.getAccount()) {
+        if (!app.hasAccount()) {
             mViewState = VIEW_STATE_ACCOUNT;
         } else if (null == app.getFoclProject()) {
             mViewState = VIEW_STATE_1ST_SYNC;
@@ -456,14 +456,13 @@ public class MainActivity
     public void onMenuSyncClick()
     {
         GISApplication app = (GISApplication) getApplication();
-        Account account = app.getAccount();
 
-        if (null == account) {
+        if (!app.hasAccount()) {
             Toast.makeText(this, getString(R.string.no_account), Toast.LENGTH_LONG).show();
             return;
         }
 
-        app.runSyncManually(account);
+        app.runSyncManually();
     }
 
 
