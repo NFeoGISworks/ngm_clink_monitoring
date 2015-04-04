@@ -117,8 +117,8 @@
             />
 
         <service
-            android:exported="true"
             android:name="com.nextgis.ngm_clink_monitoring.services.FoclSyncService"
+            android:exported="true"
             android:process=":sync"
             >
             <intent-filter>
@@ -133,9 +133,9 @@
         </service>
 
         <provider
+            android:name="com.nextgis.maplib.datasource.LayerContentProvider"
             android:authorities="com.nextgis.ngm_clink_monitoring.provider"
             android:exported="false"
-            android:name="com.nextgis.maplib.datasource.LayerContentProvider"
             android:syncable="true"
             />
 

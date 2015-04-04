@@ -653,6 +653,7 @@ public class ObjectStatusFragment
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
             GISApplication app = (GISApplication) getActivity().getApplication();
             ContentResolver contentResolver = app.getContentResolver();
+            String photoFileName = getPhotoFileName();
 
             try {
                 BitmapUtil.writeLocationToExif(tempPhotoFile, app.getCurrentLocation());
@@ -665,9 +666,9 @@ public class ObjectStatusFragment
                             "/" + mObjectLayerName + "/" + mObjectId + "/attach");
 
             ContentValues values = new ContentValues();
-            values.put(VectorLayer.ATTACH_DISPLAY_NAME, tempPhotoFile.getName());
+            values.put(VectorLayer.ATTACH_DISPLAY_NAME, photoFileName);
             values.put(VectorLayer.ATTACH_MIME_TYPE, "image/jpeg");
-            values.put(VectorLayer.ATTACH_DESCRIPTION, tempPhotoFile.getName());
+            values.put(VectorLayer.ATTACH_DESCRIPTION, photoFileName);
 
             Uri attachUri = null;
             try {
@@ -732,7 +733,7 @@ public class ObjectStatusFragment
             }
 
             if (app.isOriginalPhotoSaving()) {
-                File origPhotoFile = new File(getDailyPhotoFolder(), getPhotoFileName());
+                File origPhotoFile = new File(getDailyPhotoFolder(), photoFileName);
 
                 if (!com.nextgis.maplib.util.FileUtil.move(tempPhotoFile, origPhotoFile)) {
                     Toast.makeText(
