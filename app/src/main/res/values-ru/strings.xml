@@ -31,6 +31,8 @@
     <string name="action_about">О программе</string>
     <string name="action_select_folder">Выберите папку</string>
 
+    <string name="focl_login_description">Введите имя пользователя и пароль для подключения к серверу системы</string>
+
     <string name="select_action">Выберите действие</string>
     <string name="action_show_photo">Показать фото</string>
     <string name="action_delete_photo">Удалить фото</string>

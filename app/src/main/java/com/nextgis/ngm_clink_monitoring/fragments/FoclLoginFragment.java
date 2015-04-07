@@ -29,6 +29,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import com.nextgis.maplibui.NGWLoginFragment;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.activities.MainActivity;
@@ -60,6 +61,13 @@ public class FoclLoginFragment
         }
 
         View view = super.onCreateView(inflater, container, savedInstanceState);
+
+        TextView loginTitle = (TextView) view.findViewById(R.id.login_title);
+        TextView loginDescription = (TextView) view.findViewById(R.id.login_description);
+
+        loginTitle.setVisibility(View.GONE);
+        loginDescription.setText(R.string.focl_login_description);
+
         mURL.setText(FoclConstants.FOCL_DEFAULT_ACCOUNT_URL);
 
         // button's theme applying
