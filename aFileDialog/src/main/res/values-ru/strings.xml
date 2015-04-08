@@ -19,6 +19,8 @@
     <string name="daidalos_confirm_create_file">Файл \'$file_name\' не существует, Вы уверены, что хотите создать его?</string>
     <string name="daidalos_confirm_select_folder">Вы уверены, что хотите выбрать папку \'$file_name\'?</string>
     <string name="daidalos_confirm_create_folder">Папка \'$file_name\' не существует, Вы уверены, что хотите создать ее?</string>
-    <string name="daidalos_confirm_move_to_folder">Папка с данными программы будет перемещена в\n\"%s\"</string>
+
+    <!--Warning! ngm_clink_monitoring is hardcoded-->
+    <string name="daidalos_confirm_move_to_folder">Новые фотографии будут сохраняться в папке\n\"%s/ngm_clink_monitoring\"</string>
 
 </resources>

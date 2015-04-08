@@ -63,6 +63,8 @@ public interface FoclConstants
     //TODO: remove it
     public static final String FOCL_DEFAULT_ACCOUNT_URL = "http://176.9.38.120/cl2";
     //    public static final String FOCL_DEFAULT_ACCOUNT_URL = "https://gis.compulink.ru";
+
+    // If you change it, change it in aFileDialog/res/values/strings/daidalos_confirm_move_to_folder
     public static final String FOCL_DATA_DIR            = "ngm_clink_monitoring";
     public static final String FOCL_PHOTO_DIR           = "photo";
 
