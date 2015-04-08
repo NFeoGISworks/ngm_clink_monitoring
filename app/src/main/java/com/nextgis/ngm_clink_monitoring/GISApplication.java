@@ -45,7 +45,6 @@ import com.nextgis.maplib.datasource.ngw.SyncAdapter;
 import com.nextgis.maplib.location.GpsEventSource;
 import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplib.util.Constants;
-import com.nextgis.maplib.util.FileUtil;
 import com.nextgis.maplib.util.GeoConstants;
 import com.nextgis.maplib.util.NetworkUtil;
 import com.nextgis.maplib.util.SettingsConstants;
@@ -560,7 +559,8 @@ public class GISApplication
             }
         }
 
-        FileUtil.move(oldDataPath, newDataPath);
+// TODO: remove it
+//        FileUtil.move(oldDataPath, newDataPath);
     }
 
 

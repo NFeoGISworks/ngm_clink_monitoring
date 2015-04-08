@@ -24,10 +24,8 @@ package com.nextgis.ngm_clink_monitoring.activities;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -49,7 +47,6 @@ import ar.com.daidalos.afiledialog.FileChooserActivity;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.fragments.FoclSettingsFragment;
-import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
 
 import java.io.File;
@@ -193,23 +190,24 @@ public class FoclSettingsActivity
             final Activity activity,
             final Fragment fragment)
     {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(activity);
-        alertDialog.setTitle(activity.getResources().getString(R.string.hint))
-
-                .setMessage(
-                        String.format(
-                                activity.getResources().getString(R.string.hint_folder_moving),
-                                FoclConstants.FOCL_DATA_DIR))
-
-                .setPositiveButton(
-                        activity.getResources().getString(R.string.ok),
-
-                        new DialogInterface.OnClickListener()
-                        {
-                            public void onClick(
-                                    DialogInterface dialog,
-                                    int which)
-                            {
+// TODO: remove it
+//        AlertDialog.Builder alertDialog = new AlertDialog.Builder(activity);
+//        alertDialog.setTitle(activity.getResources().getString(R.string.hint))
+//
+//                .setMessage(
+//                        String.format(
+//                                activity.getResources().getString(R.string.hint_folder_moving),
+//                                FoclConstants.FOCL_DATA_DIR))
+//
+//                .setPositiveButton(
+//                        activity.getResources().getString(R.string.ok),
+//
+//                        new DialogInterface.OnClickListener()
+//                        {
+//                            public void onClick(
+//                                    DialogInterface dialog,
+//                                    int which)
+//                            {
                                 GISApplication app = (GISApplication) activity.getApplication();
                                 Intent intent = new Intent(activity, FileChooserActivity.class);
 
@@ -241,8 +239,9 @@ public class FoclSettingsActivity
                                     fragment.startActivityForResult(
                                             intent, DATA_FOLDER_SELECT_CODE);
                                 }
-                            }
-                        }).show();
+// TODO: remove it
+//                            }
+//                        }).show();
     }
 
 
@@ -287,12 +286,13 @@ public class FoclSettingsActivity
 
             GISApplication app = (GISApplication) activity.getApplication();
 
-            String oldDataParentPath = app.getDataParentPath();
+            String oldDataParentPath = app.getDataParentPath(); // TODO: remove it
             app.setDataParentPath(newDataParentPath);
 
             // workaround for onSharedPreferenceChanged()
             refreshPreferences(activity, fragment);
 
+// TODO: remove it
             new BackgroundMoveTask(activity, oldDataParentPath, newDataParentPath).execute();
         }
     }
@@ -323,6 +323,7 @@ public class FoclSettingsActivity
     }
 
 
+    // TODO: remove it
     private static class BackgroundMoveTask
             extends AsyncTask<Void, Void, Void>
     {
