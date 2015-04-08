@@ -170,21 +170,15 @@ public class FoclProject
             throws JSONException, SQLiteException
     {
         long structId = jsonStruct.getLong(Constants.JSON_ID_KEY);
-        String structName = jsonStruct.getString(Constants.JSON_NAME_KEY);
-        String structRegion = jsonStruct.getString(FoclConstants.JSON_REGION_KEY);
-        String structDistrict = jsonStruct.getString(FoclConstants.JSON_DISTRICT_KEY);
-
-        if (null == structName || structName.equals("null")) {
-            structName = "";
-        }
-
-        if (null == structRegion || structRegion.equals("null")) {
-            structRegion = "";
-        }
-
-        if (null == structDistrict || structDistrict.equals("null")) {
-            structDistrict = "";
-        }
+        String structName = jsonStruct.isNull(Constants.JSON_NAME_KEY)
+                            ? ""
+                            : jsonStruct.getString(Constants.JSON_NAME_KEY);
+        String structRegion = jsonStruct.isNull(FoclConstants.JSON_REGION_KEY)
+                              ? ""
+                              : jsonStruct.getString(FoclConstants.JSON_REGION_KEY);
+        String structDistrict = jsonStruct.isNull(FoclConstants.JSON_DISTRICT_KEY)
+                                ? ""
+                                : jsonStruct.getString(FoclConstants.JSON_DISTRICT_KEY);
 
         FoclStruct foclStruct = getFoclStructByRemoteId(structId);
 
@@ -247,8 +241,11 @@ public class FoclProject
             throws JSONException, SQLiteException
     {
         int layerId = jsonLayer.getInt(Constants.JSON_ID_KEY);
-        String layerName = jsonLayer.getString(Constants.JSON_NAME_KEY);
+        String layerName = jsonLayer.isNull(Constants.JSON_NAME_KEY)
+                           ? ""
+                           : jsonLayer.getString(Constants.JSON_NAME_KEY);
         String layerType = jsonLayer.getString(Constants.JSON_TYPE_KEY);
+
 
         FoclVectorLayer foclVectorLayer = foclStruct.getLayerByRemoteId(layerId);
         boolean createNewVectorLayer = false;
