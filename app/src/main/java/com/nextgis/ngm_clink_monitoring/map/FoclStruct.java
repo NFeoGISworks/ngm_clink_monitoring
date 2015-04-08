@@ -23,6 +23,7 @@
 package com.nextgis.ngm_clink_monitoring.map;
 
 import android.content.Context;
+import android.text.TextUtils;
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.map.LayerFactory;
 import com.nextgis.maplib.map.LayerGroup;
@@ -38,7 +39,9 @@ import java.util.List;
 public class FoclStruct
         extends LayerGroup
 {
-    protected long mRemoteId;
+    protected long   mRemoteId;
+    protected String mRegion;
+    protected String mDistrict;
 
 
     public FoclStruct(
@@ -60,6 +63,63 @@ public class FoclStruct
     public void setRemoteId(long remoteId)
     {
         mRemoteId = remoteId;
+    }
+
+
+    public String getRegion()
+    {
+        return mRegion;
+    }
+
+
+    public void setRegion(String region)
+    {
+        mRegion = region;
+    }
+
+
+    public String getDistrict()
+    {
+        return mDistrict;
+    }
+
+
+    public void setDistrict(String district)
+    {
+        mDistrict = district;
+    }
+
+
+    public String getHtmlFormattedName()
+    {
+        String lineName = getName();
+        String region = getRegion();
+        String district = getDistrict();
+
+        boolean isEmptyRegion = TextUtils.isEmpty(region);
+        boolean isEmptyDistrict = TextUtils.isEmpty(district);
+
+        if (!isEmptyRegion || !isEmptyDistrict) {
+            lineName += "<br><small>";
+        }
+
+        if (!isEmptyRegion) {
+            lineName += region;
+        }
+
+        if (!isEmptyRegion && !isEmptyDistrict) {
+            lineName += ", ";
+        }
+
+        if (!isEmptyDistrict) {
+            lineName += district;
+        }
+
+        if (!isEmptyRegion || !isEmptyDistrict) {
+            lineName += "</small>";
+        }
+
+        return lineName;
     }
 
 
@@ -101,6 +161,8 @@ public class FoclStruct
     {
         JSONObject rootConfig = super.toJSON();
         rootConfig.put(Constants.JSON_ID_KEY, mRemoteId);
+        rootConfig.put(FoclConstants.JSON_REGION_KEY, mRegion);
+        rootConfig.put(FoclConstants.JSON_DISTRICT_KEY, mDistrict);
 
         return rootConfig;
     }
@@ -112,5 +174,7 @@ public class FoclStruct
     {
         super.fromJSON(jsonObject);
         mRemoteId = jsonObject.getLong(Constants.JSON_ID_KEY);
+        mRegion = jsonObject.getString(FoclConstants.JSON_REGION_KEY);
+        mDistrict = jsonObject.getString(FoclConstants.JSON_DISTRICT_KEY);
     }
 }

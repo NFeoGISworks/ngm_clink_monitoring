@@ -171,6 +171,20 @@ public class FoclProject
     {
         long structId = jsonStruct.getLong(Constants.JSON_ID_KEY);
         String structName = jsonStruct.getString(Constants.JSON_NAME_KEY);
+        String structRegion = jsonStruct.getString(FoclConstants.JSON_REGION_KEY);
+        String structDistrict = jsonStruct.getString(FoclConstants.JSON_DISTRICT_KEY);
+
+        if (null == structName || structName.equals("null")) {
+            structName = "";
+        }
+
+        if (null == structRegion || structRegion.equals("null")) {
+            structRegion = "";
+        }
+
+        if (null == structDistrict || structDistrict.equals("null")) {
+            structDistrict = "";
+        }
 
         FoclStruct foclStruct = getFoclStructByRemoteId(structId);
 
@@ -178,6 +192,14 @@ public class FoclProject
 
             if (!foclStruct.getName().equals(structName)) {
                 foclStruct.setName(structName);
+            }
+
+            if (!foclStruct.getRegion().equals(structRegion)) {
+                foclStruct.setRegion(structRegion);
+            }
+
+            if (!foclStruct.getDistrict().equals(structDistrict)) {
+                foclStruct.setDistrict(structDistrict);
             }
 
             List<Long> layerIdList = new ArrayList<>(jsonLayers.length());
@@ -208,6 +230,8 @@ public class FoclProject
 
             foclStruct.setRemoteId(structId);
             foclStruct.setName(structName);
+            foclStruct.setRegion(structRegion);
+            foclStruct.setDistrict(structDistrict);
             foclStruct.setVisible(true);
 
             addLayer(foclStruct);

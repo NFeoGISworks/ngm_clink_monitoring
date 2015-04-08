@@ -51,19 +51,19 @@ public class FoclVectorLayer
 
     public static int getFoclLayerTypeFromString(String type)
     {
-        if (type.equals("fosc")) {
+        if (type.equals(FoclConstants.JSON_FOSC_VALUE)) {
             return FoclConstants.LAYERTYPE_FOCL_FOSC;
         }
-        if (type.equals("optical_cross")) {
+        if (type.equals(FoclConstants.JSON_OPTICAL_CROSS_VALUE)) {
             return FoclConstants.LAYERTYPE_FOCL_OPTICAL_CROSS;
         }
-        if (type.equals("optical_cable")) {
+        if (type.equals(FoclConstants.JSON_OPTICAL_CABLE_VALUE)) {
             return FoclConstants.LAYERTYPE_FOCL_OPTICAL_CABLE;
         }
-        if (type.equals("access_point")) {
+        if (type.equals(FoclConstants.JSON_ACCESS_POINT_VALUE)) {
             return FoclConstants.LAYERTYPE_FOCL_ACCESS_POINT;
         }
-        if (type.equals("endpoint")) {
+        if (type.equals(FoclConstants.JSON_ENDPOINT_VALUE)) {
             return FoclConstants.LAYERTYPE_FOCL_ENDPOINT;
         }
 

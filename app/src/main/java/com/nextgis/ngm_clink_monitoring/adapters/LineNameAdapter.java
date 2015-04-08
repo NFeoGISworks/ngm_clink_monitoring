@@ -23,14 +23,15 @@
 package com.nextgis.ngm_clink_monitoring.adapters;
 
 import android.content.Context;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-import com.nextgis.maplib.map.Layer;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
+import com.nextgis.ngm_clink_monitoring.map.FoclStruct;
 
 
 public class LineNameAdapter
@@ -81,10 +82,10 @@ public class LineNameAdapter
             convertView = inflater.inflate(R.layout.item_line_name, null);
         }
 
-        Layer layer = (Layer) getItem(position);
+        FoclStruct foclStruct = (FoclStruct) getItem(position);
 
         TextView tvFoclStructName = (TextView) convertView.findViewById(R.id.focl_struct_name);
-        tvFoclStructName.setText(layer.getName());
+        tvFoclStructName.setText(Html.fromHtml(foclStruct.getHtmlFormattedName()));
 
         return convertView;
     }

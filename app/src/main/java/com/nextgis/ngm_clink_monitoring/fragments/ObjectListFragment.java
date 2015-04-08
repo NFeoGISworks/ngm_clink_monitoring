@@ -29,6 +29,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.CursorAdapter;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,7 +58,7 @@ public class ObjectListFragment
     protected ListView mObjectList;
 
     protected Integer mLineId;
-    protected String  mLineNameText;
+    protected String mLineNameHtmlText;
     protected String  mObjectLayerName;
     protected Cursor  mObjectCursor;
     protected Cursor  mAdapterCursor;
@@ -133,8 +134,8 @@ public class ObjectListFragment
 
 
         FoclStruct foclStruct = (FoclStruct) foclProject.getLayer(mLineId);
-        mLineNameText = foclStruct.getName();
-        mLineName.setText(mLineNameText);
+        mLineNameHtmlText = foclStruct.getHtmlFormattedName();
+        mLineName.setText(Html.fromHtml(mLineNameHtmlText));
 
         FoclVectorLayer layer = (FoclVectorLayer) foclStruct.getLayerByFoclType(
                 mFoclStructLayerType);
@@ -217,7 +218,7 @@ public class ObjectListFragment
         }
 
         objectStatusFragment.setParams(
-                getActivity(), mFoclStructLayerType, null, mLineNameText, mObjectLayerName,
+                getActivity(), mFoclStructLayerType, null, mLineNameHtmlText, mObjectLayerName,
                 mObjectCursor);
 
         ft.replace(R.id.main_fragment, objectStatusFragment, "ObjectStatus");

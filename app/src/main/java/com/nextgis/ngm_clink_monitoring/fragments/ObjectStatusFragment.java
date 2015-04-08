@@ -40,6 +40,7 @@ import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -93,7 +94,7 @@ public class ObjectStatusFragment
     protected Integer mFoclStructLayerType = FoclConstants.LAYERTYPE_FOCL_UNKNOWN;
 
     protected Integer mLineId;
-    protected String  mLineNameText;
+    protected String mLineNameHtmlText;
     protected String  mObjectLayerName;
     protected Long    mObjectId;
     protected String  mObjectNameText;
@@ -110,13 +111,13 @@ public class ObjectStatusFragment
             Context context,
             Integer foclStructLayerType,
             Integer lineId,
-            String lineName,
+            String lineNameHtml,
             String objectLayerName,
             Cursor objectCursor)
     {
         mContext = context;
         mFoclStructLayerType = foclStructLayerType;
-        mLineNameText = lineName;
+        mLineNameHtmlText = lineNameHtml;
 
         if (FoclConstants.LAYERTYPE_FOCL_ENDPOINT == mFoclStructLayerType) {
             mLineId = lineId;
@@ -249,7 +250,7 @@ public class ObjectStatusFragment
         }
 
 
-        mLineName.setText(mLineNameText);
+        mLineName.setText(Html.fromHtml(mLineNameHtmlText));
 
         if (FoclConstants.LAYERTYPE_FOCL_ENDPOINT == mFoclStructLayerType) {
             FoclStruct foclStruct = (FoclStruct) foclProject.getLayer(mLineId);

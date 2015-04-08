@@ -49,7 +49,7 @@
         <TextView
             android:id="@+id/line_name_ls"
             android:text="@string/select_optical_cables_colon"
-            style="@style/selectedObjectStyle"
+            style="@style/selectedLineStyle"
             />
 
         <TextView

@@ -163,4 +163,14 @@
 
     </style>
 
+    <style name="selectedLineStyle"
+           parent="@style/selectedObjectStyle">
+
+        <!--<item name="android:layout_height">52dp</item>-->
+        <item name="android:lines">2</item>
+        <item name="android:minLines">1</item>
+        <item name="android:maxLines">2</item>
+
+    </style>
+
 </resources>

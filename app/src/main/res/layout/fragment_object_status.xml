@@ -60,7 +60,7 @@
                 <TextView
                     android:id="@+id/line_name_st"
                     android:text="@string/communication_line_colon"
-                    style="@style/selectedObjectStyle"
+                    style="@style/selectedLineStyle"
                     />
 
                 <TextView

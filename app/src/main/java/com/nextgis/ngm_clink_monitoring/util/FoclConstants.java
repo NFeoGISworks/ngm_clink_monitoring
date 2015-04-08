@@ -24,6 +24,15 @@ package com.nextgis.ngm_clink_monitoring.util;
 
 public interface FoclConstants
 {
+    public static final String JSON_REGION_KEY   = "region";
+    public static final String JSON_DISTRICT_KEY = "district";
+
+    public static final String JSON_OPTICAL_CABLE_VALUE = "optical_cable";
+    public static final String JSON_FOSC_VALUE          = "fosc";
+    public static final String JSON_OPTICAL_CROSS_VALUE = "optical_cross";
+    public static final String JSON_ACCESS_POINT_VALUE  = "access_point";
+    public static final String JSON_ENDPOINT_VALUE      = "endpoint";
+
     public static final int LAYERTYPE_FOCL_VECTOR  = 1001;
     public static final int LAYERTYPE_FOCL_STRUCT  = 1002;
     public static final int LAYERTYPE_FOCL_PROJECT = 1003;

@@ -48,7 +48,7 @@ public class LineListFragment
     protected Integer mFoclStructLayerType = FoclConstants.LAYERTYPE_FOCL_UNKNOWN;
 
     protected Integer mLineId;
-    protected String  mLineNameText;
+    protected String mLineNameHtmlText;
 
 
     public void setParams(Integer foclStructLayerType)
@@ -126,7 +126,7 @@ public class LineListFragment
                     {
                         mLineId = (int) id;
                         FoclStruct foclStruct = (FoclStruct) foclProject.getLayer(mLineId);
-                        mLineNameText = foclStruct.getName();
+                        mLineNameHtmlText = foclStruct.getHtmlFormattedName();
                         onLineClick();
                     }
                 });
@@ -149,7 +149,7 @@ public class LineListFragment
             }
 
             objectMeasureFragment.setParams(
-                    getActivity(), mFoclStructLayerType, mLineId, mLineNameText, null, null);
+                    getActivity(), mFoclStructLayerType, mLineId, mLineNameHtmlText, null, null);
 
             ft.replace(R.id.main_fragment, objectMeasureFragment, "ObjectMeasure");
 

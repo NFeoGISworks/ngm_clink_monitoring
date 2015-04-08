@@ -26,6 +26,7 @@ package com.nextgis.ngm_clink_monitoring.adapters;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.CursorAdapter;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,18 +55,14 @@ public class ObjectCursorAdapter
 
     public static String getObjectName(Cursor cursor)
     {
-        String id = cursor.getString(cursor.getColumnIndex(VectorLayer.FIELD_ID));
+        String objectName = cursor.getString(cursor.getColumnIndex(VectorLayer.FIELD_ID));
         String name = cursor.getString(cursor.getColumnIndex(FoclConstants.FIELD_NAME));
 
-        String objectName;
-
-        if (id.length() == 1) {
-            id = "0" + id;
+        if (objectName.length() == 1) {
+            objectName = "0" + objectName;
         }
 
-        objectName = id;
-
-        if (null != name) {
+        if (!TextUtils.isEmpty(name)) {
             objectName += " - " + name;
         }
 
