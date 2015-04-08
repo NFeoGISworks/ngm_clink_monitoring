@@ -71,6 +71,7 @@
     <string name="location_off">Location is turned off</string>
     <string name="location_off_message">In the system settings please enable the Location and only in the location mode \"Device only\" for use a GPS.</string>
     <string name="no_account">NO account</string>
+    <string name="no_network_no_sync">NO network, synchronization is not performed</string>
     <string name="perform_sync">Initial synchronization is performed, please wait.</string>
 
     <string name="latitude_caption">Lat:</string>

@@ -457,6 +457,11 @@ public class MainActivity
     {
         GISApplication app = (GISApplication) getApplication();
 
+        if (!app.isNetworkAvailable()) {
+            Toast.makeText(this, getString(R.string.no_network_no_sync), Toast.LENGTH_LONG).show();
+            return;
+        }
+
         if (!app.hasAccount()) {
             Toast.makeText(this, getString(R.string.no_account), Toast.LENGTH_LONG).show();
             return;

@@ -47,6 +47,7 @@ import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.FileUtil;
 import com.nextgis.maplib.util.GeoConstants;
+import com.nextgis.maplib.util.NetworkUtil;
 import com.nextgis.maplib.util.SettingsConstants;
 import com.nextgis.maplibui.NGWLoginFragment;
 import com.nextgis.maplibui.NGWSettingsActivity;
@@ -68,6 +69,7 @@ public class GISApplication
                    NGWSettingsActivity.OnDeleteAccountListener
 {
     protected MapDrawable    mMap;
+    protected NetworkUtil mNet;
     protected GpsEventSource mGpsEventSource;
     protected SyncReceiver   mSyncReceiver;
 
@@ -92,6 +94,7 @@ public class GISApplication
 
         super.onCreate();
 
+        mNet = new NetworkUtil(this);
         mGpsEventSource = new GpsEventSource(this);
 
         getMap();
@@ -324,6 +327,12 @@ public class GISApplication
     }
 
 
+    public boolean isNetworkAvailable()
+    {
+        return mNet.isNetworkAvailable();
+    }
+
+
     public boolean isAutoSyncEnabled()
     {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -413,6 +422,10 @@ public class GISApplication
 
     protected boolean runSync()
     {
+        if (!isNetworkAvailable()) {
+            return false;
+        }
+
         Account account = getAccount();
 
         if (null == account) {
