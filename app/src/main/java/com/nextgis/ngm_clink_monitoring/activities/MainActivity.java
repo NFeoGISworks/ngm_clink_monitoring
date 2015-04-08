@@ -280,7 +280,7 @@ public class MainActivity
     {
         super.onResume();
 
-        if (!LocationUtil.isLocationEnabled(this)) {
+        if (!LocationUtil.isOnlyGpsLocationModeEnabled(this)) {
             LocationUtil.showSettingsLocationAlert(this);
         }
 

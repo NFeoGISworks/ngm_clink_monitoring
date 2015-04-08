@@ -69,7 +69,7 @@
     <string name="show_zoom_controls_summary">Отображать кнопки увеличения и уменьшения масштаба на карте</string>
 
     <string name="location_off">Определение местоположения выключено</string>
-    <string name="location_off_message">Пожалуйста, включите определение местоположения в системных настройках.</string>
+    <string name="location_off_message">Пожалуйста, включите в системных настройках определение местоположения и только в режиме \"По спутникам GPS\" для использования GPS.</string>
     <string name="no_account">НЕТ учетной записи</string>
     <string name="perform_sync">Выполняется начальная синхронизация, пожалуйста, подождите.</string>
 

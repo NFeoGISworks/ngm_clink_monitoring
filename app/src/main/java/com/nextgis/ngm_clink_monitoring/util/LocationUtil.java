@@ -28,6 +28,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Build;
 import android.provider.Settings;
 import android.text.TextUtils;
@@ -112,7 +113,7 @@ public class LocationUtil
     }
 
 
-    public static boolean isLocationEnabled(Context context)
+    public static boolean isOnlyGpsLocationModeEnabled(Context context)
     {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             int locationMode;
@@ -125,13 +126,21 @@ public class LocationUtil
                 return false;
             }
 
-            return locationMode != Settings.Secure.LOCATION_MODE_OFF;
+            // Only the location mode \"Device only\" (GPS and other sensors) must be enabled
+            return Settings.Secure.LOCATION_MODE_SENSORS_ONLY == locationMode;
 
         } else {
             String locationProviders = Settings.Secure.getString(
                     context.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
 
-            return !TextUtils.isEmpty(locationProviders);
+            if (TextUtils.isEmpty(locationProviders)) {
+                return false;
+            }
+
+            String[] providers = locationProviders.split(",");
+
+            // Only the location mode \"Device only\" (GPS and other sensors) must be enabled
+            return providers.length == 1 && providers[0].equals(LocationManager.GPS_PROVIDER);
         }
     }
 
