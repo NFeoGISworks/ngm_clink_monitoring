@@ -46,8 +46,8 @@
     </Preference>
 
     <Preference
-        android:title="@string/ngw"
-        android:summary="@string/ngw_summary"
+        android:title="@string/sync_settings"
+        android:summary="@string/sync_settings_summary"
         >
         <intent
             android:action="com.nextgis.ngm_clink_monitoring.PREFS_NGW"

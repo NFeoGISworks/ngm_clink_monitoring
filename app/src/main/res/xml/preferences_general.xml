@@ -28,15 +28,15 @@
 
     <CheckBoxPreference
         android:key="original_photo_saving"
-        android:title="@string/save_orig_photo"
-        android:summary="@string/save_orig_photo_summary"
+        android:title="@string/save_photo"
+        android:summary="@string/save_photo_summary"
         android:defaultValue="false"
         />
 
     <Preference
         android:key="data_parent_path"
-        android:title="@string/data_path"
-        android:summary="@string/data_path_summary"
+        android:title="@string/photo_path"
+        android:summary="@string/photo_path_summary"
         />
 
 </PreferenceScreen>

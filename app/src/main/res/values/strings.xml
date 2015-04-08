@@ -55,13 +55,13 @@
     <string name="general_summary">The application general settings</string>
     <string name="map">Map</string>
     <string name="map_summary">Map settings</string>
-    <string name="ngw">NextGIS Web</string>
-    <string name="ngw_summary">NextGIS Web settings</string>
+    <string name="sync_settings">Sync settings</string>
+    <string name="sync_settings_summary">Data synchronization settings with the server system</string>
 
-    <string name="save_orig_photo">Save photos</string>
-    <string name="save_orig_photo_summary">Save photos in a specified folder.</string>
-    <string name="data_path">A folder for photos</string>
-    <string name="data_path_summary">The path to the folder to store photos.</string>
+    <string name="save_photo">Save photos</string>
+    <string name="save_photo_summary">Save photos in a specified folder.</string>
+    <string name="photo_path">A folder for photos</string>
+    <string name="photo_path_summary">The path to the folder to store photos.</string>
 
     <string name="keep_screen_on">Keep screen on</string>
     <string name="keep_screen_on_summary">Prevent screen switch off</string>
