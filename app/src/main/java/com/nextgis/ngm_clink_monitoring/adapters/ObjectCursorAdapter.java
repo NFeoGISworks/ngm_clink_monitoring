@@ -31,7 +31,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckedTextView;
-import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 
@@ -41,6 +40,8 @@ public class ObjectCursorAdapter
 {
     private static LayoutInflater mInflater = null;
 
+    protected Context mContext;
+
 
     public ObjectCursorAdapter(
             Context context,
@@ -49,21 +50,19 @@ public class ObjectCursorAdapter
     {
         super(context, c, flags);
 
+        mContext = context;
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
 
-    public static String getObjectName(Cursor cursor)
+    public static String getObjectName(
+            Context context,
+            Cursor cursor)
     {
-        String objectName = cursor.getString(cursor.getColumnIndex(VectorLayer.FIELD_ID));
-        String name = cursor.getString(cursor.getColumnIndex(FoclConstants.FIELD_NAME));
+        String objectName = cursor.getString(cursor.getColumnIndex(FoclConstants.FIELD_NAME));
 
-        if (objectName.length() == 1) {
-            objectName = "0" + objectName;
-        }
-
-        if (!TextUtils.isEmpty(name)) {
-            objectName += " - " + name;
+        if (TextUtils.isEmpty(objectName) || TextUtils.isEmpty(objectName.trim())) {
+            objectName = context.getString(R.string.no_name);
         }
 
         return objectName;
@@ -97,7 +96,7 @@ public class ObjectCursorAdapter
         }
 
         ViewHolder viewHolder = (ViewHolder) view.getTag();
-        viewHolder.mObjectItem.setText(getObjectName(cursor));
+        viewHolder.mObjectItem.setText(getObjectName(mContext, cursor));
 
         String status = cursor.getString(cursor.getColumnIndex(FoclConstants.FIELD_STATUS_BUILT));
 

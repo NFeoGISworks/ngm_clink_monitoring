@@ -28,6 +28,7 @@ import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.map.LayerFactory;
 import com.nextgis.maplib.map.LayerGroup;
 import com.nextgis.maplib.util.Constants;
+import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -93,11 +94,16 @@ public class FoclStruct
     public String getHtmlFormattedName()
     {
         String lineName = getName();
+
+        if (TextUtils.isEmpty(lineName) || TextUtils.isEmpty(lineName.trim())) {
+            lineName = mContext.getString(R.string.no_name);
+        }
+
         String region = getRegion();
         String district = getDistrict();
 
-        boolean isEmptyRegion = TextUtils.isEmpty(region);
-        boolean isEmptyDistrict = TextUtils.isEmpty(district);
+        boolean isEmptyRegion = TextUtils.isEmpty(region) || TextUtils.isEmpty(region.trim());
+        boolean isEmptyDistrict = TextUtils.isEmpty(district) || TextUtils.isEmpty(district.trim());
 
         if (!isEmptyRegion || !isEmptyDistrict) {
             lineName += "<br><small>";

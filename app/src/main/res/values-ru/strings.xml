@@ -140,6 +140,8 @@
     <string name="completed">Выполнено</string>
     <string name="not_completed">НЕ выполнено</string>
 
+    <string name="no_name">[Нет наименования]</string>
+
     <string name="app_description">Мобильное приложение для ввода данных о ходе строительства ВОЛС.</string>
 
     <string name="credits_intro"><b>Лицензии:</b></string>

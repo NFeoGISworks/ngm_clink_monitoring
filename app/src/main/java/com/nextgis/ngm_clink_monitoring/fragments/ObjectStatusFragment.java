@@ -132,7 +132,7 @@ public class ObjectStatusFragment
 
             } else {
                 mObjectId = objectCursor.getLong(objectCursor.getColumnIndex(VectorLayer.FIELD_ID));
-                mObjectNameText = ObjectCursorAdapter.getObjectName(objectCursor);
+                mObjectNameText = ObjectCursorAdapter.getObjectName(mContext, objectCursor);
                 mObjectStatus = objectCursor.getString(
                         objectCursor.getColumnIndex(FoclConstants.FIELD_STATUS_BUILT));
                 objectCursor.close();
