@@ -24,6 +24,7 @@
 <resources>
 
     <string name="app_name">Compulink Monitoring</string>
+    <string name="app_name_full">Compulink Monitoring of the building</string>
 
     <string name="action_map">Map</string>
     <string name="action_sync">Synchronize</string>

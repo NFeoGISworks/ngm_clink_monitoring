@@ -23,7 +23,8 @@
 
 <resources>
 
-    <string name="app_name">Compulink Monitoring</string>
+    <string name="app_name">Компьюлинк Мониторинг</string>
+    <string name="app_name_full">Компьюлинк Мониторинг строительства</string>
 
     <string name="action_map">Карта</string>
     <string name="action_sync">Синхронизировать</string>
