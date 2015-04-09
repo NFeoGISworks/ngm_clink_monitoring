@@ -51,7 +51,7 @@
         >
         <intent
             android:action="com.nextgis.ngm_clink_monitoring.PREFS_NGW"
-            android:targetClass="com.nextgis.ngm_clink_monitoring.activities.NGWSettingsActivityProxy"
+            android:targetClass="com.nextgis.ngm_clink_monitoring.activities.SyncSettingsActivity"
             android:targetPackage="com.nextgis.ngm_clink_monitoring"
             />
     </header>

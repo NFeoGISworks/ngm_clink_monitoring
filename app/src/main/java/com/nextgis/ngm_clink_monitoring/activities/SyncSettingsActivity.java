@@ -29,24 +29,33 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
+import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceScreen;
 import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplibui.NGWSettingsActivity;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
+import com.nextgis.ngm_clink_monitoring.R;
+import com.nextgis.ngm_clink_monitoring.fragments.SyncSettingsFragment;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
-
-import java.util.List;
 
 import static com.nextgis.maplibui.util.SettingsConstantsUI.KEY_PREF_SYNC_PERIOD;
 
 
-public class NGWSettingsActivityProxy
+public class SyncSettingsActivity
         extends NGWSettingsActivity
 {
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        // without headers
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            Intent intent = getIntent();
+            intent.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
+            intent.putExtra(
+                    PreferenceActivity.EXTRA_SHOW_FRAGMENT, SyncSettingsFragment.class.getName());
+        }
+
         super.onCreate(savedInstanceState);
 
         GISApplication app = (GISApplication) getApplication();
@@ -54,68 +63,62 @@ public class NGWSettingsActivityProxy
     }
 
 
-    @Override
-    protected void fillPreferences(PreferenceScreen screen)
-    {
-        GISApplication app = (GISApplication) getApplication();
-        Account account = app.getAccount();
-        Preference preference = new Preference(this);
-
-        if (null != account) {
-            Bundle bundle = new Bundle();
-            bundle.putParcelable("account", account);
-            Intent intent = new Intent(this, NGWSettingsActivityProxy.class);
-            intent.putExtras(bundle);
-            intent.setAction(ACCOUNT_ACTION);
-
-            preference.setIntent(intent);
-            preference.setTitle(account.name);
-
-        } else {
-            //add "Add account" preference
-            Intent intent = new Intent(this, FoclLoginActivity.class);
-
-            preference.setIntent(intent);
-            preference.setTitle(com.nextgis.maplibui.R.string.add_account);
-            preference.setSummary(com.nextgis.maplibui.R.string.add_account_summary);
-        }
-
-        screen.addPreference(preference);
-    }
-
-
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    @Override
-    public void onBuildHeaders(List<Header> target)
-    {
-        GISApplication app = (GISApplication) getApplication();
-        Account account = app.getAccount();
-        Header header = new Header();
-
-        if (null != account) {
-            Bundle bundle = new Bundle();
-            bundle.putParcelable("account", account);
-
-            header.title = account.name;
-            header.fragment = com.nextgis.maplibui.NGWSettingsFragment.class.getName();
-            header.fragmentArguments = bundle;
-
-        } else {
-            //add "Add account" header
-            header.title = getString(com.nextgis.maplibui.R.string.add_account);
-            header.summary = getString(com.nextgis.maplibui.R.string.add_account_summary);
-            header.intent = new Intent(this, FoclLoginActivity.class);
-        }
-
-        target.add(header);
-    }
-
-
     @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
     protected boolean isValidFragment(String fragmentName)
     {
-        return super.isValidFragment(fragmentName);
+        return SyncSettingsFragment.class.getName().equals(fragmentName);
+    }
+
+
+    @Override
+    protected void createView()
+    {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+            GISApplication app = (GISApplication) getApplication();
+            Account account = app.getAccount();
+
+            PreferenceScreen screen = getPreferenceManager().createPreferenceScreen(this);
+            fillAccountPreferences(screen, account);
+
+            setPreferenceScreen(screen);
+        }
+    }
+
+
+    @Override
+    public void fillAccountPreferences(
+            PreferenceScreen screen,
+            Account account)
+    {
+        final IGISApplication application = (IGISApplication) getApplicationContext();
+
+        // add sync settings group
+        PreferenceCategory syncCategory = new PreferenceCategory(this);
+        syncCategory.setTitle(com.nextgis.maplibui.R.string.sync);
+        screen.addPreference(syncCategory);
+
+        // add auto sync property
+        addAutoSyncProperty(account, application, syncCategory);
+
+        // add time for periodic sync
+        addPeriodicSyncTime(account, application, syncCategory);
+
+        // add actions group
+        PreferenceCategory actionCategory = new PreferenceCategory(this);
+        actionCategory.setTitle(com.nextgis.maplibui.R.string.actions);
+        screen.addPreference(actionCategory);
+
+        if (null == account) {
+            // add "Add account" action
+            addAddAccountAction(actionCategory);
+        } else {
+            // TODO: addEditAccountAction()
+            // add "Edit account" action
+//            addEditAccountAction(account, actionCategory);
+            // add "Delete account" action
+            addDeleteAccountAction(account, actionCategory);
+        }
     }
 
 
@@ -204,11 +207,62 @@ public class NGWSettingsActivityProxy
     }
 
 
-    @Override
-    protected void addAccountLayers(
-            PreferenceScreen screen,
-            Account account)
+    protected void addAddAccountAction(PreferenceCategory actionCategory)
     {
-        // We do not need to list of layers
+        Intent intent = new Intent(this, FoclLoginActivity.class);
+        Preference preference = new Preference(this);
+
+        preference.setIntent(intent);
+        preference.setTitle(com.nextgis.maplibui.R.string.add_account);
+        preference.setSummary(com.nextgis.maplibui.R.string.add_account_summary);
+
+        actionCategory.addPreference(preference);
+    }
+
+
+    protected void addEditAccountAction(
+            final Account account,
+            PreferenceCategory actionCategory)
+    {
+        // TODO: addEditAccountAction()
+
+        Preference preferenceEdit = new Preference(this);
+        preferenceEdit.setTitle(R.string.edit_account);
+        preferenceEdit.setSummary(R.string.edit_account_summary);
+
+        if (actionCategory.addPreference(preferenceEdit)) {
+            preferenceEdit.setOnPreferenceClickListener(
+                    new Preference.OnPreferenceClickListener()
+                    {
+                        public boolean onPreferenceClick(Preference preference)
+                        {
+                            return true;
+                        }
+                    });
+        }
+    }
+
+
+    @Override
+    protected void onDeleteAccount()
+    {
+        // do nothing
+    }
+
+
+    @Override
+    public void onAccountsUpdated(Account[] accounts)
+    {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+            GISApplication app = (GISApplication) getApplication();
+            Account account = app.getAccount();
+
+            PreferenceScreen screen = getPreferenceScreen();
+
+            if (null != screen) {
+                screen.removeAll();
+                fillAccountPreferences(screen, account);
+            }
+        }
     }
 }

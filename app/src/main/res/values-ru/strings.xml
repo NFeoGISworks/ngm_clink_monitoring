@@ -29,10 +29,14 @@
     <string name="action_map">Карта</string>
     <string name="action_sync">Синхронизировать</string>
     <string name="action_settings">Настройки</string>
+    <string name="action_sync_settings">Настройки синхронизации</string>
     <string name="action_about">О программе</string>
     <string name="action_select_folder">Выберите папку</string>
 
     <string name="focl_login_description">Введите имя пользователя и пароль для подключения к серверу системы</string>
+
+    <string name="edit_account">Редактировать учетную запись</string>
+    <string name="edit_account_summary">Редатирование имени и пароля пользователя.</string>
 
     <string name="select_action">Выберите действие</string>
     <string name="action_show_photo">Показать фото</string>
