@@ -72,6 +72,14 @@ public class SyncSettingsActivity
 
 
     @Override
+    protected void setStrings()
+    {
+        mDeleteAccountSummary = getString(R.string.delete_account_summary);
+        mDeleteAccountWarnMsg = getString(R.string.delete_account_warn_msg);
+    }
+
+
+    @Override
     protected void createView()
     {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {

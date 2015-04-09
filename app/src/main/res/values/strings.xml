@@ -38,6 +38,9 @@
     <string name="edit_account">Edit account</string>
     <string name="edit_account_summary">Editing a user name and password.</string>
 
+    <string name="delete_account_summary">Delete account. All user account data will be deleted. Active synchronization will be stopped.</string>
+    <string name="delete_account_warn_msg">Account will be deleted!\nAll user account data will be deleted!\nCurrent sync will be stopped!</string>
+
     <string name="select_action">Select action</string>
     <string name="action_show_photo">Show photo</string>
     <string name="action_delete_photo">Delete photo</string>
