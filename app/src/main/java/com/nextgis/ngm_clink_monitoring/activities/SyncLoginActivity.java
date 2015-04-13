@@ -29,6 +29,7 @@ import android.support.v7.widget.Toolbar;
 import com.nextgis.maplibui.NGWLoginActivity;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.fragments.SyncLoginFragment;
+import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 
 
 public class SyncLoginActivity
@@ -44,7 +45,8 @@ public class SyncLoginActivity
         setSupportActionBar(toolbar);
 
         FragmentManager fm = getSupportFragmentManager();
-        SyncLoginFragment syncLoginFragment = (SyncLoginFragment) fm.findFragmentByTag("SyncLogin");
+        SyncLoginFragment syncLoginFragment = (SyncLoginFragment) fm.findFragmentByTag(
+                FoclConstants.FRAGMENT_SYNC_LOGIN);
 
         if (syncLoginFragment == null) {
             syncLoginFragment = new SyncLoginFragment();
@@ -53,7 +55,9 @@ public class SyncLoginActivity
         syncLoginFragment.setOnAddAccountListener(this);
 
         FragmentTransaction ft = fm.beginTransaction();
-        ft.add(com.nextgis.maplibui.R.id.login_frame, syncLoginFragment, "SyncLogin");
+        ft.add(
+                com.nextgis.maplibui.R.id.login_frame, syncLoginFragment,
+                FoclConstants.FRAGMENT_SYNC_LOGIN);
         ft.commit();
     }
 

@@ -120,7 +120,7 @@ public class ObjectListFragment
                 break;
         }
 
-        activity.setBarsView(MainActivity.FT_OBJECT_LIST, toolbarTitle);
+        activity.setBarsView(toolbarTitle);
 
         GISApplication app = (GISApplication) getActivity().getApplication();
         final FoclProject foclProject = app.getFoclProject();
@@ -211,7 +211,7 @@ public class ObjectListFragment
         FragmentTransaction ft = fm.beginTransaction();
 
         ObjectStatusFragment objectStatusFragment =
-                (ObjectStatusFragment) fm.findFragmentByTag("ObjectStatus");
+                (ObjectStatusFragment) fm.findFragmentByTag(FoclConstants.FRAGMENT_OBJECT_STATUS);
 
         if (objectStatusFragment == null) {
             objectStatusFragment = new ObjectStatusFragment();
@@ -221,7 +221,7 @@ public class ObjectListFragment
                 getActivity(), mFoclStructLayerType, null, mLineNameHtmlText, mObjectLayerName,
                 mObjectCursor);
 
-        ft.replace(R.id.main_fragment, objectStatusFragment, "ObjectStatus");
+        ft.replace(R.id.main_fragment, objectStatusFragment, FoclConstants.FRAGMENT_OBJECT_STATUS);
         ft.addToBackStack(null);
         ft.commit();
     }

@@ -24,6 +24,16 @@ package com.nextgis.ngm_clink_monitoring.util;
 
 public interface FoclConstants
 {
+    public static final String FRAGMENT_SYNC_LOGIN       = "SyncLogin";
+    public static final String FRAGMENT_PERFORM_1ST_SYNC = "Perform1stSync";
+    public static final String FRAGMENT_STATUS_BAR       = "StatusBar";
+    public static final String FRAGMENT_OBJECT_TYPES     = "ObjectTypes";
+    public static final String FRAGMENT_LINE_LIST        = "LineList";
+    public static final String FRAGMENT_OBJECT_LIST      = "ObjectList";
+    public static final String FRAGMENT_OBJECT_STATUS    = "ObjectStatus";
+    public static final String FRAGMENT_OBJECT_MEASURE   = "ObjectMeasure";
+    public static final String FRAGMENT_MAP              = "Map";
+
     public static final String JSON_REGION_KEY   = "region";
     public static final String JSON_DISTRICT_KEY = "district";
 
@@ -65,8 +75,8 @@ public interface FoclConstants
     //    public static final String FOCL_DEFAULT_ACCOUNT_URL = "https://gis.compulink.ru";
 
     // If you change it, change it in aFileDialog/res/values/strings/daidalos_confirm_move_to_folder
-    public static final String FOCL_DATA_DIR            = "ngm_clink_monitoring";
-    public static final String FOCL_PHOTO_DIR           = "photo";
+    public static final String FOCL_DATA_DIR  = "ngm_clink_monitoring";
+    public static final String FOCL_PHOTO_DIR = "photo";
 
     public static final long DEFAULT_SYNC_PERIOD_SEC_LONG = 300;
 

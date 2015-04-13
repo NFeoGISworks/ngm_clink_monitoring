@@ -63,7 +63,7 @@ public class ObjectTypesFragment
             Bundle savedInstanceState)
     {
         final MainActivity activity = (MainActivity) getActivity();
-        activity.setBarsView(MainActivity.FT_OBJECT_TYPES, null);
+        activity.setBarsView(null);
 
         final ViewGroup rootView =
                 (ViewGroup) activity.getWindow().getDecorView().findViewById(android.R.id.content);
@@ -195,13 +195,15 @@ public class ObjectTypesFragment
         final FragmentManager fm = getActivity().getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
 
-        StatusBarFragment statusBarFragment = (StatusBarFragment) fm.findFragmentByTag("StatusBar");
+        StatusBarFragment statusBarFragment =
+                (StatusBarFragment) fm.findFragmentByTag(FoclConstants.FRAGMENT_STATUS_BAR);
 
         if (null != statusBarFragment) {
             ft.hide(statusBarFragment);
         }
 
-        LineListFragment lineListFragment = (LineListFragment) fm.findFragmentByTag("LineList");
+        LineListFragment lineListFragment =
+                (LineListFragment) fm.findFragmentByTag(FoclConstants.FRAGMENT_LINE_LIST);
 
         if (lineListFragment == null) {
             lineListFragment = new LineListFragment();
@@ -209,7 +211,7 @@ public class ObjectTypesFragment
 
         lineListFragment.setParams(foclStructLayerType);
 
-        ft.replace(R.id.main_fragment, lineListFragment, "LineList");
+        ft.replace(R.id.main_fragment, lineListFragment, FoclConstants.FRAGMENT_LINE_LIST);
         ft.addToBackStack(null);
         ft.commit();
     }

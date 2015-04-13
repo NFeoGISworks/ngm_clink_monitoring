@@ -28,31 +28,41 @@
     >
 
     <item
+        android:id="@+id/menu_locate"
+        android:title="@string/action_locate"
+        android:icon="@drawable/ic_action_location_found"
+        android:orderInCategory="1"
+        app:showAsAction="always"
+        android:visible="false"
+        />
+
+    <item
         android:id="@+id/menu_map"
         android:title="@string/action_map"
         android:icon="@drawable/ic_action_map"
-        android:orderInCategory="0"
+        android:orderInCategory="10"
         app:showAsAction="never"
+        android:visible="true"
         />
 
     <item
         android:id="@+id/menu_sync"
         android:title="@string/action_sync"
-        android:orderInCategory="10"
+        android:orderInCategory="20"
         app:showAsAction="never"
         />
 
     <item
         android:id="@+id/menu_settings"
         android:title="@string/action_settings"
-        android:orderInCategory="100"
+        android:orderInCategory="30"
         app:showAsAction="never"
         />
 
     <item
         android:id="@+id/menu_about"
         android:title="@string/action_about"
-        android:orderInCategory="100"
+        android:orderInCategory="40"
         app:showAsAction="never"
         />
 
@@ -62,7 +72,7 @@
         <item
             android:id="@+id/menu_test"
             android:title="test"
-            android:orderInCategory="100"
+            android:orderInCategory="1000"
             app:showAsAction="never"
             />
     -->

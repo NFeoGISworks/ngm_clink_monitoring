@@ -31,7 +31,7 @@ import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.activities.MainActivity;
 
 
-public class PerformSyncFragment
+public class Perform1stSyncFragment
         extends Fragment
 {
     @Override
@@ -49,7 +49,7 @@ public class PerformSyncFragment
             Bundle savedInstanceState)
     {
         MainActivity activity = (MainActivity) getActivity();
-        activity.setBarsView(MainActivity.FT_1ST_SYNC, null);
+        activity.setBarsView(null);
 
         return inflater.inflate(R.layout.fragment_perform_sync, null);
     }

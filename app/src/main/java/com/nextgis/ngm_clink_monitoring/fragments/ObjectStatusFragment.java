@@ -220,7 +220,7 @@ public class ObjectStatusFragment
                 break;
         }
 
-        activity.setBarsView(MainActivity.FT_OBJECT_STATUS, toolbarTitle);
+        activity.setBarsView(toolbarTitle);
 
         if (FoclConstants.LAYERTYPE_FOCL_ENDPOINT == mFoclStructLayerType) {
             mObjectNameCaption.setVisibility(View.GONE);

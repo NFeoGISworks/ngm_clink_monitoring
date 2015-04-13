@@ -57,7 +57,7 @@ public class SyncLoginFragment
     {
         if (getActivity() instanceof MainActivity) {
             MainActivity activity = (MainActivity) getActivity();
-            activity.setBarsView(MainActivity.FT_LOGIN, activity.getString(R.string.account_setup));
+            activity.setBarsView(activity.getString(R.string.account_setup));
         }
 
         View view = super.onCreateView(inflater, container, savedInstanceState);

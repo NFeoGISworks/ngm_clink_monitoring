@@ -39,6 +39,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -56,9 +57,10 @@ import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.fragments.MapFragment;
 import com.nextgis.ngm_clink_monitoring.fragments.ObjectTypesFragment;
-import com.nextgis.ngm_clink_monitoring.fragments.PerformSyncFragment;
+import com.nextgis.ngm_clink_monitoring.fragments.Perform1stSyncFragment;
 import com.nextgis.ngm_clink_monitoring.fragments.StatusBarFragment;
 import com.nextgis.ngm_clink_monitoring.fragments.SyncLoginFragment;
+import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
 import com.nextgis.ngm_clink_monitoring.util.LocationUtil;
 
@@ -77,22 +79,16 @@ public class MainActivity
         implements GISApplication.OnReloadMapListener, GISApplication.OnAccountAddedListener,
                    GISApplication.OnAccountDeletedListener
 {
-    protected static final int VIEW_STATE_ACCOUNT  = 1;
+    protected static final int VIEW_STATE_UNKNOWN = 0;
+    protected static final int VIEW_STATE_LOGIN   = 1;
     protected static final int VIEW_STATE_1ST_SYNC = 2;
     protected static final int VIEW_STATE_OBJECTS  = 3;
-
-    public static final int FT_OBJECT_TYPES  = 1;
-    public static final int FT_LINE_LIST     = 2;
-    public static final int FT_OBJECT_LIST   = 3;
-    public static final int FT_OBJECT_STATUS = 4;
-    public static final int FT_LOGIN         = 5;
-    public static final int FT_1ST_SYNC      = 6;
-    public static final int FT_MAP           = 7;
+    protected static final int VIEW_STATE_MAP     = 4;
 
     protected SyncStatusObserver mSyncStatusObserver;
     protected Object             mSyncHandle;
 
-    protected int     mViewState = VIEW_STATE_ACCOUNT;
+    protected int mViewState = VIEW_STATE_LOGIN;
     protected boolean mIsSyncing = false;
 
     protected Toolbar           mToolbar;
@@ -140,16 +136,19 @@ public class MainActivity
         setSupportActionBar(mToolbar);
 
         FragmentManager fm = getSupportFragmentManager();
-        mStatusBarFragment = (StatusBarFragment) fm.findFragmentByTag("StatusBar");
+        mStatusBarFragment =
+                (StatusBarFragment) fm.findFragmentByTag(FoclConstants.FRAGMENT_STATUS_BAR);
         if (null == mStatusBarFragment) {
             mStatusBarFragment = new StatusBarFragment();
             FragmentTransaction ft = fm.beginTransaction();
-            ft.replace(R.id.status_bar_fragment, mStatusBarFragment, "StatusBar");
+            ft.replace(
+                    R.id.status_bar_fragment, mStatusBarFragment,
+                    FoclConstants.FRAGMENT_STATUS_BAR);
             ft.commit();
         }
 
         if (!app.hasAccount()) {
-            mViewState = VIEW_STATE_ACCOUNT;
+            mViewState = VIEW_STATE_LOGIN;
         } else if (null == app.getFoclProject()) {
             mViewState = VIEW_STATE_1ST_SYNC;
         } else {
@@ -167,38 +166,58 @@ public class MainActivity
         FragmentTransaction ft = fm.beginTransaction();
 
         switch (mViewState) {
-            case VIEW_STATE_ACCOUNT:
+            case VIEW_STATE_LOGIN:
                 SyncLoginFragment syncLoginFragment =
-                        (SyncLoginFragment) fm.findFragmentByTag("SyncLogin");
+                        (SyncLoginFragment) fm.findFragmentByTag(FoclConstants.FRAGMENT_SYNC_LOGIN);
 
                 if (null == syncLoginFragment) {
                     syncLoginFragment = new SyncLoginFragment();
                     syncLoginFragment.setOnAddAccountListener(app);
-                    ft.replace(R.id.main_fragment, syncLoginFragment, "SyncLogin");
+                    ft.replace(
+                            R.id.main_fragment, syncLoginFragment,
+                            FoclConstants.FRAGMENT_SYNC_LOGIN);
                 }
 
                 break;
 
             case VIEW_STATE_1ST_SYNC:
-                PerformSyncFragment performSyncFragment =
-                        (PerformSyncFragment) fm.findFragmentByTag("PerformSync");
+                Perform1stSyncFragment perform1stSyncFragment =
+                        (Perform1stSyncFragment) fm.findFragmentByTag(
+                                FoclConstants.FRAGMENT_PERFORM_1ST_SYNC);
 
-                if (null == performSyncFragment) {
-                    performSyncFragment = new PerformSyncFragment();
-                    ft.replace(R.id.main_fragment, performSyncFragment, "PerformSync");
+                if (null == perform1stSyncFragment) {
+                    perform1stSyncFragment = new Perform1stSyncFragment();
+                    ft.replace(
+                            R.id.main_fragment, perform1stSyncFragment,
+                            FoclConstants.FRAGMENT_PERFORM_1ST_SYNC);
                 }
 
                 break;
 
             case VIEW_STATE_OBJECTS:
                 ObjectTypesFragment objectTypesFragment =
-                        (ObjectTypesFragment) fm.findFragmentByTag("ObjectTypes");
+                        (ObjectTypesFragment) fm.findFragmentByTag(
+                                FoclConstants.FRAGMENT_OBJECT_TYPES);
 
                 if (null == objectTypesFragment) {
                     objectTypesFragment = new ObjectTypesFragment();
-                    ft.replace(R.id.main_fragment, objectTypesFragment, "ObjectTypes");
+                    ft.replace(
+                            R.id.main_fragment, objectTypesFragment,
+                            FoclConstants.FRAGMENT_OBJECT_TYPES);
                 }
 
+                break;
+
+            case VIEW_STATE_MAP:
+                MapFragment mapFragment =
+                        (MapFragment) fm.findFragmentByTag(FoclConstants.FRAGMENT_MAP);
+
+                if (mapFragment == null) {
+                    mapFragment = new MapFragment();
+
+                    ft.replace(R.id.main_fragment, mapFragment, FoclConstants.FRAGMENT_MAP);
+                    ft.addToBackStack(null);
+                }
                 break;
         }
 
@@ -207,9 +226,45 @@ public class MainActivity
     }
 
 
-    public void setBarsView(
-            int fragmentType,
-            String toolbarTitle)
+    protected String getMainFragmentTag()
+    {
+        FragmentManager fm = getSupportFragmentManager();
+        return fm.findFragmentById(R.id.main_fragment).getTag();
+    }
+
+
+    protected int getActivityViewStateByMainFragment()
+    {
+        String tag = getMainFragmentTag();
+
+        if (TextUtils.isEmpty(tag)) {
+            return VIEW_STATE_UNKNOWN;
+        }
+
+        switch (tag) {
+            case FoclConstants.FRAGMENT_SYNC_LOGIN:
+                return VIEW_STATE_LOGIN;
+
+            case FoclConstants.FRAGMENT_PERFORM_1ST_SYNC:
+                return VIEW_STATE_1ST_SYNC;
+
+            case FoclConstants.FRAGMENT_OBJECT_TYPES:
+            case FoclConstants.FRAGMENT_LINE_LIST:
+            case FoclConstants.FRAGMENT_OBJECT_LIST:
+            case FoclConstants.FRAGMENT_OBJECT_STATUS:
+            case FoclConstants.FRAGMENT_OBJECT_MEASURE:
+                return VIEW_STATE_OBJECTS;
+
+            case FoclConstants.FRAGMENT_MAP:
+                return VIEW_STATE_MAP;
+
+            default:
+                return VIEW_STATE_UNKNOWN;
+        }
+    }
+
+
+    public void setBarsView(String toolbarTitle)
     {
         if (null == mToolbar || null == mStatusBarFragment) {
             return;
@@ -217,17 +272,24 @@ public class MainActivity
 
         mToolbar.setTitle(toolbarTitle == null ? getTitle() : toolbarTitle);
 
-        switch (fragmentType) {
-            case FT_LOGIN:
-            case FT_1ST_SYNC:
-            case FT_OBJECT_TYPES:
+        String tag = getMainFragmentTag();
+
+        if (TextUtils.isEmpty(tag)) {
+            tag = "";
+        }
+
+        switch (tag) {
+            case FoclConstants.FRAGMENT_SYNC_LOGIN:
+            case FoclConstants.FRAGMENT_PERFORM_1ST_SYNC:
+            case FoclConstants.FRAGMENT_OBJECT_TYPES:
+            default:
                 mToolbar.setNavigationIcon(null);
                 break;
 
-            case FT_LINE_LIST:
-            case FT_OBJECT_LIST:
-            case FT_OBJECT_STATUS:
-            case FT_MAP:
+            case FoclConstants.FRAGMENT_LINE_LIST:
+            case FoclConstants.FRAGMENT_OBJECT_LIST:
+            case FoclConstants.FRAGMENT_OBJECT_STATUS:
+            case FoclConstants.FRAGMENT_MAP:
                 mToolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
                 break;
         }
@@ -235,17 +297,18 @@ public class MainActivity
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
 
-        switch (fragmentType) {
-            case FT_LOGIN:
-            case FT_LINE_LIST:
-            case FT_OBJECT_LIST:
-            case FT_OBJECT_STATUS:
+        switch (tag) {
+            case FoclConstants.FRAGMENT_SYNC_LOGIN:
+            case FoclConstants.FRAGMENT_LINE_LIST:
+            case FoclConstants.FRAGMENT_OBJECT_LIST:
+            case FoclConstants.FRAGMENT_OBJECT_STATUS:
                 ft.hide(mStatusBarFragment);
                 break;
 
-            case FT_1ST_SYNC:
-            case FT_OBJECT_TYPES:
-            case FT_MAP:
+            case FoclConstants.FRAGMENT_PERFORM_1ST_SYNC:
+            case FoclConstants.FRAGMENT_OBJECT_TYPES:
+            case FoclConstants.FRAGMENT_MAP:
+            default:
                 ft.show(mStatusBarFragment);
                 break;
         }
@@ -366,10 +429,14 @@ public class MainActivity
         switch (mViewState) {
             case VIEW_STATE_1ST_SYNC:
                 menu.findItem(R.id.menu_map).setEnabled(false);
-            case VIEW_STATE_ACCOUNT:
+            case VIEW_STATE_LOGIN:
                 menu.findItem(R.id.menu_sync).setEnabled(false);
                 break;
             case VIEW_STATE_OBJECTS:
+                break;
+            case VIEW_STATE_MAP:
+                menu.findItem(R.id.menu_map).setVisible(false);
+                menu.findItem(R.id.menu_locate).setVisible(true);
                 break;
         }
 
@@ -393,7 +460,7 @@ public class MainActivity
         switch (item.getItemId()) {
 
             case android.R.id.home:
-                getSupportFragmentManager().popBackStackImmediate();
+                onBackPressed();
                 return true;
 
             case R.id.menu_map:
@@ -437,19 +504,19 @@ public class MainActivity
     }
 
 
+    @Override
+    public void onBackPressed()
+    {
+        super.onBackPressed();
+        mViewState = getActivityViewStateByMainFragment();
+        switchMenuView();
+    }
+
+
     public void onMenuMapClick()
     {
-        final FragmentManager fm = getSupportFragmentManager();
-        MapFragment mapFragment = (MapFragment) fm.findFragmentByTag("Map");
-
-        if (mapFragment == null) {
-            mapFragment = new MapFragment();
-
-            FragmentTransaction ft = fm.beginTransaction();
-            ft.replace(R.id.main_fragment, mapFragment, "Map");
-            ft.addToBackStack(null);
-            ft.commit();
-        }
+        mViewState = VIEW_STATE_MAP;
+        setActivityView();
     }
 
 

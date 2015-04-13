@@ -90,7 +90,7 @@ public class MapFragment
             Bundle savedInstanceState)
     {
         MainActivity activity = (MainActivity) getActivity();
-        activity.setBarsView(MainActivity.FT_MAP, null);
+        activity.setBarsView(null);
 
         View view = inflater.inflate(R.layout.fragment_map, container, false);
         mMapRelativeLayout = (RelativeLayout) view.findViewById(R.id.maprl);

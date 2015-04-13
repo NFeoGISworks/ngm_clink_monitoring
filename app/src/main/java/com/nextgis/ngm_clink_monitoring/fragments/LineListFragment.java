@@ -100,7 +100,7 @@ public class LineListFragment
                 break;
         }
 
-        activity.setBarsView(MainActivity.FT_LINE_LIST, toolbarTitle);
+        activity.setBarsView(toolbarTitle);
 
         GISApplication app = (GISApplication) getActivity().getApplication();
         final FoclProject foclProject = app.getFoclProject();
@@ -142,7 +142,8 @@ public class LineListFragment
 
         if (FoclConstants.LAYERTYPE_FOCL_ENDPOINT == mFoclStructLayerType) {
             ObjectStatusFragment objectMeasureFragment =
-                    (ObjectStatusFragment) fm.findFragmentByTag("ObjectMeasure");
+                    (ObjectStatusFragment) fm.findFragmentByTag(
+                            FoclConstants.FRAGMENT_OBJECT_MEASURE);
 
             if (objectMeasureFragment == null) {
                 objectMeasureFragment = new ObjectStatusFragment();
@@ -151,11 +152,13 @@ public class LineListFragment
             objectMeasureFragment.setParams(
                     getActivity(), mFoclStructLayerType, mLineId, mLineNameHtmlText, null, null);
 
-            ft.replace(R.id.main_fragment, objectMeasureFragment, "ObjectMeasure");
+            ft.replace(
+                    R.id.main_fragment, objectMeasureFragment,
+                    FoclConstants.FRAGMENT_OBJECT_MEASURE);
 
         } else {
             ObjectListFragment objectListFragment =
-                    (ObjectListFragment) fm.findFragmentByTag("ObjectList");
+                    (ObjectListFragment) fm.findFragmentByTag(FoclConstants.FRAGMENT_OBJECT_LIST);
 
             if (objectListFragment == null) {
                 objectListFragment = new ObjectListFragment();
@@ -163,7 +166,7 @@ public class LineListFragment
 
             objectListFragment.setParams(mFoclStructLayerType, mLineId);
 
-            ft.replace(R.id.main_fragment, objectListFragment, "ObjectList");
+            ft.replace(R.id.main_fragment, objectListFragment, FoclConstants.FRAGMENT_OBJECT_LIST);
         }
 
         ft.addToBackStack(null);
