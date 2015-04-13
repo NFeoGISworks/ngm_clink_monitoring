@@ -217,7 +217,7 @@ public class SyncSettingsActivity
 
     protected void addAddAccountAction(PreferenceCategory actionCategory)
     {
-        Intent intent = new Intent(this, FoclLoginActivity.class);
+        Intent intent = new Intent(this, SyncLoginActivity.class);
         Preference preference = new Preference(this);
 
         preference.setIntent(intent);

@@ -28,10 +28,10 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import com.nextgis.maplibui.NGWLoginActivity;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
-import com.nextgis.ngm_clink_monitoring.fragments.FoclLoginFragment;
+import com.nextgis.ngm_clink_monitoring.fragments.SyncLoginFragment;
 
 
-public class FoclLoginActivity
+public class SyncLoginActivity
         extends NGWLoginActivity
 {
     @Override
@@ -44,16 +44,16 @@ public class FoclLoginActivity
         setSupportActionBar(toolbar);
 
         FragmentManager fm = getSupportFragmentManager();
-        FoclLoginFragment foclLoginFragment = (FoclLoginFragment) fm.findFragmentByTag("FoclLogin");
+        SyncLoginFragment syncLoginFragment = (SyncLoginFragment) fm.findFragmentByTag("SyncLogin");
 
-        if (foclLoginFragment == null) {
-            foclLoginFragment = new FoclLoginFragment();
+        if (syncLoginFragment == null) {
+            syncLoginFragment = new SyncLoginFragment();
         }
 
-        foclLoginFragment.setOnAddAccountListener(this);
+        syncLoginFragment.setOnAddAccountListener(this);
 
         FragmentTransaction ft = fm.beginTransaction();
-        ft.add(com.nextgis.maplibui.R.id.login_frame, foclLoginFragment, "FoclLogin");
+        ft.add(com.nextgis.maplibui.R.id.login_frame, syncLoginFragment, "SyncLogin");
         ft.commit();
     }
 

@@ -36,7 +36,7 @@ import com.nextgis.ngm_clink_monitoring.activities.MainActivity;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 
 
-public class FoclLoginFragment
+public class SyncLoginFragment
         extends NGWLoginFragment
 {
     @Override
@@ -69,6 +69,7 @@ public class FoclLoginFragment
         loginDescription.setText(R.string.focl_login_description);
 
         mURL.setText(FoclConstants.FOCL_DEFAULT_ACCOUNT_URL);
+//        mURL.setEnabled(false); // TODO: uncomment it
 
         // button's theme applying
         View viewStyle = inflater.inflate(R.layout.button_login_style, null, false);

@@ -54,11 +54,11 @@ import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.util.AccountUtil;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
-import com.nextgis.ngm_clink_monitoring.fragments.FoclLoginFragment;
 import com.nextgis.ngm_clink_monitoring.fragments.MapFragment;
 import com.nextgis.ngm_clink_monitoring.fragments.ObjectTypesFragment;
 import com.nextgis.ngm_clink_monitoring.fragments.PerformSyncFragment;
 import com.nextgis.ngm_clink_monitoring.fragments.StatusBarFragment;
+import com.nextgis.ngm_clink_monitoring.fragments.SyncLoginFragment;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
 import com.nextgis.ngm_clink_monitoring.util.LocationUtil;
 
@@ -168,13 +168,13 @@ public class MainActivity
 
         switch (mViewState) {
             case VIEW_STATE_ACCOUNT:
-                FoclLoginFragment foclLoginFragment =
-                        (FoclLoginFragment) fm.findFragmentByTag("FoclLogin");
+                SyncLoginFragment syncLoginFragment =
+                        (SyncLoginFragment) fm.findFragmentByTag("SyncLogin");
 
-                if (null == foclLoginFragment) {
-                    foclLoginFragment = new FoclLoginFragment();
-                    foclLoginFragment.setOnAddAccountListener(app);
-                    ft.replace(R.id.main_fragment, foclLoginFragment, "FoclLogin");
+                if (null == syncLoginFragment) {
+                    syncLoginFragment = new SyncLoginFragment();
+                    syncLoginFragment.setOnAddAccountListener(app);
+                    ft.replace(R.id.main_fragment, syncLoginFragment, "SyncLogin");
                 }
 
                 break;

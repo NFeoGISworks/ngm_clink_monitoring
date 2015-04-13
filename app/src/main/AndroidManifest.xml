@@ -103,7 +103,7 @@
 
         <activity
             android:label="@string/account_setup"
-            android:name=".activities.FoclLoginActivity"
+            android:name=".activities.SyncLoginActivity"
             />
 
         <activity
