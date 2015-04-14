@@ -28,7 +28,7 @@
     >
 
     <item
-        android:id="@+id/menu_locate"
+        android:id="@+id/menu_location"
         android:title="@string/action_locate"
         android:icon="@drawable/ic_action_location_found"
         android:orderInCategory="1"

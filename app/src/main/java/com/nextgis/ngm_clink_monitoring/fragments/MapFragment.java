@@ -24,6 +24,7 @@ package com.nextgis.ngm_clink_monitoring.fragments;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -34,15 +35,19 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
+import com.nextgis.maplib.api.GpsEventListener;
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.api.ILayerView;
 import com.nextgis.maplib.datasource.GeoEnvelope;
 import com.nextgis.maplib.datasource.GeoPoint;
+import com.nextgis.maplib.location.GpsEventSource;
 import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.util.GeoConstants;
 import com.nextgis.maplib.util.VectorCacheItem;
-import com.nextgis.maplibui.MapView;
+import com.nextgis.maplibui.MapViewOverlays;
 import com.nextgis.maplibui.api.MapViewEventListener;
+import com.nextgis.maplibui.overlay.CurrentLocationOverlay;
 import com.nextgis.maplibui.util.ConstantsUI;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
@@ -55,18 +60,22 @@ import java.util.List;
 
 public class MapFragment
         extends Fragment
-        implements MapViewEventListener
+        implements MapViewEventListener, GpsEventListener
 {
     protected final static int mMargins = 10;
     protected float mTolerancePX;
 
-    protected MapView mMapView;
-    protected ImageView mivZoomIn;
-    protected ImageView mivZoomOut;
+    protected MapViewOverlays mMapView;
+    protected ImageView       mivZoomIn;
+    protected ImageView       mivZoomOut;
 
     protected RelativeLayout mMapRelativeLayout;
     protected RelativeLayout mButtonsRelativeLayout;
     protected final int mButtonsRelativeLayoutId = ViewUtil.generateViewId();
+
+    protected GeoPoint               mCurrentCenter;
+    protected GpsEventSource         mGpsEventSource;
+    protected CurrentLocationOverlay mCurrentLocationOverlay;
 
 
     @Override
@@ -76,10 +85,17 @@ public class MapFragment
         setRetainInstance(true);
 
         GISApplication app = (GISApplication) getActivity().getApplication();
-        mMapView = new MapView(app, app.getMap());
+        mMapView = new MapViewOverlays(getActivity(), app.getMap());
+        mMapView.setId(ViewUtil.generateViewId());
 
         mTolerancePX =
                 getActivity().getResources().getDisplayMetrics().density * ConstantsUI.TOLERANCE_DP;
+
+        mGpsEventSource = app.getGpsEventSource();
+
+        mCurrentLocationOverlay = new CurrentLocationOverlay(getActivity(), mMapView);
+        mCurrentLocationOverlay.setStandingMarker(R.drawable.ic_location_standing);
+        mCurrentLocationOverlay.setMovingMarker(R.drawable.ic_location_moving);
     }
 
 
@@ -155,11 +171,11 @@ public class MapFragment
         if (mivZoomIn == null || mivZoomOut == null) {
             mivZoomIn = new ImageView(context);
             mivZoomIn.setImageResource(R.drawable.ic_plus);
-            ViewUtil.setGeneratedId(mivZoomIn);
+            mivZoomIn.setId(ViewUtil.generateViewId());
 
             mivZoomOut = new ImageView(context);
             mivZoomOut.setImageResource(R.drawable.ic_minus);
-            ViewUtil.setGeneratedId(mivZoomOut);
+            mivZoomOut.setId(ViewUtil.generateViewId());
 
             mivZoomIn.setOnClickListener(
                     new OnClickListener()
@@ -289,17 +305,27 @@ public class MapFragment
     }
 
 
-    public boolean onInit(MapView map)
+    public void locateCurrentPosition()
     {
-        mMapView = map;
-        mMapView.addListener(this);
-        return true;
+        if (mCurrentCenter != null) {
+            mMapView.panTo(mCurrentCenter);
+        } else {
+            Toast.makeText(getActivity(), R.string.error_no_location, Toast.LENGTH_SHORT).show();
+        }
     }
 
 
     @Override
     public void onPause()
     {
+        if (null != mGpsEventSource) {
+            mGpsEventSource.removeListener(this);
+        }
+
+        if (null != mCurrentLocationOverlay) {
+            mCurrentLocationOverlay.stopShowingCurrentLocation();
+        }
+
         final SharedPreferences.Editor edit =
                 PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
 
@@ -327,8 +353,17 @@ public class MapFragment
     {
         super.onResume();
 
+        GISApplication app = (GISApplication) getActivity().getApplication();
+
+        if (null != mGpsEventSource) {
+            mGpsEventSource.addListener(this);
+        }
+
+        mCurrentCenter = null;
+
         final SharedPreferences prefs =
                 PreferenceManager.getDefaultSharedPreferences(getActivity());
+
         if (null != mMapView) {
             mMapView.addListener(this);
 
@@ -339,15 +374,22 @@ public class MapFragment
             double mMapScrollY = Double.longBitsToDouble(
                     prefs.getLong(FoclSettingsConstantsUI.KEY_PREF_SCROLL_Y, 0));
             mMapView.setZoomAndCenter(mMapZoom, new GeoPoint(mMapScrollX, mMapScrollY));
-        }
 
-        //change zoom controls visibility
-        boolean showControls =
-                prefs.getBoolean(FoclSettingsConstantsUI.KEY_PREF_SHOW_ZOOM_CONTROLS, false);
-        if (showControls) {
-            addMapButtons();
-        } else {
-            removeMapButtons();
+            //change zoom controls visibility
+            boolean showControls =
+                    prefs.getBoolean(FoclSettingsConstantsUI.KEY_PREF_SHOW_ZOOM_CONTROLS, false);
+
+            if (showControls) {
+                addMapButtons();
+            } else {
+                removeMapButtons();
+            }
+
+            if (null != mCurrentLocationOverlay) {
+                mCurrentLocationOverlay.updateMode(app.getLocationOverlayMode());
+                mCurrentLocationOverlay.startShowingCurrentLocation();
+                mMapView.addOverlay(mCurrentLocationOverlay);
+            }
         }
     }
 
@@ -416,6 +458,31 @@ public class MapFragment
 
     @Override
     public void panStop()
+    {
+
+    }
+
+
+    @Override
+    public void onLocationChanged(Location location)
+    {
+        if (location != null) {
+            if (mCurrentCenter == null) {
+                mCurrentCenter = new GeoPoint();
+            }
+
+            mCurrentCenter.setCoordinates(location.getLongitude(), location.getLatitude());
+            mCurrentCenter.setCRS(GeoConstants.CRS_WGS84);
+
+            if (!mCurrentCenter.project(GeoConstants.CRS_WEB_MERCATOR)) {
+                mCurrentCenter = null;
+            }
+        }
+    }
+
+
+    @Override
+    public void onGpsStatusChanged(int event)
     {
 
     }

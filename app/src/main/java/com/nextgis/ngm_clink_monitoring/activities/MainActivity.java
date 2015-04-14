@@ -436,7 +436,7 @@ public class MainActivity
                 break;
             case VIEW_STATE_MAP:
                 menu.findItem(R.id.menu_map).setVisible(false);
-                menu.findItem(R.id.menu_locate).setVisible(true);
+                menu.findItem(R.id.menu_location).setVisible(true);
                 break;
         }
 
@@ -461,6 +461,10 @@ public class MainActivity
 
             case android.R.id.home:
                 onBackPressed();
+                return true;
+
+            case R.id.menu_location:
+                onMenuLocationClick();
                 return true;
 
             case R.id.menu_map:
@@ -510,6 +514,17 @@ public class MainActivity
         super.onBackPressed();
         mViewState = getActivityViewStateByMainFragment();
         switchMenuView();
+    }
+
+
+    public void onMenuLocationClick()
+    {
+        FragmentManager fm = getSupportFragmentManager();
+        Fragment fragment = fm.findFragmentByTag(FoclConstants.FRAGMENT_MAP);
+
+        if (null != fragment) {
+            ((MapFragment) fragment).locateCurrentPosition();
+        }
     }
 
 

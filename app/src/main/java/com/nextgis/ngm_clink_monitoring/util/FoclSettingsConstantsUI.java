@@ -53,7 +53,7 @@ public interface FoclSettingsConstantsUI
     public static final String KEY_PREF_SCROLL_X      = "map_scroll_x";
     public static final String KEY_PREF_SCROLL_Y      = "map_scroll_y";
     public static final String KEY_PREF_ZOOM_LEVEL    = "map_zoom_level";
-    public static final String KEY_PREF_SHOW_LOCATION = "map_show_loc";
+    //    public static final String KEY_PREF_SHOW_LOCATION = "map_show_loc";
     public static final String KEY_PREF_SHOW_COMPASS  = "map_show_compass";
     public static final String KEY_PREF_SHOW_INFO     = "map_show_info";
     public static final String KEY_PREF_APP_FIRST_RUN = "app_first_run";
@@ -83,6 +83,7 @@ public interface FoclSettingsConstantsUI
     public static final String KEY_PREF_MAP_PATH            = "map_path";
     public static final String KEY_PREF_MAP_NAME            = "map_name";
     public static final String KEY_PREF_SHOW_ZOOM_CONTROLS  = "show_zoom_controls";
+    public static final String KEY_PREF_SHOW_LOCATION = "show_location";
     public static final String KEY_PREF_SYNC_PERIODICALLY   = "sync_periodically";
     public static final String KEY_PREF_SYNC_PERIOD         = "sync_period";
 

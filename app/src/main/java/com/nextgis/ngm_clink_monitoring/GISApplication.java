@@ -479,6 +479,19 @@ public class GISApplication
     }
 
 
+    public boolean isLocationShowing()
+    {
+        return PreferenceManager.getDefaultSharedPreferences(this)
+                .getBoolean(FoclSettingsConstantsUI.KEY_PREF_SHOW_LOCATION, true);
+    }
+
+
+    public String getLocationOverlayMode()
+    {
+        return isLocationShowing() ? "1" : "0";
+    }
+
+
     public Location getCurrentLocation()
     {
         return mCurrentLocation;
