@@ -270,6 +270,13 @@ public class MapFragment
 
 
     @Override
+    public void onLayerDrawStarted()
+    {
+
+    }
+
+
+    @Override
     public void onLayerDrawFinished(
             int id,
             float percent)
