@@ -30,7 +30,7 @@
     >
 
     <RelativeLayout
-        android:id="@+id/maprl"
+        android:id="@+id/rl_map"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         >

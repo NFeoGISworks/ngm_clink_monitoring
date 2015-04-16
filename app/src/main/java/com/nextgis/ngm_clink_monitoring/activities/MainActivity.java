@@ -437,6 +437,7 @@ public class MainActivity
             case VIEW_STATE_MAP:
                 menu.findItem(R.id.menu_map).setVisible(false);
                 menu.findItem(R.id.menu_location).setVisible(true);
+                menu.findItem(R.id.menu_refresh_map).setVisible(true);
                 break;
         }
 
@@ -465,6 +466,10 @@ public class MainActivity
 
             case R.id.menu_location:
                 onMenuLocationClick();
+                return true;
+
+            case R.id.menu_refresh_map:
+                onMenuRefreshMapClick();
                 return true;
 
             case R.id.menu_map:
@@ -524,6 +529,17 @@ public class MainActivity
 
         if (null != fragment) {
             ((MapFragment) fragment).locateCurrentPosition();
+        }
+    }
+
+
+    public void onMenuRefreshMapClick()
+    {
+        FragmentManager fm = getSupportFragmentManager();
+        Fragment fragment = fm.findFragmentByTag(FoclConstants.FRAGMENT_MAP);
+
+        if (null != fragment) {
+            ((MapFragment) fragment).refresh();
         }
     }
 

@@ -37,6 +37,15 @@
         />
 
     <item
+        android:id="@+id/menu_refresh_map"
+        android:title="@string/action_refresh"
+        android:icon="@drawable/ic_action_sync"
+        android:orderInCategory="2"
+        app:showAsAction="always"
+        android:visible="false"
+        />
+
+    <item
         android:id="@+id/menu_map"
         android:title="@string/action_map"
         android:icon="@drawable/ic_action_map"

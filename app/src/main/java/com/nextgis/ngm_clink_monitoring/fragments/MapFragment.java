@@ -109,7 +109,7 @@ public class MapFragment
         activity.setBarsView(null);
 
         View view = inflater.inflate(R.layout.fragment_map, container, false);
-        mMapRelativeLayout = (RelativeLayout) view.findViewById(R.id.maprl);
+        mMapRelativeLayout = (RelativeLayout) view.findViewById(R.id.rl_map);
 
         //search relative view of map, if not found - add it
         if (mMapView != null) {
@@ -492,5 +492,13 @@ public class MapFragment
     public void onGpsStatusChanged(int event)
     {
 
+    }
+
+
+    public void refresh()
+    {
+        if (null != mMapView) {
+            mMapView.asyncDrawMapDrawable();
+        }
     }
 }
