@@ -101,6 +101,7 @@
     <string name="cross_mounting">Разварка кросса</string>
     <string name="access_point_mounting">Монтаж точки доступа</string>
     <string name="line_measuring">Измерения линии</string>
+    <string name="object_attributes">Атрибуты объекта</string>
 
     <string name="select_line_colon">Выберите линию:</string>
     <string name="communication_line_colon">Линия связи:</string>

@@ -33,6 +33,7 @@ public interface FoclConstants
     public static final String FRAGMENT_OBJECT_STATUS    = "ObjectStatus";
     public static final String FRAGMENT_OBJECT_MEASURE   = "ObjectMeasure";
     public static final String FRAGMENT_MAP              = "Map";
+    public static final String FRAGMENT_ATTRIBUTES = "Attributes";
 
     public static final String JSON_REGION_KEY   = "region";
     public static final String JSON_DISTRICT_KEY = "district";

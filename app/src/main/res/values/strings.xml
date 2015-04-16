@@ -101,6 +101,7 @@
     <string name="cross_mounting">Cross mounting</string>
     <string name="access_point_mounting">Access point mounting</string>
     <string name="line_measuring">Line measuring</string>
+    <string name="object_attributes">Object attributes</string>
 
     <string name="select_line_colon">Select line:</string>
     <string name="communication_line_colon">Communication line:</string>
