@@ -22,14 +22,17 @@
 
 package com.nextgis.ngm_clink_monitoring.fragments;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.nextgis.maplib.map.VectorLayer;
@@ -39,6 +42,8 @@ import com.nextgis.ngm_clink_monitoring.R;
 public class AttributesDialog
         extends DialogFragment
 {
+    protected static final String KEY_ITEM_ID = "item_id";
+
     protected VectorLayer mLayer;
     protected long        mItemId;
 
@@ -63,31 +68,55 @@ public class AttributesDialog
     }
 
 
+    @NonNull
     @Override
-    public View onCreateView(
-            LayoutInflater inflater,
-            ViewGroup container,
-            Bundle savedInstanceState)
+    public Dialog onCreateDialog(Bundle savedInstanceState)
     {
-        getDialog().setTitle(getActivity().getString(R.string.object_attributes));
+        LayoutInflater inflater = LayoutInflater.from(getActivity());
+        View view = inflater.inflate(R.layout.fragment_attributes, null);
 
-        View view = inflater.inflate(R.layout.fragment_attributes, container, false);
         mAttributesLayout = (LinearLayout) view.findViewById(R.id.ll_attributes);
-
-        Button buttonOk = (Button) view.findViewById(R.id.btn_attr_ok);
-        buttonOk.setOnClickListener(
-                new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View v)
-                    {
-                        dismiss();
-                    }
-                });
-
         setAttributes();
 
-        return view;
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(getActivity().getString(R.string.object_attributes))
+                .setView(view)
+                .setPositiveButton(
+                        getActivity().getString(R.string.ok), new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(
+                                    DialogInterface dialog,
+                                    int which)
+                            {
+                                dismiss();
+                            }
+                        });
+
+        return builder.create();
+    }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        outState.putLong(KEY_ITEM_ID, mItemId);
+    }
+
+
+    @Override
+    public void onViewStateRestored(
+            @Nullable
+            Bundle savedInstanceState)
+    {
+        super.onViewStateRestored(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            mItemId = savedInstanceState.getLong(KEY_ITEM_ID);
+        }
+
+        setAttributes();
     }
 
 

@@ -60,35 +60,4 @@
 
     </ScrollView>
 
-    <!--TODO: make for API < 11-->
-
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:layout_marginBottom="0dp"
-        android:background="?android:attr/dividerVertical"
-        />
-
-    <!--TODO: make for API < 11-->
-
-    <LinearLayout
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:paddingTop="0dip"
-        android:measureWithLargestChild="true"
-        android:orientation="horizontal"
-        style="?android:attr/buttonBarStyle"
-        >
-
-        <Button
-            android:id="@+id/btn_attr_ok"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:layout_weight="1"
-            android:text="@android:string/ok"
-            style="?android:attr/buttonBarButtonStyle"
-            />
-
-    </LinearLayout>
-
 </LinearLayout>
