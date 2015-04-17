@@ -80,8 +80,8 @@
     <string name="show_location">Current location</string>
     <string name="show_location_summary">Show current location on map</string>
 
-    <string name="location_off">Location is turned off</string>
-    <string name="location_off_message">In the system settings please enable the Location and only in the location mode \"Device only\" for use a GPS.</string>
+    <string name="location_off">GPS is turned off</string>
+    <string name="location_off_message">To work correctly, you must turn the GPS!</string>
     <string name="no_account">NO account</string>
     <string name="no_network_no_sync">NO network, synchronization is not performed</string>
     <string name="perform_sync">Initial synchronization is performed, please wait.</string>

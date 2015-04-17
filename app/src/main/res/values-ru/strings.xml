@@ -80,8 +80,8 @@
     <string name="show_location">Текущее местоположение</string>
     <string name="show_location_summary">Отображать текущее местоположение на карте</string>
 
-    <string name="location_off">Определение местоположения выключено</string>
-    <string name="location_off_message">Пожалуйста, включите в системных настройках определение местоположения и только в режиме \"По спутникам GPS\" для использования GPS.</string>
+    <string name="location_off">GPS отключен</string>
+    <string name="location_off_message">Для корректной работы приложения включите GPS!</string>
     <string name="no_account">НЕТ учетной записи</string>
     <string name="no_network_no_sync">НЕТ сети, синхронизация не выполнена</string>
     <string name="perform_sync">Выполняется начальная синхронизация, пожалуйста, подождите.</string>
