@@ -62,6 +62,11 @@ public class FileItem
     private boolean selectable;
 
     /**
+     * A boolean indicating if the item is storage device.
+     */
+    private boolean storageDevice = false;
+
+    /**
      * The listeners for the click event.
      */
     private List<FileItem.OnFileClickListener> listeners;
@@ -87,6 +92,7 @@ public class FileItem
         // Initialize attributes.
         this.file = null;
         this.selectable = true;
+        this.storageDevice = false;
         this.icon = (ImageView) this.findViewById(R.id.imageViewIcon);
         this.label = (TextView) this.findViewById(R.id.textViewLabel);
         this.listeners = new LinkedList<>();
@@ -238,6 +244,23 @@ public class FileItem
         this.updateIcon();
     }
 
+
+    /**
+     * Defines if the item is storage device.
+     *
+     * @param storageDevice
+     *         'true' if the item is storage device, 'false' if not.
+     */
+    public void setStorageDevice(boolean storageDevice)
+    {
+        // Save the value.
+        this.storageDevice = storageDevice;
+
+        // Update the icon.
+        this.updateIcon();
+    }
+
+
     // ----- Miscellaneous methods ----- //
 
 
@@ -249,9 +272,14 @@ public class FileItem
         // Define the icon.
         int icon = R.drawable.document_gray;
         if (this.selectable) {
-            icon = (this.file != null && file.isDirectory())
-                   ? R.drawable.folder
-                   : R.drawable.document;
+
+            if (storageDevice) {
+                icon = R.drawable.ic_sd_storage_big;
+            } else {
+                icon = (this.file != null && file.isDirectory())
+                       ? R.drawable.folder
+                       : R.drawable.document;
+            }
         }
 
         // Set the icon.

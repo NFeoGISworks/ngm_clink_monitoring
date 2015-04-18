@@ -746,6 +746,7 @@ class FileChooserCore
                         fileItem.setLabel(
                                 Html.fromHtml(info.getHtmlFormattedDisplayName()));
                         fileItem.setSelectable(!info.readonly);
+                        fileItem.setStorageDevice(true);
                         fileItems.add(fileItem);
                     }
 
