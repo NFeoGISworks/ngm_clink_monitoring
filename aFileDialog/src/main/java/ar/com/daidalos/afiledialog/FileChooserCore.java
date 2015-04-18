@@ -809,11 +809,19 @@ class FileChooserCore
                     }
                 }
 
+                String currentFolderName;
 
-                // Set the name of the current folder.
-                String currentFolderName = this.showFullPathInTitle
-                                           ? this.currentFolder.getPath()
-                                           : this.currentFolder.getName();
+                if (currentFolderIsMountParents) {
+                    currentFolderName =
+                            this.chooser.getContext().getString(R.string.daidalos_devices);
+
+                } else {
+                    // Set the name of the current folder.
+                    currentFolderName = this.showFullPathInTitle
+                                        ? this.currentFolder.getPath()
+                                        : this.currentFolder.getName();
+                }
+
                 this.chooser.setCurrentFolderName(currentFolderName);
 
             } else {
