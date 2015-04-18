@@ -230,6 +230,8 @@ public class FoclSettingsActivity
                                 intent.putExtra(
                                         FileChooserActivity.INPUT_USE_BACK_BUTTON_TO_NAVIGATE,
                                         false);
+        intent.putExtra(
+                FileChooserActivity.INPUT_USE_STORAGE_DEVICES, true);
 
                                 if (null == fragment) {
                                     activity.startActivityForResult(

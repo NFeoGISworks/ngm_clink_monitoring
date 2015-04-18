@@ -192,6 +192,27 @@ public class FileItem
 
 
     /**
+     * Changes the label of this item, which by default is the file's name.
+     * <p/>
+     * This method must be called after invoking the method setFile(), otherwise the label is going
+     * to be overwritten with the file's name.
+     *
+     * @param label
+     *         A CharSequence value.
+     */
+    public void setLabel(CharSequence label)
+    {
+        // Verify if 'label' is not null.
+        if (label == null) {
+            label = "";
+        }
+
+        // Change the label.
+        this.label.setText(label);
+    }
+
+
+    /**
      * Verifies if the item can be selected.
      *
      * @return 'true' if the item can be selected, 'false' if not.

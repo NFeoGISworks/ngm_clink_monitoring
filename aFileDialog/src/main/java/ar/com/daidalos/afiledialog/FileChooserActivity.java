@@ -130,6 +130,13 @@ public class FileChooserActivity
             "input_use_back_button_to_navigate";
 
     /**
+     * Constant used for represent the key of the bundle object (inside the start's intent) which
+     * contains a boolean that indicates that only storage devices must be showed instead of
+     * filesystem root.
+     */
+    public static final String INPUT_USE_STORAGE_DEVICES = "input_use_devices";
+
+    /**
      * Constant used for represent the key of the bundle object (inside the result's intent) which
      * contains the File object, that represents the file selected by the user or the folder in
      * which the user wants to create a file.
@@ -209,6 +216,9 @@ public class FileChooserActivity
             }
             if (extras.containsKey(INPUT_USE_BACK_BUTTON_TO_NAVIGATE)) {
                 this.useBackButton = extras.getBoolean(INPUT_USE_BACK_BUTTON_TO_NAVIGATE);
+            }
+            if (extras.containsKey(INPUT_USE_STORAGE_DEVICES)) {
+                core.setUseStorageDevices(extras.getBoolean(INPUT_USE_STORAGE_DEVICES));
             }
         }
 

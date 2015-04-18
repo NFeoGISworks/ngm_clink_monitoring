@@ -23,6 +23,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Environment;
+import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -31,6 +32,7 @@ import android.widget.LinearLayout;
 import ar.com.daidalos.afiledialog.view.FileItem;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -100,6 +102,11 @@ class FileChooserCore
      * A boolean indicating if the folder's full path must be show in the title.
      */
     private boolean showFullPathInTitle;
+
+    /**
+     * A boolean indicating that only storage devices must be showed instead of filesystem root.
+     */
+    private boolean useStorageDevices = false;
 
     // ---- Static attributes ----- //
 
@@ -458,7 +465,7 @@ class FileChooserCore
 
     /**
      * Allows to define if, in the title, must be show only the current folder's name or the full
-     * file's path..
+     * file's path.
      *
      * @param show
      *         'true' for show the full path, 'false' for show only the name.
@@ -466,6 +473,18 @@ class FileChooserCore
     public void setShowFullPathInTitle(boolean show)
     {
         this.showFullPathInTitle = show;
+    }
+
+
+    /**
+     * Allows to define that only storage devices must be showed instead of filesystem root.
+     *
+     * @param useStorageDevices
+     *         'true' for only storage devices must be showed, 'false' for show filesystem root.
+     */
+    public void setUseStorageDevices(boolean useStorageDevices)
+    {
+        this.useStorageDevices = useStorageDevices;
     }
 
 
@@ -662,6 +681,21 @@ class FileChooserCore
      */
     public void loadFolder(File folder)
     {
+        // get external storage infos
+        List<StorageUtils.StorageInfo> storageInfos = StorageUtils.getStorageList();
+
+        // get parents of mount points
+        List<File> mountPointParents = new ArrayList<>();
+
+        for (StorageUtils.StorageInfo info : storageInfos) {
+            File mountPointParent = (new File(info.mountPointPath)).getParentFile();
+
+            if (mountPointParent.exists() && mountPointParent.isDirectory()) {
+                mountPointParents.add(mountPointParent);
+            }
+        }
+
+
         // Remove previous files.
         LinearLayout root = this.chooser.getRootLayout();
         LinearLayout layout = (LinearLayout) root.findViewById(R.id.linearLayoutFiles);
@@ -685,64 +719,93 @@ class FileChooserCore
         if (this.currentFolder.exists() && layout != null) {
             List<FileItem> fileItems = new LinkedList<>();
 
+            boolean currentFolderIsMountParents =
+                    useStorageDevices && mountPointParents.contains(currentFolder);
+
             // Add the parent folder.
             if (this.currentFolder.getParent() != null) {
-                File parent = new File(this.currentFolder.getParent());
-                if (parent.exists()) {
-                    fileItems.add(new FileItem(this.chooser.getContext(), parent, ".."));
+
+                // Parent folder is not need for mountPointParents
+                if (!currentFolderIsMountParents) {
+                    File parent = new File(this.currentFolder.getParent());
+                    if (parent.exists()) {
+                        fileItems.add(new FileItem(this.chooser.getContext(), parent, ".."));
+                    }
                 }
             }
 
             // Verify if the file is a directory.
             if (this.currentFolder.isDirectory()) {
-                // Get the folder's files.
-                File[] fileList = this.currentFolder.listFiles();
-                if (fileList != null) {
-                    // Order the files alphabetically and separating folders from files.
-                    Arrays.sort(
-                            fileList, new Comparator<File>()
-                            {
-                                public int compare(
-                                        File file1,
-                                        File file2)
+
+                if (currentFolderIsMountParents) {
+
+                    // get external storage list
+                    for (StorageUtils.StorageInfo info : storageInfos) {
+                        FileItem fileItem = new FileItem(
+                                this.chooser.getContext(), new File(info.mountPointPath));
+                        fileItem.setLabel(
+                                Html.fromHtml(info.getHtmlFormattedDisplayName()));
+                        fileItem.setSelectable(!info.readonly);
+                        fileItems.add(fileItem);
+                    }
+
+
+                } else {
+                    // Get the folder's files.
+                    File[] fileList = this.currentFolder.listFiles();
+
+                    if (fileList != null) {
+                        // Order the files alphabetically and separating folders from files.
+                        Arrays.sort(
+                                fileList, new Comparator<File>()
                                 {
-                                    if (file1 != null && file2 != null) {
-                                        if (file1.isDirectory() && (!file2.isDirectory())) {
-                                            return -1;
+                                    public int compare(
+                                            File file1,
+                                            File file2)
+                                    {
+                                        if (file1 != null && file2 != null) {
+                                            if (file1.isDirectory() && (!file2.isDirectory())) {
+                                                return -1;
+                                            }
+                                            if (file2.isDirectory() && (!file1.isDirectory())) {
+                                                return 1;
+                                            }
+                                            return file1.getName().compareTo(file2.getName());
                                         }
-                                        if (file2.isDirectory() && (!file1.isDirectory())) {
-                                            return 1;
-                                        }
-                                        return file1.getName().compareTo(file2.getName());
+                                        return 0;
                                     }
-                                    return 0;
-                                }
-                            });
+                                });
 
-                    // Iterate all the files in the folder.
-                    for (File aFileList : fileList) {
-                        // Verify if file can be selected (is a directory or folder mode is not activated and the file pass the filter, if defined).
-                        boolean selectable = true;
-                        if (!aFileList.isDirectory()) {
-                            selectable = !this.folderMode && (this.filter == null ||
-                                    aFileList.getName().matches(this.filter));
-                        }
+                        // Iterate all the files in the folder.
+                        for (File fileOrDir : fileList) {
+                            // Verify if file can be selected
+                            // (is a directory or folder mode is not activated and
+                            // the file pass the filter, if defined).
+                            boolean selectable = true;
+                            if (!fileOrDir.isDirectory()) {
+                                selectable = !this.folderMode && (this.filter == null ||
+                                        fileOrDir.getName().matches(this.filter));
+                            }
 
-                        // Verify if the file must be show.
-                        if (selectable || !this.showOnlySelectable) {
-                            // Create the file item and add it to the list.
-                            FileItem fileItem = new FileItem(this.chooser.getContext(), aFileList);
-                            fileItem.setSelectable(selectable);
-                            fileItems.add(fileItem);
+                            // Verify if the file must be show.
+                            if (selectable || !this.showOnlySelectable) {
+                                // Create the file item and add it to the list.
+                                FileItem fileItem =
+                                        new FileItem(this.chooser.getContext(), fileOrDir);
+                                fileItem.setSelectable(selectable);
+                                fileItems.add(fileItem);
+                            }
                         }
                     }
                 }
+
 
                 // Set the name of the current folder.
                 String currentFolderName = this.showFullPathInTitle
                                            ? this.currentFolder.getPath()
                                            : this.currentFolder.getName();
                 this.chooser.setCurrentFolderName(currentFolderName);
+
             } else {
                 // The file is not a folder, add only this file.
                 fileItems.add(new FileItem(this.chooser.getContext(), this.currentFolder));
