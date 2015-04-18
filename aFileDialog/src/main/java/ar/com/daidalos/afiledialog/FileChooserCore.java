@@ -116,6 +116,10 @@ class FileChooserCore
     private static File defaultFolder;
 
 
+    Button okButton;
+    Button addButton;
+
+
     /**
      * Static constructor.
      */
@@ -134,8 +138,16 @@ class FileChooserCore
      */
     public FileChooserCore(FileChooser fileChooser)
     {
-        // Initialize attributes.
         this.chooser = fileChooser;
+
+        // Add listener for the  buttons.
+        LinearLayout root = this.chooser.getRootLayout();
+        addButton = (Button) root.findViewById(R.id.buttonAdd);
+        addButton.setOnClickListener(addButtonClickListener);
+        okButton = (Button) root.findViewById(R.id.buttonOk);
+        okButton.setOnClickListener(okButtonClickListener);
+
+        // Initialize attributes.
         this.listeners = new LinkedList<>();
         this.filter = null;
         this.showOnlySelectable = false;
@@ -146,13 +158,6 @@ class FileChooserCore
         this.showConfirmationOnCreate = false;
         this.showConfirmationOnSelect = false;
         this.showFullPathInTitle = false;
-
-        // Add listener for the  buttons.
-        LinearLayout root = this.chooser.getRootLayout();
-        Button addButton = (Button) root.findViewById(R.id.buttonAdd);
-        addButton.setOnClickListener(addButtonClickListener);
-        Button okButton = (Button) root.findViewById(R.id.buttonOk);
-        okButton.setOnClickListener(okButtonClickListener);
     }
 
     // ----- Events methods ----- //
@@ -738,6 +743,8 @@ class FileChooserCore
             if (this.currentFolder.isDirectory()) {
 
                 if (currentFolderIsMountParents) {
+                    okButton.setEnabled(false);
+                    addButton.setEnabled(false);
 
                     // get external storage list
                     for (StorageUtils.StorageInfo info : storageInfos) {
@@ -750,8 +757,10 @@ class FileChooserCore
                         fileItems.add(fileItem);
                     }
 
-
                 } else {
+                    okButton.setEnabled(true);
+                    addButton.setEnabled(true);
+
                     // Get the folder's files.
                     File[] fileList = this.currentFolder.listFiles();
 
