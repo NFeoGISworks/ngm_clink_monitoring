@@ -270,15 +270,24 @@ public class FileItem
     private void updateIcon()
     {
         // Define the icon.
-        int icon = R.drawable.document_gray;
+        int icon;
+
         if (this.selectable) {
 
             if (storageDevice) {
-                icon = R.drawable.ic_sd_storage_big;
+                icon = R.drawable.ic_sd_storage;
             } else {
                 icon = (this.file != null && file.isDirectory())
                        ? R.drawable.folder
                        : R.drawable.document;
+            }
+
+        } else {
+
+            if (storageDevice) {
+                icon = R.drawable.ic_sd_storage_disabled;
+            } else {
+                icon = R.drawable.document_gray;
             }
         }
 
