@@ -126,8 +126,9 @@ public class LocationUtil
                 return false;
             }
 
-            // Only the location mode \"Device only\" (GPS and other sensors) must be enabled
-            return Settings.Secure.LOCATION_MODE_SENSORS_ONLY == locationMode;
+            // GPS must be enabled
+            return Settings.Secure.LOCATION_MODE_SENSORS_ONLY == locationMode ||
+                    Settings.Secure.LOCATION_MODE_HIGH_ACCURACY == locationMode;
 
         } else {
             String locationProviders = Settings.Secure.getString(
@@ -139,8 +140,14 @@ public class LocationUtil
 
             String[] providers = locationProviders.split(",");
 
-            // Only the location mode \"Device only\" (GPS and other sensors) must be enabled
-            return providers.length == 1 && providers[0].equals(LocationManager.GPS_PROVIDER);
+            for (String provider : providers) {
+                // GPS must be enabled
+                if (provider.equals(LocationManager.GPS_PROVIDER)) {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 
