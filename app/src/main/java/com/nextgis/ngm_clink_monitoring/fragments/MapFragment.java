@@ -323,6 +323,29 @@ public class MapFragment
     }
 
 
+    public void locateCurrentPositionAndZoom()
+    {
+        if (mCurrentCenter == null) {
+            Toast.makeText(getActivity(), R.string.error_no_location, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        float zoomLevel = 16f;
+
+        if (mMapView.canZoomIn()) {
+
+            if (mMapView.getMaxZoom() < zoomLevel) {
+                zoomLevel = mMapView.getMaxZoom();
+            }
+
+            mMapView.setZoomAndCenter(zoomLevel, mCurrentCenter);
+
+        } else {
+            mMapView.setZoomAndCenter(mMapView.getZoomLevel(), mCurrentCenter);
+        }
+    }
+
+
     @Override
     public void onPause()
     {
