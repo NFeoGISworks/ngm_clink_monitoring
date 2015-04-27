@@ -58,9 +58,8 @@ public class ObjectListFragment
     protected ListView mObjectList;
 
     protected Integer mLineId;
-    protected String mLineNameHtmlText;
     protected String  mObjectLayerName;
-    protected Cursor  mObjectCursor;
+    protected Long mObjectId;
     protected Cursor  mAdapterCursor;
 
     protected Integer mFoclStructLayerType = FoclConstants.LAYERTYPE_FOCL_UNKNOWN;
@@ -134,8 +133,7 @@ public class ObjectListFragment
 
 
         FoclStruct foclStruct = (FoclStruct) foclProject.getLayer(mLineId);
-        mLineNameHtmlText = foclStruct.getHtmlFormattedName();
-        mLineName.setText(Html.fromHtml(mLineNameHtmlText));
+        mLineName.setText(Html.fromHtml(foclStruct.getHtmlFormattedName()));
 
         FoclVectorLayer layer = (FoclVectorLayer) foclStruct.getLayerByFoclType(
                 mFoclStructLayerType);
@@ -185,7 +183,9 @@ public class ObjectListFragment
                             int position,
                             long id)
                     {
-                        mObjectCursor = (Cursor) mObjectList.getAdapter().getItem(position);
+                        Cursor cursor = (Cursor) mObjectList.getAdapter().getItem(position);
+                        mObjectId = cursor.getLong(cursor.getColumnIndex(VectorLayer.FIELD_ID));
+                        cursor.close();
                         onObjectClick();
                     }
                 });
@@ -217,9 +217,7 @@ public class ObjectListFragment
             objectStatusFragment = new ObjectStatusFragment();
         }
 
-        objectStatusFragment.setParams(
-                getActivity(), mFoclStructLayerType, null, mLineNameHtmlText, mObjectLayerName,
-                mObjectCursor);
+        objectStatusFragment.setParams(getActivity(), mFoclStructLayerType, mLineId, mObjectId);
 
         ft.replace(R.id.main_fragment, objectStatusFragment, FoclConstants.FRAGMENT_OBJECT_STATUS);
         ft.addToBackStack(null);

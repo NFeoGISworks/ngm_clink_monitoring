@@ -41,6 +41,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -94,10 +95,8 @@ public class ObjectStatusFragment
     protected Integer mFoclStructLayerType = FoclConstants.LAYERTYPE_FOCL_UNKNOWN;
 
     protected Integer mLineId;
-    protected String mLineNameHtmlText;
     protected String  mObjectLayerName;
     protected Long    mObjectId;
-    protected String  mObjectNameText;
 
     protected String mObjectStatus = FoclConstants.FIELD_VALUE_UNKNOWN;
 
@@ -111,37 +110,12 @@ public class ObjectStatusFragment
             Context context,
             Integer foclStructLayerType,
             Integer lineId,
-            String lineNameHtml,
-            String objectLayerName,
-            Cursor objectCursor)
+            Long objectId)
     {
         mContext = context;
         mFoclStructLayerType = foclStructLayerType;
-        mLineNameHtmlText = lineNameHtml;
-
-        if (FoclConstants.LAYERTYPE_FOCL_ENDPOINT == mFoclStructLayerType) {
-            mLineId = lineId;
-
-        } else {
-            mObjectLayerName = objectLayerName;
-
-            if (null == objectCursor) {
-                mObjectId = null;
-                mObjectNameText = null;
-                mObjectStatus = FoclConstants.FIELD_VALUE_UNKNOWN;
-
-            } else {
-                mObjectId = objectCursor.getLong(objectCursor.getColumnIndex(VectorLayer.FIELD_ID));
-                mObjectNameText = ObjectCursorAdapter.getObjectName(mContext, objectCursor);
-                mObjectStatus = objectCursor.getString(
-                        objectCursor.getColumnIndex(FoclConstants.FIELD_STATUS_BUILT));
-                objectCursor.close();
-            }
-
-            if (null == mObjectStatus) {
-                mObjectStatus = FoclConstants.FIELD_VALUE_UNKNOWN;
-            }
-        }
+        mLineId = lineId;
+        mObjectId = objectId;
     }
 
 
@@ -238,38 +212,37 @@ public class ObjectStatusFragment
         final FoclProject foclProject = app.getFoclProject();
 
         if (null == foclProject) {
-            mLineName.setText("");
-            mObjectName.setText("");
-            setStatusButtonView(false);
-            mMakePhotoButton.setEnabled(false);
-            mMakePhotoButton.setOnClickListener(null);
-            mPhotoGallery.setEnabled(false);
-            mPhotoGallery.setAdapter(null);
-            setPhotoGalleryVisibility(false);
+            setBlockedView();
             return view;
         }
 
 
-        mLineName.setText(Html.fromHtml(mLineNameHtmlText));
+        FoclStruct foclStruct;
+        try {
+            foclStruct = (FoclStruct) foclProject.getLayer(mLineId);
+        } catch (Exception e) {
+            foclStruct = null;
+        }
+
+        if (null == foclStruct) {
+            setBlockedView();
+            return view;
+        }
+
+
+        FoclVectorLayer layer = (FoclVectorLayer) foclStruct.getLayerByFoclType(
+                mFoclStructLayerType);
+
+        if (null == layer) {
+            setBlockedView();
+            return view;
+        }
+
+
+        mLineName.setText(Html.fromHtml(foclStruct.getHtmlFormattedName()));
+        mObjectLayerName = layer.getPath().getName();
 
         if (FoclConstants.LAYERTYPE_FOCL_ENDPOINT == mFoclStructLayerType) {
-            FoclStruct foclStruct = (FoclStruct) foclProject.getLayer(mLineId);
-            FoclVectorLayer layer = (FoclVectorLayer) foclStruct.getLayerByFoclType(
-                    mFoclStructLayerType);
-
-            if (null == layer) {
-                mObjectName.setText("");
-                setStatusButtonView(false);
-                mMakePhotoButton.setEnabled(false);
-                mMakePhotoButton.setOnClickListener(null);
-                mPhotoGallery.setEnabled(false);
-                mPhotoGallery.setAdapter(null);
-                setPhotoGalleryVisibility(false);
-                return view;
-            }
-
-            mObjectLayerName = layer.getPath().getName();
-
             Uri uri = Uri.parse(
                     "content://" + FoclSettingsConstantsUI.AUTHORITY + "/" + mObjectLayerName);
 
@@ -298,7 +271,9 @@ public class ObjectStatusFragment
                         String typeEndpoint = objectCursor.getString(
                                 objectCursor.getColumnIndex(FoclConstants.FIELD_TYPE_ENDPOINT));
 
-                        if (typeEndpoint.equals(FoclConstants.FIELD_VALUE_POINT_B)) {
+                        if (!TextUtils.isEmpty(typeEndpoint) &&
+                                typeEndpoint.equals(FoclConstants.FIELD_VALUE_POINT_B)) {
+
                             mObjectId = objectCursor.getLong(
                                     objectCursor.getColumnIndex(VectorLayer.FIELD_ID));
 
@@ -306,13 +281,14 @@ public class ObjectStatusFragment
                                     objectCursor.getColumnIndex(
                                             FoclConstants.FIELD_STATUS_MEASURE));
 
-                            if (null == mObjectStatus) {
+                            if (TextUtils.isEmpty(mObjectStatus)) {
                                 mObjectStatus = FoclConstants.FIELD_VALUE_UNKNOWN;
                             }
 
                             found = true;
                             break;
                         }
+
                     } while (objectCursor.moveToNext());
                 }
 
@@ -324,8 +300,51 @@ public class ObjectStatusFragment
             setPhotoGalleryVisibility(found);
 
         } else {
-            mObjectName.setText(mObjectNameText);
-            setStatusButtonView(true);
+
+            if (null == mObjectId) {
+                setBlockedView();
+                return view;
+            }
+
+            Uri uri = Uri.parse(
+                    "content://" + FoclSettingsConstantsUI.AUTHORITY + "/" +
+                            mObjectLayerName + "/" + mObjectId);
+
+            String proj[] = {
+                    VectorLayer.FIELD_ID,
+                    FoclConstants.FIELD_NAME,
+                    FoclConstants.FIELD_STATUS_BUILT};
+
+            Cursor objectCursor;
+
+            try {
+                objectCursor =
+                        getActivity().getContentResolver().query(uri, proj, null, null, null);
+
+            } catch (Exception e) {
+                Log.d(Constants.TAG, e.getLocalizedMessage());
+                objectCursor = null;
+            }
+
+            if (null != objectCursor && objectCursor.getCount() == 1 &&
+                    objectCursor.moveToFirst()) {
+
+                String objectNameText = ObjectCursorAdapter.getObjectName(mContext, objectCursor);
+                mObjectStatus = objectCursor.getString(
+                        objectCursor.getColumnIndex(FoclConstants.FIELD_STATUS_BUILT));
+                objectCursor.close();
+
+                if (TextUtils.isEmpty(mObjectStatus)) {
+                    mObjectStatus = FoclConstants.FIELD_VALUE_UNKNOWN;
+                }
+
+                mObjectName.setText(objectNameText);
+                setStatusButtonView(true);
+
+            } else {
+                setBlockedView();
+                return view;
+            }
         }
 
         View.OnClickListener statusButtonOnClickListener = new View.OnClickListener()
@@ -448,6 +467,19 @@ public class ObjectStatusFragment
     }
 
 
+    protected void setBlockedView()
+    {
+        mLineName.setText("");
+        mObjectName.setText("");
+        setStatusButtonView(false);
+        mMakePhotoButton.setEnabled(false);
+        mMakePhotoButton.setOnClickListener(null);
+        mPhotoGallery.setEnabled(false);
+        mPhotoGallery.setAdapter(null);
+        setPhotoGalleryVisibility(false);
+    }
+
+
     @Override
     public void onDestroyView()
     {
@@ -511,7 +543,7 @@ public class ObjectStatusFragment
         // get file path of photo file
         String proj[] = {VectorLayer.ATTACH_ID, VectorLayer.ATTACH_DATA};
 
-        Cursor attachCursor = null;
+        Cursor attachCursor;
         try {
             attachCursor = getActivity().getContentResolver().query(
                     attachUri, proj, null, null, null);
@@ -522,14 +554,17 @@ public class ObjectStatusFragment
         }
 
         attachCursor.moveToFirst();
-        int columnIndex = attachCursor.getColumnIndex(VectorLayer.ATTACH_DATA);
+        String data = attachCursor.getString(attachCursor.getColumnIndex(VectorLayer.ATTACH_DATA));
+        attachCursor.close();
+
+        if (TextUtils.isEmpty(data)) {
+            return;
+        }
 
         // show photo in system program
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setDataAndType(
-                Uri.parse("file://" + attachCursor.getString(columnIndex)), "image/*");
+        intent.setDataAndType(Uri.parse("file://" + data), "image/*");
 
-        attachCursor.close();
         startActivity(intent);
     }
 

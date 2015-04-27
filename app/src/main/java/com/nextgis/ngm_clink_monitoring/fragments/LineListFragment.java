@@ -36,7 +36,6 @@ import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.activities.MainActivity;
 import com.nextgis.ngm_clink_monitoring.adapters.LineNameAdapter;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
-import com.nextgis.ngm_clink_monitoring.map.FoclStruct;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 
 
@@ -48,7 +47,6 @@ public class LineListFragment
     protected Integer mFoclStructLayerType = FoclConstants.LAYERTYPE_FOCL_UNKNOWN;
 
     protected Integer mLineId;
-    protected String mLineNameHtmlText;
 
 
     public void setParams(Integer foclStructLayerType)
@@ -125,8 +123,6 @@ public class LineListFragment
                             long id)
                     {
                         mLineId = (int) id;
-                        FoclStruct foclStruct = (FoclStruct) foclProject.getLayer(mLineId);
-                        mLineNameHtmlText = foclStruct.getHtmlFormattedName();
                         onLineClick();
                     }
                 });
@@ -149,8 +145,7 @@ public class LineListFragment
                 objectMeasureFragment = new ObjectStatusFragment();
             }
 
-            objectMeasureFragment.setParams(
-                    getActivity(), mFoclStructLayerType, mLineId, mLineNameHtmlText, null, null);
+            objectMeasureFragment.setParams(getActivity(), mFoclStructLayerType, mLineId, null);
 
             ft.replace(
                     R.id.main_fragment, objectMeasureFragment,

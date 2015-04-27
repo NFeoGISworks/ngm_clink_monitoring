@@ -289,6 +289,7 @@ public class MainActivity
             case FoclConstants.FRAGMENT_LINE_LIST:
             case FoclConstants.FRAGMENT_OBJECT_LIST:
             case FoclConstants.FRAGMENT_OBJECT_STATUS:
+            case FoclConstants.FRAGMENT_OBJECT_MEASURE:
             case FoclConstants.FRAGMENT_MAP:
                 mToolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
                 break;
@@ -302,6 +303,7 @@ public class MainActivity
             case FoclConstants.FRAGMENT_LINE_LIST:
             case FoclConstants.FRAGMENT_OBJECT_LIST:
             case FoclConstants.FRAGMENT_OBJECT_STATUS:
+            case FoclConstants.FRAGMENT_OBJECT_MEASURE:
                 ft.hide(mStatusBarFragment);
                 break;
 
