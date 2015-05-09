@@ -525,7 +525,7 @@ public class MapFragment
     public void refresh()
     {
         if (null != mMapView) {
-            mMapView.asyncDrawMapDrawable();
+            mMapView.drawMapDrawable();
         }
     }
 }

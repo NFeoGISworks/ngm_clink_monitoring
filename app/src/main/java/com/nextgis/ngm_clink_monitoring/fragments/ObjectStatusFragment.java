@@ -264,22 +264,21 @@ public class ObjectStatusFragment
 
             if (null != objectCursor) {
 
-                if (objectCursor.getCount() > 0) {
-                    objectCursor.moveToFirst();
+                if (objectCursor.moveToFirst()) {
+                    int typeEndpointColId =
+                            objectCursor.getColumnIndex(FoclConstants.FIELD_TYPE_ENDPOINT);
+                    int idColId = objectCursor.getColumnIndex(VectorLayer.FIELD_ID);
+                    int statusMeasureColId =
+                            objectCursor.getColumnIndex(FoclConstants.FIELD_STATUS_MEASURE);
 
                     do {
-                        String typeEndpoint = objectCursor.getString(
-                                objectCursor.getColumnIndex(FoclConstants.FIELD_TYPE_ENDPOINT));
+                        String typeEndpoint = objectCursor.getString(typeEndpointColId);
 
                         if (!TextUtils.isEmpty(typeEndpoint) &&
                                 typeEndpoint.equals(FoclConstants.FIELD_VALUE_POINT_B)) {
 
-                            mObjectId = objectCursor.getLong(
-                                    objectCursor.getColumnIndex(VectorLayer.FIELD_ID));
-
-                            mObjectStatus = objectCursor.getString(
-                                    objectCursor.getColumnIndex(
-                                            FoclConstants.FIELD_STATUS_MEASURE));
+                            mObjectId = objectCursor.getLong(idColId);
+                            mObjectStatus = objectCursor.getString(statusMeasureColId);
 
                             if (TextUtils.isEmpty(mObjectStatus)) {
                                 mObjectStatus = FoclConstants.FIELD_VALUE_UNKNOWN;
