@@ -37,8 +37,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-import com.nextgis.maplib.map.VectorLayer;
-import com.nextgis.maplib.util.Constants;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.activities.MainActivity;
@@ -48,6 +46,9 @@ import com.nextgis.ngm_clink_monitoring.map.FoclStruct;
 import com.nextgis.ngm_clink_monitoring.map.FoclVectorLayer;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
+
+import static com.nextgis.maplib.util.Constants.FIELD_ID;
+import static com.nextgis.maplib.util.Constants.TAG;
 
 
 public class ObjectListFragment
@@ -149,14 +150,13 @@ public class ObjectListFragment
         Uri uri = Uri.parse(
                 "content://" + FoclSettingsConstantsUI.AUTHORITY + "/" + mObjectLayerName);
 
-        String proj[] = {
-                VectorLayer.FIELD_ID, FoclConstants.FIELD_NAME, FoclConstants.FIELD_STATUS_BUILT};
+        String proj[] = {FIELD_ID, FoclConstants.FIELD_NAME, FoclConstants.FIELD_STATUS_BUILT};
 
         try {
             mAdapterCursor = getActivity().getContentResolver().query(uri, proj, null, null, null);
 
         } catch (Exception e) {
-            Log.d(Constants.TAG, e.getLocalizedMessage());
+            Log.d(TAG, e.getLocalizedMessage());
             mAdapterCursor = null;
         }
 
@@ -184,7 +184,7 @@ public class ObjectListFragment
                             long id)
                     {
                         Cursor cursor = (Cursor) mObjectList.getAdapter().getItem(position);
-                        mObjectId = cursor.getLong(cursor.getColumnIndex(VectorLayer.FIELD_ID));
+                        mObjectId = cursor.getLong(cursor.getColumnIndex(FIELD_ID));
                         cursor.close();
                         onObjectClick();
                     }

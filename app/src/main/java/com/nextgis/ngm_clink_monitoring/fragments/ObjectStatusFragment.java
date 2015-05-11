@@ -51,7 +51,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.nextgis.maplib.map.VectorLayer;
-import com.nextgis.maplib.util.Constants;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.activities.MainActivity;
@@ -74,6 +73,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import static com.nextgis.maplib.util.Constants.FIELD_ID;
 import static com.nextgis.maplib.util.Constants.TAG;
 
 
@@ -247,7 +247,7 @@ public class ObjectStatusFragment
                     "content://" + FoclSettingsConstantsUI.AUTHORITY + "/" + mObjectLayerName);
 
             String proj[] = {
-                    VectorLayer.FIELD_ID,
+                    FIELD_ID,
                     FoclConstants.FIELD_TYPE_ENDPOINT,
                     FoclConstants.FIELD_STATUS_MEASURE};
 
@@ -257,7 +257,7 @@ public class ObjectStatusFragment
                         getActivity().getContentResolver().query(uri, proj, null, null, null);
 
             } catch (Exception e) {
-                Log.d(Constants.TAG, e.getLocalizedMessage());
+                Log.d(TAG, e.getLocalizedMessage());
             }
 
             boolean found = false;
@@ -267,7 +267,7 @@ public class ObjectStatusFragment
                 if (objectCursor.moveToFirst()) {
                     int typeEndpointColId =
                             objectCursor.getColumnIndex(FoclConstants.FIELD_TYPE_ENDPOINT);
-                    int idColId = objectCursor.getColumnIndex(VectorLayer.FIELD_ID);
+                    int idColId = objectCursor.getColumnIndex(FIELD_ID);
                     int statusMeasureColId =
                             objectCursor.getColumnIndex(FoclConstants.FIELD_STATUS_MEASURE);
 
@@ -310,7 +310,7 @@ public class ObjectStatusFragment
                             mObjectLayerName + "/" + mObjectId);
 
             String proj[] = {
-                    VectorLayer.FIELD_ID,
+                    FIELD_ID,
                     FoclConstants.FIELD_NAME,
                     FoclConstants.FIELD_STATUS_BUILT};
 
@@ -321,7 +321,7 @@ public class ObjectStatusFragment
                         getActivity().getContentResolver().query(uri, proj, null, null, null);
 
             } catch (Exception e) {
-                Log.d(Constants.TAG, e.getLocalizedMessage());
+                Log.d(TAG, e.getLocalizedMessage());
                 objectCursor = null;
             }
 
@@ -400,16 +400,16 @@ public class ObjectStatusFragment
                             .update(updateUri, values, null, null);
 
                 } catch (Exception e) {
-                    Log.d(Constants.TAG, e.getLocalizedMessage());
+                    Log.d(TAG, e.getLocalizedMessage());
                 }
 
                 if (result == 0) {
                     Log.d(
-                            Constants.TAG, "Layer: " + mObjectLayerName + ", id: " + mObjectId +
+                            TAG, "Layer: " + mObjectLayerName + ", id: " + mObjectId +
                                     ", update FAILED");
                 } else {
                     Log.d(
-                            Constants.TAG, "Layer: " + mObjectLayerName + ", id: " + mObjectId +
+                            TAG, "Layer: " + mObjectLayerName + ", id: " + mObjectId +
                                     ", update result: " + result);
                     setStatusButtonView(true);
                 }
@@ -548,7 +548,7 @@ public class ObjectStatusFragment
                     attachUri, proj, null, null, null);
 
         } catch (Exception e) {
-            Log.d(Constants.TAG, e.getLocalizedMessage());
+            Log.d(TAG, e.getLocalizedMessage());
             return;
         }
 
@@ -579,7 +579,7 @@ public class ObjectStatusFragment
             result = getActivity().getContentResolver().delete(deleteUri, null, null);
 
         } catch (Exception e) {
-            Log.d(Constants.TAG, e.getLocalizedMessage());
+            Log.d(TAG, e.getLocalizedMessage());
         }
 
         if (result == 0) {
@@ -636,7 +636,7 @@ public class ObjectStatusFragment
                     mContext.getContentResolver().query(attachesUri, proj, null, null, orderBy);
 
         } catch (Exception e) {
-            Log.d(Constants.TAG, e.getLocalizedMessage());
+            Log.d(TAG, e.getLocalizedMessage());
             mAttachesCursor = null;
             mObjectPhotoAdapter = null;
         }
@@ -693,7 +693,7 @@ public class ObjectStatusFragment
             try {
                 BitmapUtil.writeLocationToExif(tempPhotoFile, app.getCurrentLocation());
             } catch (IOException e) {
-                Log.d(Constants.TAG, e.getLocalizedMessage());
+                Log.d(TAG, e.getLocalizedMessage());
             }
 
             Uri allAttachesUri = Uri.parse(
@@ -710,7 +710,7 @@ public class ObjectStatusFragment
                 attachUri = contentResolver.insert(allAttachesUri, values);
 
             } catch (Exception e) {
-                Log.d(Constants.TAG, e.getLocalizedMessage());
+                Log.d(TAG, e.getLocalizedMessage());
             }
 
             if (null != attachUri) {

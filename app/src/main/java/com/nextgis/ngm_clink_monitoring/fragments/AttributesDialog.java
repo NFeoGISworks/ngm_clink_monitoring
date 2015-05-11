@@ -38,6 +38,9 @@ import android.widget.TextView;
 import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.ngm_clink_monitoring.R;
 
+import static com.nextgis.maplib.util.Constants.FIELD_GEOM;
+import static com.nextgis.maplib.util.Constants.FIELD_ID;
+
 
 public class AttributesDialog
         extends DialogFragment
@@ -144,14 +147,14 @@ public class AttributesDialog
         TextView title = (TextView) mAttributesLayout.findViewById(R.id.title);
         title.setText(mLayer.getName());
 
-        String selection = VectorLayer.FIELD_ID + " = ?";
+        String selection = FIELD_ID + " = ?";
         Cursor attributes = mLayer.query(null, selection, new String[] {mItemId + ""}, null);
 
         if (attributes.moveToFirst()) {
             for (int i = 0; i < attributes.getColumnCount(); i++) {
                 String column = attributes.getColumnName(i);
 
-                if (column.equals(VectorLayer.FIELD_GEOM)) {
+                if (column.equals(FIELD_GEOM)) {
                     continue;
                 }
 

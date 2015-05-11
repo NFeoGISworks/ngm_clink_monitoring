@@ -69,6 +69,7 @@ import java.io.OutputStream;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import static com.nextgis.maplib.util.Constants.FIELD_GEOM;
 import static com.nextgis.maplib.util.Constants.TAG;
 import static com.nextgis.maplib.util.GeoConstants.CRS_WEB_MERCATOR;
 import static com.nextgis.maplib.util.GeoConstants.CRS_WGS84;
@@ -645,7 +646,7 @@ public class MainActivity
                 pt.project(CRS_WEB_MERCATOR);
                 GeoMultiPoint mpt = new GeoMultiPoint();
                 mpt.add(pt);
-                values.put(VectorLayer.FIELD_GEOM, mpt.toBlob());
+                values.put(FIELD_GEOM, mpt.toBlob());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -691,7 +692,7 @@ public class MainActivity
                 pt.project(CRS_WEB_MERCATOR);
                 GeoMultiPoint mpt = new GeoMultiPoint();
                 mpt.add(pt);
-                values.put(VectorLayer.FIELD_GEOM, mpt.toBlob());
+                values.put(FIELD_GEOM, mpt.toBlob());
             } catch (IOException e) {
                 e.printStackTrace();
             }
