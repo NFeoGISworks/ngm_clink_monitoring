@@ -22,6 +22,7 @@
 
 package com.nextgis.ngm_clink_monitoring.util;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -39,5 +40,20 @@ public class FileUtil
         while ((bytesRead = inputStream.read(buffer)) != -1) {
             outputStream.write(buffer, 0, bytesRead);
         }
+    }
+
+
+    public static File getDirWithCreate(String path)
+            throws IOException
+    {
+        File dir = new File(path);
+
+        if (!dir.exists()) {
+            if (!dir.mkdirs()) {
+                throw new IOException("Can not create directory " + path);
+            }
+        }
+
+        return dir;
     }
 }

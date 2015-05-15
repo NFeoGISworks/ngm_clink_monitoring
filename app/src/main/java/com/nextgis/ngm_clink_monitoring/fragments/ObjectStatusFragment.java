@@ -431,7 +431,7 @@ public class ObjectStatusFragment
                                 cameraIntent.resolveActivity(getActivity().getPackageManager())) {
 
                             try {
-                                File tempFile = new File(app.getDataPath(), "temp-photo.jpg");
+                                File tempFile = new File(app.getDataDir(), "temp-photo.jpg");
 
                                 if (!tempFile.exists() && tempFile.createNewFile() ||
                                         tempFile.exists() && tempFile.delete() &&
@@ -757,8 +757,8 @@ public class ObjectStatusFragment
                     tempAttachFile.delete();
 
                 } catch (IOException e) {
-                    // TODO: work of error
-                    e.printStackTrace();
+                    Toast.makeText(
+                            getActivity(), e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
                 }
 
                 Log.d(TAG, attachUri.toString());
@@ -767,20 +767,26 @@ public class ObjectStatusFragment
                 Log.d(TAG, "insert attach failed");
             }
 
-            if (app.isOriginalPhotoSaving()) {
-                File origPhotoFile = new File(getDailyPhotoFolder(), photoFileName);
+            try {
+                if (app.isOriginalPhotoSaving()) {
+                    File origPhotoFile = new File(getDailyPhotoFolder(), photoFileName);
 
-                if (!com.nextgis.maplib.util.FileUtil.move(tempPhotoFile, origPhotoFile)) {
-                    Toast.makeText(
-                            getActivity(), "Save original photo failed", Toast.LENGTH_LONG).show();
+                    if (!com.nextgis.maplib.util.FileUtil.move(tempPhotoFile, origPhotoFile)) {
+                        Toast.makeText(
+                                getActivity(), "Save original photo failed", Toast.LENGTH_LONG)
+                                .show();
+                    }
+
+                } else {
+                    tempPhotoFile.delete();
                 }
 
-            } else {
-                tempPhotoFile.delete();
-            }
+                setPhotoGalleryAdapter();
+                setPhotoGalleryVisibility(true);
 
-            setPhotoGalleryAdapter();
-            setPhotoGalleryVisibility(true);
+            } catch (IOException e) {
+                Toast.makeText(getActivity(), e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+            }
         }
 
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_CANCELED) {
@@ -821,16 +827,10 @@ public class ObjectStatusFragment
 
 
     protected File getDailyPhotoFolder()
+            throws IOException
     {
         final GISApplication app = (GISApplication) getActivity().getApplication();
-
         String timeStamp = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-        File photoFolder = new File(app.getPhotoPath() + File.separator + timeStamp);
-
-        if (!photoFolder.exists()) {
-            photoFolder.mkdirs();
-        }
-
-        return photoFolder;
+        return FileUtil.getDirWithCreate(app.getPhotoPath() + File.separator + timeStamp);
     }
 }

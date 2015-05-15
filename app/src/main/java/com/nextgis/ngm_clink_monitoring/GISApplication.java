@@ -55,11 +55,13 @@ import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.ngm_clink_monitoring.activities.FoclSettingsActivity;
 import com.nextgis.ngm_clink_monitoring.map.FoclLayerFactory;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
+import com.nextgis.ngm_clink_monitoring.util.FileUtil;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
 import com.nextgis.ngm_clink_monitoring.util.UIUpdater;
 
 import java.io.File;
+import java.io.IOException;
 
 
 public class GISApplication
@@ -320,6 +322,20 @@ public class GISApplication
     }
 
 
+    public File getDataDir()
+            throws IOException
+    {
+        return FileUtil.getDirWithCreate(getDataPath());
+    }
+
+
+    public File getPhotoDir()
+            throws IOException
+    {
+        return FileUtil.getDirWithCreate(getPhotoPath());
+    }
+
+
     public GpsEventSource getGpsEventSource()
     {
         return mGpsEventSource;
@@ -560,6 +576,10 @@ public class GISApplication
                 new File(oldDataParentPath + File.separator + FoclConstants.FOCL_DATA_DIR);
         File newDataPath =
                 new File(newDataParentPath + File.separator + FoclConstants.FOCL_DATA_DIR);
+
+        if (!oldDataPath.exists()) {
+            return;
+        }
 
         if (oldDataPath.equals(newDataPath)) {
             return;
