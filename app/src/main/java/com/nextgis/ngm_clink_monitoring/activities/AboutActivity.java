@@ -24,7 +24,8 @@ package com.nextgis.ngm_clink_monitoring.activities;
 
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
@@ -34,7 +35,7 @@ import com.nextgis.ngm_clink_monitoring.R;
 
 
 public class AboutActivity
-        extends ActionBarActivity
+        extends AppCompatActivity
 {
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -47,8 +48,11 @@ public class AboutActivity
         toolbar.getBackground().setAlpha(255);
         setSupportActionBar(toolbar);
 
-        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ActionBar bar = getSupportActionBar();
+        if (null != bar) {
+            bar.setHomeButtonEnabled(true);
+            bar.setDisplayHomeAsUpEnabled(true);
+        }
 
         TextView txtVersion = (TextView) findViewById(R.id.app_version);
         try {
