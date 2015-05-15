@@ -48,8 +48,8 @@ public class StatusBarFragment
 {
     protected TextView mLatView;
     protected TextView mLongView;
-    protected TextView mAltView;
-    protected TextView mAccView;
+//    protected TextView mAltView;
+//    protected TextView mAccView;
 
     protected String mLatText;
     protected String mLongText;
@@ -80,8 +80,8 @@ public class StatusBarFragment
 
         mLatView = (TextView) view.findViewById(R.id.latitude_view);
         mLongView = (TextView) view.findViewById(R.id.longitude_view);
-        mAltView = (TextView) view.findViewById(R.id.altitude_view);
-        mAccView = (TextView) view.findViewById(R.id.accuracy_view);
+//        mAltView = (TextView) view.findViewById(R.id.altitude_view);
+//        mAccView = (TextView) view.findViewById(R.id.accuracy_view);
 
         setLocationViewsText();
 
@@ -100,10 +100,10 @@ public class StatusBarFragment
 
     protected void setLocationViewsText()
     {
-        mLatView.setText(mLatText);
-        mLongView.setText(mLongText);
-        mAltView.setText(mAltText);
-        mAccView.setText(mAccText);
+        mLatView.setText(getString(R.string.latitude_caption) + " " + mLatText);
+        mLongView.setText(getString(R.string.longitude_caption) + " " + mLongText);
+//        mAltView.setText(mAltText);
+//        mAccView.setText(mAccText);
     }
 
 
