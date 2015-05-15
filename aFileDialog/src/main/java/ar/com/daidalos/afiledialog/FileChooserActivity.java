@@ -22,7 +22,8 @@ package ar.com.daidalos.afiledialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,7 +36,7 @@ import java.io.File;
  * A file chooser implemented in an Activity.
  */
 public class FileChooserActivity
-        extends ActionBarActivity
+        extends AppCompatActivity
         implements FileChooser
 {
 
@@ -168,8 +169,11 @@ public class FileChooserActivity
         toolbar.getBackground().setAlpha(255);
         setSupportActionBar(toolbar);
 
-        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ActionBar bar = getSupportActionBar();
+        if (null != bar) {
+            bar.setHomeButtonEnabled(true);
+            bar.setDisplayHomeAsUpEnabled(true);
+        }
 
         // Set the background color.
 //        LinearLayout layout = (LinearLayout) this.findViewById(R.id.rootLayout);
