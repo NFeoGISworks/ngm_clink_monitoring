@@ -703,7 +703,7 @@ public class ObjectStatusFragment
             ContentValues values = new ContentValues();
             values.put(VectorLayer.ATTACH_DISPLAY_NAME, photoFileName);
             values.put(VectorLayer.ATTACH_MIME_TYPE, "image/jpeg");
-            values.put(VectorLayer.ATTACH_DESCRIPTION, photoFileName);
+            //values.put(VectorLayer.ATTACH_DESCRIPTION, photoFileName);
 
             Uri attachUri = null;
             try {
