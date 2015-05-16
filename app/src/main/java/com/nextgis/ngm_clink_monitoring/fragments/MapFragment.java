@@ -78,6 +78,8 @@ public class MapFragment
     protected GpsEventSource         mGpsEventSource;
     protected CurrentLocationOverlay mCurrentLocationOverlay;
 
+    protected boolean onMenuMapClicked;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -97,6 +99,8 @@ public class MapFragment
         mCurrentLocationOverlay = new CurrentLocationOverlay(getActivity(), mMapView);
         mCurrentLocationOverlay.setStandingMarker(R.drawable.ic_location_standing);
         mCurrentLocationOverlay.setMovingMarker(R.drawable.ic_location_moving);
+
+        onMenuMapClicked = true;
     }
 
 
@@ -392,11 +396,11 @@ public class MapFragment
 
         mCurrentCenter = null;
 
-        final SharedPreferences prefs =
-                PreferenceManager.getDefaultSharedPreferences(getActivity());
-
         if (null != mMapView) {
             mMapView.addListener(this);
+
+            final SharedPreferences prefs =
+                    PreferenceManager.getDefaultSharedPreferences(getActivity());
 
             float mMapZoom = prefs.getFloat(
                     FoclSettingsConstantsUI.KEY_PREF_ZOOM_LEVEL, mMapView.getMinZoom());
@@ -420,6 +424,12 @@ public class MapFragment
                 mCurrentLocationOverlay.updateMode(app.getLocationOverlayMode());
                 mCurrentLocationOverlay.startShowingCurrentLocation();
                 mMapView.addOverlay(mCurrentLocationOverlay);
+            }
+
+            if (null != mGpsEventSource && onMenuMapClicked) {
+                onMenuMapClicked = false;
+                setCurrentCenter(mGpsEventSource.getLastKnownLocation());
+                locateCurrentPositionAndZoom();
             }
         }
     }
@@ -497,20 +507,26 @@ public class MapFragment
     }
 
 
+    protected void setCurrentCenter(Location location)
+    {
+        if (mCurrentCenter == null) {
+            mCurrentCenter = new GeoPoint();
+        }
+
+        mCurrentCenter.setCoordinates(location.getLongitude(), location.getLatitude());
+        mCurrentCenter.setCRS(GeoConstants.CRS_WGS84);
+
+        if (!mCurrentCenter.project(GeoConstants.CRS_WEB_MERCATOR)) {
+            mCurrentCenter = null;
+        }
+    }
+
+
     @Override
     public void onLocationChanged(Location location)
     {
         if (location != null) {
-            if (mCurrentCenter == null) {
-                mCurrentCenter = new GeoPoint();
-            }
-
-            mCurrentCenter.setCoordinates(location.getLongitude(), location.getLatitude());
-            mCurrentCenter.setCRS(GeoConstants.CRS_WGS84);
-
-            if (!mCurrentCenter.project(GeoConstants.CRS_WEB_MERCATOR)) {
-                mCurrentCenter = null;
-            }
+            setCurrentCenter(location);
         }
     }
 
