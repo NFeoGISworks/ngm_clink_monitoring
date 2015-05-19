@@ -52,7 +52,7 @@
             android:layout_width="match_parent"
             android:layout_height="52dp"
             android:layout_weight="1"
-            android:text="@string/daidalos_create"
+            android:text="@string/daidalos_create_folder"
             android:textAppearance="?android:attr/textAppearanceMedium"
             />
 
