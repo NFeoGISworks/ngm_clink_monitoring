@@ -86,6 +86,14 @@ public class SyncLoginFragment
 
 
     @Override
+    public void onClick(View v)
+    {
+        mLogin.setText(mLogin.getText().toString().trim());
+        super.onClick(v);
+    }
+
+
+    @Override
     public void onTokenReceived(
             String accountName,
             String token)
