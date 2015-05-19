@@ -24,12 +24,18 @@ package com.nextgis.ngm_clink_monitoring.map;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteException;
+import android.util.Log;
+import com.nextgis.maplib.display.IStyleRule;
+import com.nextgis.maplib.display.RuleFeatureRenderer;
+import com.nextgis.maplib.display.Style;
 import com.nextgis.maplib.map.NGWVectorLayer;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+
+import static com.nextgis.maplib.util.Constants.TAG;
 
 
 public class FoclVectorLayer
@@ -84,6 +90,34 @@ public class FoclVectorLayer
 
 
     @Override
+    protected Style getDefaultStyle()
+            throws Exception
+    {
+        return FoclStyleRule.getDefaultStyle(mFoclLayerType);
+    }
+
+
+    @Override
+    protected void setDefaultRenderer()
+    {
+        try {
+            Style style = getDefaultStyle();
+            IStyleRule rule = getStyleRule();
+            mRenderer = new RuleFeatureRenderer(this, rule, style);
+        } catch (Exception e) {
+            Log.d(TAG, e.getLocalizedMessage());
+            mRenderer = null;
+        }
+    }
+
+
+    protected IStyleRule getStyleRule()
+    {
+        return new FoclStyleRule(this, mFoclLayerType);
+    }
+
+
+    @Override
     public JSONObject toJSON()
             throws JSONException
     {
@@ -97,7 +131,7 @@ public class FoclVectorLayer
     public void fromJSON(JSONObject jsonObject)
             throws JSONException, SQLiteException
     {
-        super.fromJSON(jsonObject);
         mFoclLayerType = jsonObject.getInt(JSON_FOCL_TYPE_KEY);
+        super.fromJSON(jsonObject);
     }
 }
