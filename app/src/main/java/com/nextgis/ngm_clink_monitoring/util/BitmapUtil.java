@@ -56,9 +56,7 @@ public class BitmapUtil
         matrix.postScale(scaleWidth, scaleHeight);
 
         // "recreate" the new bitmap
-        Bitmap resizedBitmap = Bitmap.createBitmap(bm, 0, 0, width, height, matrix, false);
-        bm.recycle();
-        return resizedBitmap;
+        return Bitmap.createBitmap(bm, 0, 0, width, height, matrix, false);
     }
 
 
@@ -98,10 +96,8 @@ public class BitmapUtil
         }
 
         try {
-            Bitmap bmRotated = Bitmap.createBitmap(
+            return Bitmap.createBitmap(
                     bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-            bitmap.recycle();
-            return bmRotated;
 
         } catch (OutOfMemoryError e) {
             e.printStackTrace();

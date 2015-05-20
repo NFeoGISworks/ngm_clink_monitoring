@@ -733,6 +733,11 @@ public class ObjectStatusFragment
                             tempOutStream);
                     tempOutStream.close();
 
+                    int newHeight = rotatedBitmap.getHeight();
+                    int newWidth = rotatedBitmap.getWidth();
+
+                    rotatedBitmap.recycle();
+
                     // write EXIF to new file
                     BitmapUtil.copyExifData(tempPhotoFile, tempAttachFile);
 
@@ -741,13 +746,11 @@ public class ObjectStatusFragment
                     attachExif.setAttribute(
                             ExifInterface.TAG_ORIENTATION, "" + ExifInterface.ORIENTATION_NORMAL);
                     attachExif.setAttribute(
-                            ExifInterface.TAG_IMAGE_LENGTH, "" + rotatedBitmap.getHeight());
+                            ExifInterface.TAG_IMAGE_LENGTH, "" + newHeight);
                     attachExif.setAttribute(
-                            ExifInterface.TAG_IMAGE_WIDTH, "" + rotatedBitmap.getWidth());
+                            ExifInterface.TAG_IMAGE_WIDTH, "" + newWidth);
 
                     attachExif.saveAttributes();
-
-                    rotatedBitmap.recycle();
 
                     // attach data from tempAttachFile
                     OutputStream attachOutStream = contentResolver.openOutputStream(attachUri);
