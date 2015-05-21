@@ -248,7 +248,7 @@ public class FoclProject
             String error = foclVectorLayer.download();
 
             if (null != error && error.length() > 0) {
-                // TODO: work error
+                Log.d(Constants.TAG, error);
             }
         }
     }

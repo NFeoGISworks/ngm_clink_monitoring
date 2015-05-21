@@ -124,26 +124,6 @@ public class ObjectStatusFragment
     {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-
-        // TODO
-/*
-        if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            Toast.makeText(getActivity(), "SDCard is not mounted", Toast.LENGTH_LONG).show();
-
-        } else {
-            File dataDir = new File(MainActivity.PHOTO_DIR_PATH);
-
-            if (!dataDir.exists()) {
-                dataDir.mkdirs();
-            }
-
-            File[] files = dataDir.listFiles();
-
-            for (File file : files) {
-                mPhotoList.add(file.getAbsolutePath());
-            }
-        }
-*/
     }
 
 
@@ -310,9 +290,7 @@ public class ObjectStatusFragment
                             mObjectLayerName + "/" + mObjectId);
 
             String proj[] = {
-                    FIELD_ID,
-                    FoclConstants.FIELD_NAME,
-                    FoclConstants.FIELD_STATUS_BUILT};
+                    FIELD_ID, FoclConstants.FIELD_NAME, FoclConstants.FIELD_STATUS_BUILT};
 
             Cursor objectCursor;
 

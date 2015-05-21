@@ -38,6 +38,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.util.Log;
 import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.api.ILayer;
@@ -298,24 +299,29 @@ public class GISApplication
 
 
     public String getDataParentPath()
+            throws IOException
     {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String defaultDataParentPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+        String dataParentPath = sharedPreferences.getString(
+                FoclSettingsConstantsUI.KEY_PREF_DATA_PARENT_PATH, null);
 
-        return sharedPreferences.getString(
-                FoclSettingsConstantsUI.KEY_PREF_DATA_PARENT_PATH, defaultDataParentPath);
+        if (TextUtils.isEmpty(dataParentPath)) {
+
+            if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+                dataParentPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+            } else {
+                throw new IOException("External storage is not mounted");
+            }
+        }
+
+        return dataParentPath;
     }
 
 
     public String getDataPath()
+            throws IOException
     {
         return getDataParentPath() + File.separator + FoclConstants.FOCL_DATA_DIR;
-    }
-
-
-    public String getPhotoPath()
-    {
-        return getDataPath() + File.separator + FoclConstants.FOCL_PHOTO_DIR;
     }
 
 
@@ -323,6 +329,13 @@ public class GISApplication
             throws IOException
     {
         return FileUtil.getDirWithCreate(getDataPath());
+    }
+
+
+    public String getPhotoPath()
+            throws IOException
+    {
+        return getDataPath() + File.separator + FoclConstants.FOCL_PHOTO_DIR;
     }
 
 
@@ -562,35 +575,6 @@ public class GISApplication
         if (null != mOnReloadMapListener) {
             mOnReloadMapListener.onReloadMap();
         }
-    }
-
-
-    public void moveProgramData(
-            String oldDataParentPath,
-            String newDataParentPath)
-    {
-        File oldDataPath =
-                new File(oldDataParentPath + File.separator + FoclConstants.FOCL_DATA_DIR);
-        File newDataPath =
-                new File(newDataParentPath + File.separator + FoclConstants.FOCL_DATA_DIR);
-
-        if (!oldDataPath.exists()) {
-            return;
-        }
-
-        if (oldDataPath.equals(newDataPath)) {
-            return;
-        }
-
-        if (!newDataPath.exists()) {
-            if (!newDataPath.mkdirs()) {
-                // TODO: make Toast
-                return;
-            }
-        }
-
-// TODO: remove it
-//        FileUtil.move(oldDataPath, newDataPath);
     }
 
 

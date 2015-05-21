@@ -25,31 +25,33 @@ package com.nextgis.ngm_clink_monitoring.activities;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 import ar.com.daidalos.afiledialog.FileChooserActivity;
+import com.nextgis.maplib.util.Constants;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.fragments.FoclSettingsFragment;
+import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 
@@ -151,7 +153,13 @@ public class FoclSettingsActivity
             GISApplication app = (GISApplication) getApplication();
 
             Preference preference = findPreference(key);
-            preference.setSummary(app.getDataPath());
+
+            try {
+                preference.setSummary(app.getDataPath());
+            } catch (IOException e) {
+                Log.d(Constants.TAG, e.getLocalizedMessage());
+                preference.setSummary(e.getLocalizedMessage());
+            }
 
             PreferenceScreen prefScr = (PreferenceScreen) findPreference(
                     "general_prefs_root");
@@ -170,7 +178,12 @@ public class FoclSettingsActivity
     {
         if (null != dataPathPreference) {
             final GISApplication app = (GISApplication) activity.getApplication();
-            dataPathPreference.setSummary(app.getDataPath());
+            try {
+                dataPathPreference.setSummary(app.getDataPath());
+            } catch (IOException e) {
+                Log.d(Constants.TAG, e.getLocalizedMessage());
+                dataPathPreference.setSummary(e.getLocalizedMessage());
+            }
 
             dataPathPreference.setOnPreferenceClickListener(
                     new Preference.OnPreferenceClickListener()
@@ -190,60 +203,33 @@ public class FoclSettingsActivity
             final Activity activity,
             final Fragment fragment)
     {
-// TODO: remove it
-//        AlertDialog.Builder alertDialog = new AlertDialog.Builder(activity);
-//        alertDialog.setTitle(activity.getResources().getString(R.string.hint))
-//
-//                .setMessage(
-//                        String.format(
-//                                activity.getResources().getString(R.string.hint_folder_moving),
-//                                FoclConstants.FOCL_DATA_DIR))
-//
-//                .setPositiveButton(
-//                        activity.getResources().getString(R.string.ok),
-//
-//                        new DialogInterface.OnClickListener()
-//                        {
-//                            public void onClick(
-//                                    DialogInterface dialog,
-//                                    int which)
-//                            {
-                                GISApplication app = (GISApplication) activity.getApplication();
-                                Intent intent = new Intent(activity, FileChooserActivity.class);
+        GISApplication app = (GISApplication) activity.getApplication();
+        Intent intent = new Intent(activity, FileChooserActivity.class);
 
-                                intent.putExtra(
-                                        FileChooserActivity.INPUT_START_FOLDER,
-                                        app.getDataParentPath());
+        try {
+            intent.putExtra(FileChooserActivity.INPUT_START_FOLDER, app.getDataParentPath());
+        } catch (IOException e) {
+            Toast.makeText(activity, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+            // TODO: make intent for storage list
+            String rootPath = Environment.getRootDirectory().getAbsolutePath();
+            intent.putExtra(FileChooserActivity.INPUT_START_FOLDER, rootPath);
+        }
 
-                                intent.putExtra(FileChooserActivity.INPUT_FOLDER_MODE, true);
-                                intent.putExtra(
-                                        FileChooserActivity.INPUT_SHOW_ONLY_SELECTABLE, true);
-                                intent.putExtra(FileChooserActivity.INPUT_CAN_CREATE_FILES, true);
-                                intent.putExtra(
-                                        FileChooserActivity.INPUT_SHOW_CONFIRMATION_ON_SELECT,
-                                        true);
-                                intent.putExtra(
-                                        FileChooserActivity.INPUT_SHOW_CONFIRMATION_ON_CREATE,
-                                        true);
-                                intent.putExtra(
-                                        FileChooserActivity.INPUT_SHOW_FULL_PATH_IN_TITLE, true);
-                                intent.putExtra(
-                                        FileChooserActivity.INPUT_USE_BACK_BUTTON_TO_NAVIGATE,
-                                        false);
-        intent.putExtra(
-                FileChooserActivity.INPUT_USE_STORAGE_DEVICES, true);
+        intent.putExtra(FileChooserActivity.INPUT_FOLDER_MODE, true);
+        intent.putExtra(FileChooserActivity.INPUT_SHOW_ONLY_SELECTABLE, true);
+        intent.putExtra(FileChooserActivity.INPUT_CAN_CREATE_FILES, true);
+        intent.putExtra(FileChooserActivity.INPUT_SHOW_CONFIRMATION_ON_SELECT, true);
+        intent.putExtra(FileChooserActivity.INPUT_SHOW_CONFIRMATION_ON_CREATE, true);
+        intent.putExtra(FileChooserActivity.INPUT_SHOW_FULL_PATH_IN_TITLE, true);
+        intent.putExtra(FileChooserActivity.INPUT_USE_BACK_BUTTON_TO_NAVIGATE, false);
+        intent.putExtra(FileChooserActivity.INPUT_USE_STORAGE_DEVICES, true);
 
-                                if (null == fragment) {
-                                    activity.startActivityForResult(
-                                            intent, DATA_FOLDER_SELECT_CODE);
-                                } else {
-                                    // for API > 11
-                                    fragment.startActivityForResult(
-                                            intent, DATA_FOLDER_SELECT_CODE);
-                                }
-// TODO: remove it
-//                            }
-//                        }).show();
+        if (null == fragment) {
+            activity.startActivityForResult(intent, DATA_FOLDER_SELECT_CODE);
+        } else {
+            // for API > 11
+            fragment.startActivityForResult(intent, DATA_FOLDER_SELECT_CODE);
+        }
     }
 
 
@@ -254,29 +240,29 @@ public class FoclSettingsActivity
             Intent data)
     {
         if (requestCode == DATA_FOLDER_SELECT_CODE && resultCode == Activity.RESULT_OK) {
-            executeBackgroundMoveTask(this, null, data.getExtras());
+            changeDataFolder(this, null, data.getExtras());
         }
     }
 
 
-    public static void executeBackgroundMoveTask(
+    public static void changeDataFolder(
             FoclSettingsActivity activity,
             FoclSettingsFragment fragment,
             Bundle bundle)
     {
         if (bundle != null) {
 
-                /*
-                * Note that if a file has been created, then the value, inside the Bundle object,
-                * represented by the key FileChooserActivity.OUTPUT_NEW_FILE_NAME
-                * is going to contain the name of the file (or folder) and
-                * the value represented by the key FileChooserActivity.OUTPUT_FILE_OBJECT
-                * is going to contain the folder in which the file must be created.
-                * Otherwise, if a file has only been selected,
-                * FileChooserActivity.OUTPUT_NEW_FILE_NAME is going to be null and
-                * FileChooserActivity.OUTPUT_FILE_OBJECT is going to contain
-                * the file (or folder) selected.
-                * */
+            /*
+            * Note that if a file has been created, then the value, inside the Bundle object,
+            * represented by the key FileChooserActivity.OUTPUT_NEW_FILE_NAME
+            * is going to contain the name of the file (or folder) and
+            * the value represented by the key FileChooserActivity.OUTPUT_FILE_OBJECT
+            * is going to contain the folder in which the file must be created.
+            * Otherwise, if a file has only been selected,
+            * FileChooserActivity.OUTPUT_NEW_FILE_NAME is going to be null and
+            * FileChooserActivity.OUTPUT_FILE_OBJECT is going to contain
+            * the file (or folder) selected.
+            * */
 
             File folder = (File) bundle.get(FileChooserActivity.OUTPUT_FILE_OBJECT);
             String newDataParentPath = folder.getAbsolutePath();
@@ -284,18 +270,25 @@ public class FoclSettingsActivity
             if (bundle.containsKey(FileChooserActivity.OUTPUT_NEW_FILE_NAME)) {
                 String name = bundle.getString(FileChooserActivity.OUTPUT_NEW_FILE_NAME);
                 newDataParentPath += File.separator + name;
+
+                File newDataPath =
+                        new File(newDataParentPath + File.separator + FoclConstants.FOCL_DATA_DIR);
+
+                if (!newDataPath.exists()) {
+                    if (!newDataPath.mkdirs()) {
+                        Toast.makeText(
+                                activity, "Can not create folder: " + newDataPath.getAbsolutePath(),
+                                Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                }
             }
 
             GISApplication app = (GISApplication) activity.getApplication();
-
-            String oldDataParentPath = app.getDataParentPath(); // TODO: remove it
             app.setDataParentPath(newDataParentPath);
 
             // workaround for onSharedPreferenceChanged()
             refreshPreferences(activity, fragment);
-
-// TODO: remove it
-            new BackgroundMoveTask(activity, oldDataParentPath, newDataParentPath).execute();
         }
     }
 
@@ -321,75 +314,6 @@ public class FoclSettingsActivity
             for (int i = 0; i < preferenceScreen.getPreferenceCount(); i++) {
                 fragment.onSharedPreferenceChanged(sp, preferenceScreen.getPreference(i).getKey());
             }
-        }
-    }
-
-
-    // TODO: remove it
-    private static class BackgroundMoveTask
-            extends AsyncTask<Void, Void, Void>
-    {
-        protected Activity       mActivity;
-        protected ProgressDialog mProgressDialog;
-        protected String         mOldDataParentPath;
-        protected String         mNewDataParentPath;
-
-
-        public BackgroundMoveTask(
-                Activity activity,
-                String oldDataParentPath,
-                String newDataParentPath)
-        {
-            mActivity = activity;
-            mOldDataParentPath = oldDataParentPath;
-            mNewDataParentPath = newDataParentPath;
-        }
-
-
-        @Override
-        protected Void doInBackground(Void... voids)
-        {
-            GISApplication app = (GISApplication) mActivity.getApplication();
-            app.moveProgramData(mOldDataParentPath, mNewDataParentPath);
-            return null;
-        }
-
-
-        @Override
-        protected void onPreExecute()
-        {
-            //not good solution but rare used so let it be
-            lockScreenOrientation();
-            mProgressDialog = ProgressDialog.show(
-                    mActivity, mActivity.getString(R.string.moving),
-                    mActivity.getString(R.string.warning_data_moving), true);
-            mProgressDialog.setCancelable(false);
-            mProgressDialog.setIcon(R.drawable.ic_action_warning);
-        }
-
-
-        @Override
-        protected void onPostExecute(Void aVoid)
-        {
-            mProgressDialog.dismiss();
-            unlockScreenOrientation();
-        }
-
-
-        protected void lockScreenOrientation()
-        {
-            int currentOrientation = mActivity.getResources().getConfiguration().orientation;
-            if (currentOrientation == Configuration.ORIENTATION_PORTRAIT) {
-                mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-            } else {
-                mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-            }
-        }
-
-
-        protected void unlockScreenOrientation()
-        {
-            mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         }
     }
 }

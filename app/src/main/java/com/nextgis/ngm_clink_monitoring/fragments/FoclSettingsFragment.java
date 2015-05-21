@@ -32,11 +32,15 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
+import android.util.Log;
 import android.widget.BaseAdapter;
+import com.nextgis.maplib.util.Constants;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.activities.FoclSettingsActivity;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
+
+import java.io.IOException;
 
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -77,7 +81,7 @@ public class FoclSettingsFragment
         if (requestCode == FoclSettingsActivity.DATA_FOLDER_SELECT_CODE &&
                 resultCode == Activity.RESULT_OK) {
 
-            FoclSettingsActivity.executeBackgroundMoveTask(
+            FoclSettingsActivity.changeDataFolder(
                     (FoclSettingsActivity) getActivity(), this, data.getExtras());
         }
     }
@@ -92,7 +96,13 @@ public class FoclSettingsFragment
             GISApplication app = (GISApplication) getActivity().getApplication();
 
             Preference preference = findPreference(key);
-            preference.setSummary(app.getDataPath());
+
+            try {
+                preference.setSummary(app.getDataPath());
+            } catch (IOException e) {
+                Log.d(Constants.TAG, e.getLocalizedMessage());
+                preference.setSummary(e.getLocalizedMessage());
+            }
 
             PreferenceScreen prefScr = (PreferenceScreen) findPreference(
                     FoclSettingsConstantsUI.KEY_PREF_GENERAL_ROOT);
