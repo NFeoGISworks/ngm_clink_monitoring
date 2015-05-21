@@ -213,22 +213,12 @@ public class GISApplication
             return;
         }
 
-        AccountManager accountManager = AccountManager.get(this);
-
-        String accountName = account.name;
-        String url = accountManager.getUserData(account, "url");
-        String password = accountManager.getPassword(account);
-        String login = accountManager.getUserData(account, "login");
-
         File foclPath = mMap.createLayerStorage();
         FoclProject foclProject =
                 new FoclProject(mMap.getContext(), foclPath, new FoclLayerFactory());
 
         foclProject.setName(FoclConstants.FOCL_PROJECT);
-        foclProject.setAccountName(accountName);
-        foclProject.setURL(url);
-        foclProject.setLogin(login);
-        foclProject.setPassword(password);
+        foclProject.setAccountName(account.name);
         foclProject.setVisible(true);
 
         mMap.addLayer(foclProject);
@@ -266,15 +256,22 @@ public class GISApplication
     }
 
 
-    public Account getAccount()
+    @Override
+    public Account getAccount(String accountName)
     {
         AccountManager accountManager = AccountManager.get(this);
         for (Account account : accountManager.getAccountsByType(Constants.NGW_ACCOUNT_TYPE)) {
-            if (account.name.equals(FoclConstants.FOCL_ACCOUNT_NAME)) {
+            if (account.name.equals(accountName)) {
                 return account;
             }
         }
         return null;
+    }
+
+
+    public Account getAccount()
+    {
+        return getAccount(FoclConstants.FOCL_ACCOUNT_NAME);
     }
 
 

@@ -22,10 +22,14 @@
 
 package com.nextgis.ngm_clink_monitoring.map;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.Context;
 import android.database.sqlite.SQLiteException;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
+import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.api.INGWLayer;
 import com.nextgis.maplib.map.LayerFactory;
@@ -53,16 +57,10 @@ public class FoclProject
         implements INGWLayer
 {
     protected static final String JSON_ACCOUNT_KEY  = "account";
-    protected static final String JSON_URL_KEY      = "url";
-    protected static final String JSON_LOGIN_KEY    = "login";
-    protected static final String JSON_PASSWORD_KEY = "password";
 
     protected NetworkUtil mNet;
 
     protected String mAccountName = "";
-    protected String mURL         = "";
-    protected String mLogin       = "";
-    protected String mPassword    = "";
 
 
     public FoclProject(
@@ -100,24 +98,6 @@ public class FoclProject
     }
 
 
-    public void setURL(String URL)
-    {
-        mURL = URL;
-    }
-
-
-    public void setLogin(String login)
-    {
-        mLogin = login;
-    }
-
-
-    public void setPassword(String password)
-    {
-        mPassword = password;
-    }
-
-
     public FoclStruct getFoclStructByRemoteId(long remoteId)
     {
         for (ILayer layer : mLayers) {
@@ -137,12 +117,7 @@ public class FoclProject
             throws JSONException
     {
         JSONObject rootConfig = super.toJSON();
-
         rootConfig.put(JSON_ACCOUNT_KEY, mAccountName);
-        rootConfig.put(JSON_URL_KEY, mURL);
-        rootConfig.put(JSON_LOGIN_KEY, mLogin);
-        rootConfig.put(JSON_PASSWORD_KEY, mPassword);
-
         return rootConfig;
     }
 
@@ -152,15 +127,7 @@ public class FoclProject
             throws JSONException
     {
         super.fromJSON(jsonObject);
-
         mAccountName = jsonObject.getString(JSON_ACCOUNT_KEY);
-        mURL = jsonObject.getString(JSON_URL_KEY);
-        if (jsonObject.has(JSON_LOGIN_KEY)) {
-            mLogin = jsonObject.getString(JSON_LOGIN_KEY);
-        }
-        if (jsonObject.has(JSON_PASSWORD_KEY)) {
-            mPassword = jsonObject.getString(JSON_PASSWORD_KEY);
-        }
     }
 
 
@@ -274,9 +241,6 @@ public class FoclProject
             foclVectorLayer.setFoclLayerType(
                     FoclVectorLayer.getFoclLayerTypeFromString(layerType));
             foclVectorLayer.setAccountName(mAccountName);
-            foclVectorLayer.setURL(mURL);
-            foclVectorLayer.setLogin(mLogin);
-            foclVectorLayer.setPassword(mPassword);
             foclVectorLayer.setVisible(true);
             foclVectorLayer.setSyncType(Constants.SYNC_ATTRIBUTES | Constants.SYNC_ATTACH);
             foclStruct.addLayer(foclVectorLayer);
@@ -353,15 +317,22 @@ public class FoclProject
             return getContext().getString(com.nextgis.maplib.R.string.error_network_unavailable);
         }
 
+        IGISApplication app = (IGISApplication) mContext.getApplicationContext();
+        AccountManager accountManager = AccountManager.get(mContext.getApplicationContext());
+        Account account = app.getAccount(mAccountName);
+
+        String url = accountManager.getUserData(account, "url");
+        String login = accountManager.getUserData(account, "login");
+        String password = accountManager.getPassword(account);
+
         try {
 
-            final HttpGet get = new HttpGet(getFoclUrl(mURL)); //get as GeoJSON
+            final HttpGet get = new HttpGet(getFoclUrl(url)); //get as GeoJSON
             //basic auth
-            if (null != mLogin && mLogin.length() > 0 && null != mPassword &&
-                    mPassword.length() > 0) {
+            if (!TextUtils.isEmpty(login) && !TextUtils.isEmpty(password)) {
                 get.setHeader("Accept", "*/*");
                 final String basicAuth = "Basic " + Base64.encodeToString(
-                        (mLogin + ":" + mPassword).getBytes(), Base64.NO_WRAP);
+                        (login + ":" + password).getBytes(), Base64.NO_WRAP);
                 get.setHeader("Authorization", basicAuth);
             }
 
@@ -372,14 +343,14 @@ public class FoclProject
             final org.apache.http.StatusLine line = response.getStatusLine();
             if (line.getStatusCode() != 200) {
                 Log.d(
-                        Constants.TAG, "Problem downloading FOCL: " + mURL + " HTTP response: " +
+                        Constants.TAG, "Problem downloading FOCL: " + url + " HTTP response: " +
                                 line);
                 return getContext().getString(com.nextgis.maplib.R.string.error_download_data);
             }
 
             final HttpEntity entity = response.getEntity();
             if (entity == null) {
-                Log.d(Constants.TAG, "No content downloading FOCL: " + mURL);
+                Log.d(Constants.TAG, "No content downloading FOCL: " + url);
                 return getContext().getString(com.nextgis.maplib.R.string.error_download_data);
             }
 
@@ -390,7 +361,7 @@ public class FoclProject
 
         } catch (IOException e) {
             Log.d(
-                    Constants.TAG, "Problem downloading FOCL: " + mURL + " Error: " +
+                    Constants.TAG, "Problem downloading FOCL: " + url + " Error: " +
                             e.getLocalizedMessage());
             return getContext().getString(com.nextgis.maplib.R.string.error_download_data);
         } catch (JSONException e) {
