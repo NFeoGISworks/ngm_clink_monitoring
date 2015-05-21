@@ -22,6 +22,8 @@
 
 package com.nextgis.ngm_clink_monitoring.fragments;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.TypedValue;
@@ -31,6 +33,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import com.nextgis.maplibui.NGWLoginFragment;
+import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.activities.MainActivity;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
@@ -39,11 +42,35 @@ import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 public class SyncLoginFragment
         extends NGWLoginFragment
 {
+    protected boolean mForNewAccount = true;
+
+    protected String mUrlText   = "";
+    protected String mLoginText = "";
+
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+    }
+
+
+    public void setForNewAccount(boolean forNewAccount)
+    {
+        mForNewAccount = forNewAccount;
+    }
+
+
+    public void setUrlText(String urlText)
+    {
+        mUrlText = urlText;
+    }
+
+
+    public void setLoginText(String loginText)
+    {
+        mLoginText = loginText;
     }
 
 
@@ -66,10 +93,20 @@ public class SyncLoginFragment
         TextView loginDescription = (TextView) view.findViewById(R.id.login_description);
 
         loginTitle.setVisibility(View.GONE);
-        loginDescription.setText(R.string.focl_login_description);
 
-        mURL.setText(FoclConstants.FOCL_DEFAULT_ACCOUNT_URL);
+        if (mForNewAccount) {
+            loginDescription.setText(R.string.focl_login_description);
+            mURL.setText(FoclConstants.FOCL_DEFAULT_ACCOUNT_URL);
+
+        } else {
+            loginDescription.setText(R.string.focl_edit_login_description);
+            mURL.setText(mUrlText);
+            mLogin.setText(mLoginText);
+        }
+
+        mURL.setEnabled(mForNewAccount); // TODO: remove it
 //        mURL.setEnabled(false); // TODO: uncomment it
+        mLogin.setEnabled(mForNewAccount);
 
         // button's theme applying
         View viewStyle = inflater.inflate(R.layout.button_login_style, null, false);
@@ -88,7 +125,9 @@ public class SyncLoginFragment
     @Override
     public void onClick(View v)
     {
-        mLogin.setText(mLogin.getText().toString().trim());
+        if (mForNewAccount) {
+            mLogin.setText(mLogin.getText().toString().trim());
+        }
         super.onClick(v);
     }
 
@@ -98,7 +137,18 @@ public class SyncLoginFragment
             String accountName,
             String token)
     {
-        accountName = FoclConstants.FOCL_ACCOUNT_NAME;
-        super.onTokenReceived(accountName, token);
+        if (mForNewAccount) {
+            accountName = FoclConstants.FOCL_ACCOUNT_NAME;
+            super.onTokenReceived(accountName, token);
+
+        } else {
+            GISApplication app = (GISApplication) getActivity().getApplicationContext();
+            AccountManager accountManager =
+                    AccountManager.get(getActivity().getApplicationContext());
+            Account account = app.getAccount();
+
+            accountManager.setPassword(account, mPassword.getText().toString());
+            getActivity().finish();
+        }
     }
 }

@@ -35,7 +35,8 @@
     <string name="action_about">About</string>
     <string name="action_select_folder">Select folder</string>
 
-    <string name="focl_login_description">Enter login and password to connect to the server system</string>
+    <string name="focl_login_description">Enter login and password to connect to the system server</string>
+    <string name="focl_edit_login_description">Enter new password to connect to the system server</string>
 
     <string name="edit_account">Edit account</string>
     <string name="edit_account_summary">Editing a user name and password.</string>

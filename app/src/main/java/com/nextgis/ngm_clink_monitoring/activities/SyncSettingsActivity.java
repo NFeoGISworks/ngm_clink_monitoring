@@ -23,6 +23,7 @@
 package com.nextgis.ngm_clink_monitoring.activities;
 
 import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
@@ -121,9 +122,8 @@ public class SyncSettingsActivity
             // add "Add account" action
             addAddAccountAction(actionCategory);
         } else {
-            // TODO: addEditAccountAction()
             // add "Edit account" action
-//            addEditAccountAction(account, actionCategory);
+            addEditAccountAction(account, actionCategory);
             // add "Delete account" action
             addDeleteAccountAction(account, actionCategory);
         }
@@ -217,12 +217,13 @@ public class SyncSettingsActivity
 
     protected void addAddAccountAction(PreferenceCategory actionCategory)
     {
-        Intent intent = new Intent(this, SyncLoginActivity.class);
         Preference preference = new Preference(this);
-
-        preference.setIntent(intent);
         preference.setTitle(com.nextgis.maplibui.R.string.add_account);
         preference.setSummary(com.nextgis.maplibui.R.string.add_account_summary);
+
+        Intent intent = new Intent(this, SyncLoginActivity.class);
+        intent.putExtra(SyncLoginActivity.FOR_NEW_ACCOUNT, true);
+        preference.setIntent(intent);
 
         actionCategory.addPreference(preference);
     }
@@ -232,22 +233,21 @@ public class SyncSettingsActivity
             final Account account,
             PreferenceCategory actionCategory)
     {
-        // TODO: addEditAccountAction()
-
         Preference preferenceEdit = new Preference(this);
         preferenceEdit.setTitle(R.string.edit_account);
         preferenceEdit.setSummary(R.string.edit_account_summary);
 
-        if (actionCategory.addPreference(preferenceEdit)) {
-            preferenceEdit.setOnPreferenceClickListener(
-                    new Preference.OnPreferenceClickListener()
-                    {
-                        public boolean onPreferenceClick(Preference preference)
-                        {
-                            return true;
-                        }
-                    });
-        }
+        AccountManager accountManager = AccountManager.get(getApplicationContext());
+        String url = accountManager.getUserData(account, "url");
+        String login = accountManager.getUserData(account, "login");
+
+        Intent intent = new Intent(this, SyncLoginActivity.class);
+        intent.putExtra(SyncLoginActivity.FOR_NEW_ACCOUNT, false);
+        intent.putExtra(SyncLoginActivity.ACCOUNT_URL_TEXT, url);
+        intent.putExtra(SyncLoginActivity.ACCOUNT_LOGIN_TEXT, login);
+        preferenceEdit.setIntent(intent);
+
+        actionCategory.addPreference(preferenceEdit);
     }
 
 

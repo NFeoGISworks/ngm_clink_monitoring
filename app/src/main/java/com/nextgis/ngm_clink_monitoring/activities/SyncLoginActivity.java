@@ -23,6 +23,7 @@
 package com.nextgis.ngm_clink_monitoring.activities;
 
 import android.accounts.Account;
+import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
@@ -35,6 +36,36 @@ import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 public class SyncLoginActivity
         extends NGWLoginActivity
 {
+    public static final String FOR_NEW_ACCOUNT    = "for_new_account";
+    public static final String ACCOUNT_URL_TEXT   = "account_url_text";
+    public static final String ACCOUNT_LOGIN_TEXT = "account_login_text";
+
+    protected boolean mForNewAccount = true;
+
+    protected String mUrlText   = "";
+    protected String mLoginText = "";
+
+
+    @Override
+    protected void onCreate(Bundle icicle)
+    {
+        Bundle extras = this.getIntent().getExtras();
+        if (extras != null) {
+            if (extras.containsKey(FOR_NEW_ACCOUNT)) {
+                mForNewAccount = extras.getBoolean(FOR_NEW_ACCOUNT, true);
+            }
+            if (extras.containsKey(ACCOUNT_URL_TEXT)) {
+                mUrlText = extras.getString(ACCOUNT_URL_TEXT);
+            }
+            if (extras.containsKey(ACCOUNT_LOGIN_TEXT)) {
+                mLoginText = extras.getString(ACCOUNT_LOGIN_TEXT);
+            }
+        }
+
+        super.onCreate(icicle);
+    }
+
+
     @Override
     protected void createView()
     {
@@ -50,6 +81,9 @@ public class SyncLoginActivity
 
         if (syncLoginFragment == null) {
             syncLoginFragment = new SyncLoginFragment();
+            syncLoginFragment.setForNewAccount(mForNewAccount);
+            syncLoginFragment.setUrlText(mUrlText);
+            syncLoginFragment.setLoginText(mLoginText);
         }
 
         syncLoginFragment.setOnAddAccountListener(this);
