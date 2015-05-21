@@ -51,16 +51,8 @@
     <string name="delete_photo_ask">Удалить фото?</string>
     <string name="delete_photo_message">Фотография будет также удалена на сервере при очередной синхронизации.</string>
 
-    <string name="hint">Пояснение</string>
-    <string name="hint_folder_moving">Папка \"%s\" с данными программы будет перемещена в выбранную папку.</string>
-
     <string name="moving">Перемещение…</string>
     <string name="warning_data_moving">Внимание! Не отменяйте операцию и не останавливайте приложение в процессе перемещения данных на новое место. Может привести к потере данных!</string>
-
-    <string name="backward">Назад</string>
-    <string name="select_line">Выберите линию</string>
-    <string name="select_object">Выберите объект</string>
-    <string name="set_status">Укажите статус</string>
 
     <string name="general">Общие настройки</string>
     <string name="general_summary">Общие настройки приложения</string>
@@ -120,7 +112,6 @@
     <string name="specify_work_status">Укажите статус работ:</string>
 
     <string name="take_photos_to_confirm">Сделайте фотографии, подтверждающие выполнение работ.</string>
-    <string name="take_photos_to_confirm_fosc">Для подтверждения выполненных работ сфотографируйте муфту, подвешенную на опоре.</string>
 
     <string name="make_photo">Сделать фото</string>
     <string name="save">Сохранить</string>
@@ -145,13 +136,7 @@
     <string name="coord_lat">Ш</string>
     <string name="coord_lon">Д</string>
 
-    <string name="project">Проект</string>
-    <string name="built">Постр</string>
-
-    <string name="builted">Построен</string>
-    <string name="not_builted">НЕ построен</string>
     <string name="completed">Выполнено</string>
-    <string name="not_completed">НЕ выполнено</string>
 
     <string name="no_name">[Нет наименования]</string>
 
