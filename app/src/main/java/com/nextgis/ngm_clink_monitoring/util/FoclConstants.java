@@ -24,7 +24,7 @@ package com.nextgis.ngm_clink_monitoring.util;
 
 public interface FoclConstants
 {
-    public static final String FRAGMENT_SYNC_LOGIN       = "SyncLogin";
+    public static final String FRAGMENT_SYNC_LOGIN       = "NGWLogin";
     public static final String FRAGMENT_PERFORM_1ST_SYNC = "Perform1stSync";
     public static final String FRAGMENT_STATUS_BAR       = "StatusBar";
     public static final String FRAGMENT_OBJECT_TYPES     = "ObjectTypes";
@@ -33,7 +33,7 @@ public interface FoclConstants
     public static final String FRAGMENT_OBJECT_STATUS    = "ObjectStatus";
     public static final String FRAGMENT_OBJECT_MEASURE   = "ObjectMeasure";
     public static final String FRAGMENT_MAP              = "Map";
-    public static final String FRAGMENT_ATTRIBUTES = "Attributes";
+    public static final String FRAGMENT_ATTRIBUTES       = "Attributes";
 
     public static final String JSON_REGION_KEY   = "region";
     public static final String JSON_DISTRICT_KEY = "district";
@@ -56,7 +56,7 @@ public interface FoclConstants
     public static final int LAYERTYPE_FOCL_ENDPOINT      = 1105;
 
     public static final String FIELD_NAME              = "name";
-    public static final String FIELD_LAYING_METHOD = "laying_method";
+    public static final String FIELD_LAYING_METHOD     = "laying_method";
     public static final String FIELD_TYPE_ENDPOINT     = "type_endpoint";
     public static final String FIELD_STATUS_BUILT      = "status_built";
     public static final String FIELD_STATUS_BUILT_CH   = "status_built_ch";
@@ -64,7 +64,7 @@ public interface FoclConstants
     public static final String FIELD_STATUS_MEASURE_CH = "status_measure_ch";
 
     public static final String FIELD_VALUE_UNKNOWN     = "unknown";
-    public static final String FIELD_VALUE_POINT_A = "point_a";
+    public static final String FIELD_VALUE_POINT_A     = "point_a";
     public static final String FIELD_VALUE_POINT_B     = "point_b";
     public static final String FIELD_VALUE_PROJECT     = "project";
     public static final String FIELD_VALUE_BUILT       = "built";
@@ -79,7 +79,7 @@ public interface FoclConstants
     public static final String FIELD_VALUE_BUILDING            = "building";
 
     public static final String FOCL_PROJECT             = "FOCL_project";
-    public static final String FOCL_ACCOUNT_NAME = "Compulink Monitoring";
+    public static final String FOCL_ACCOUNT_NAME        = "Compulink Monitoring";
     //TODO: remove it
     public static final String FOCL_DEFAULT_ACCOUNT_URL = "http://176.9.38.120/cl2";
     // public static final String FOCL_DEFAULT_ACCOUNT_URL = "https://gis.compulink.ru";

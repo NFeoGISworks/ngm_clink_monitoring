@@ -39,7 +39,7 @@
     <string name="focl_edit_login_description">Введите новый пароль для подключения к серверу системы</string>
 
     <string name="edit_account">Редактировать учетную запись</string>
-    <string name="edit_account_summary">Редатирование имени и пароля пользователя.</string>
+    <string name="edit_account_summary">Редатирование пароля учетной записи</string>
 
     <string name="delete_account_summary">Удаление учетной записи. Все данные, связанные с учетной записью, будут удалены. Синхронизация будет остановлена.</string>
     <string name="delete_account_warn_msg">Учетная запись будет удалена!\nВсе данные, связанные с учетной записью, будут удалены!\nСинхронизация будет остановлена!</string>

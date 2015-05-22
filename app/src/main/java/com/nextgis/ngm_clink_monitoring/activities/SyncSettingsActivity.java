@@ -34,6 +34,7 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceScreen;
 import com.nextgis.maplib.api.IGISApplication;
+import com.nextgis.maplibui.NGWLoginActivity;
 import com.nextgis.maplibui.NGWSettingsActivity;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
@@ -121,9 +122,11 @@ public class SyncSettingsActivity
         if (null == account) {
             // add "Add account" action
             addAddAccountAction(actionCategory);
+
         } else {
             // add "Edit account" action
             addEditAccountAction(account, actionCategory);
+
             // add "Delete account" action
             addDeleteAccountAction(account, actionCategory);
         }
@@ -222,13 +225,14 @@ public class SyncSettingsActivity
         preference.setSummary(com.nextgis.maplibui.R.string.add_account_summary);
 
         Intent intent = new Intent(this, SyncLoginActivity.class);
-        intent.putExtra(SyncLoginActivity.FOR_NEW_ACCOUNT, true);
+        intent.putExtra(NGWLoginActivity.FOR_NEW_ACCOUNT, true);
         preference.setIntent(intent);
 
         actionCategory.addPreference(preference);
     }
 
 
+    @Override
     protected void addEditAccountAction(
             final Account account,
             PreferenceCategory actionCategory)
@@ -242,9 +246,11 @@ public class SyncSettingsActivity
         String login = accountManager.getUserData(account, "login");
 
         Intent intent = new Intent(this, SyncLoginActivity.class);
-        intent.putExtra(SyncLoginActivity.FOR_NEW_ACCOUNT, false);
-        intent.putExtra(SyncLoginActivity.ACCOUNT_URL_TEXT, url);
-        intent.putExtra(SyncLoginActivity.ACCOUNT_LOGIN_TEXT, login);
+        intent.putExtra(NGWLoginActivity.FOR_NEW_ACCOUNT, false);
+        intent.putExtra(NGWLoginActivity.ACCOUNT_URL_TEXT, url);
+        intent.putExtra(NGWLoginActivity.ACCOUNT_LOGIN_TEXT, login);
+        intent.putExtra(NGWLoginActivity.CHANGE_ACCOUNT_URL, false);
+        intent.putExtra(NGWLoginActivity.CHANGE_ACCOUNT_LOGIN, false);
         preferenceEdit.setIntent(intent);
 
         actionCategory.addPreference(preferenceEdit);
