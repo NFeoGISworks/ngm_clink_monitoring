@@ -107,9 +107,11 @@ public class FoclProject
         IGISApplication app = (IGISApplication) mContext.getApplicationContext();
         Account account = app.getAccount(mAccountName);
 
-        mCacheUrl = app.getAccountUrl(account);
-        mCacheLogin = app.getAccountLogin(account);
-        mCachePassword = app.getAccountPassword(account);
+        if (null != account) {
+            mCacheUrl = app.getAccountUrl(account);
+            mCacheLogin = app.getAccountLogin(account);
+            mCachePassword = app.getAccountPassword(account);
+        }
     }
 
 
