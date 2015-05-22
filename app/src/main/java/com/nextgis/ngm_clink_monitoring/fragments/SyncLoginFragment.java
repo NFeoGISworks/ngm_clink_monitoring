@@ -24,6 +24,7 @@ package com.nextgis.ngm_clink_monitoring.fragments;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.TypedValue;
@@ -33,6 +34,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import com.nextgis.maplibui.NGWLoginFragment;
+import com.nextgis.maplibui.NGWSettingsActivity;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.activities.MainActivity;
@@ -142,12 +144,13 @@ public class SyncLoginFragment
             super.onTokenReceived(accountName, token);
 
         } else {
-            GISApplication app = (GISApplication) getActivity().getApplicationContext();
-            AccountManager accountManager =
-                    AccountManager.get(getActivity().getApplicationContext());
-            Account account = app.getAccount();
+            Context appContext = getActivity().getApplicationContext();
+            AccountManager accountManager = AccountManager.get(appContext);
+            Account account = ((GISApplication) appContext).getAccount();
 
             accountManager.setPassword(account, mPassword.getText().toString());
+            NGWSettingsActivity.updateAccountLayersCacheData(appContext, account);
+
             getActivity().finish();
         }
     }
