@@ -97,6 +97,7 @@ public class FoclProject
     public void setAccountName(String accountName)
     {
         mAccountName = accountName;
+        setAccountCacheData();
     }
 
 
@@ -141,8 +142,7 @@ public class FoclProject
             throws JSONException
     {
         super.fromJSON(jsonObject);
-        mAccountName = jsonObject.getString(JSON_ACCOUNT_KEY);
-        setAccountCacheData();
+        setAccountName(jsonObject.getString(JSON_ACCOUNT_KEY));
     }
 
 
