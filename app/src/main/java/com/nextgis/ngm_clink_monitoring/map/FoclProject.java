@@ -263,6 +263,10 @@ public class FoclProject
             foclVectorLayer.setSyncType(Constants.SYNC_ATTRIBUTES | Constants.SYNC_ATTACH);
             foclStruct.addLayer(foclVectorLayer);
 
+            if (FoclConstants.LAYERTYPE_FOCL_OPTICAL_CABLE == foclLayerType) {
+                foclStruct.moveLayer(0, foclVectorLayer);
+            }
+
             String error = foclVectorLayer.download();
 
             if (null != error && error.length() > 0) {
