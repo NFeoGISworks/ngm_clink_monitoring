@@ -92,24 +92,7 @@
             <option name="CONTINUATION_INDENT_SIZE" value="4" />
           </indentOptions>
           <arrangement>
-            <rules>
-              <section>
-                <rule>
-                  <match>
-                    <NAME>xmlns:.*</NAME>
-                  </match>
-                  <order>BY_NAME</order>
-                </rule>
-              </section>
-              <section>
-                <rule>
-                  <match>
-                    <XML_ATTRIBUTE />
-                  </match>
-                  <order>BY_NAME</order>
-                </rule>
-              </section>
-            </rules>
+            <rules />
           </arrangement>
         </codeStyleSettings>
       </value>
@@ -117,3 +100,4 @@
     <option name="USE_PER_PROJECT_SETTINGS" value="true" />
   </component>
 </project>
+
