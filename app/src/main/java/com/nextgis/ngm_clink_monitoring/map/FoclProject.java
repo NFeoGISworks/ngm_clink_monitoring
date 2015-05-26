@@ -253,12 +253,13 @@ public class FoclProject
             foclVectorLayer = new FoclVectorLayer(
                     foclStruct.getContext(), foclStruct.createLayerStorage());
 
+            int foclLayerType = FoclVectorLayer.getFoclLayerTypeFromString(layerType);
+
             foclVectorLayer.setRemoteId(layerId);
             foclVectorLayer.setName(layerName);
-            foclVectorLayer.setFoclLayerType(
-                    FoclVectorLayer.getFoclLayerTypeFromString(layerType));
+            foclVectorLayer.setFoclLayerType(foclLayerType);
             foclVectorLayer.setAccountName(mAccountName);
-            foclVectorLayer.setVisible(true);
+            foclVectorLayer.setVisible(FoclConstants.LAYERTYPE_FOCL_ENDPOINT != foclLayerType);
             foclVectorLayer.setSyncType(Constants.SYNC_ATTRIBUTES | Constants.SYNC_ATTACH);
             foclStruct.addLayer(foclVectorLayer);
 
