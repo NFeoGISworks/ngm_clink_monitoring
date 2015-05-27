@@ -43,15 +43,15 @@ import static com.nextgis.maplib.util.Constants.TAG;
 public class FoclStyleRule
         implements IStyleRule
 {
-    protected VectorLayer mLayer;
+    protected VectorLayer mVectorLayer;
     protected int         mFoclLayerType;
 
 
     public FoclStyleRule(
-            VectorLayer layer,
+            VectorLayer vectorLayer,
             int foclLayerType)
     {
-        mLayer = layer;
+        mVectorLayer = vectorLayer;
         mFoclLayerType = foclLayerType;
     }
 
@@ -122,7 +122,7 @@ public class FoclStyleRule
         String[] select;
         Uri uri = Uri.parse(
                 "content://" + FoclSettingsConstantsUI.AUTHORITY + "/" +
-                        mLayer.getPath().getName() + "/" + objectId);
+                        mVectorLayer.getPath().getName() + "/" + objectId);
         String type = null;
         String status = null;
 
@@ -135,7 +135,7 @@ public class FoclStyleRule
                         FoclConstants.FIELD_STATUS_BUILT};
 
                 try {
-                    cursor = mLayer.getContext()
+                    cursor = mVectorLayer.getContext()
                             .getContentResolver()
                             .query(uri, select, null, null, null);
 
@@ -162,7 +162,7 @@ public class FoclStyleRule
                 select = new String[] {FIELD_ID, FoclConstants.FIELD_STATUS_BUILT};
 
                 try {
-                    cursor = mLayer.getContext()
+                    cursor = mVectorLayer.getContext()
                             .getContentResolver()
                             .query(uri, select, null, null, null);
 
@@ -186,7 +186,7 @@ public class FoclStyleRule
                         FIELD_ID, FoclConstants.FIELD_TYPE_ENDPOINT};
 
                 try {
-                    cursor = mLayer.getContext()
+                    cursor = mVectorLayer.getContext()
                             .getContentResolver()
                             .query(uri, select, null, null, null);
 
