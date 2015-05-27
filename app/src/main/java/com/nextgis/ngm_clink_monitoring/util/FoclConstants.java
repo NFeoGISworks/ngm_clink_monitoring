@@ -24,72 +24,72 @@ package com.nextgis.ngm_clink_monitoring.util;
 
 public interface FoclConstants
 {
-    public static final String FRAGMENT_SYNC_LOGIN       = "NGWLogin";
-    public static final String FRAGMENT_PERFORM_1ST_SYNC = "Perform1stSync";
-    public static final String FRAGMENT_STATUS_BAR       = "StatusBar";
-    public static final String FRAGMENT_OBJECT_TYPES     = "ObjectTypes";
-    public static final String FRAGMENT_LINE_LIST        = "LineList";
-    public static final String FRAGMENT_OBJECT_LIST      = "ObjectList";
-    public static final String FRAGMENT_OBJECT_STATUS    = "ObjectStatus";
-    public static final String FRAGMENT_OBJECT_MEASURE   = "ObjectMeasure";
-    public static final String FRAGMENT_MAP              = "Map";
-    public static final String FRAGMENT_ATTRIBUTES       = "Attributes";
+    String FRAGMENT_SYNC_LOGIN       = "NGWLogin";
+    String FRAGMENT_PERFORM_1ST_SYNC = "Perform1stSync";
+    String FRAGMENT_STATUS_BAR       = "StatusBar";
+    String FRAGMENT_OBJECT_TYPES     = "ObjectTypes";
+    String FRAGMENT_LINE_LIST        = "LineList";
+    String FRAGMENT_OBJECT_LIST      = "ObjectList";
+    String FRAGMENT_OBJECT_STATUS    = "ObjectStatus";
+    String FRAGMENT_OBJECT_MEASURE   = "ObjectMeasure";
+    String FRAGMENT_MAP              = "Map";
+    String FRAGMENT_ATTRIBUTES       = "Attributes";
 
-    public static final String JSON_REGION_KEY   = "region";
-    public static final String JSON_DISTRICT_KEY = "district";
+    String JSON_REGION_KEY   = "region";
+    String JSON_DISTRICT_KEY = "district";
 
-    public static final String JSON_OPTICAL_CABLE_VALUE = "optical_cable";
-    public static final String JSON_FOSC_VALUE          = "fosc";
-    public static final String JSON_OPTICAL_CROSS_VALUE = "optical_cross";
-    public static final String JSON_ACCESS_POINT_VALUE  = "access_point";
-    public static final String JSON_ENDPOINT_VALUE      = "endpoint";
+    String JSON_OPTICAL_CABLE_VALUE = "optical_cable";
+    String JSON_FOSC_VALUE          = "fosc";
+    String JSON_OPTICAL_CROSS_VALUE = "optical_cross";
+    String JSON_ACCESS_POINT_VALUE  = "access_point";
+    String JSON_ENDPOINT_VALUE      = "endpoint";
 
-    public static final int LAYERTYPE_FOCL_VECTOR  = 1001;
-    public static final int LAYERTYPE_FOCL_STRUCT  = 1002;
-    public static final int LAYERTYPE_FOCL_PROJECT = 1003;
+    int LAYERTYPE_FOCL_VECTOR  = 1001;
+    int LAYERTYPE_FOCL_STRUCT  = 1002;
+    int LAYERTYPE_FOCL_PROJECT = 1003;
 
-    public static final int LAYERTYPE_FOCL_UNKNOWN       = 1100;
-    public static final int LAYERTYPE_FOCL_OPTICAL_CABLE = 1101;
-    public static final int LAYERTYPE_FOCL_FOSC          = 1102;
-    public static final int LAYERTYPE_FOCL_OPTICAL_CROSS = 1103;
-    public static final int LAYERTYPE_FOCL_ACCESS_POINT  = 1104;
-    public static final int LAYERTYPE_FOCL_ENDPOINT      = 1105;
+    int LAYERTYPE_FOCL_UNKNOWN       = 1100;
+    int LAYERTYPE_FOCL_OPTICAL_CABLE = 1101;
+    int LAYERTYPE_FOCL_FOSC          = 1102;
+    int LAYERTYPE_FOCL_OPTICAL_CROSS = 1103;
+    int LAYERTYPE_FOCL_ACCESS_POINT  = 1104;
+    int LAYERTYPE_FOCL_ENDPOINT      = 1105;
 
-    public static final String FIELD_NAME              = "name";
-    public static final String FIELD_LAYING_METHOD     = "laying_method";
-    public static final String FIELD_TYPE_ENDPOINT     = "type_endpoint";
-    public static final String FIELD_STATUS_BUILT      = "status_built";
-    public static final String FIELD_STATUS_BUILT_CH   = "status_built_ch";
-    public static final String FIELD_STATUS_MEASURE    = "status_measure";
-    public static final String FIELD_STATUS_MEASURE_CH = "status_measure_ch";
+    String FIELD_NAME              = "name";
+    String FIELD_LAYING_METHOD     = "laying_method";
+    String FIELD_TYPE_ENDPOINT     = "type_endpoint";
+    String FIELD_STATUS_BUILT      = "status_built";
+    String FIELD_STATUS_BUILT_CH   = "status_built_ch";
+    String FIELD_STATUS_MEASURE    = "status_measure";
+    String FIELD_STATUS_MEASURE_CH = "status_measure_ch";
 
-    public static final String FIELD_VALUE_UNKNOWN     = "unknown";
-    public static final String FIELD_VALUE_POINT_A     = "point_a";
-    public static final String FIELD_VALUE_POINT_B     = "point_b";
-    public static final String FIELD_VALUE_PROJECT     = "project";
-    public static final String FIELD_VALUE_BUILT       = "built";
-    public static final String FIELD_VALUE_NOT_MEASURE = "not_measure";
-    public static final String FIELD_VALUE_MEASURE     = "measure";
+    String FIELD_VALUE_UNKNOWN     = "unknown";
+    String FIELD_VALUE_POINT_A     = "point_a";
+    String FIELD_VALUE_POINT_B     = "point_b";
+    String FIELD_VALUE_PROJECT     = "project";
+    String FIELD_VALUE_BUILT       = "built";
+    String FIELD_VALUE_NOT_MEASURE = "not_measure";
+    String FIELD_VALUE_MEASURE     = "measure";
 
-    public static final String FIELD_VALUE_GROUND              = "ground";
-    public static final String FIELD_VALUE_AIR_LINK            = "air_link";
-    public static final String FIELD_VALUE_TRANSMISSION_TOWERS = "transmission_towers";
-    public static final String FIELD_VALUE_CANALIZATION        = "canalization";
-    public static final String FIELD_VALUE_SEWER               = "sewer";
-    public static final String FIELD_VALUE_BUILDING            = "building";
+    String FIELD_VALUE_GROUND              = "ground";
+    String FIELD_VALUE_AIR_LINK            = "air_link";
+    String FIELD_VALUE_TRANSMISSION_TOWERS = "transmission_towers";
+    String FIELD_VALUE_CANALIZATION        = "canalization";
+    String FIELD_VALUE_SEWER               = "sewer";
+    String FIELD_VALUE_BUILDING            = "building";
 
-    public static final String FOCL_PROJECT             = "FOCL_project";
-    public static final String FOCL_ACCOUNT_NAME        = "Compulink Monitoring";
+    String FOCL_PROJECT      = "FOCL_project";
+    String FOCL_ACCOUNT_NAME = "Compulink Monitoring";
     //TODO: remove it
-    public static final String FOCL_DEFAULT_ACCOUNT_URL = "http://176.9.38.120/cl2";
-    // public static final String FOCL_DEFAULT_ACCOUNT_URL = "https://gis.compulink.ru";
+    String FOCL_DEFAULT_ACCOUNT_URL = "http://176.9.38.120/cl2";
+    //String FOCL_DEFAULT_ACCOUNT_URL = "https://gis.compulink.ru";
 
     // If you change it, change it in aFileDialog/res/values/strings/daidalos_confirm_move_to_folder
-    public static final String FOCL_DATA_DIR  = "ngm_clink_monitoring";
-    public static final String FOCL_PHOTO_DIR = "photo";
+    String FOCL_DATA_DIR  = "ngm_clink_monitoring";
+    String FOCL_PHOTO_DIR = "photo";
 
-    public static final long DEFAULT_SYNC_PERIOD_SEC_LONG = 300;
+    long DEFAULT_SYNC_PERIOD_SEC_LONG = 300;
 
-    public static final int PHOTO_MAX_SIZE_PX           = 640;
-    public static final int PHOTO_JPEG_COMPRESS_QUALITY = 75;
+    int PHOTO_MAX_SIZE_PX           = 640;
+    int PHOTO_JPEG_COMPRESS_QUALITY = 75;
 }
