@@ -135,9 +135,7 @@ public class FoclStyleRule
                         FoclConstants.FIELD_STATUS_BUILT};
 
                 try {
-                    cursor = mVectorLayer.getContext()
-                            .getContentResolver()
-                            .query(uri, select, null, null, null);
+                    cursor = mVectorLayer.query(uri, select, null, null, null);
 
                 } catch (Exception e) {
                     Log.d(TAG, e.getLocalizedMessage());
@@ -162,9 +160,7 @@ public class FoclStyleRule
                 select = new String[] {FIELD_ID, FoclConstants.FIELD_STATUS_BUILT};
 
                 try {
-                    cursor = mVectorLayer.getContext()
-                            .getContentResolver()
-                            .query(uri, select, null, null, null);
+                    cursor = mVectorLayer.query(uri, select, null, null, null);
 
                 } catch (Exception e) {
                     Log.d(TAG, e.getLocalizedMessage());
@@ -186,9 +182,7 @@ public class FoclStyleRule
                         FIELD_ID, FoclConstants.FIELD_TYPE_ENDPOINT};
 
                 try {
-                    cursor = mVectorLayer.getContext()
-                            .getContentResolver()
-                            .query(uri, select, null, null, null);
+                    cursor = mVectorLayer.query(uri, select, null, null, null);
 
                 } catch (Exception e) {
                     Log.d(TAG, e.getLocalizedMessage());
