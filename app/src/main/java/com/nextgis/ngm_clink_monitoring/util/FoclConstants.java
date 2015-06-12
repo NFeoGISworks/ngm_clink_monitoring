@@ -78,11 +78,11 @@ public interface FoclConstants
     String FIELD_VALUE_SEWER               = "sewer";
     String FIELD_VALUE_BUILDING            = "building";
 
-    String FOCL_PROJECT      = "FOCL_project";
-    String FOCL_ACCOUNT_NAME = "Compulink Monitoring";
+    String FOCL_PROJECT             = "FOCL_project";
+    String FOCL_ACCOUNT_NAME        = "Compulink Monitoring";
     //TODO: remove it
-    String FOCL_DEFAULT_ACCOUNT_URL = "http://176.9.38.120/cl2";
-    //String FOCL_DEFAULT_ACCOUNT_URL = "https://gis.compulink.ru";
+    //String FOCL_DEFAULT_ACCOUNT_URL = "http://176.9.38.120/cl2";
+    String FOCL_DEFAULT_ACCOUNT_URL = "https://gis.compulink.ru";
 
     // If you change it, change it in aFileDialog/res/values/strings/daidalos_confirm_move_to_folder
     String FOCL_DATA_DIR  = "ngm_clink_monitoring";
