@@ -25,7 +25,7 @@ package com.nextgis.ngm_clink_monitoring.map;
 import android.content.Context;
 import android.database.sqlite.SQLiteException;
 import android.util.Log;
-import com.nextgis.maplib.display.IStyleRule;
+import com.nextgis.maplib.api.IStyleRule;
 import com.nextgis.maplib.display.RuleFeatureRenderer;
 import com.nextgis.maplib.display.Style;
 import com.nextgis.maplib.map.NGWVectorLayer;

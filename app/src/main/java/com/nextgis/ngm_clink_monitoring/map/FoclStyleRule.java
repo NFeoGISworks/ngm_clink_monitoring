@@ -27,7 +27,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
-import com.nextgis.maplib.display.IStyleRule;
+import com.nextgis.maplib.api.IStyleRule;
 import com.nextgis.maplib.display.SimpleMarkerStyle;
 import com.nextgis.maplib.display.SimpleTextLineStyle;
 import com.nextgis.maplib.display.SimpleTextMarkerStyle;

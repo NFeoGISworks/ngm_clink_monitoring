@@ -23,8 +23,8 @@
 package com.nextgis.ngm_clink_monitoring.activities;
 
 import android.accounts.Account;
-import com.nextgis.maplibui.NGWLoginActivity;
-import com.nextgis.maplibui.NGWLoginFragment;
+import com.nextgis.maplibui.activity.NGWLoginActivity;
+import com.nextgis.maplibui.fragment.NGWLoginFragment;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.fragments.SyncLoginFragment;
 

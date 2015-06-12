@@ -31,7 +31,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
-import com.nextgis.maplibui.NGWSettingsActivity;
+import com.nextgis.maplibui.activity.NGWSettingsActivity;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 
 
