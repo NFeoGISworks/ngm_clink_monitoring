@@ -108,13 +108,13 @@ public class ObjectStatusFragment
 
     public void setParams(
             Context context,
-            Integer foclStructLayerType,
             Integer lineId,
+            Integer foclStructLayerType,
             Long objectId)
     {
         mContext = context;
-        mFoclStructLayerType = foclStructLayerType;
         mLineId = lineId;
+        mFoclStructLayerType = foclStructLayerType;
         mObjectId = objectId;
     }
 

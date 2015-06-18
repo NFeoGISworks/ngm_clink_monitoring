@@ -67,11 +67,11 @@ public class ObjectListFragment
 
 
     public void setParams(
-            Integer foclStructLayerType,
-            Integer lineId)
+            Integer lineId,
+            Integer foclStructLayerType)
     {
-        mFoclStructLayerType = foclStructLayerType;
         mLineId = lineId;
+        mFoclStructLayerType = foclStructLayerType;
     }
 
 
@@ -118,6 +118,10 @@ public class ObjectListFragment
                 toolbarTitle = activity.getString(R.string.access_point_mounting);
                 mObjectListCaption.setText(R.string.select_access_points_colon);
                 break;
+
+            case FoclConstants.LAYERTYPE_FOCL_UNKNOWN:
+                // TODO: for FoclConstants.LAYERTYPE_FOCL_UNKNOWN
+                break;
         }
 
         activity.setBarsView(toolbarTitle);
@@ -126,25 +130,31 @@ public class ObjectListFragment
         final FoclProject foclProject = app.getFoclProject();
 
         if (null == foclProject) {
-            mLineName.setText("");
-            mObjectList.setEnabled(false);
-            mObjectList.setAdapter(null);
+            setBlockedView();
             return view;
         }
 
+        FoclStruct foclStruct;
+        try {
+            foclStruct = (FoclStruct) foclProject.getLayer(mLineId);
+        } catch (Exception e) {
+            foclStruct = null;
+        }
 
-        FoclStruct foclStruct = (FoclStruct) foclProject.getLayer(mLineId);
-        mLineName.setText(Html.fromHtml(foclStruct.getHtmlFormattedName()));
+        if (null == foclStruct) {
+            setBlockedView();
+            return view;
+        }
 
-        FoclVectorLayer layer = (FoclVectorLayer) foclStruct.getLayerByFoclType(
-                mFoclStructLayerType);
+        FoclVectorLayer layer =
+                (FoclVectorLayer) foclStruct.getLayerByFoclType(mFoclStructLayerType);
 
         if (null == layer) {
-            mObjectList.setEnabled(false);
-            mObjectList.setAdapter(null);
+            setBlockedView();
             return view;
         }
 
+        mLineName.setText(Html.fromHtml(foclStruct.getHtmlFormattedName()));
         mObjectLayerName = layer.getPath().getName();
 
         Uri uri = Uri.parse(
@@ -163,8 +173,7 @@ public class ObjectListFragment
         if (null != mAdapterCursor && mAdapterCursor.getCount() > 0) {
             mObjectList.setEnabled(true);
         } else {
-            mObjectList.setEnabled(false);
-            mObjectList.setAdapter(null);
+            setBlockedView();
             return view;
         }
 
@@ -194,6 +203,14 @@ public class ObjectListFragment
     }
 
 
+    protected void setBlockedView()
+    {
+        mLineName.setText("");
+        mObjectList.setEnabled(false);
+        mObjectList.setAdapter(null);
+    }
+
+
     @Override
     public void onDestroyView()
     {
@@ -217,7 +234,7 @@ public class ObjectListFragment
             objectStatusFragment = new ObjectStatusFragment();
         }
 
-        objectStatusFragment.setParams(getActivity(), mFoclStructLayerType, mLineId, mObjectId);
+        objectStatusFragment.setParams(getActivity(), mLineId, mFoclStructLayerType, mObjectId);
 
         ft.replace(R.id.main_fragment, objectStatusFragment, FoclConstants.FRAGMENT_OBJECT_STATUS);
         ft.addToBackStack(null);

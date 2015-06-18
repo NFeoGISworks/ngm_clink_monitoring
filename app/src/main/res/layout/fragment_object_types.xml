@@ -24,76 +24,97 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
+    android:orientation="vertical"
     >
 
-    <ScrollView
+    <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/scroll_view"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:layout_marginBottom="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
+        android:orientation="vertical"
         >
 
-        <LinearLayout
+        <TextView
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:orientation="vertical"
+            android:text="@string/communication_line_colon"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            />
+
+        <TextView
+            android:id="@+id/line_name_ot"
+            android:text="@string/select_optical_cables_colon"
+            style="@style/selectedLineStyle"
+            />
+
+        <ScrollView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
             >
 
-            <TextView
-                android:id="@+id/work_type_caption"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:layout_gravity="start"
-                android:text="@string/select_work_type"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:gravity="center"
-                />
-
             <LinearLayout
-                android:id="@+id/buttons_layout"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:layout_marginTop="10dp"
                 android:orientation="vertical"
                 >
 
-                <Button
-                    android:id="@+id/btn_cable_laying"
-                    android:text="@string/cable_laying"
-                    style="@style/startButton"
+                <TextView
+                    android:id="@+id/work_type_caption"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_gravity="start"
+                    android:text="@string/select_work_type"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:gravity="center"
                     />
 
-                <Button
-                    android:id="@+id/btn_fosc_mounting"
-                    android:text="@string/fosc_mounting"
-                    style="@style/startButtonMiddle"
-                    />
+                <LinearLayout
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical"
+                    >
 
-                <Button
-                    android:id="@+id/btn_cross_mounting"
-                    android:text="@string/cross_mounting"
-                    style="@style/startButtonMiddle"
-                    />
+                    <Button
+                        android:id="@+id/btn_cable_laying"
+                        android:text="@string/cable_laying"
+                        style="@style/startButton"
+                        />
 
-                <Button
-                    android:id="@+id/btn_access_point_mounting"
-                    android:text="@string/access_point_mounting"
-                    style="@style/startButtonMiddle"
-                    />
+                    <Button
+                        android:id="@+id/btn_fosc_mounting"
+                        android:text="@string/fosc_mounting"
+                        style="@style/startButtonMiddle"
+                        />
 
-                <Button
-                    android:id="@+id/btn_line_measuring"
-                    android:text="@string/line_measuring"
-                    style="@style/startButtonMiddle"
-                    />
+                    <Button
+                        android:id="@+id/btn_cross_mounting"
+                        android:text="@string/cross_mounting"
+                        style="@style/startButtonMiddle"
+                        />
+
+                    <Button
+                        android:id="@+id/btn_access_point_mounting"
+                        android:text="@string/access_point_mounting"
+                        style="@style/startButtonMiddle"
+                        />
+
+                    <Button
+                        android:id="@+id/btn_line_measuring"
+                        android:text="@string/line_measuring"
+                        style="@style/startButtonMiddle"
+                        />
+
+                </LinearLayout>
 
             </LinearLayout>
 
-        </LinearLayout>
+        </ScrollView>
 
-    </ScrollView>
+    </LinearLayout>
 
 </LinearLayout>

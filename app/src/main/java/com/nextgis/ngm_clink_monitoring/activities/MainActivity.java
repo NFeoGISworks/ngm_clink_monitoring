@@ -55,8 +55,8 @@ import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.util.AccountUtil;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
+import com.nextgis.ngm_clink_monitoring.fragments.LineListFragment;
 import com.nextgis.ngm_clink_monitoring.fragments.MapFragment;
-import com.nextgis.ngm_clink_monitoring.fragments.ObjectTypesFragment;
 import com.nextgis.ngm_clink_monitoring.fragments.Perform1stSyncFragment;
 import com.nextgis.ngm_clink_monitoring.fragments.StatusBarFragment;
 import com.nextgis.ngm_clink_monitoring.fragments.SyncLoginFragment;
@@ -145,6 +145,7 @@ public class MainActivity
             ft.replace(
                     R.id.status_bar_fragment, mStatusBarFragment,
                     FoclConstants.FRAGMENT_STATUS_BAR);
+            ft.hide(mStatusBarFragment);
             ft.commit();
         }
 
@@ -196,15 +197,13 @@ public class MainActivity
                 break;
 
             case VIEW_STATE_OBJECTS:
-                ObjectTypesFragment objectTypesFragment =
-                        (ObjectTypesFragment) fm.findFragmentByTag(
-                                FoclConstants.FRAGMENT_OBJECT_TYPES);
+                LineListFragment lineListFragment =
+                        (LineListFragment) fm.findFragmentByTag(FoclConstants.FRAGMENT_LINE_LIST);
 
-                if (null == objectTypesFragment) {
-                    objectTypesFragment = new ObjectTypesFragment();
+                if (lineListFragment == null) {
+                    lineListFragment = new LineListFragment();
                     ft.replace(
-                            R.id.main_fragment, objectTypesFragment,
-                            FoclConstants.FRAGMENT_OBJECT_TYPES);
+                            R.id.main_fragment, lineListFragment, FoclConstants.FRAGMENT_LINE_LIST);
                 }
 
                 break;
@@ -282,12 +281,12 @@ public class MainActivity
         switch (tag) {
             case FoclConstants.FRAGMENT_SYNC_LOGIN:
             case FoclConstants.FRAGMENT_PERFORM_1ST_SYNC:
-            case FoclConstants.FRAGMENT_OBJECT_TYPES:
+            case FoclConstants.FRAGMENT_LINE_LIST:
             default:
                 mToolbar.setNavigationIcon(null);
                 break;
 
-            case FoclConstants.FRAGMENT_LINE_LIST:
+            case FoclConstants.FRAGMENT_OBJECT_TYPES:
             case FoclConstants.FRAGMENT_OBJECT_LIST:
             case FoclConstants.FRAGMENT_OBJECT_STATUS:
             case FoclConstants.FRAGMENT_OBJECT_MEASURE:

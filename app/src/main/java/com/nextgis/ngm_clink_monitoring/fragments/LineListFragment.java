@@ -44,16 +44,6 @@ public class LineListFragment
 {
     protected ListView mLineNameList;
 
-    protected Integer mFoclStructLayerType = FoclConstants.LAYERTYPE_FOCL_UNKNOWN;
-
-    protected Integer mLineId;
-
-
-    public void setParams(Integer foclStructLayerType)
-    {
-        mFoclStructLayerType = foclStructLayerType;
-    }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -74,31 +64,7 @@ public class LineListFragment
 
         mLineNameList = (ListView) view.findViewById(R.id.line_list_ln);
 
-        String toolbarTitle = "";
-
-        switch (mFoclStructLayerType) {
-            case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CABLE:
-                toolbarTitle = activity.getString(R.string.cable_laying);
-                break;
-
-            case FoclConstants.LAYERTYPE_FOCL_FOSC:
-                toolbarTitle = activity.getString(R.string.fosc_mounting);
-                break;
-
-            case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CROSS:
-                toolbarTitle = activity.getString(R.string.cross_mounting);
-                break;
-
-            case FoclConstants.LAYERTYPE_FOCL_ACCESS_POINT:
-                toolbarTitle = activity.getString(R.string.access_point_mounting);
-                break;
-
-            case FoclConstants.LAYERTYPE_FOCL_ENDPOINT:
-                toolbarTitle = activity.getString(R.string.line_measuring);
-                break;
-        }
-
-        activity.setBarsView(toolbarTitle);
+        activity.setBarsView(null);
 
         GISApplication app = (GISApplication) getActivity().getApplication();
         final FoclProject foclProject = app.getFoclProject();
@@ -122,8 +88,7 @@ public class LineListFragment
                             int position,
                             long id)
                     {
-                        mLineId = (int) id;
-                        onLineClick();
+                        onLineClick((int) id);
                     }
                 });
 
@@ -131,39 +96,21 @@ public class LineListFragment
     }
 
 
-    public void onLineClick()
+    public void onLineClick(int lineId)
     {
         final FragmentManager fm = getActivity().getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
 
-        if (FoclConstants.LAYERTYPE_FOCL_ENDPOINT == mFoclStructLayerType) {
-            ObjectStatusFragment objectMeasureFragment =
-                    (ObjectStatusFragment) fm.findFragmentByTag(
-                            FoclConstants.FRAGMENT_OBJECT_MEASURE);
+        ObjectTypesFragment objectTypesFragment =
+                (ObjectTypesFragment) fm.findFragmentByTag(FoclConstants.FRAGMENT_OBJECT_TYPES);
 
-            if (objectMeasureFragment == null) {
-                objectMeasureFragment = new ObjectStatusFragment();
-            }
-
-            objectMeasureFragment.setParams(getActivity(), mFoclStructLayerType, mLineId, null);
-
-            ft.replace(
-                    R.id.main_fragment, objectMeasureFragment,
-                    FoclConstants.FRAGMENT_OBJECT_MEASURE);
-
-        } else {
-            ObjectListFragment objectListFragment =
-                    (ObjectListFragment) fm.findFragmentByTag(FoclConstants.FRAGMENT_OBJECT_LIST);
-
-            if (objectListFragment == null) {
-                objectListFragment = new ObjectListFragment();
-            }
-
-            objectListFragment.setParams(mFoclStructLayerType, mLineId);
-
-            ft.replace(R.id.main_fragment, objectListFragment, FoclConstants.FRAGMENT_OBJECT_LIST);
+        if (null == objectTypesFragment) {
+            objectTypesFragment = new ObjectTypesFragment();
         }
 
+        objectTypesFragment.setParams(lineId);
+
+        ft.replace(R.id.main_fragment, objectTypesFragment, FoclConstants.FRAGMENT_OBJECT_TYPES);
         ft.addToBackStack(null);
         ft.commit();
     }

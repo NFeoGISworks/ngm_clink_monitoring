@@ -22,30 +22,41 @@
 
 package com.nextgis.ngm_clink_monitoring.fragments;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
+import android.widget.TextView;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.activities.MainActivity;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
+import com.nextgis.ngm_clink_monitoring.map.FoclStruct;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
-import com.nextgis.ngm_clink_monitoring.util.ViewUtil;
 
 
 public class ObjectTypesFragment
         extends Fragment
 {
-    protected FoclProject mFoclProject = null;
+    protected Integer mLineId;
+
+    protected TextView mLineName;
+    protected Button   mBtnCableLaying;
+    protected Button   mBtnFoscMounting;
+    protected Button   mBtnCrossMounting;
+    protected Button   mBtnAccessPointMounting;
+    protected Button   mBtnLineMeasuring;
+
+
+    public void setParams(Integer lineId)
+    {
+        mLineId = lineId;
+    }
 
 
     @Override
@@ -65,128 +76,88 @@ public class ObjectTypesFragment
         final MainActivity activity = (MainActivity) getActivity();
         activity.setBarsView(null);
 
-        final ViewGroup rootView =
-                (ViewGroup) activity.getWindow().getDecorView().findViewById(android.R.id.content);
-
         final View view = inflater.inflate(R.layout.fragment_object_types, null);
 
-        final LinearLayout buttonsLayout = (LinearLayout) view.findViewById(R.id.buttons_layout);
+        mLineName = (TextView) view.findViewById(R.id.line_name_ot);
 
-        final ScrollView scrollView = (ScrollView) view.findViewById(R.id.scroll_view);
-        final Button btnCableLaying = (Button) view.findViewById(R.id.btn_cable_laying);
-        final Button btnFoscMounting = (Button) view.findViewById(R.id.btn_fosc_mounting);
-        final Button btnCrossMounting = (Button) view.findViewById(R.id.btn_cross_mounting);
-        final Button btnAccessPointMounting =
-                (Button) view.findViewById(R.id.btn_access_point_mounting);
-        final Button btnLineMeasuring = (Button) view.findViewById(R.id.btn_line_measuring);
-
-        // Set button height to 1/n of button's display part.
-        // Set a global layout listener which will be called
-        // when the layout pass is completed and the view is drawn
-        buttonsLayout.getViewTreeObserver().addOnGlobalLayoutListener(
-                new ViewTreeObserver.OnGlobalLayoutListener()
-                {
-                    public void onGlobalLayout()
-                    {
-                        //Remove the listener before proceeding
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                            buttonsLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                        } else {
-                            buttonsLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                        }
-
-                        // measure your views here
-
-                        int[] locations_0 = new int[2];
-                        rootView.getLocationInWindow(locations_0);
-                        int rootViewTop = locations_0[1];
-
-                        int rootViewBottom = rootViewTop + rootView.getHeight();
-
-                        int[] locations_1 = new int[2];
-                        btnCableLaying.getLocationInWindow(locations_1);
-                        int buttonsTop = locations_1[1];
-
-                        int buttonMinH = btnCableLaying.getHeight();
-
-                        int buttonMaxH =
-                                (rootViewBottom - ViewUtil.getViewBottomMargin(scrollView) -
-                                 buttonsTop - 4 * ViewUtil.getViewTopMargin(btnCrossMounting)) / 5;
-
-                        if (buttonMaxH > buttonMinH) {
-                            ViewUtil.setViewHeight(btnCableLaying, buttonMaxH);
-                            ViewUtil.setViewHeight(btnFoscMounting, buttonMaxH);
-                            ViewUtil.setViewHeight(btnCrossMounting, buttonMaxH);
-                            ViewUtil.setViewHeight(btnAccessPointMounting, buttonMaxH);
-                            ViewUtil.setViewHeight(btnLineMeasuring, buttonMaxH);
-                        }
-                    }
-                });
-
+        mBtnCableLaying = (Button) view.findViewById(R.id.btn_cable_laying);
+        mBtnFoscMounting = (Button) view.findViewById(R.id.btn_fosc_mounting);
+        mBtnCrossMounting = (Button) view.findViewById(R.id.btn_cross_mounting);
+        mBtnAccessPointMounting = (Button) view.findViewById(R.id.btn_access_point_mounting);
+        mBtnLineMeasuring = (Button) view.findViewById(R.id.btn_line_measuring);
 
         GISApplication app = (GISApplication) getActivity().getApplication();
-        mFoclProject = app.getFoclProject();
+        FoclProject foclProject = app.getFoclProject();
 
-        if (null == mFoclProject) {
-            btnCableLaying.setEnabled(false);
-            btnFoscMounting.setEnabled(false);
-            btnCrossMounting.setEnabled(false);
-            btnAccessPointMounting.setEnabled(false);
-            btnLineMeasuring.setEnabled(false);
+        if (null == foclProject) {
+            setBlockedView();
             return view;
         }
 
-        btnCableLaying.setOnClickListener(
-                new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View v)
-                    {
-                        onButtonClick(FoclConstants.LAYERTYPE_FOCL_OPTICAL_CABLE);
-                    }
-                });
+        FoclStruct foclStruct;
+        try {
+            foclStruct = (FoclStruct) foclProject.getLayer(mLineId);
+        } catch (Exception e) {
+            foclStruct = null;
+        }
 
-        btnFoscMounting.setOnClickListener(
-                new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View v)
-                    {
-                        onButtonClick(FoclConstants.LAYERTYPE_FOCL_FOSC);
-                    }
-                });
+        if (null == foclStruct) {
+            setBlockedView();
+            return view;
+        }
 
-        btnCrossMounting.setOnClickListener(
-                new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View v)
-                    {
-                        onButtonClick(FoclConstants.LAYERTYPE_FOCL_OPTICAL_CROSS);
-                    }
-                });
+        mLineName.setText(Html.fromHtml(foclStruct.getHtmlFormattedName()));
 
-        btnAccessPointMounting.setOnClickListener(
-                new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View v)
-                    {
-                        onButtonClick(FoclConstants.LAYERTYPE_FOCL_ACCESS_POINT);
-                    }
-                });
+        View.OnClickListener buttonOnClickListener = new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                int foclStructLayerType;
 
-        btnLineMeasuring.setOnClickListener(
-                new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View v)
-                    {
-                        onButtonClick(FoclConstants.LAYERTYPE_FOCL_ENDPOINT);
-                    }
-                });
+                switch (v.getId()) {
+                    case R.id.btn_cable_laying:
+                        foclStructLayerType = FoclConstants.LAYERTYPE_FOCL_OPTICAL_CABLE;
+                        break;
+                    case R.id.btn_fosc_mounting:
+                        foclStructLayerType = FoclConstants.LAYERTYPE_FOCL_FOSC;
+                        break;
+                    case R.id.btn_cross_mounting:
+                        foclStructLayerType = FoclConstants.LAYERTYPE_FOCL_OPTICAL_CROSS;
+                        break;
+                    case R.id.btn_access_point_mounting:
+                        foclStructLayerType = FoclConstants.LAYERTYPE_FOCL_ACCESS_POINT;
+                        break;
+                    case R.id.btn_line_measuring:
+                        foclStructLayerType = FoclConstants.LAYERTYPE_FOCL_ENDPOINT;
+                        break;
+                    default:
+                        foclStructLayerType = FoclConstants.LAYERTYPE_FOCL_UNKNOWN;
+                        break;
+                }
+
+                onButtonClick(foclStructLayerType);
+            }
+        };
+
+        mBtnCableLaying.setOnClickListener(buttonOnClickListener);
+        mBtnFoscMounting.setOnClickListener(buttonOnClickListener);
+        mBtnCrossMounting.setOnClickListener(buttonOnClickListener);
+        mBtnAccessPointMounting.setOnClickListener(buttonOnClickListener);
+        mBtnLineMeasuring.setOnClickListener(buttonOnClickListener);
 
         return view;
+    }
+
+
+    protected void setBlockedView()
+    {
+        mLineName.setText("");
+        mBtnCableLaying.setEnabled(false);
+        mBtnFoscMounting.setEnabled(false);
+        mBtnCrossMounting.setEnabled(false);
+        mBtnAccessPointMounting.setEnabled(false);
+        mBtnLineMeasuring.setEnabled(false);
     }
 
 
@@ -195,23 +166,16 @@ public class ObjectTypesFragment
         final FragmentManager fm = getActivity().getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
 
-        StatusBarFragment statusBarFragment =
-                (StatusBarFragment) fm.findFragmentByTag(FoclConstants.FRAGMENT_STATUS_BAR);
+        ObjectListFragment objectListFragment =
+                (ObjectListFragment) fm.findFragmentByTag(FoclConstants.FRAGMENT_OBJECT_LIST);
 
-        if (null != statusBarFragment) {
-            ft.hide(statusBarFragment);
+        if (objectListFragment == null) {
+            objectListFragment = new ObjectListFragment();
         }
 
-        LineListFragment lineListFragment =
-                (LineListFragment) fm.findFragmentByTag(FoclConstants.FRAGMENT_LINE_LIST);
+        objectListFragment.setParams(mLineId, foclStructLayerType);
 
-        if (lineListFragment == null) {
-            lineListFragment = new LineListFragment();
-        }
-
-        lineListFragment.setParams(foclStructLayerType);
-
-        ft.replace(R.id.main_fragment, lineListFragment, FoclConstants.FRAGMENT_LINE_LIST);
+        ft.replace(R.id.main_fragment, objectListFragment, FoclConstants.FRAGMENT_OBJECT_LIST);
         ft.addToBackStack(null);
         ft.commit();
     }
