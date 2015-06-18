@@ -79,10 +79,10 @@
     <string name="no_network_no_sync">НЕТ сети, синхронизация не выполнена</string>
     <string name="perform_sync">Выполняется начальная синхронизация, пожалуйста, подождите.</string>
 
-    <string name="latitude_caption">Шир:</string>
-    <string name="longitude_caption">Долг:</string>
-    <string name="altitude_caption">Высота:</string>
-    <string name="accuracy_caption">Точность:</string>
+    <string name="latitude_caption">Ш:</string>
+    <string name="longitude_caption">Д:</string>
+    <string name="altitude_caption">В:</string>
+    <string name="accuracy_caption">Т:</string>
 
     <string name="altitude_unit">м</string>
     <string name="accuracy_unit">м</string>

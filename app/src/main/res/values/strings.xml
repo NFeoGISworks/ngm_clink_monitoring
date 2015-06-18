@@ -79,10 +79,10 @@
     <string name="no_network_no_sync">NO network, synchronization is not performed</string>
     <string name="perform_sync">Initial synchronization is performed, please wait.</string>
 
-    <string name="latitude_caption">Lat:</string>
-    <string name="longitude_caption">Long:</string>
-    <string name="altitude_caption">Altitude:</string>
-    <string name="accuracy_caption">Accuracy:</string>
+    <string name="latitude_caption">Lt:</string>
+    <string name="longitude_caption">Lg:</string>
+    <string name="altitude_caption">Al:</string>
+    <string name="accuracy_caption">Ac:</string>
 
     <string name="altitude_unit">m</string>
     <string name="accuracy_unit">m</string>
