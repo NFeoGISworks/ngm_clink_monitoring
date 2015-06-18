@@ -23,6 +23,7 @@
 package com.nextgis.ngm_clink_monitoring.fragments;
 
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.location.GpsStatus;
 import android.location.Location;
 import android.os.Bundle;
@@ -36,6 +37,7 @@ import android.widget.TextView;
 import com.nextgis.maplib.api.GpsEventListener;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
+import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
 import com.nextgis.ngm_clink_monitoring.util.LocationUtil;
 
@@ -50,11 +52,13 @@ public class StatusBarFragment
     protected TextView mLongView;
     //    protected TextView mAltView;
     protected TextView mAccView;
+    protected TextView mDistView;
 
     protected String mLatText;
     protected String mLongText;
     protected String mAltText;
     protected String mAccText;
+    protected String mDistText;
 
     protected long mLastLocationMillis;
 
@@ -82,6 +86,7 @@ public class StatusBarFragment
         mLongView = (TextView) view.findViewById(R.id.longitude_view);
 //        mAltView = (TextView) view.findViewById(R.id.altitude_view);
         mAccView = (TextView) view.findViewById(R.id.accuracy_view);
+        mDistView = (TextView) view.findViewById(R.id.distance_view);
 
         setLocationViewsText();
 
@@ -95,6 +100,7 @@ public class StatusBarFragment
         mLongText = "--";
         mAltText = "--";
         mAccText = "--";
+        mDistText = "--";
     }
 
 
@@ -104,6 +110,7 @@ public class StatusBarFragment
         mLongView.setText(getString(R.string.longitude_caption) + " " + mLongText);
 //        mAltView.setText(mAltText);
         mAccView.setText(getString(R.string.accuracy_caption) + " " + mAccText);
+        mDistView.setText(getString(R.string.distance_caption) + " " + mDistText);
     }
 
 
@@ -124,10 +131,10 @@ public class StatusBarFragment
                 FoclSettingsConstantsUI.KEY_PREF_COORD_FORMAT + "_int", Location.FORMAT_DEGREES);
 
         mLatText = LocationUtil.formatLatitude(location.getLatitude(), nFormat, getResources()) +
-                   getString(R.string.coord_lat);
+                getString(R.string.coord_lat);
 
         mLongText = LocationUtil.formatLongitude(location.getLongitude(), nFormat, getResources()) +
-                    getString(R.string.coord_lon);
+                getString(R.string.coord_lon);
 
         DecimalFormat df = new DecimalFormat("0.0");
 
@@ -136,6 +143,11 @@ public class StatusBarFragment
 
         float accuracy = location.getAccuracy();
         mAccText = df.format(accuracy) + getString(R.string.accuracy_unit);
+
+        float distance = 160;
+        mDistText = df.format(distance) + getString(R.string.distance_unit);
+        mDistView.setTextColor(
+                distance > FoclConstants.MAX_DISTANCE_FROM_PREV_POINT ? 0xFF880000 : 0xFF008800);
 
         if (isVisible()) {
             setLocationViewsText();
@@ -157,6 +169,7 @@ public class StatusBarFragment
 
                 if (!mIsGPSFix) { // The fix has been lost.
                     setLocationDefaultText();
+                    mDistView.setTextColor(Color.BLACK);
 
                     if (isVisible()) {
                         setLocationViewsText();
