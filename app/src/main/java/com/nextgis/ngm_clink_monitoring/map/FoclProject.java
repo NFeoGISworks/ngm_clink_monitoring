@@ -259,7 +259,7 @@ public class FoclProject
             foclVectorLayer.setName(layerName);
             foclVectorLayer.setFoclLayerType(foclLayerType);
             foclVectorLayer.setAccountName(mAccountName);
-            foclVectorLayer.setVisible(FoclConstants.LAYERTYPE_FOCL_ENDPOINT != foclLayerType);
+            foclVectorLayer.setVisible(true);
             foclVectorLayer.setSyncType(Constants.SYNC_ATTRIBUTES | Constants.SYNC_ATTACH);
             foclStruct.addLayer(foclVectorLayer);
 

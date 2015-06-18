@@ -50,7 +50,7 @@ public class ObjectTypesFragment
     protected Button   mBtnFoscMounting;
     protected Button   mBtnCrossMounting;
     protected Button   mBtnAccessPointMounting;
-    protected Button   mBtnLineMeasuring;
+    protected Button mBtnHidMounting;
 
 
     public void setParams(Integer lineId)
@@ -84,7 +84,7 @@ public class ObjectTypesFragment
         mBtnFoscMounting = (Button) view.findViewById(R.id.btn_fosc_mounting);
         mBtnCrossMounting = (Button) view.findViewById(R.id.btn_cross_mounting);
         mBtnAccessPointMounting = (Button) view.findViewById(R.id.btn_access_point_mounting);
-        mBtnLineMeasuring = (Button) view.findViewById(R.id.btn_line_measuring);
+        mBtnHidMounting = (Button) view.findViewById(R.id.btn_hid_mounting);
 
         GISApplication app = (GISApplication) getActivity().getApplication();
         FoclProject foclProject = app.getFoclProject();
@@ -128,8 +128,8 @@ public class ObjectTypesFragment
                     case R.id.btn_access_point_mounting:
                         foclStructLayerType = FoclConstants.LAYERTYPE_FOCL_ACCESS_POINT;
                         break;
-                    case R.id.btn_line_measuring:
-                        foclStructLayerType = FoclConstants.LAYERTYPE_FOCL_ENDPOINT;
+                    case R.id.btn_hid_mounting:
+                        foclStructLayerType = FoclConstants.LAYERTYPE_FOCL_HID;
                         break;
                     default:
                         foclStructLayerType = FoclConstants.LAYERTYPE_FOCL_UNKNOWN;
@@ -144,7 +144,7 @@ public class ObjectTypesFragment
         mBtnFoscMounting.setOnClickListener(buttonOnClickListener);
         mBtnCrossMounting.setOnClickListener(buttonOnClickListener);
         mBtnAccessPointMounting.setOnClickListener(buttonOnClickListener);
-        mBtnLineMeasuring.setOnClickListener(buttonOnClickListener);
+        mBtnHidMounting.setOnClickListener(buttonOnClickListener);
 
         return view;
     }
@@ -157,7 +157,7 @@ public class ObjectTypesFragment
         mBtnFoscMounting.setEnabled(false);
         mBtnCrossMounting.setEnabled(false);
         mBtnAccessPointMounting.setEnabled(false);
-        mBtnLineMeasuring.setEnabled(false);
+        mBtnHidMounting.setEnabled(false);
     }
 
 

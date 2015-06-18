@@ -97,7 +97,7 @@ public class FoclStyleRule
                 apStyle.setWidth(3);
                 return apStyle;
 
-            case FoclConstants.LAYERTYPE_FOCL_ENDPOINT:
+            case FoclConstants.LAYERTYPE_FOCL_HID:
                 SimpleTextMarkerStyle epStyle = new SimpleTextMarkerStyle();
                 epStyle.setType(SimpleTextMarkerStyle.MarkerStyleTextCircle);
                 epStyle.setColor(Color.WHITE);
@@ -157,6 +157,7 @@ public class FoclStyleRule
             case FoclConstants.LAYERTYPE_FOCL_FOSC:
             case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CROSS:
             case FoclConstants.LAYERTYPE_FOCL_ACCESS_POINT:
+            case FoclConstants.LAYERTYPE_FOCL_HID:
                 select = new String[] {FIELD_ID, FoclConstants.FIELD_STATUS_BUILT};
 
                 try {
@@ -171,28 +172,6 @@ public class FoclStyleRule
                     if (cursor.moveToFirst()) {
                         status = cursor.getString(
                                 cursor.getColumnIndex(FoclConstants.FIELD_STATUS_BUILT));
-                    }
-                    cursor.close();
-                }
-
-                break;
-
-            case FoclConstants.LAYERTYPE_FOCL_ENDPOINT:
-                select = new String[] {
-                        FIELD_ID, FoclConstants.FIELD_TYPE_ENDPOINT};
-
-                try {
-                    cursor = mVectorLayer.query(uri, select, null, null, null);
-
-                } catch (Exception e) {
-                    Log.d(TAG, e.getLocalizedMessage());
-                    cursor = null;
-                }
-
-                if (null != cursor) {
-                    if (cursor.moveToFirst()) {
-                        type = cursor.getString(
-                                cursor.getColumnIndex(FoclConstants.FIELD_TYPE_ENDPOINT));
                     }
                     cursor.close();
                 }
@@ -310,18 +289,10 @@ public class FoclStyleRule
 
                 break;
 
-            case FoclConstants.LAYERTYPE_FOCL_ENDPOINT:
+            case FoclConstants.LAYERTYPE_FOCL_HID:
                 SimpleTextMarkerStyle epStyle = (SimpleTextMarkerStyle) style;
 
                 switch (type) {
-                    case FoclConstants.FIELD_VALUE_POINT_A:
-                        epStyle.setOutlineColor(Color.RED);
-                        epStyle.setMarkerText("A");
-                        break;
-                    case FoclConstants.FIELD_VALUE_POINT_B:
-                        epStyle.setOutlineColor(Color.BLUE);
-                        epStyle.setMarkerText("B");
-                        break;
                     default:
                         epStyle.setOutlineColor(Color.BLUE);
                         epStyle.setMarkerText("?");

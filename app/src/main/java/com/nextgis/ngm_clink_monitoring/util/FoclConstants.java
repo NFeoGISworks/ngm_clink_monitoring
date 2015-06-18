@@ -42,7 +42,7 @@ public interface FoclConstants
     String JSON_FOSC_VALUE          = "fosc";
     String JSON_OPTICAL_CROSS_VALUE = "optical_cross";
     String JSON_ACCESS_POINT_VALUE  = "access_point";
-    String JSON_ENDPOINT_VALUE      = "endpoint";
+    String JSON_HID_VALUE = "endpoint"; // TODO: change HID value
 
     int LAYERTYPE_FOCL_VECTOR  = 1001;
     int LAYERTYPE_FOCL_STRUCT  = 1002;
@@ -53,23 +53,16 @@ public interface FoclConstants
     int LAYERTYPE_FOCL_FOSC          = 1102;
     int LAYERTYPE_FOCL_OPTICAL_CROSS = 1103;
     int LAYERTYPE_FOCL_ACCESS_POINT  = 1104;
-    int LAYERTYPE_FOCL_ENDPOINT      = 1105;
+    int LAYERTYPE_FOCL_HID = 1105;
 
     String FIELD_NAME              = "name";
     String FIELD_LAYING_METHOD     = "laying_method";
-    String FIELD_TYPE_ENDPOINT     = "type_endpoint";
     String FIELD_STATUS_BUILT      = "status_built";
     String FIELD_STATUS_BUILT_CH   = "status_built_ch";
-    String FIELD_STATUS_MEASURE    = "status_measure";
-    String FIELD_STATUS_MEASURE_CH = "status_measure_ch";
 
     String FIELD_VALUE_UNKNOWN     = "unknown";
-    String FIELD_VALUE_POINT_A     = "point_a";
-    String FIELD_VALUE_POINT_B     = "point_b";
     String FIELD_VALUE_PROJECT     = "project";
     String FIELD_VALUE_BUILT       = "built";
-    String FIELD_VALUE_NOT_MEASURE = "not_measure";
-    String FIELD_VALUE_MEASURE     = "measure";
 
     String FIELD_VALUE_GROUND              = "ground";
     String FIELD_VALUE_AIR_LINK            = "air_link";

@@ -169,21 +169,12 @@ public class ObjectStatusFragment
                 mObjectNameCaption.setText(R.string.access_point_colon);
                 break;
 
-            case FoclConstants.LAYERTYPE_FOCL_ENDPOINT:
-                toolbarTitle = activity.getString(R.string.line_measuring);
+            case FoclConstants.LAYERTYPE_FOCL_HID:
+                toolbarTitle = activity.getString(R.string.hid_mounting);
                 break;
         }
 
         activity.setBarsView(toolbarTitle);
-
-        if (FoclConstants.LAYERTYPE_FOCL_ENDPOINT == mFoclStructLayerType) {
-            mObjectNameCaption.setVisibility(View.GONE);
-            mObjectName.setVisibility(View.GONE);
-
-        } else {
-            mObjectNameCaption.setVisibility(View.VISIBLE);
-            mObjectName.setVisibility(View.VISIBLE);
-        }
 
         mCompleteStatusButton.setText(activity.getString(R.string.completed));
         mPhotoHintText.setText(R.string.take_photos_to_confirm);
@@ -195,7 +186,6 @@ public class ObjectStatusFragment
             setBlockedView();
             return view;
         }
-
 
         FoclStruct foclStruct;
         try {
@@ -209,7 +199,6 @@ public class ObjectStatusFragment
             return view;
         }
 
-
         FoclVectorLayer layer = (FoclVectorLayer) foclStruct.getLayerByFoclType(
                 mFoclStructLayerType);
 
@@ -218,111 +207,52 @@ public class ObjectStatusFragment
             return view;
         }
 
+        if (null == mObjectId) {
+            setBlockedView();
+            return view;
+        }
+
 
         mLineName.setText(Html.fromHtml(foclStruct.getHtmlFormattedName()));
         mObjectLayerName = layer.getPath().getName();
 
-        if (FoclConstants.LAYERTYPE_FOCL_ENDPOINT == mFoclStructLayerType) {
-            Uri uri = Uri.parse(
-                    "content://" + FoclSettingsConstantsUI.AUTHORITY + "/" + mObjectLayerName);
+        Uri uri = Uri.parse(
+                "content://" + FoclSettingsConstantsUI.AUTHORITY + "/" +
+                        mObjectLayerName + "/" + mObjectId);
 
-            String proj[] = {
-                    FIELD_ID,
-                    FoclConstants.FIELD_TYPE_ENDPOINT,
-                    FoclConstants.FIELD_STATUS_MEASURE};
+        String proj[] = {
+                FIELD_ID, FoclConstants.FIELD_NAME, FoclConstants.FIELD_STATUS_BUILT};
 
-            Cursor objectCursor = null;
-            try {
-                objectCursor =
-                        getActivity().getContentResolver().query(uri, proj, null, null, null);
+        Cursor objectCursor;
 
-            } catch (Exception e) {
-                Log.d(TAG, e.getLocalizedMessage());
+        try {
+            objectCursor = getActivity().getContentResolver().query(uri, proj, null, null, null);
+
+        } catch (Exception e) {
+            Log.d(TAG, e.getLocalizedMessage());
+            objectCursor = null;
+        }
+
+        if (null != objectCursor && objectCursor.getCount() == 1 &&
+                objectCursor.moveToFirst()) {
+
+            String objectNameText = ObjectCursorAdapter.getObjectName(mContext, objectCursor);
+            mObjectStatus = objectCursor.getString(
+                    objectCursor.getColumnIndex(FoclConstants.FIELD_STATUS_BUILT));
+            objectCursor.close();
+
+            if (TextUtils.isEmpty(mObjectStatus)) {
+                mObjectStatus = FoclConstants.FIELD_VALUE_UNKNOWN;
             }
 
-            boolean found = false;
-
-            if (null != objectCursor) {
-
-                if (objectCursor.moveToFirst()) {
-                    int typeEndpointColId =
-                            objectCursor.getColumnIndex(FoclConstants.FIELD_TYPE_ENDPOINT);
-                    int idColId = objectCursor.getColumnIndex(FIELD_ID);
-                    int statusMeasureColId =
-                            objectCursor.getColumnIndex(FoclConstants.FIELD_STATUS_MEASURE);
-
-                    do {
-                        String typeEndpoint = objectCursor.getString(typeEndpointColId);
-
-                        if (!TextUtils.isEmpty(typeEndpoint) &&
-                                typeEndpoint.equals(FoclConstants.FIELD_VALUE_POINT_B)) {
-
-                            mObjectId = objectCursor.getLong(idColId);
-                            mObjectStatus = objectCursor.getString(statusMeasureColId);
-
-                            if (TextUtils.isEmpty(mObjectStatus)) {
-                                mObjectStatus = FoclConstants.FIELD_VALUE_UNKNOWN;
-                            }
-
-                            found = true;
-                            break;
-                        }
-
-                    } while (objectCursor.moveToNext());
-                }
-
-                objectCursor.close();
-            }
-
-            setStatusButtonView(found);
-            mMakePhotoButton.setEnabled(found);
-            setPhotoGalleryVisibility(found);
+            mObjectName.setText(objectNameText);
+            setStatusButtonView(true);
 
         } else {
-
-            if (null == mObjectId) {
-                setBlockedView();
-                return view;
-            }
-
-            Uri uri = Uri.parse(
-                    "content://" + FoclSettingsConstantsUI.AUTHORITY + "/" +
-                            mObjectLayerName + "/" + mObjectId);
-
-            String proj[] = {
-                    FIELD_ID, FoclConstants.FIELD_NAME, FoclConstants.FIELD_STATUS_BUILT};
-
-            Cursor objectCursor;
-
-            try {
-                objectCursor =
-                        getActivity().getContentResolver().query(uri, proj, null, null, null);
-
-            } catch (Exception e) {
-                Log.d(TAG, e.getLocalizedMessage());
-                objectCursor = null;
-            }
-
-            if (null != objectCursor && objectCursor.getCount() == 1 &&
-                    objectCursor.moveToFirst()) {
-
-                String objectNameText = ObjectCursorAdapter.getObjectName(mContext, objectCursor);
-                mObjectStatus = objectCursor.getString(
-                        objectCursor.getColumnIndex(FoclConstants.FIELD_STATUS_BUILT));
-                objectCursor.close();
-
-                if (TextUtils.isEmpty(mObjectStatus)) {
-                    mObjectStatus = FoclConstants.FIELD_VALUE_UNKNOWN;
-                }
-
-                mObjectName.setText(objectNameText);
-                setStatusButtonView(true);
-
-            } else {
-                setBlockedView();
-                return view;
-            }
+            setBlockedView();
+            return view;
         }
+
 
         View.OnClickListener statusButtonOnClickListener = new View.OnClickListener()
         {
@@ -338,21 +268,9 @@ public class ObjectStatusFragment
                         mObjectStatus = FoclConstants.FIELD_VALUE_PROJECT;
                         break;
 
-                    case FoclConstants.FIELD_VALUE_NOT_MEASURE:
-                        mObjectStatus = FoclConstants.FIELD_VALUE_MEASURE;
-                        break;
-
-                    case FoclConstants.FIELD_VALUE_MEASURE:
-                        mObjectStatus = FoclConstants.FIELD_VALUE_NOT_MEASURE;
-                        break;
-
                     case FoclConstants.FIELD_VALUE_UNKNOWN:
                     default:
-                        if (FoclConstants.LAYERTYPE_FOCL_ENDPOINT == mFoclStructLayerType) {
-                            mObjectStatus = FoclConstants.FIELD_VALUE_MEASURE;
-                        } else {
-                            mObjectStatus = FoclConstants.FIELD_VALUE_BUILT;
-                        }
+                        mObjectStatus = FoclConstants.FIELD_VALUE_BUILT;
                         break;
                 }
 
@@ -363,14 +281,8 @@ public class ObjectStatusFragment
                 ContentValues values = new ContentValues();
                 Calendar calendar = Calendar.getInstance();
 
-                if (FoclConstants.LAYERTYPE_FOCL_ENDPOINT == mFoclStructLayerType) {
-                    values.put(FoclConstants.FIELD_STATUS_MEASURE, mObjectStatus);
-                    values.put(FoclConstants.FIELD_STATUS_MEASURE_CH, calendar.getTimeInMillis());
-
-                } else {
-                    values.put(FoclConstants.FIELD_STATUS_BUILT, mObjectStatus);
-                    values.put(FoclConstants.FIELD_STATUS_BUILT_CH, calendar.getTimeInMillis());
-                }
+                values.put(FoclConstants.FIELD_STATUS_BUILT, mObjectStatus);
+                values.put(FoclConstants.FIELD_STATUS_BUILT_CH, calendar.getTimeInMillis());
 
                 int result = 0;
                 try {
@@ -577,7 +489,6 @@ public class ObjectStatusFragment
 
             switch (mObjectStatus) {
                 case FoclConstants.FIELD_VALUE_PROJECT:
-                case FoclConstants.FIELD_VALUE_NOT_MEASURE:
                 case FoclConstants.FIELD_VALUE_UNKNOWN:
                 default:
                     mCompleteStatusButton.setCompoundDrawablesWithIntrinsicBounds(
@@ -585,7 +496,6 @@ public class ObjectStatusFragment
                     break;
 
                 case FoclConstants.FIELD_VALUE_BUILT:
-                case FoclConstants.FIELD_VALUE_MEASURE:
                     mCompleteStatusButton.setCompoundDrawablesWithIntrinsicBounds(
                             0, 0, R.drawable.ic_checked_500, 0);
                     break;
@@ -797,8 +707,8 @@ public class ObjectStatusFragment
                 prefix = "Access_Point_Mounting_";
                 break;
 
-            case FoclConstants.LAYERTYPE_FOCL_ENDPOINT:
-                prefix = "Line_Measuring_";
+            case FoclConstants.LAYERTYPE_FOCL_HID:
+                prefix = "HID_";
                 break;
         }
 

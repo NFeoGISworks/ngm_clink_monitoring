@@ -98,8 +98,8 @@
                     />
 
                 <Button
-                    android:id="@+id/btn_line_measuring"
-                    android:text="@string/line_measuring"
+                    android:id="@+id/btn_hid_mounting"
+                    android:text="@string/hid_mounting"
                     style="@style/startButtonMiddle"
                     />
 

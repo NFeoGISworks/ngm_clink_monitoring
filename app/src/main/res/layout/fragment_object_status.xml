@@ -70,14 +70,12 @@
                     android:layout_marginTop="10dp"
                     android:text="@string/optical_cable_colon"
                     android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:visibility="visible"
                     />
 
                 <TextView
                     android:id="@+id/object_name"
                     android:text="@string/optical_cable_colon"
                     style="@style/selectedObjectStyle"
-                    android:visibility="visible"
                     />
 
                 <TextView
@@ -87,7 +85,6 @@
                     android:text="@string/specify_work_status"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:gravity="center"
-                    android:visibility="visible"
                     />
 
                 <Button
