@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Project:  NextGIS mobile apps for Compulink
  * Purpose:  Mobile GIS for Android
  * Authors:  Dmitry Baryshnikov (aka Bishop), polimax@mail.ru
@@ -18,7 +18,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ******************************************************************************/
+ */
 
 package com.nextgis.ngm_clink_monitoring.activities;
 
