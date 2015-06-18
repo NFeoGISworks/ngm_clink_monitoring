@@ -144,7 +144,12 @@ public class StatusBarFragment
         float accuracy = location.getAccuracy();
         mAccText = df.format(accuracy) + getString(R.string.accuracy_unit);
 
-        float distance = 160;
+        // TODO: prevPointLocation
+        Location prevPointLocation = new Location("");
+        prevPointLocation.setLatitude(9);
+        prevPointLocation.setLongitude(36);
+        float distance = location.distanceTo(prevPointLocation);
+
         mDistText = df.format(distance) + getString(R.string.distance_unit);
         mDistView.setTextColor(
                 distance > FoclConstants.MAX_DISTANCE_FROM_PREV_POINT ? 0xFF880000 : 0xFF008800);
