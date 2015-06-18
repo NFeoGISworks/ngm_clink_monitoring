@@ -31,7 +31,6 @@ public interface FoclConstants
     String FRAGMENT_LINE_LIST        = "LineList";
     String FRAGMENT_OBJECT_LIST      = "ObjectList";
     String FRAGMENT_OBJECT_STATUS    = "ObjectStatus";
-    String FRAGMENT_OBJECT_MEASURE   = "ObjectMeasure";
     String FRAGMENT_MAP              = "Map";
     String FRAGMENT_ATTRIBUTES       = "Attributes";
 
