@@ -26,6 +26,7 @@ import android.accounts.Account;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SyncResult;
 import android.content.SyncStatusObserver;
@@ -37,12 +38,16 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.api.ILayer;
@@ -93,6 +98,7 @@ public class MainActivity
     protected boolean mIsSyncing = false;
 
     protected Toolbar           mToolbar;
+    protected TextView mCustomToolbarTitle;
     protected StatusBarFragment mStatusBarFragment;
 
 
@@ -135,6 +141,31 @@ public class MainActivity
         mToolbar.setTitle(""); // needed for screen rotation
         mToolbar.getBackground().setAlpha(255);
         setSupportActionBar(mToolbar);
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            // Inflate a custom action bar that contains the "done" button
+            LayoutInflater inflater =
+                    (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View customActionBarView = inflater.inflate(R.layout.editor_custom_action_bar, null);
+
+            View saveMenuItem = customActionBarView.findViewById(R.id.save_menu_item);
+            saveMenuItem.setOnClickListener(
+                    new View.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(View v)
+                        {
+                        }
+                    });
+
+            mCustomToolbarTitle =
+                    (TextView) customActionBarView.findViewById(R.id.custom_toolbar_title);
+
+            actionBar.setDisplayOptions(0, ActionBar.DISPLAY_SHOW_CUSTOM);
+            actionBar.setCustomView(customActionBarView);
+        }
+
 
         FragmentManager fm = getSupportFragmentManager();
         mStatusBarFragment =
@@ -269,29 +300,64 @@ public class MainActivity
             return;
         }
 
-        mToolbar.setTitle(toolbarTitle == null ? getTitle() : toolbarTitle);
-
         String tag = getMainFragmentTag();
 
         if (TextUtils.isEmpty(tag)) {
             tag = "";
         }
 
+
+        ActionBar actionBar = getSupportActionBar();
+
         switch (tag) {
             case FoclConstants.FRAGMENT_SYNC_LOGIN:
             case FoclConstants.FRAGMENT_PERFORM_1ST_SYNC:
             case FoclConstants.FRAGMENT_LINE_LIST:
+            case FoclConstants.FRAGMENT_OBJECT_TYPES:
+            case FoclConstants.FRAGMENT_OBJECT_LIST:
+            case FoclConstants.FRAGMENT_MAP:
+            default:
+                if (actionBar != null) {
+                    // We want the UP affordance but no app icon.
+                    // Setting HOME_AS_UP, SHOW_TITLE and clearing SHOW_HOME does the trick.
+                    actionBar.setDisplayOptions(
+                            ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE,
+                            ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE |
+                                    ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_CUSTOM);
+                    mToolbar.setTitle(toolbarTitle == null ? getTitle() : toolbarTitle);
+                }
+                break;
+
+            case FoclConstants.FRAGMENT_OBJECT_STATUS:
+                if (actionBar != null) {
+                    // Show the custom action bar but hide the home icon and title
+                    actionBar.setDisplayOptions(
+                            ActionBar.DISPLAY_SHOW_CUSTOM,
+                            ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME |
+                                    ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE |
+                                    ActionBar.DISPLAY_USE_LOGO);
+                    mCustomToolbarTitle.setText(toolbarTitle == null ? getTitle() : toolbarTitle);
+                }
+                break;
+        }
+
+
+        switch (tag) {
+            case FoclConstants.FRAGMENT_SYNC_LOGIN:
+            case FoclConstants.FRAGMENT_PERFORM_1ST_SYNC:
+            case FoclConstants.FRAGMENT_LINE_LIST:
+            case FoclConstants.FRAGMENT_OBJECT_STATUS:
             default:
                 mToolbar.setNavigationIcon(null);
                 break;
 
             case FoclConstants.FRAGMENT_OBJECT_TYPES:
             case FoclConstants.FRAGMENT_OBJECT_LIST:
-            case FoclConstants.FRAGMENT_OBJECT_STATUS:
             case FoclConstants.FRAGMENT_MAP:
                 mToolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
                 break;
         }
+
 
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();

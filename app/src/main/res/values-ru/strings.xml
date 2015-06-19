@@ -150,4 +150,6 @@
     <string name="based_on"><![CDATA[Основано на <a href=\"http://nextgis.ru/nextgis-mobile\">NextGIS Mobile</a>]]></string>
     <string name="copyright"><![CDATA[Copyright © <a href=\"http://nextgis.com\">NextGIS</a>, 2012–2015]]></string>
 
+    <string name="menu_done">Готово</string>
+
 </resources>
