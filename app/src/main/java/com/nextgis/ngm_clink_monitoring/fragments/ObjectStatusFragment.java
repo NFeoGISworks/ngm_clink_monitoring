@@ -38,6 +38,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -305,6 +306,13 @@ public class ObjectStatusFragment
                 }
             }
         };
+
+        ActionBar actionBar = activity.getSupportActionBar();
+        if (actionBar != null) {
+            View customActionBarView = actionBar.getCustomView();
+            View saveMenuItem = customActionBarView.findViewById(R.id.save_menu_item);
+            saveMenuItem.setOnClickListener(statusButtonOnClickListener); // TODO: it is test
+        }
 
         mCompleteStatusButton.setOnClickListener(statusButtonOnClickListener);
 

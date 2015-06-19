@@ -149,16 +149,6 @@ public class MainActivity
                     (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View customActionBarView = inflater.inflate(R.layout.editor_custom_action_bar, null);
 
-            View saveMenuItem = customActionBarView.findViewById(R.id.save_menu_item);
-            saveMenuItem.setOnClickListener(
-                    new View.OnClickListener()
-                    {
-                        @Override
-                        public void onClick(View v)
-                        {
-                        }
-                    });
-
             mCustomToolbarTitle =
                     (TextView) customActionBarView.findViewById(R.id.custom_toolbar_title);
 
