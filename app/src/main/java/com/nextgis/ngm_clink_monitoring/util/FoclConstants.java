@@ -41,7 +41,7 @@ public interface FoclConstants
     String JSON_FOSC_VALUE          = "fosc";
     String JSON_OPTICAL_CROSS_VALUE = "optical_cross";
     String JSON_ACCESS_POINT_VALUE  = "access_point";
-    String JSON_HID_VALUE = "endpoint"; // TODO: change HID value
+    String JSON_HID_VALUE           = "endpoint"; // TODO: change HID value
 
     int LAYERTYPE_FOCL_VECTOR  = 1001;
     int LAYERTYPE_FOCL_STRUCT  = 1002;
@@ -52,16 +52,16 @@ public interface FoclConstants
     int LAYERTYPE_FOCL_FOSC          = 1102;
     int LAYERTYPE_FOCL_OPTICAL_CROSS = 1103;
     int LAYERTYPE_FOCL_ACCESS_POINT  = 1104;
-    int LAYERTYPE_FOCL_HID = 1105;
+    int LAYERTYPE_FOCL_HID           = 1105;
 
-    String FIELD_NAME              = "name";
-    String FIELD_LAYING_METHOD     = "laying_method";
-    String FIELD_STATUS_BUILT      = "status_built";
-    String FIELD_STATUS_BUILT_CH   = "status_built_ch";
+    String FIELD_NAME            = "name";
+    String FIELD_LAYING_METHOD   = "laying_method";
+    String FIELD_STATUS_BUILT    = "status_built";
+    String FIELD_STATUS_BUILT_CH = "status_built_ch";
 
-    String FIELD_VALUE_UNKNOWN     = "unknown";
-    String FIELD_VALUE_PROJECT     = "project";
-    String FIELD_VALUE_BUILT       = "built";
+    String FIELD_VALUE_UNKNOWN = "unknown";
+    String FIELD_VALUE_PROJECT = "project";
+    String FIELD_VALUE_BUILT   = "built";
 
     String FIELD_VALUE_GROUND              = "ground";
     String FIELD_VALUE_AIR_LINK            = "air_link";
@@ -70,8 +70,8 @@ public interface FoclConstants
     String FIELD_VALUE_SEWER               = "sewer";
     String FIELD_VALUE_BUILDING            = "building";
 
-    String FOCL_PROJECT      = "FOCL_project";
-    String FOCL_ACCOUNT_NAME = "Compulink Monitoring";
+    String FOCL_PROJECT             = "FOCL_project";
+    String FOCL_ACCOUNT_NAME        = "Compulink Monitoring";
     //TODO: remove it
     //String FOCL_DEFAULT_ACCOUNT_URL = "http://176.9.38.120/cl2";
     String FOCL_DEFAULT_ACCOUNT_URL = "https://gis.compulink.ru";
@@ -86,4 +86,5 @@ public interface FoclConstants
     int PHOTO_JPEG_COMPRESS_QUALITY = 75;
 
     int MAX_DISTANCE_FROM_PREV_POINT = 150;
+    int MAX_ACCURACY                 = 20;
 }
