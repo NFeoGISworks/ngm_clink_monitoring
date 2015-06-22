@@ -60,7 +60,7 @@ public class ObjectListFragment
 
     protected Integer mLineId;
     protected String  mObjectLayerName;
-    protected Long mObjectId;
+    protected Long    mObjectId;
     protected Cursor  mAdapterCursor;
 
     protected Integer mFoclStructLayerType = FoclConstants.LAYERTYPE_FOCL_UNKNOWN;

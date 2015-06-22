@@ -102,7 +102,7 @@ public class ObjectStatusFragment
     protected String mObjectStatus = FoclConstants.FIELD_VALUE_UNKNOWN;
 
     protected ObjectPhotoAdapter mObjectPhotoAdapter;
-    protected Cursor mAttachesCursor;
+    protected Cursor             mAttachesCursor;
 
     protected String mTempPhotoPath = null;
 

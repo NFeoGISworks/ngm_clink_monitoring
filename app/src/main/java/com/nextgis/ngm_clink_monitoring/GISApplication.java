@@ -71,7 +71,7 @@ public class GISApplication
                    NGWSettingsActivity.OnDeleteAccountListener
 {
     protected MapDrawable    mMap;
-    protected NetworkUtil mNet;
+    protected NetworkUtil    mNet;
     protected GpsEventSource mGpsEventSource;
     protected SyncReceiver   mSyncReceiver;
 

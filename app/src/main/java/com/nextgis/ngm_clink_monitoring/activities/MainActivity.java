@@ -85,20 +85,20 @@ public class MainActivity
         implements GISApplication.OnReloadMapListener, GISApplication.OnAccountAddedListener,
                    GISApplication.OnAccountDeletedListener
 {
-    protected static final int VIEW_STATE_UNKNOWN = 0;
-    protected static final int VIEW_STATE_LOGIN   = 1;
+    protected static final int VIEW_STATE_UNKNOWN  = 0;
+    protected static final int VIEW_STATE_LOGIN    = 1;
     protected static final int VIEW_STATE_1ST_SYNC = 2;
     protected static final int VIEW_STATE_OBJECTS  = 3;
-    protected static final int VIEW_STATE_MAP     = 4;
+    protected static final int VIEW_STATE_MAP      = 4;
 
     protected SyncStatusObserver mSyncStatusObserver;
     protected Object             mSyncHandle;
 
-    protected int mViewState = VIEW_STATE_LOGIN;
+    protected int     mViewState = VIEW_STATE_LOGIN;
     protected boolean mIsSyncing = false;
 
     protected Toolbar           mToolbar;
-    protected TextView mCustomToolbarTitle;
+    protected TextView          mCustomToolbarTitle;
     protected StatusBarFragment mStatusBarFragment;
 
 

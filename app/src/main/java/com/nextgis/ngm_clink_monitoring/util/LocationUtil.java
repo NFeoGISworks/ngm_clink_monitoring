@@ -156,7 +156,8 @@ public class LocationUtil
     {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
 
-        alertDialog.setIcon(R.drawable.ic_action_warning).setCancelable(false)
+        alertDialog.setIcon(R.drawable.ic_action_warning)
+                .setCancelable(false)
                 .setTitle(context.getResources().getString(R.string.location_off))
                 .setMessage(context.getResources().getString(R.string.location_off_message))
                 .setPositiveButton(

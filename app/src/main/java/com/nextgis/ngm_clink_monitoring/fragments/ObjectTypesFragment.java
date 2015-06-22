@@ -50,7 +50,7 @@ public class ObjectTypesFragment
     protected Button   mBtnFoscMounting;
     protected Button   mBtnCrossMounting;
     protected Button   mBtnAccessPointMounting;
-    protected Button mBtnHidMounting;
+    protected Button   mBtnHidMounting;
 
 
     public void setParams(Integer lineId)

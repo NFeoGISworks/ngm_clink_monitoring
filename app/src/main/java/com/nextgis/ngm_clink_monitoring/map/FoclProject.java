@@ -55,7 +55,7 @@ public class FoclProject
         extends LayerGroup
         implements INGWLayer
 {
-    protected static final String JSON_ACCOUNT_KEY  = "account";
+    protected static final String JSON_ACCOUNT_KEY = "account";
 
     protected NetworkUtil mNet;
 
