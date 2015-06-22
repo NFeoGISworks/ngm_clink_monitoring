@@ -152,4 +152,6 @@
 
     <string name="menu_done">Done</string>
 
+    <string name="coordinate_refining">Coordinate refining</string>
+
 </resources>

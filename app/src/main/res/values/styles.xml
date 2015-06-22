@@ -179,4 +179,11 @@
 
     </style>
 
+    <style name="ProgressBar.Horizontal"
+           parent="@android:style/Widget.ProgressBar.Horizontal">
+
+        <item name="@android:progressDrawable">@drawable/progress_horizontal</item>
+
+    </style>
+
 </resources>

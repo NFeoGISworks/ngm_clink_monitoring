@@ -85,6 +85,12 @@ public interface FoclConstants
     int PHOTO_MAX_SIZE_PX           = 640;
     int PHOTO_JPEG_COMPRESS_QUALITY = 75;
 
-    int MAX_DISTANCE_FROM_PREV_POINT = 150;
-    int MAX_ACCURACY                 = 20;
+    int    MAX_DISTANCE_FROM_PREV_POINT    = 150;
+
+    int    MAX_ACCURACY                    = 10;
+    int    MIN_ACCURACY_TAKE_COUNT         = 5;
+    int    MAX_ACCURACY_TAKE_COUNT         = 10;
+    long   MAX_ACCURACY_TAKE_TIME          = 60000;
+    long   ACCURACY_PUBLISH_PROGRESS_DELAY = 500;
+    String ACCURACY_CIRCULAR_ERROR_STR     = "CE50";
 }

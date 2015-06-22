@@ -20,7 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextgis.ngm_clink_monitoring.fragments;
+package com.nextgis.ngm_clink_monitoring.dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

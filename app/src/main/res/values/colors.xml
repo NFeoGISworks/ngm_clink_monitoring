@@ -37,6 +37,28 @@
     <color name="color_800">#37474f</color>
     <color name="color_900">#263238</color>
 
+    <color name="color_50_ff">#ffeceff1</color>
+    <color name="color_100_ff">#ffcfd8dc</color>
+    <color name="color_200_ff">#ffb0bec5</color>
+    <color name="color_300_ff">#ff90a4ae</color>
+    <color name="color_400_ff">#ff78909c</color>
+    <color name="color_500_ff">#ff607d8b</color>
+    <color name="color_600_ff">#ff546e7a</color>
+    <color name="color_700_ff">#ff455a64</color>
+    <color name="color_800_ff">#ff37474f</color>
+    <color name="color_900_ff">#ff263238</color>
+
+    <color name="color_50_a0">#a0eceff1</color>
+    <color name="color_100_a0">#a0cfd8dc</color>
+    <color name="color_200_a0">#a0b0bec5</color>
+    <color name="color_300_a0">#a090a4ae</color>
+    <color name="color_400_a0">#a078909c</color>
+    <color name="color_500_a0">#a0607d8b</color>
+    <color name="color_600_a0">#a0546e7a</color>
+    <color name="color_700_a0">#a0455a64</color>
+    <color name="color_800_a0">#a037474f</color>
+    <color name="color_900_a0">#a0263238</color>
+
     <!--Teal color palettes--><!--http://www.google.co.uk/design/spec/style/color.html#color-color-palette -->
     <color name="color_2nd_500">#009688</color>
 

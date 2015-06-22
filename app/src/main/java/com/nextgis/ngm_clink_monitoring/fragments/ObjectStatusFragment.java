@@ -37,6 +37,7 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
@@ -57,6 +58,7 @@ import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.activities.MainActivity;
 import com.nextgis.ngm_clink_monitoring.adapters.ObjectCursorAdapter;
 import com.nextgis.ngm_clink_monitoring.adapters.ObjectPhotoAdapter;
+import com.nextgis.ngm_clink_monitoring.dialogs.CoordinateRefiningDialog;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 import com.nextgis.ngm_clink_monitoring.map.FoclStruct;
 import com.nextgis.ngm_clink_monitoring.map.FoclVectorLayer;
@@ -104,7 +106,8 @@ public class ObjectStatusFragment
     protected ObjectPhotoAdapter mObjectPhotoAdapter;
     protected Cursor             mAttachesCursor;
 
-    protected String mTempPhotoPath = null;
+    protected String  mTempPhotoPath         = null;
+    protected boolean mHasAccurateCoordinate = false;
 
 
     public void setParams(
@@ -384,6 +387,20 @@ public class ObjectStatusFragment
             mAttachesCursor.close();
         }
         super.onDestroyView();
+    }
+
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+
+        if (!mHasAccurateCoordinate) {
+            mHasAccurateCoordinate = true;
+            DialogFragment coordRefiningDialog = new CoordinateRefiningDialog();
+            coordRefiningDialog.show(
+                    getActivity().getSupportFragmentManager(), "CoordinateRefining");
+        }
     }
 
 

@@ -52,6 +52,7 @@ import com.nextgis.maplibui.util.ConstantsUI;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.activities.MainActivity;
+import com.nextgis.ngm_clink_monitoring.dialogs.AttributesDialog;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
 import com.nextgis.ngm_clink_monitoring.util.ViewUtil;
