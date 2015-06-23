@@ -57,20 +57,36 @@ public class FoclVectorLayer
 
     public static int getFoclLayerTypeFromString(String type)
     {
+        if (type.equals(FoclConstants.JSON_OPTICAL_CABLE_VALUE)) {
+            return FoclConstants.LAYERTYPE_FOCL_OPTICAL_CABLE;
+        }
         if (type.equals(FoclConstants.JSON_FOSC_VALUE)) {
             return FoclConstants.LAYERTYPE_FOCL_FOSC;
         }
         if (type.equals(FoclConstants.JSON_OPTICAL_CROSS_VALUE)) {
             return FoclConstants.LAYERTYPE_FOCL_OPTICAL_CROSS;
         }
-        if (type.equals(FoclConstants.JSON_OPTICAL_CABLE_VALUE)) {
-            return FoclConstants.LAYERTYPE_FOCL_OPTICAL_CABLE;
-        }
         if (type.equals(FoclConstants.JSON_ACCESS_POINT_VALUE)) {
             return FoclConstants.LAYERTYPE_FOCL_ACCESS_POINT;
         }
         if (type.equals(FoclConstants.JSON_SPECIAL_TRANSITION_VALUE)) {
             return FoclConstants.LAYERTYPE_FOCL_SPECIAL_TRANSITION;
+        }
+
+        if (type.equals(FoclConstants.JSON_REAL_OPTICAL_CABLE_POINT_VALUE)) {
+            return FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT;
+        }
+        if (type.equals(FoclConstants.JSON_REAL_FOSC_VALUE)) {
+            return FoclConstants.LAYERTYPE_FOCL_REAL_FOSC;
+        }
+        if (type.equals(FoclConstants.JSON_REAL_OPTICAL_CROSS_VALUE)) {
+            return FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CROSS;
+        }
+        if (type.equals(FoclConstants.JSON_REAL_ACCESS_POINT_VALUE)) {
+            return FoclConstants.LAYERTYPE_FOCL_REAL_ACCESS_POINT;
+        }
+        if (type.equals(FoclConstants.JSON_REAL_SPECIAL_TRANSITION_POINT_VALUE)) {
+            return FoclConstants.LAYERTYPE_FOCL_REAL_SPECIAL_TRANSITION_POINT;
         }
 
         return FoclConstants.LAYERTYPE_FOCL_UNKNOWN;
