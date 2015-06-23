@@ -69,8 +69,8 @@ public class FoclVectorLayer
         if (type.equals(FoclConstants.JSON_ACCESS_POINT_VALUE)) {
             return FoclConstants.LAYERTYPE_FOCL_ACCESS_POINT;
         }
-        if (type.equals(FoclConstants.JSON_HID_VALUE)) {
-            return FoclConstants.LAYERTYPE_FOCL_HID;
+        if (type.equals(FoclConstants.JSON_SPECIAL_TRANSITION_VALUE)) {
+            return FoclConstants.LAYERTYPE_FOCL_SPECIAL_TRANSITION;
         }
 
         return FoclConstants.LAYERTYPE_FOCL_UNKNOWN;

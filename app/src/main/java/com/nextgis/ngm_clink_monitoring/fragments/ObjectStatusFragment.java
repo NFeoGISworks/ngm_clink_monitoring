@@ -173,7 +173,7 @@ public class ObjectStatusFragment
                 mObjectNameCaption.setText(R.string.access_point_colon);
                 break;
 
-            case FoclConstants.LAYERTYPE_FOCL_HID:
+            case FoclConstants.LAYERTYPE_FOCL_SPECIAL_TRANSITION:
                 toolbarTitle = activity.getString(R.string.hid_mounting);
                 break;
         }
@@ -732,7 +732,7 @@ public class ObjectStatusFragment
                 prefix = "Access_Point_Mounting_";
                 break;
 
-            case FoclConstants.LAYERTYPE_FOCL_HID:
+            case FoclConstants.LAYERTYPE_FOCL_SPECIAL_TRANSITION:
                 prefix = "HID_";
                 break;
         }

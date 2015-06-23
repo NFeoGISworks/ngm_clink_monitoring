@@ -129,7 +129,7 @@ public class ObjectTypesFragment
                         foclStructLayerType = FoclConstants.LAYERTYPE_FOCL_ACCESS_POINT;
                         break;
                     case R.id.btn_hid_mounting:
-                        foclStructLayerType = FoclConstants.LAYERTYPE_FOCL_HID;
+                        foclStructLayerType = FoclConstants.LAYERTYPE_FOCL_SPECIAL_TRANSITION;
                         break;
                     default:
                         foclStructLayerType = FoclConstants.LAYERTYPE_FOCL_UNKNOWN;

@@ -37,24 +37,38 @@ public interface FoclConstants
     String JSON_REGION_KEY   = "region";
     String JSON_DISTRICT_KEY = "district";
 
-    String JSON_OPTICAL_CABLE_VALUE = "optical_cable";
-    String JSON_FOSC_VALUE          = "fosc";
-    String JSON_OPTICAL_CROSS_VALUE = "optical_cross";
-    String JSON_ACCESS_POINT_VALUE  = "access_point";
-    String JSON_HID_VALUE           = "endpoint"; // TODO: change HID value
+    String JSON_OPTICAL_CABLE_VALUE      = "optical_cable";
+    String JSON_FOSC_VALUE               = "fosc";
+    String JSON_OPTICAL_CROSS_VALUE      = "optical_cross";
+    String JSON_ACCESS_POINT_VALUE       = "access_point";
+    String JSON_SPECIAL_TRANSITION_VALUE = "special_transition";
+
+    String JSON_REAL_OPTICAL_CABLE_POINT_VALUE      = "real_optical_cable_point";
+    String JSON_REAL_FOSC_VALUE                     = "real_fosc";
+    String JSON_REAL_OPTICAL_CROSS_VALUE            = "real_optical_cross";
+    String JSON_REAL_ACCESS_POINT_VALUE             = "real_access_point";
+    String JSON_REAL_SPECIAL_TRANSITION_POINT_VALUE = "real_special_transition_point";
 
     int LAYERTYPE_FOCL_VECTOR  = 1001;
     int LAYERTYPE_FOCL_STRUCT  = 1002;
     int LAYERTYPE_FOCL_PROJECT = 1003;
 
-    int LAYERTYPE_FOCL_UNKNOWN       = 1100;
-    int LAYERTYPE_FOCL_OPTICAL_CABLE = 1101;
-    int LAYERTYPE_FOCL_FOSC          = 1102;
-    int LAYERTYPE_FOCL_OPTICAL_CROSS = 1103;
-    int LAYERTYPE_FOCL_ACCESS_POINT  = 1104;
-    int LAYERTYPE_FOCL_HID           = 1105;
+    int LAYERTYPE_FOCL_UNKNOWN            = 1100;
+    int LAYERTYPE_FOCL_OPTICAL_CABLE      = 1101;
+    int LAYERTYPE_FOCL_FOSC               = 1102;
+    int LAYERTYPE_FOCL_OPTICAL_CROSS      = 1103;
+    int LAYERTYPE_FOCL_ACCESS_POINT       = 1104;
+    int LAYERTYPE_FOCL_SPECIAL_TRANSITION = 1105;
 
-    String FIELD_NAME            = "name";
+    int LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT      = 1101;
+    int LAYERTYPE_FOCL_REAL_FOSC                     = 1102;
+    int LAYERTYPE_FOCL_REAL_OPTICAL_CROSS            = 1103;
+    int LAYERTYPE_FOCL_REAL_ACCESS_POINT             = 1104;
+    int LAYERTYPE_FOCL_REAL_SPECIAL_TRANSITION_POINT = 1105;
+
+    String FIELD_NAME        = "name";
+    String FIELD_DESCRIPTION = "description";
+
     String FIELD_LAYING_METHOD   = "laying_method";
     String FIELD_STATUS_BUILT    = "status_built";
     String FIELD_STATUS_BUILT_CH = "status_built_ch";
@@ -85,7 +99,7 @@ public interface FoclConstants
     int PHOTO_MAX_SIZE_PX           = 640;
     int PHOTO_JPEG_COMPRESS_QUALITY = 75;
 
-    int    MAX_DISTANCE_FROM_PREV_POINT    = 150;
+    int MAX_DISTANCE_FROM_PREV_POINT = 150;
 
     int    MAX_ACCURACY                    = 10;
     int    MIN_ACCURACY_TAKE_COUNT         = 5;

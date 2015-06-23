@@ -97,7 +97,7 @@ public class FoclStyleRule
                 apStyle.setWidth(3);
                 return apStyle;
 
-            case FoclConstants.LAYERTYPE_FOCL_HID:
+            case FoclConstants.LAYERTYPE_FOCL_SPECIAL_TRANSITION:
                 SimpleTextMarkerStyle epStyle = new SimpleTextMarkerStyle();
                 epStyle.setType(SimpleTextMarkerStyle.MarkerStyleTextCircle);
                 epStyle.setColor(Color.WHITE);
@@ -157,7 +157,7 @@ public class FoclStyleRule
             case FoclConstants.LAYERTYPE_FOCL_FOSC:
             case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CROSS:
             case FoclConstants.LAYERTYPE_FOCL_ACCESS_POINT:
-            case FoclConstants.LAYERTYPE_FOCL_HID:
+            case FoclConstants.LAYERTYPE_FOCL_SPECIAL_TRANSITION:
                 select = new String[] {FIELD_ID, FoclConstants.FIELD_STATUS_BUILT};
 
                 try {
@@ -289,7 +289,7 @@ public class FoclStyleRule
 
                 break;
 
-            case FoclConstants.LAYERTYPE_FOCL_HID:
+            case FoclConstants.LAYERTYPE_FOCL_SPECIAL_TRANSITION:
                 SimpleTextMarkerStyle epStyle = (SimpleTextMarkerStyle) style;
 
                 switch (type) {
