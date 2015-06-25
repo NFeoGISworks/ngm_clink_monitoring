@@ -57,6 +57,8 @@ public class CoordinateRefiningDialog
     protected int mTakeCountPct = 0;
     protected int mTakeTimePct  = 0;
 
+    protected OnGetAccurateLocationListener        mOnGetAccurateLocationListener;
+
     final static int MAX_PCT = 100;
 
 
@@ -121,7 +123,6 @@ public class CoordinateRefiningDialog
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(getActivity().getString(R.string.coordinate_refining))
-                .setCancelable(true) // TODO: true -> false
                 .setIcon(R.drawable.ic_action_time)
                 .setView(view);
 
@@ -161,27 +162,54 @@ public class CoordinateRefiningDialog
                         mProgressBar.setProgress(mTakeTimePct);
 
 
-                        // TODO: remove it
-                        mCountText.setText("Кол-во замеров: " + Integer.toString(mTakeCount));
-                        mTimeText.setText("Время замеров, мс: " + Long.toString(values[1]));
-                        if (null != accurateLocation) {
-                            mLatText.setText(
-                                    "Ш: " + Double.toString(accurateLocation.getLatitude()));
-                            mLonText.setText(
-                                    "Д: " + Double.toString(accurateLocation.getLongitude()));
-                            mAltText.setText(
-                                    "В: " + Double.toString(accurateLocation.getAltitude()));
-                            mAccText.setText(
-                                    "Т: " + Float.toString(accurateLocation.getAccuracy()));
-                        } else {
-                            mLatText.setText("Ш: --");
-                            mLonText.setText("Д: --");
-                            mAltText.setText("В: --");
-                            mAccText.setText("Т: --");
+//                        // TODO: remove it
+//                        mCountText.setText("Кол-во замеров: " + Integer.toString(mTakeCount));
+//                        mTimeText.setText("Время замеров, мс: " + Long.toString(values[1]));
+//                        if (null != accurateLocation) {
+//                            mLatText.setText(
+//                                    "Ш: " + Double.toString(accurateLocation.getLatitude()));
+//                            mLonText.setText(
+//                                    "Д: " + Double.toString(accurateLocation.getLongitude()));
+//                            mAltText.setText(
+//                                    "В: " + Double.toString(accurateLocation.getAltitude()));
+//                            mAccText.setText(
+//                                    "Т: " + Float.toString(accurateLocation.getAccuracy()));
+//                        } else {
+//                            mLatText.setText("Ш: --");
+//                            mLonText.setText("Д: --");
+//                            mAltText.setText("В: --");
+//                            mAccText.setText("Т: --");
+//                        }
+
+
+                        if (null != mOnGetAccurateLocationListener) {
+                            mOnGetAccurateLocationListener.onGetAccurateLocation(accurateLocation);
                         }
+
+                        dismiss();
                     }
                 });
 
         return builder.create();
+    }
+
+
+    public void setOnGetAccurateLocationListener(
+            OnGetAccurateLocationListener onGetAccurateLocationListener)
+    {
+        mOnGetAccurateLocationListener = onGetAccurateLocationListener;
+    }
+
+
+    /**
+     * Implement the OnGetAccurateLocationListener interface to obtain the accurate location.
+     */
+    public interface OnGetAccurateLocationListener
+    {
+        /**
+         * @param accurateLocation
+         *         The accurate location. May be null.
+         */
+        void onGetAccurateLocation(Location accurateLocation);
     }
 }

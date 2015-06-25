@@ -25,7 +25,6 @@ package com.nextgis.ngm_clink_monitoring.fragments;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -33,11 +32,11 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
@@ -50,13 +49,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.nextgis.maplib.datasource.GeoMultiPoint;
+import com.nextgis.maplib.datasource.GeoPoint;
 import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.activities.MainActivity;
-import com.nextgis.ngm_clink_monitoring.adapters.ObjectCursorAdapter;
 import com.nextgis.ngm_clink_monitoring.adapters.ObjectPhotoAdapter;
 import com.nextgis.ngm_clink_monitoring.dialogs.CoordinateRefiningDialog;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
@@ -76,21 +77,35 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import static com.nextgis.maplib.util.Constants.FIELD_ID;
+import static com.nextgis.maplib.util.Constants.FIELD_GEOM;
 import static com.nextgis.maplib.util.Constants.TAG;
+import static com.nextgis.maplib.util.GeoConstants.CRS_WEB_MERCATOR;
+import static com.nextgis.maplib.util.GeoConstants.CRS_WGS84;
 
 
-public class ObjectStatusFragment
+public class CreateObjectFragment
         extends Fragment
 {
     protected static final int REQUEST_TAKE_PHOTO = 1;
 
     protected Context mContext;
 
-    protected TextView     mLineName;
-    protected TextView     mObjectNameCaption;
-    protected TextView     mObjectName;
-    protected Button       mCompleteStatusButton;
+    protected TextView mLineName;
+    protected TextView mCoordinates;
+
+    protected TextView mLayingMethodCaption;
+    protected TextView mLayingMethod;
+
+    protected TextView mFoscTypeCaption;
+    protected TextView mFoscType;
+
+    protected TextView mOpticalCrossTypeCaption;
+    protected TextView mOpticalCrossType;
+
+    protected TextView mSpecialLayingMethodCaption;
+    protected TextView mSpecialLayingMethod;
+
+    protected EditText     mDescription;
     protected TextView     mPhotoHintText;
     protected Button       mMakePhotoButton;
     protected RecyclerView mPhotoGallery;
@@ -101,7 +116,7 @@ public class ObjectStatusFragment
     protected String  mObjectLayerName;
     protected Long    mObjectId;
 
-    protected String mObjectStatus = FoclConstants.FIELD_VALUE_UNKNOWN;
+    protected Location mAccurateLocation;
 
     protected ObjectPhotoAdapter mObjectPhotoAdapter;
     protected Cursor             mAttachesCursor;
@@ -113,13 +128,11 @@ public class ObjectStatusFragment
     public void setParams(
             Context context,
             Integer lineId,
-            Integer foclStructLayerType,
-            Long objectId)
+            Integer foclStructLayerType)
     {
         mContext = context;
         mLineId = lineId;
         mFoclStructLayerType = foclStructLayerType;
-        mObjectId = objectId;
     }
 
 
@@ -137,53 +150,38 @@ public class ObjectStatusFragment
             ViewGroup container,
             Bundle savedInstanceState)
     {
+        View view = inflater.inflate(R.layout.fragment_create_object, null);
+
+        mLineName = (TextView) view.findViewById(R.id.line_name_cr);
+        mCoordinates = (TextView) view.findViewById(R.id.coordinates_cr);
+
+        mLayingMethodCaption = (TextView) view.findViewById(R.id.laying_method_caption_cr);
+        mLayingMethod = (TextView) view.findViewById(R.id.laying_method_cr);
+
+        mFoscTypeCaption = (TextView) view.findViewById(R.id.fosc_type_caption_cr);
+        mFoscType = (TextView) view.findViewById(R.id.fosc_type_cr);
+
+        mOpticalCrossTypeCaption = (TextView) view.findViewById(R.id.optical_cross_type_caption_cr);
+        mOpticalCrossType = (TextView) view.findViewById(R.id.optical_cross_type_cr);
+
+        mSpecialLayingMethodCaption =
+                (TextView) view.findViewById(R.id.special_laying_method_caption_cr);
+        mSpecialLayingMethod = (TextView) view.findViewById(R.id.special_laying_method_cr);
+
+        mDescription = (EditText) view.findViewById(R.id.description_cr);
+        mPhotoHintText = (TextView) view.findViewById(R.id.photo_hint_text_cr);
+        mMakePhotoButton = (Button) view.findViewById(R.id.btn_make_photo_cr);
+        mPhotoGallery = (RecyclerView) view.findViewById(R.id.photo_gallery_cr);
+
         MainActivity activity = (MainActivity) getActivity();
-        View view = inflater.inflate(R.layout.fragment_object_status, null);
 
-        mLineName = (TextView) view.findViewById(R.id.line_name_st);
-        mObjectNameCaption = (TextView) view.findViewById(R.id.object_name_caption_st);
-        mObjectName = (TextView) view.findViewById(R.id.object_name_st);
-        mCompleteStatusButton = (Button) view.findViewById(R.id.complete_status_st);
-        mPhotoHintText = (TextView) view.findViewById(R.id.photo_hint_text_st);
-        mMakePhotoButton = (Button) view.findViewById(R.id.btn_make_photo_st);
-        mPhotoGallery = (RecyclerView) view.findViewById(R.id.photo_gallery_st);
-
+        setBarsView(activity);
+        setFieldVisibility();
         registerForContextMenu(mPhotoGallery);
 
-        String toolbarTitle = "";
-
-        switch (mFoclStructLayerType) {
-            case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CABLE:
-                toolbarTitle = activity.getString(R.string.cable_laying);
-                mObjectNameCaption.setText(R.string.optical_cable_colon);
-                break;
-
-            case FoclConstants.LAYERTYPE_FOCL_FOSC:
-                toolbarTitle = activity.getString(R.string.fosc_mounting);
-                mObjectNameCaption.setText(R.string.fosc_colon);
-                break;
-
-            case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CROSS:
-                toolbarTitle = activity.getString(R.string.cross_mounting);
-                mObjectNameCaption.setText(R.string.cross_colon);
-                break;
-
-            case FoclConstants.LAYERTYPE_FOCL_ACCESS_POINT:
-                toolbarTitle = activity.getString(R.string.access_point_mounting);
-                mObjectNameCaption.setText(R.string.access_point_colon);
-                break;
-
-            case FoclConstants.LAYERTYPE_FOCL_SPECIAL_TRANSITION:
-                toolbarTitle = activity.getString(R.string.special_transition_laying);
-                break;
-        }
-
-        activity.setBarsView(toolbarTitle);
-
-        mCompleteStatusButton.setText(activity.getString(R.string.completed));
         mPhotoHintText.setText(R.string.take_photos_to_confirm);
 
-        final GISApplication app = (GISApplication) getActivity().getApplication();
+        final GISApplication app = (GISApplication) activity.getApplication();
         final FoclProject foclProject = app.getFoclProject();
 
         if (null == foclProject) {
@@ -211,101 +209,52 @@ public class ObjectStatusFragment
             return view;
         }
 
-        if (null == mObjectId) {
-            setBlockedView();
-            return view;
-        }
-
 
         mLineName.setText(Html.fromHtml(foclStruct.getHtmlFormattedName()));
         mObjectLayerName = layer.getPath().getName();
 
-        Uri uri = Uri.parse(
-                "content://" + FoclSettingsConstantsUI.AUTHORITY + "/" +
-                        mObjectLayerName + "/" + mObjectId);
 
-        String proj[] = {
-                FIELD_ID, FoclConstants.FIELD_NAME, FoclConstants.FIELD_STATUS_BUILT};
-
-        Cursor objectCursor;
-
-        try {
-            objectCursor = getActivity().getContentResolver().query(uri, proj, null, null, null);
-
-        } catch (Exception e) {
-            Log.d(TAG, e.getLocalizedMessage());
-            objectCursor = null;
-        }
-
-        if (null != objectCursor && objectCursor.getCount() == 1 &&
-                objectCursor.moveToFirst()) {
-
-            String objectNameText = ObjectCursorAdapter.getObjectName(mContext, objectCursor);
-            mObjectStatus = objectCursor.getString(
-                    objectCursor.getColumnIndex(FoclConstants.FIELD_STATUS_BUILT));
-            objectCursor.close();
-
-            if (TextUtils.isEmpty(mObjectStatus)) {
-                mObjectStatus = FoclConstants.FIELD_VALUE_UNKNOWN;
-            }
-
-            mObjectName.setText(objectNameText);
-            setStatusButtonView(true);
-
-        } else {
-            setBlockedView();
-            return view;
-        }
-
-
-        View.OnClickListener statusButtonOnClickListener = new View.OnClickListener()
+        View.OnClickListener doneButtonOnClickListener = new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                switch (mObjectStatus) {
-                    case FoclConstants.FIELD_VALUE_PROJECT:
-                        mObjectStatus = FoclConstants.FIELD_VALUE_BUILT;
-                        break;
-
-                    case FoclConstants.FIELD_VALUE_BUILT:
-                        mObjectStatus = FoclConstants.FIELD_VALUE_PROJECT;
-                        break;
-
-                    case FoclConstants.FIELD_VALUE_UNKNOWN:
-                    default:
-                        mObjectStatus = FoclConstants.FIELD_VALUE_BUILT;
-                        break;
-                }
-
                 Uri uri = Uri.parse(
-                        "content://" + FoclSettingsConstantsUI.AUTHORITY + "/" + mObjectLayerName);
-                Uri updateUri = ContentUris.withAppendedId(uri, mObjectId);
+                        "content://" + FoclSettingsConstantsUI.AUTHORITY + "/" +
+                                mObjectLayerName);
 
                 ContentValues values = new ContentValues();
+
+                values.put(FoclConstants.FIELD_NAME, mLayingMethod.getText().toString());
+                values.put(FoclConstants.FIELD_DESCRIPTION, mDescription.getText().toString());
+
                 Calendar calendar = Calendar.getInstance();
+                values.put(FoclConstants.FIELD_BUILT_DATE, calendar.getTimeInMillis());
 
-                values.put(FoclConstants.FIELD_STATUS_BUILT, mObjectStatus);
-                values.put(FoclConstants.FIELD_STATUS_BUILT_CH, calendar.getTimeInMillis());
-
-                int result = 0;
                 try {
-                    result = getActivity().getContentResolver()
-                            .update(updateUri, values, null, null);
-
-                } catch (Exception e) {
-                    Log.d(TAG, e.getLocalizedMessage());
+                    GeoPoint pt = new GeoPoint(
+                            mAccurateLocation.getLongitude(), mAccurateLocation.getLatitude());
+                    pt.setCRS(CRS_WGS84);
+                    pt.project(CRS_WEB_MERCATOR);
+                    GeoMultiPoint mpt = new GeoMultiPoint();
+                    mpt.add(pt);
+                    values.put(FIELD_GEOM, mpt.toBlob());
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
 
-                if (result == 0) {
+                Uri result = getActivity().getContentResolver().insert(uri, values);
+                if (result == null) {
                     Log.d(
-                            TAG, "Layer: " + mObjectLayerName + ", id: " + mObjectId +
-                                    ", update FAILED");
+                            TAG, "Layer: " + mObjectLayerName + ", insert FAILED");
+                    // TODO: Toast
+
                 } else {
+                    mObjectId = Long.getLong(result.getLastPathSegment());
                     Log.d(
                             TAG, "Layer: " + mObjectLayerName + ", id: " + mObjectId +
-                                    ", update result: " + result);
-                    setStatusButtonView(true);
+                                    ", insert result: " + result);
+                    getActivity().onBackPressed();
                 }
             }
         };
@@ -314,10 +263,9 @@ public class ObjectStatusFragment
         if (actionBar != null) {
             View customActionBarView = actionBar.getCustomView();
             View saveMenuItem = customActionBarView.findViewById(R.id.save_menu_item);
-            saveMenuItem.setOnClickListener(statusButtonOnClickListener); // TODO: it is test
+            saveMenuItem.setOnClickListener(doneButtonOnClickListener);
         }
 
-        mCompleteStatusButton.setOnClickListener(statusButtonOnClickListener);
 
         mMakePhotoButton.setOnClickListener(
                 new View.OnClickListener()
@@ -367,16 +315,90 @@ public class ObjectStatusFragment
     }
 
 
+    protected void setBarsView(MainActivity activity)
+    {
+        String toolbarTitle = "";
+
+        switch (mFoclStructLayerType) {
+            case FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT:
+                toolbarTitle = activity.getString(R.string.cable_laying);
+                break;
+
+            case FoclConstants.LAYERTYPE_FOCL_REAL_FOSC:
+                toolbarTitle = activity.getString(R.string.fosc_mounting);
+                break;
+
+            case FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CROSS:
+                toolbarTitle = activity.getString(R.string.cross_mounting);
+                break;
+
+            case FoclConstants.LAYERTYPE_FOCL_REAL_ACCESS_POINT:
+                toolbarTitle = activity.getString(R.string.access_point_mounting);
+                break;
+
+            case FoclConstants.LAYERTYPE_FOCL_REAL_SPECIAL_TRANSITION_POINT:
+                toolbarTitle = activity.getString(R.string.special_transition_laying);
+                break;
+        }
+
+        activity.setBarsView(toolbarTitle);
+    }
+
+
     protected void setBlockedView()
     {
         mLineName.setText("");
-        mObjectName.setText("");
-        setStatusButtonView(false);
+
+        mLayingMethod.setEnabled(false);
+        mFoscType.setEnabled(false);
+        mOpticalCrossType.setEnabled(false);
+        mSpecialLayingMethod.setEnabled(false);
+
+        mDescription.setText("");
+        mDescription.setEnabled(false);
         mMakePhotoButton.setEnabled(false);
         mMakePhotoButton.setOnClickListener(null);
         mPhotoGallery.setEnabled(false);
         mPhotoGallery.setAdapter(null);
         setPhotoGalleryVisibility(false);
+    }
+
+
+    protected void setFieldVisibility()
+    {
+        mLayingMethodCaption.setVisibility(View.GONE);
+        mLayingMethod.setVisibility(View.GONE);
+        mFoscTypeCaption.setVisibility(View.GONE);
+        mFoscType.setVisibility(View.GONE);
+        mOpticalCrossTypeCaption.setVisibility(View.GONE);
+        mOpticalCrossType.setVisibility(View.GONE);
+        mSpecialLayingMethodCaption.setVisibility(View.GONE);
+        mSpecialLayingMethod.setVisibility(View.GONE);
+
+        switch (mFoclStructLayerType) {
+            case FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT:
+                mLayingMethodCaption.setVisibility(View.VISIBLE);
+                mLayingMethod.setVisibility(View.VISIBLE);
+                break;
+
+            case FoclConstants.LAYERTYPE_FOCL_REAL_FOSC:
+                mFoscTypeCaption.setVisibility(View.VISIBLE);
+                mFoscType.setVisibility(View.VISIBLE);
+                break;
+
+            case FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CROSS:
+                mOpticalCrossTypeCaption.setVisibility(View.VISIBLE);
+                mOpticalCrossType.setVisibility(View.VISIBLE);
+                break;
+
+            case FoclConstants.LAYERTYPE_FOCL_REAL_ACCESS_POINT:
+                break;
+
+            case FoclConstants.LAYERTYPE_FOCL_REAL_SPECIAL_TRANSITION_POINT:
+                mSpecialLayingMethodCaption.setVisibility(View.VISIBLE);
+                mSpecialLayingMethod.setVisibility(View.VISIBLE);
+                break;
+        }
     }
 
 
@@ -397,7 +419,26 @@ public class ObjectStatusFragment
 
         if (!mHasAccurateCoordinate) {
             mHasAccurateCoordinate = true;
-            DialogFragment coordRefiningDialog = new CoordinateRefiningDialog();
+            CoordinateRefiningDialog coordRefiningDialog = new CoordinateRefiningDialog();
+
+            coordRefiningDialog.setOnGetAccurateLocationListener(
+                    new CoordinateRefiningDialog.OnGetAccurateLocationListener()
+                    {
+                        @Override
+                        public void onGetAccurateLocation(Location accurateLocation)
+                        {
+                            if (null != accurateLocation) {
+                                mAccurateLocation = accurateLocation;
+                                mCoordinates.setText(
+                                        accurateLocation.getLatitude() + ", " +
+                                                accurateLocation.getLongitude());
+                            } else {
+                                // TODO: go back
+                            }
+                        }
+                    });
+
+            coordRefiningDialog.setCancelable(true); // TODO: true -> false
             coordRefiningDialog.show(
                     getActivity().getSupportFragmentManager(), "CoordinateRefining");
         }
@@ -508,33 +549,6 @@ public class ObjectStatusFragment
     }
 
 
-    protected void setStatusButtonView(boolean enabled)
-    {
-        if (enabled) {
-
-            switch (mObjectStatus) {
-                case FoclConstants.FIELD_VALUE_PROJECT:
-                case FoclConstants.FIELD_VALUE_UNKNOWN:
-                default:
-                    mCompleteStatusButton.setCompoundDrawablesWithIntrinsicBounds(
-                            0, 0, R.drawable.ic_unchecked_500, 0);
-                    break;
-
-                case FoclConstants.FIELD_VALUE_BUILT:
-                    mCompleteStatusButton.setCompoundDrawablesWithIntrinsicBounds(
-                            0, 0, R.drawable.ic_checked_500, 0);
-                    break;
-            }
-
-        } else {
-            mCompleteStatusButton.setCompoundDrawablesWithIntrinsicBounds(
-                    0, 0, R.drawable.ic_unchecked_500, 0);
-        }
-
-        mCompleteStatusButton.setEnabled(enabled);
-    }
-
-
     protected void setPhotoGalleryAdapter()
     {
         Uri attachesUri = Uri.parse(
@@ -609,6 +623,7 @@ public class ObjectStatusFragment
                 Log.d(TAG, e.getLocalizedMessage());
             }
 
+            // TODO: mObjectId is null
             Uri allAttachesUri = Uri.parse(
                     "content://" + FoclSettingsConstantsUI.AUTHORITY +
                             "/" + mObjectLayerName + "/" + mObjectId + "/attach");
@@ -716,24 +731,24 @@ public class ObjectStatusFragment
         String prefix = "";
 
         switch (mFoclStructLayerType) {
-            case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CABLE:
+            case FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT:
                 prefix = "Optical_Cable_Laying_";
                 break;
 
-            case FoclConstants.LAYERTYPE_FOCL_FOSC:
+            case FoclConstants.LAYERTYPE_FOCL_REAL_FOSC:
                 prefix = "FOSC_Mounting_";
                 break;
 
-            case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CROSS:
+            case FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CROSS:
                 prefix = "Cross_Mounting_";
                 break;
 
-            case FoclConstants.LAYERTYPE_FOCL_ACCESS_POINT:
+            case FoclConstants.LAYERTYPE_FOCL_REAL_ACCESS_POINT:
                 prefix = "Access_Point_Mounting_";
                 break;
 
-            case FoclConstants.LAYERTYPE_FOCL_SPECIAL_TRANSITION:
-                prefix = "Special_Transition_Laying_";
+            case FoclConstants.LAYERTYPE_FOCL_REAL_SPECIAL_TRANSITION_POINT:
+                prefix = "Special_Transition_Point_";
                 break;
         }
 

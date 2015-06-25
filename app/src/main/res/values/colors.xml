@@ -112,6 +112,10 @@
     <color name="selected_object_solid_color">@color/color_100</color>
     <color name="selected_object_stroke_color">@color/color_300</color>
 
+    <color name="edit_object_text_color">@color/color_700</color>
+    <color name="edit_object_solid_color">@color/color_50</color>
+    <color name="edit_object_stroke_color">@color/color_600</color>
+
     <color name="photo_hint_text_color">@color/primary_text_normal_color</color>
     <color name="photo_hint_solid_color">@color/color_100</color>
     <color name="photo_hint_stroke_color">@color/color_300</color>

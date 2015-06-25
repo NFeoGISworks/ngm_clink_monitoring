@@ -58,54 +58,113 @@
                     />
 
                 <TextView
-                    android:id="@+id/line_name_st"
-                    android:text="@string/communication_line_colon"
+                    android:id="@+id/line_name_cr"
                     style="@style/selectedLineStyle"
                     />
 
                 <TextView
-                    android:id="@+id/object_name_caption_st"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"
                     android:layout_marginTop="10dp"
-                    android:text="@string/optical_cable_colon"
+                    android:text="@string/coordinates_colon"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     />
 
                 <TextView
-                    android:id="@+id/object_name_st"
-                    android:text="@string/optical_cable_colon"
+                    android:id="@+id/coordinates_cr"
+                    android:text="--"
                     style="@style/selectedObjectStyle"
                     />
+
+
+                <TextView
+                    android:id="@+id/laying_method_caption_cr"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/laying_method_colon"
+                    android:visibility="gone"
+                    />
+
+                <TextView
+                    android:id="@+id/laying_method_cr"
+                    android:text="@string/laying_method_colon"
+                    style="@style/editObjectStyle"
+                    android:visibility="gone"
+                    />
+
+
+                <TextView
+                    android:id="@+id/fosc_type_caption_cr"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/fosc_type_colon"
+                    android:visibility="gone"
+                    />
+
+                <TextView
+                    android:id="@+id/fosc_type_cr"
+                    android:text="@string/fosc_type_colon"
+                    style="@style/editObjectStyle"
+                    android:visibility="gone"
+                    />
+
+
+                <TextView
+                    android:id="@+id/optical_cross_type_caption_cr"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/optical_cross_type_colon"
+                    android:visibility="gone"
+                    />
+
+                <TextView
+                    android:id="@+id/optical_cross_type_cr"
+                    android:text="@string/optical_cross_type_colon"
+                    style="@style/editObjectStyle"
+                    android:visibility="gone"
+                    />
+
+
+                <TextView
+                    android:id="@+id/special_laying_method_caption_cr"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/special_laying_method_colon"
+                    android:visibility="gone"
+                    />
+
+                <TextView
+                    android:id="@+id/special_laying_method_cr"
+                    android:text="@string/special_laying_method_colon"
+                    style="@style/editObjectStyle"
+                    android:visibility="gone"
+                    />
+
 
                 <TextView
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"
                     android:layout_marginTop="10dp"
-                    android:text="@string/specify_work_status"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:gravity="center"
+                    android:text="@string/description_colon"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    />
+
+                <EditText
+                    android:id="@+id/description_cr"
+                    android:hint="@string/description_hint"
+                    style="@style/editDescriptionStyle"
                     />
 
                 <Button
-                    android:id="@+id/complete_status_st"
-                    android:layout_height="52dp"
-                    android:layout_width="match_parent"
-                    android:layout_marginTop="10dp"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:drawableRight="@drawable/ic_unchecked_500"
-                    android:drawablePadding="8dp"
-                    android:text="@string/completed"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:gravity="center_vertical|start"
-                    style="@style/statusButton"
-                    />
-
-                <Button
-                    android:id="@+id/btn_make_photo_st"
+                    android:id="@+id/btn_make_photo_cr"
                     android:layout_height="52dp"
                     android:layout_width="wrap_content"
                     android:layout_marginTop="15dp"
@@ -121,7 +180,7 @@
                     />
 
                 <TextView
-                    android:id="@+id/photo_hint_text_st"
+                    android:id="@+id/photo_hint_text_cr"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"
                     android:layout_marginTop="15dp"
@@ -137,7 +196,7 @@
                     />
 
                 <android.support.v7.widget.RecyclerView
-                    android:id="@+id/photo_gallery_st"
+                    android:id="@+id/photo_gallery_cr"
                     android:layout_height="104dp"
                     android:layout_width="match_parent"
                     android:layout_marginTop="15dp"

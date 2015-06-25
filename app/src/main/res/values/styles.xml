@@ -169,6 +169,25 @@
 
     </style>
 
+    <style name="editObjectStyle"
+           parent="@style/selectedObjectStyle">
+
+        <item name="android:background">@drawable/edit_object_background</item>
+        <item name="android:textColor">@color/edit_object_text_color</item>
+
+    </style>
+
+    <style name="editDescriptionStyle"
+           parent="@style/editObjectStyle">
+
+        <item name="android:background">@drawable/edit_object_background</item>
+        <item name="android:textColor">@color/edit_object_text_color</item>
+        <item name="android:lines">2</item>
+        <item name="android:minLines">2</item>
+        <item name="android:maxLines">2</item>
+
+    </style>
+
     <style name="selectedLineStyle"
            parent="@style/selectedObjectStyle">
 

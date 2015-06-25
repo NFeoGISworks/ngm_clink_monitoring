@@ -306,6 +306,7 @@ public class MainActivity
             case FoclConstants.FRAGMENT_OBJECT_TYPES:
             case FoclConstants.FRAGMENT_OBJECT_LIST:
             case FoclConstants.FRAGMENT_MAP:
+            case FoclConstants.FRAGMENT_OBJECT_STATUS:
             default:
                 if (actionBar != null) {
                     // We want the UP affordance but no app icon.
@@ -318,7 +319,7 @@ public class MainActivity
                 }
                 break;
 
-            case FoclConstants.FRAGMENT_OBJECT_STATUS:
+            case FoclConstants.FRAGMENT_CREATE_OBJECT:
                 if (actionBar != null) {
                     // Show the custom action bar but hide the home icon and title
                     actionBar.setDisplayOptions(
@@ -337,6 +338,7 @@ public class MainActivity
             case FoclConstants.FRAGMENT_PERFORM_1ST_SYNC:
             case FoclConstants.FRAGMENT_LINE_LIST:
             case FoclConstants.FRAGMENT_OBJECT_STATUS:
+            case FoclConstants.FRAGMENT_CREATE_OBJECT:
             default:
                 mToolbar.setNavigationIcon(null);
                 break;
@@ -357,6 +359,7 @@ public class MainActivity
             case FoclConstants.FRAGMENT_LINE_LIST:
             case FoclConstants.FRAGMENT_OBJECT_LIST:
             case FoclConstants.FRAGMENT_OBJECT_STATUS:
+            case FoclConstants.FRAGMENT_CREATE_OBJECT:
                 ft.hide(mStatusBarFragment);
                 break;
 

@@ -50,7 +50,7 @@ public class ObjectTypesFragment
     protected Button   mBtnFoscMounting;
     protected Button   mBtnCrossMounting;
     protected Button   mBtnAccessPointMounting;
-    protected Button   mBtnHidMounting;
+    protected Button   mBtnSpecialTransitionLaying;
 
 
     public void setParams(Integer lineId)
@@ -84,7 +84,8 @@ public class ObjectTypesFragment
         mBtnFoscMounting = (Button) view.findViewById(R.id.btn_fosc_mounting);
         mBtnCrossMounting = (Button) view.findViewById(R.id.btn_cross_mounting);
         mBtnAccessPointMounting = (Button) view.findViewById(R.id.btn_access_point_mounting);
-        mBtnHidMounting = (Button) view.findViewById(R.id.btn_hid_mounting);
+        mBtnSpecialTransitionLaying =
+                (Button) view.findViewById(R.id.btn_special_transition_laying);
 
         GISApplication app = (GISApplication) getActivity().getApplication();
         FoclProject foclProject = app.getFoclProject();
@@ -117,20 +118,39 @@ public class ObjectTypesFragment
 
                 switch (v.getId()) {
                     case R.id.btn_cable_laying:
-                        foclStructLayerType = FoclConstants.LAYERTYPE_FOCL_OPTICAL_CABLE;
+                        foclStructLayerType = FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT;
                         break;
                     case R.id.btn_fosc_mounting:
-                        foclStructLayerType = FoclConstants.LAYERTYPE_FOCL_FOSC;
+                        foclStructLayerType = FoclConstants.LAYERTYPE_FOCL_REAL_FOSC;
                         break;
                     case R.id.btn_cross_mounting:
-                        foclStructLayerType = FoclConstants.LAYERTYPE_FOCL_OPTICAL_CROSS;
+                        foclStructLayerType = FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CROSS;
                         break;
                     case R.id.btn_access_point_mounting:
-                        foclStructLayerType = FoclConstants.LAYERTYPE_FOCL_ACCESS_POINT;
+                        foclStructLayerType = FoclConstants.LAYERTYPE_FOCL_REAL_ACCESS_POINT;
                         break;
-                    case R.id.btn_hid_mounting:
-                        foclStructLayerType = FoclConstants.LAYERTYPE_FOCL_SPECIAL_TRANSITION;
+                    case R.id.btn_special_transition_laying:
+                        foclStructLayerType =
+                                FoclConstants.LAYERTYPE_FOCL_REAL_SPECIAL_TRANSITION_POINT;
                         break;
+
+                    // TODO: for layer editing
+//                    case R.id.btn_cable_laying:
+//                        foclStructLayerType = FoclConstants.LAYERTYPE_FOCL_OPTICAL_CABLE;
+//                        break;
+//                    case R.id.btn_fosc_mounting:
+//                        foclStructLayerType = FoclConstants.LAYERTYPE_FOCL_FOSC;
+//                        break;
+//                    case R.id.btn_cross_mounting:
+//                        foclStructLayerType = FoclConstants.LAYERTYPE_FOCL_OPTICAL_CROSS;
+//                        break;
+//                    case R.id.btn_access_point_mounting:
+//                        foclStructLayerType = FoclConstants.LAYERTYPE_FOCL_ACCESS_POINT;
+//                        break;
+//                    case R.id.btn_hid_mounting:
+//                        foclStructLayerType = FoclConstants.LAYERTYPE_FOCL_SPECIAL_TRANSITION;
+//                        break;
+//
                     default:
                         foclStructLayerType = FoclConstants.LAYERTYPE_FOCL_UNKNOWN;
                         break;
@@ -144,7 +164,7 @@ public class ObjectTypesFragment
         mBtnFoscMounting.setOnClickListener(buttonOnClickListener);
         mBtnCrossMounting.setOnClickListener(buttonOnClickListener);
         mBtnAccessPointMounting.setOnClickListener(buttonOnClickListener);
-        mBtnHidMounting.setOnClickListener(buttonOnClickListener);
+        mBtnSpecialTransitionLaying.setOnClickListener(buttonOnClickListener);
 
         return view;
     }
@@ -157,7 +177,7 @@ public class ObjectTypesFragment
         mBtnFoscMounting.setEnabled(false);
         mBtnCrossMounting.setEnabled(false);
         mBtnAccessPointMounting.setEnabled(false);
-        mBtnHidMounting.setEnabled(false);
+        mBtnSpecialTransitionLaying.setEnabled(false);
     }
 
 
@@ -166,17 +186,35 @@ public class ObjectTypesFragment
         final FragmentManager fm = getActivity().getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
 
-        ObjectListFragment objectListFragment =
-                (ObjectListFragment) fm.findFragmentByTag(FoclConstants.FRAGMENT_OBJECT_LIST);
+        CreateObjectFragment createObjectFragment =
+                (CreateObjectFragment) fm.findFragmentByTag(FoclConstants.FRAGMENT_CREATE_OBJECT);
 
-        if (objectListFragment == null) {
-            objectListFragment = new ObjectListFragment();
+        if (createObjectFragment == null) {
+            createObjectFragment = new CreateObjectFragment();
         }
 
-        objectListFragment.setParams(mLineId, foclStructLayerType);
+        createObjectFragment.setParams(getActivity(), mLineId, foclStructLayerType);
 
-        ft.replace(R.id.main_fragment, objectListFragment, FoclConstants.FRAGMENT_OBJECT_LIST);
+        ft.replace(R.id.main_fragment, createObjectFragment, FoclConstants.FRAGMENT_CREATE_OBJECT);
         ft.addToBackStack(null);
         ft.commit();
+
+
+        // TODO: for layer editing
+//        final FragmentManager fm = getActivity().getSupportFragmentManager();
+//        FragmentTransaction ft = fm.beginTransaction();
+//
+//        ObjectListFragment objectListFragment =
+//                (ObjectListFragment) fm.findFragmentByTag(FoclConstants.FRAGMENT_OBJECT_LIST);
+//
+//        if (objectListFragment == null) {
+//            objectListFragment = new ObjectListFragment();
+//        }
+//
+//        objectListFragment.setParams(mLineId, foclStructLayerType);
+//
+//        ft.replace(R.id.main_fragment, objectListFragment, FoclConstants.FRAGMENT_OBJECT_LIST);
+//        ft.addToBackStack(null);
+//        ft.commit();
     }
 }

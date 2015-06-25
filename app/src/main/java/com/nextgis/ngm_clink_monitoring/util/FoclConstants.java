@@ -31,6 +31,7 @@ public interface FoclConstants
     String FRAGMENT_LINE_LIST        = "LineList";
     String FRAGMENT_OBJECT_LIST      = "ObjectList";
     String FRAGMENT_OBJECT_STATUS    = "ObjectStatus";
+    String FRAGMENT_CREATE_OBJECT    = "CreateObject";
     String FRAGMENT_MAP              = "Map";
     String FRAGMENT_ATTRIBUTES       = "Attributes";
 
@@ -60,14 +61,15 @@ public interface FoclConstants
     int LAYERTYPE_FOCL_ACCESS_POINT       = 1104;
     int LAYERTYPE_FOCL_SPECIAL_TRANSITION = 1105;
 
-    int LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT      = 1101;
-    int LAYERTYPE_FOCL_REAL_FOSC                     = 1102;
-    int LAYERTYPE_FOCL_REAL_OPTICAL_CROSS            = 1103;
-    int LAYERTYPE_FOCL_REAL_ACCESS_POINT             = 1104;
-    int LAYERTYPE_FOCL_REAL_SPECIAL_TRANSITION_POINT = 1105;
+    int LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT      = 1201;
+    int LAYERTYPE_FOCL_REAL_FOSC                     = 1202;
+    int LAYERTYPE_FOCL_REAL_OPTICAL_CROSS            = 1203;
+    int LAYERTYPE_FOCL_REAL_ACCESS_POINT             = 1204;
+    int LAYERTYPE_FOCL_REAL_SPECIAL_TRANSITION_POINT = 1205;
 
     String FIELD_NAME        = "name";
     String FIELD_DESCRIPTION = "description";
+    String FIELD_BUILT_DATE  = "built_date";
 
     String FIELD_LAYING_METHOD   = "laying_method";
     String FIELD_STATUS_BUILT    = "status_built";

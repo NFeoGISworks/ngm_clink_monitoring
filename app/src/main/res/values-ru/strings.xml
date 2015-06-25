@@ -95,7 +95,7 @@
     <string name="fosc_mounting">Разварка муфты</string>
     <string name="cross_mounting">Разварка кросса</string>
     <string name="access_point_mounting">Монтаж точки доступа</string>
-    <string name="hid_mounting">ГНБ</string>
+    <string name="special_transition_laying">ГНБ</string>
     <string name="object_attributes">Атрибуты объекта</string>
 
     <string name="select_line_colon">Выберите линию:</string>
@@ -110,6 +110,23 @@
     <string name="fosc_colon">Муфта:</string>
     <string name="cross_colon">Кросс:</string>
     <string name="access_point_colon">Точка доступа:</string>
+    <string name="special_transition_colon">ГНБ:</string>
+
+
+    <string name="coordinates_colon">Коодинаты:</string>
+
+    <string name="description_colon">Комментарий в процессе строительства:</string>
+    <string name="description_hint">Введите комментарий к объекту</string>
+
+    <string name="laying_method_colon">Способ прокладки:</string>
+
+    <string name="fosc_type_colon">Тип муфты:</string>
+    <string name="fosc_placement_colon">Место размещения оптической муфты:</string>
+
+    <string name="optical_cross_type_colon">Тип кросса:</string>
+
+    <string name="special_laying_method_colon">Способ прокладки:</string>
+
 
     <string name="specify_work_status">Укажите статус работ:</string>
 
