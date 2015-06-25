@@ -260,11 +260,15 @@ public class FoclProject
             foclVectorLayer.setFoclLayerType(foclLayerType);
             foclVectorLayer.setAccountName(mAccountName);
             foclVectorLayer.setVisible(true);
-            foclVectorLayer.setSyncType(Constants.SYNC_ATTRIBUTES | Constants.SYNC_ATTACH);
+            foclVectorLayer.setSyncType(Constants.SYNC_ALL);
             foclStruct.addLayer(foclVectorLayer);
 
             if (FoclConstants.LAYERTYPE_FOCL_OPTICAL_CABLE == foclLayerType) {
                 foclStruct.moveLayer(0, foclVectorLayer);
+            }
+
+            if (FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT == foclLayerType) {
+                foclStruct.moveLayer(1, foclVectorLayer);
             }
 
             String error = foclVectorLayer.download();
