@@ -29,6 +29,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -36,6 +37,7 @@ import android.location.Location;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
@@ -67,6 +69,7 @@ import com.nextgis.ngm_clink_monitoring.util.BitmapUtil;
 import com.nextgis.ngm_clink_monitoring.util.FileUtil;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
+import com.nextgis.ngm_clink_monitoring.util.LocationUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -419,29 +422,57 @@ public class CreateObjectFragment
 
         if (!mHasAccurateCoordinate) {
             mHasAccurateCoordinate = true;
-            CoordinateRefiningDialog coordRefiningDialog = new CoordinateRefiningDialog();
-
-            coordRefiningDialog.setOnGetAccurateLocationListener(
-                    new CoordinateRefiningDialog.OnGetAccurateLocationListener()
-                    {
-                        @Override
-                        public void onGetAccurateLocation(Location accurateLocation)
-                        {
-                            if (null != accurateLocation) {
-                                mAccurateLocation = accurateLocation;
-                                mCoordinates.setText(
-                                        accurateLocation.getLatitude() + ", " +
-                                                accurateLocation.getLongitude());
-                            } else {
-                                // TODO: go back
-                            }
-                        }
-                    });
-
-            coordRefiningDialog.setCancelable(true); // TODO: true -> false
-            coordRefiningDialog.show(
-                    getActivity().getSupportFragmentManager(), "CoordinateRefining");
+            showCoordinateRefiningDialog();
         }
+    }
+
+
+    protected void showCoordinateRefiningDialog()
+    {
+        CoordinateRefiningDialog coordRefiningDialog = new CoordinateRefiningDialog();
+
+        coordRefiningDialog.setOnGetAccurateLocationListener(
+                new CoordinateRefiningDialog.OnGetAccurateLocationListener()
+                {
+                    @Override
+                    public void onGetAccurateLocation(Location accurateLocation)
+                    {
+                        if (null != accurateLocation) {
+                            mAccurateLocation = accurateLocation;
+
+                            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(
+                                    getActivity());
+
+                            int nFormat = prefs.getInt(
+                                    FoclSettingsConstantsUI.KEY_PREF_COORD_FORMAT + "_int",
+                                    Location.FORMAT_DEGREES);
+
+                            String latText = getString(R.string.latitude_caption) + " " +
+                                    LocationUtil.formatLatitude(
+                                            accurateLocation.getLatitude(), nFormat,
+                                            getResources()) +
+                                    getString(R.string.coord_lat);
+
+                            String longText = getString(R.string.longitude_caption) + " " +
+                                    LocationUtil.formatLongitude(
+                                            accurateLocation.getLongitude(), nFormat,
+                                            getResources()) +
+                                    getString(R.string.coord_lon);
+
+                            mCoordinates.setText(latText + ",  " + longText);
+
+                        } else {
+                            Toast.makeText(
+                                    getActivity(), R.string.coordinates_not_defined,
+                                    Toast.LENGTH_LONG).show();
+                            getActivity().onBackPressed();
+                        }
+                    }
+                });
+
+        coordRefiningDialog.setCancelable(true); // TODO: true -> false
+        coordRefiningDialog.show(
+                getActivity().getSupportFragmentManager(), "CoordinateRefining");
     }
 
 

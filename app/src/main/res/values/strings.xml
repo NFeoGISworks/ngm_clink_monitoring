@@ -170,5 +170,6 @@
     <string name="menu_done">Done</string>
 
     <string name="coordinate_refining">Coordinate refining</string>
+    <string name="coordinates_not_defined">The coordinates not defined. The object can not be created</string>
 
 </resources>

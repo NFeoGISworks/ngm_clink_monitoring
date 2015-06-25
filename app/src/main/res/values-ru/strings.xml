@@ -170,5 +170,6 @@
     <string name="menu_done">Готово</string>
 
     <string name="coordinate_refining">Уточнение координат</string>
+    <string name="coordinates_not_defined">Координаты не определены, объект создан быть не может</string>
 
 </resources>
