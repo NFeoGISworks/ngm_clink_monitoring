@@ -31,7 +31,6 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import com.nextgis.maplib.location.AccurateLocationTaker;
 import com.nextgis.ngm_clink_monitoring.R;
 
@@ -44,12 +43,12 @@ public class CoordinateRefiningDialog
     protected ProgressBar mProgressBar;
 
     // TODO: remove it
-    protected TextView mCountText;
-    protected TextView mTimeText;
-    protected TextView mLatText;
-    protected TextView mLonText;
-    protected TextView mAltText;
-    protected TextView mAccText;
+//    protected TextView mCountText;
+//    protected TextView mTimeText;
+//    protected TextView mLatText;
+//    protected TextView mLonText;
+//    protected TextView mAltText;
+//    protected TextView mAccText;
 
     protected AccurateLocationTaker mLocationTaker;
 
@@ -109,12 +108,12 @@ public class CoordinateRefiningDialog
         View view = inflater.inflate(R.layout.dialog_coordinate_refining, null);
 
         // TODO: remove it
-        mCountText = (TextView) view.findViewById(R.id.count_refined);
-        mTimeText = (TextView) view.findViewById(R.id.time_refined);
-        mLatText = (TextView) view.findViewById(R.id.lat_refined);
-        mLonText = (TextView) view.findViewById(R.id.lon_refined);
-        mAltText = (TextView) view.findViewById(R.id.alt_refined);
-        mAccText = (TextView) view.findViewById(R.id.acc_refined);
+//        mCountText = (TextView) view.findViewById(R.id.count_refined);
+//        mTimeText = (TextView) view.findViewById(R.id.time_refined);
+//        mLatText = (TextView) view.findViewById(R.id.lat_refined);
+//        mLonText = (TextView) view.findViewById(R.id.lon_refined);
+//        mAltText = (TextView) view.findViewById(R.id.alt_refined);
+//        mAccText = (TextView) view.findViewById(R.id.acc_refined);
 
         mProgressBar = (ProgressBar) view.findViewById(R.id.progress_bar_refining);
         mProgressBar.setMax(MAX_PCT);
@@ -141,8 +140,8 @@ public class CoordinateRefiningDialog
 
 
                         // TODO: remove it
-                        mCountText.setText("Кол-во замеров: " + Long.toString(values[0]));
-                        mTimeText.setText("Время замеров, мс: " + Long.toString(values[1]));
+//                        mCountText.setText("Кол-во замеров: " + Long.toString(values[0]));
+//                        mTimeText.setText("Время замеров, мс: " + Long.toString(values[1]));
                     }
                 });
 
@@ -154,12 +153,13 @@ public class CoordinateRefiningDialog
                             Location accurateLocation,
                             Long... values)
                     {
-                        mTakeCount = values[0].intValue();
-                        mTakeCountPct = mTakeCount * MAX_PCT / MAX_ACCURACY_TAKE_COUNT;
-                        mTakeTimePct = (int) (values[1] * MAX_PCT / MAX_ACCURACY_TAKE_TIME);
+                        // TODO: remove it
+//                        mTakeCount = values[0].intValue();
+//                        mTakeCountPct = mTakeCount * MAX_PCT / MAX_ACCURACY_TAKE_COUNT;
+//                        mTakeTimePct = (int) (values[1] * MAX_PCT / MAX_ACCURACY_TAKE_TIME);
 
-                        mProgressBar.setSecondaryProgress(mTakeCountPct);
-                        mProgressBar.setProgress(mTakeTimePct);
+//                        mProgressBar.setSecondaryProgress(mTakeCountPct);
+//                        mProgressBar.setProgress(mTakeTimePct);
 
 
 //                        // TODO: remove it
