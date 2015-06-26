@@ -356,6 +356,7 @@ public class MainActivity
 
         switch (tag) {
             case FoclConstants.FRAGMENT_SYNC_LOGIN:
+            case FoclConstants.FRAGMENT_PERFORM_1ST_SYNC:
             case FoclConstants.FRAGMENT_LINE_LIST:
             case FoclConstants.FRAGMENT_OBJECT_LIST:
             case FoclConstants.FRAGMENT_OBJECT_STATUS:
@@ -363,7 +364,6 @@ public class MainActivity
                 ft.hide(mStatusBarFragment);
                 break;
 
-            case FoclConstants.FRAGMENT_PERFORM_1ST_SYNC:
             case FoclConstants.FRAGMENT_OBJECT_TYPES:
             case FoclConstants.FRAGMENT_MAP:
             default:
