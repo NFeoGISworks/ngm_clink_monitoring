@@ -113,4 +113,10 @@ public class ObjectPhotoFileAdapter
         Log.d(Constants.TAG, "position = " + position + ", file = " + photoFile.getAbsolutePath());
         return inputStream;
     }
+
+
+    public File getItemPhotoFile(int itemId)
+    {
+        return null == mPhotoFiles ? null : mPhotoFiles[itemId];
+    }
 }

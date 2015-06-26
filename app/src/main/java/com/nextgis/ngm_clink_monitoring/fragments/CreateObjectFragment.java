@@ -30,7 +30,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
@@ -227,7 +226,6 @@ public class CreateObjectFragment
 
                 ContentValues values = new ContentValues();
 
-                values.put(FoclConstants.FIELD_NAME, mLayingMethod.getText().toString());
                 values.put(FoclConstants.FIELD_DESCRIPTION, mDescription.getText().toString());
 
                 Calendar calendar = Calendar.getInstance();
@@ -252,11 +250,10 @@ public class CreateObjectFragment
                     // TODO: Toast
 
                 } else {
+                    mObjectId = Long.parseLong(result.getLastPathSegment());
                     Log.d(
                             TAG, "Layer: " + mObjectLayerName + ", id: " + mObjectId +
                                     ", insert result: " + result);
-
-                    mObjectId = Long.getLong(result.getLastPathSegment());
                     writePhotoAttaches();
                     getActivity().onBackPressed();
                 }
@@ -496,34 +493,18 @@ public class CreateObjectFragment
 
     protected void showPhoto(long itemId)
     {
-        Uri attachUri = Uri.parse(
-                "content://" + FoclSettingsConstantsUI.AUTHORITY + "/" + mObjectLayerName +
-                        "/" + mObjectId + "/attach/" + itemId);
-
         // get file path of photo file
-        String proj[] = {VectorLayer.ATTACH_ID, VectorLayer.ATTACH_DATA};
+        ObjectPhotoFileAdapter adapter = (ObjectPhotoFileAdapter) mPhotoGallery.getAdapter();
+        File photoFile = adapter.getItemPhotoFile((int) itemId);
+        String absolutePath = photoFile.getAbsolutePath();
 
-        Cursor attachCursor;
-        try {
-            attachCursor = getActivity().getContentResolver().query(
-                    attachUri, proj, null, null, null);
-
-        } catch (Exception e) {
-            Log.d(TAG, e.getLocalizedMessage());
-            return;
-        }
-
-        attachCursor.moveToFirst();
-        String data = attachCursor.getString(attachCursor.getColumnIndex(VectorLayer.ATTACH_DATA));
-        attachCursor.close();
-
-        if (TextUtils.isEmpty(data)) {
+        if (TextUtils.isEmpty(absolutePath)) {
             return;
         }
 
         // show photo in system program
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.parse("file://" + data), "image/*");
+        intent.setDataAndType(Uri.parse("file://" + absolutePath), "image/*");
 
         startActivity(intent);
     }
@@ -531,23 +512,11 @@ public class CreateObjectFragment
 
     protected void deletePhoto(long itemId)
     {
-        Uri deleteUri = Uri.parse(
-                "content://" + FoclSettingsConstantsUI.AUTHORITY + "/" + mObjectLayerName +
-                        "/" + mObjectId + "/attach/" + itemId);
+        // get file path of photo file
+        ObjectPhotoFileAdapter adapter = (ObjectPhotoFileAdapter) mPhotoGallery.getAdapter();
+        File photoFile = adapter.getItemPhotoFile((int) itemId);
 
-        int result = 0;
-        try {
-            result = getActivity().getContentResolver().delete(deleteUri, null, null);
-
-        } catch (Exception e) {
-            Log.d(TAG, e.getLocalizedMessage());
-        }
-
-        if (result == 0) {
-            Log.d(TAG, "delete failed");
-        } else {
-            Log.d(TAG, "deleted " + result);
-        }
+        photoFile.delete();
 
         setPhotoGalleryAdapter();
         setPhotoGalleryVisibility(true);
