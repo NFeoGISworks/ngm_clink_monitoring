@@ -178,6 +178,7 @@ public class CreateObjectFragment
 
         setBarsView(activity);
         setFieldVisibility();
+        setCoordinatesText();
         registerForContextMenu(mPhotoGallery);
 
         mPhotoHintText.setText(R.string.take_photos_to_confirm);
@@ -400,6 +401,34 @@ public class CreateObjectFragment
     }
 
 
+    protected void setCoordinatesText()
+    {
+        if (null != mAccurateLocation) {
+
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(
+                    getActivity());
+
+            int nFormat = prefs.getInt(
+                    FoclSettingsConstantsUI.KEY_PREF_COORD_FORMAT + "_int",
+                    Location.FORMAT_DEGREES);
+
+            String latText = getString(R.string.latitude_caption) + " " +
+                    LocationUtil.formatLatitude(
+                            mAccurateLocation.getLatitude(), nFormat,
+                            getResources()) +
+                    getString(R.string.coord_lat);
+
+            String longText = getString(R.string.longitude_caption) + " " +
+                    LocationUtil.formatLongitude(
+                            mAccurateLocation.getLongitude(), nFormat,
+                            getResources()) +
+                    getString(R.string.coord_lon);
+
+            mCoordinates.setText(latText + ",  " + longText);
+        }
+    }
+
+
     protected void showCoordinateRefiningDialog()
     {
         CoordinateRefiningDialog coordRefiningDialog = new CoordinateRefiningDialog();
@@ -412,27 +441,7 @@ public class CreateObjectFragment
                     {
                         if (null != accurateLocation) {
                             mAccurateLocation = accurateLocation;
-
-                            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(
-                                    getActivity());
-
-                            int nFormat = prefs.getInt(
-                                    FoclSettingsConstantsUI.KEY_PREF_COORD_FORMAT + "_int",
-                                    Location.FORMAT_DEGREES);
-
-                            String latText = getString(R.string.latitude_caption) + " " +
-                                    LocationUtil.formatLatitude(
-                                            accurateLocation.getLatitude(), nFormat,
-                                            getResources()) +
-                                    getString(R.string.coord_lat);
-
-                            String longText = getString(R.string.longitude_caption) + " " +
-                                    LocationUtil.formatLongitude(
-                                            accurateLocation.getLongitude(), nFormat,
-                                            getResources()) +
-                                    getString(R.string.coord_lon);
-
-                            mCoordinates.setText(latText + ",  " + longText);
+                            setCoordinatesText();
 
                         } else {
                             Toast.makeText(
