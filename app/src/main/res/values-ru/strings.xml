@@ -171,5 +171,6 @@
 
     <string name="coordinate_refining">Уточнение координат</string>
     <string name="coordinates_not_defined">Координаты не определены, объект создан быть не может</string>
+    <string name="object_creation_error">ОШИБКА создания объекта</string>
 
 </resources>

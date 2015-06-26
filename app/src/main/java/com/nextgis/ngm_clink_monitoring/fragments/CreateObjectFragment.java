@@ -247,7 +247,9 @@ public class CreateObjectFragment
                 if (result == null) {
                     Log.d(
                             TAG, "Layer: " + mObjectLayerName + ", insert FAILED");
-                    // TODO: Toast
+                    Toast.makeText(
+                            getActivity(), R.string.object_creation_error,
+                            Toast.LENGTH_LONG).show();
 
                 } else {
                     mObjectId = Long.parseLong(result.getLastPathSegment());
@@ -441,7 +443,7 @@ public class CreateObjectFragment
                     }
                 });
 
-        coordRefiningDialog.setCancelable(true); // TODO: true -> false
+        coordRefiningDialog.setCancelable(false);
         coordRefiningDialog.show(
                 getActivity().getSupportFragmentManager(), "CoordinateRefining");
     }
