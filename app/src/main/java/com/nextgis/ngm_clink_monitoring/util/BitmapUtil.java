@@ -30,6 +30,9 @@ import android.os.Build;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 public class BitmapUtil
@@ -287,5 +290,26 @@ public class BitmapUtil
         }
 
         dstExif.saveAttributes();
+    }
+
+
+    public static Date getExifDate(File imgFile)
+            throws IOException
+    {
+        ExifInterface imgFileExif = new ExifInterface(imgFile.getCanonicalPath());
+
+        if (imgFileExif.getAttribute(ExifInterface.TAG_DATETIME) != null) {
+            String imgDateTime = imgFileExif.getAttribute(ExifInterface.TAG_DATETIME);
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
+
+            try {
+                return simpleDateFormat.parse(imgDateTime);
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return null;
     }
 }

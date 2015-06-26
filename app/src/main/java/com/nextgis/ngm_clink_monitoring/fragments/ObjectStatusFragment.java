@@ -57,7 +57,7 @@ import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.activities.MainActivity;
 import com.nextgis.ngm_clink_monitoring.adapters.ObjectCursorAdapter;
-import com.nextgis.ngm_clink_monitoring.adapters.ObjectPhotoAdapter;
+import com.nextgis.ngm_clink_monitoring.adapters.ObjectPhotoCursorAdapter;
 import com.nextgis.ngm_clink_monitoring.dialogs.CoordinateRefiningDialog;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 import com.nextgis.ngm_clink_monitoring.map.FoclStruct;
@@ -103,8 +103,8 @@ public class ObjectStatusFragment
 
     protected String mObjectStatus = FoclConstants.FIELD_VALUE_UNKNOWN;
 
-    protected ObjectPhotoAdapter mObjectPhotoAdapter;
-    protected Cursor             mAttachesCursor;
+    protected ObjectPhotoCursorAdapter mObjectPhotoCursorAdapter;
+    protected Cursor                   mAttachesCursor;
 
     protected String  mTempPhotoPath         = null;
     protected boolean mHasAccurateCoordinate = false;
@@ -409,7 +409,7 @@ public class ObjectStatusFragment
         final long itemId;
 
         try {
-            itemId = ((ObjectPhotoAdapter) mPhotoGallery.getAdapter()).getSelectedItemId();
+            itemId = ((ObjectPhotoCursorAdapter) mPhotoGallery.getAdapter()).getSelectedItemId();
 
         } catch (Exception e) {
             Log.d(TAG, e.getLocalizedMessage());
@@ -537,6 +537,10 @@ public class ObjectStatusFragment
 
     protected void setPhotoGalleryAdapter()
     {
+        if (null != mAttachesCursor) {
+            mAttachesCursor.close();
+        }
+
         Uri attachesUri = Uri.parse(
                 "content://" + FoclSettingsConstantsUI.AUTHORITY + "/" + mObjectLayerName + "/" +
                         mObjectId + "/attach");
@@ -551,13 +555,14 @@ public class ObjectStatusFragment
         } catch (Exception e) {
             Log.d(TAG, e.getLocalizedMessage());
             mAttachesCursor = null;
-            mObjectPhotoAdapter = null;
+            mObjectPhotoCursorAdapter = null;
         }
 
         if (null != mAttachesCursor) {
-            mObjectPhotoAdapter = new ObjectPhotoAdapter(mContext, attachesUri, mAttachesCursor);
-            mObjectPhotoAdapter.setOnPhotoClickListener(
-                    new ObjectPhotoAdapter.OnPhotoClickListener()
+            mObjectPhotoCursorAdapter =
+                    new ObjectPhotoCursorAdapter(mContext, attachesUri, mAttachesCursor);
+            mObjectPhotoCursorAdapter.setOnPhotoClickListener(
+                    new ObjectPhotoCursorAdapter.OnPhotoClickListener()
                     {
                         @Override
                         public void onPhotoClick(long itemId)
@@ -567,7 +572,7 @@ public class ObjectStatusFragment
                     });
         }
 
-        mPhotoGallery.setAdapter(mObjectPhotoAdapter);
+        mPhotoGallery.setAdapter(mObjectPhotoCursorAdapter);
     }
 
 
@@ -575,7 +580,7 @@ public class ObjectStatusFragment
     {
         if (visible) {
 
-            if (null != mObjectPhotoAdapter && mObjectPhotoAdapter.getItemCount() > 0) {
+            if (null != mObjectPhotoCursorAdapter && mObjectPhotoCursorAdapter.getItemCount() > 0) {
                 mPhotoHintText.setVisibility(View.GONE);
                 mPhotoGallery.setVisibility(View.VISIBLE);
             } else {

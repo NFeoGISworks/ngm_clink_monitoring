@@ -23,12 +23,9 @@
 package com.nextgis.ngm_clink_monitoring.adapters;
 
 import android.app.Activity;
-import android.content.ContentUris;
 import android.content.Context;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -38,40 +35,33 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.ngm_clink_monitoring.R;
 
 import java.io.BufferedInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
 
-public class ObjectPhotoAdapter
+public abstract class ObjectPhotoAdapter
         extends RecyclerView.Adapter<ObjectPhotoAdapter.ViewHolder>
 {
     protected static final int IMAGE_SIZE_DP = 100;
     protected final int IMAGE_SIZE_PX;
 
     protected Context mContext;
-    protected Cursor  mAttachesCursor;
-    protected Uri     mAttachesUri;
     protected int     mSelectedItemPosition;
     protected long    mSelectedItemId;
 
     protected OnPhotoClickListener mOnPhotoClickListener;
 
 
-    public ObjectPhotoAdapter(
-            Context context,
-            Uri attachesUri,
-            Cursor attachesCursor)
+    protected abstract InputStream getPhotoInputStream(int position);
+
+
+    public ObjectPhotoAdapter(Context context)
     {
         mContext = context;
-        mAttachesUri = attachesUri;
-        mAttachesCursor = attachesCursor;
-
         IMAGE_SIZE_PX = (int) (IMAGE_SIZE_DP * mContext.getResources().getDisplayMetrics().density);
     }
 
@@ -131,7 +121,7 @@ public class ObjectPhotoAdapter
             @Override
             protected Bitmap doInBackground(Void... params)
             {
-                InputStream attachInputStream = getAttachInputStream(position);
+                InputStream attachInputStream = getPhotoInputStream(position);
 
                 if (null == attachInputStream) {
                     return null;
@@ -158,43 +148,6 @@ public class ObjectPhotoAdapter
                 }
             }
         }.execute();
-    }
-
-
-    @Override
-    public long getItemId(int position)
-    {
-        if (null == mAttachesCursor) {
-            return -1;
-        }
-
-        mAttachesCursor.moveToPosition(position);
-        return mAttachesCursor.getLong(mAttachesCursor.getColumnIndex(VectorLayer.ATTACH_ID));
-    }
-
-
-    @Override
-    public int getItemCount()
-    {
-        return (mAttachesCursor == null) ? 0 : mAttachesCursor.getCount();
-    }
-
-
-    private InputStream getAttachInputStream(int position)
-    {
-        Uri attachUri = ContentUris.withAppendedId(mAttachesUri, getItemId(position));
-        InputStream inputStream;
-
-        try {
-            inputStream = mContext.getContentResolver().openInputStream(attachUri);
-
-        } catch (FileNotFoundException e) {
-            Log.d(Constants.TAG, "position = " + position + ", ERROR: " + e.getLocalizedMessage());
-            return null;
-        }
-
-        Log.d(Constants.TAG, "position = " + position + ", URI = " + attachUri.toString());
-        return inputStream;
     }
 
 
@@ -265,7 +218,7 @@ public class ObjectPhotoAdapter
 
     public interface OnPhotoClickListener
     {
-        public void onPhotoClick(long itemId);
+        void onPhotoClick(long itemId);
     }
 
 

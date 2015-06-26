@@ -109,4 +109,6 @@ public interface FoclConstants
     long   MAX_ACCURACY_TAKE_TIME          = 60000;
     long   ACCURACY_PUBLISH_PROGRESS_DELAY = 500;
     String ACCURACY_CIRCULAR_ERROR_STR     = "CE50";
+
+    String TEMP_PHOTO_FILE_PREFIX = "temp-photo-";
 }
