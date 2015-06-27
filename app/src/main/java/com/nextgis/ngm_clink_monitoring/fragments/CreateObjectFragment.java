@@ -92,6 +92,7 @@ public class CreateObjectFragment
 
     protected Context mContext;
 
+    protected TextView mTypeWorkTitle;
     protected TextView mLineName;
     protected TextView mCoordinates;
 
@@ -100,12 +101,16 @@ public class CreateObjectFragment
 
     protected TextView mFoscTypeCaption;
     protected TextView mFoscType;
+    protected TextView mFoscPlacementCaption;
+    protected TextView mFoscPlacement;
 
     protected TextView mOpticalCrossTypeCaption;
     protected TextView mOpticalCrossType;
 
     protected TextView mSpecialLayingMethodCaption;
     protected TextView mSpecialLayingMethod;
+    protected TextView mMarkTypeCaption;
+    protected TextView mMarkType;
 
     protected EditText     mDescription;
     protected TextView     mPhotoHintText;
@@ -153,22 +158,38 @@ public class CreateObjectFragment
     {
         View view = inflater.inflate(R.layout.fragment_create_object, null);
 
+        // Common
+        mTypeWorkTitle = (TextView) view.findViewById(R.id.type_work_title_cr);
         mLineName = (TextView) view.findViewById(R.id.line_name_cr);
         mCoordinates = (TextView) view.findViewById(R.id.coordinates_cr);
 
+
+        // Optical cable
         mLayingMethodCaption = (TextView) view.findViewById(R.id.laying_method_caption_cr);
         mLayingMethod = (TextView) view.findViewById(R.id.laying_method_cr);
 
+        // FOSC
         mFoscTypeCaption = (TextView) view.findViewById(R.id.fosc_type_caption_cr);
         mFoscType = (TextView) view.findViewById(R.id.fosc_type_cr);
+        mFoscPlacementCaption = (TextView) view.findViewById(R.id.fosc_placement_caption_cr);
+        mFoscPlacement = (TextView) view.findViewById(R.id.fosc_placement_cr);
 
+        // Optical cross
         mOpticalCrossTypeCaption = (TextView) view.findViewById(R.id.optical_cross_type_caption_cr);
         mOpticalCrossType = (TextView) view.findViewById(R.id.optical_cross_type_cr);
 
+        // Access point
+        // nothing
+
+        // Special transition
         mSpecialLayingMethodCaption =
                 (TextView) view.findViewById(R.id.special_laying_method_caption_cr);
         mSpecialLayingMethod = (TextView) view.findViewById(R.id.special_laying_method_cr);
+        mMarkTypeCaption = (TextView) view.findViewById(R.id.mark_type_caption_cr);
+        mMarkType = (TextView) view.findViewById(R.id.mark_type_cr);
 
+
+        // Common
         mDescription = (EditText) view.findViewById(R.id.description_cr);
         mPhotoHintText = (TextView) view.findViewById(R.id.photo_hint_text_cr);
         mMakePhotoButton = (Button) view.findViewById(R.id.btn_make_photo_cr);
@@ -176,7 +197,8 @@ public class CreateObjectFragment
 
         MainActivity activity = (MainActivity) getActivity();
 
-        setBarsView(activity);
+        activity.setBarsView("");
+        setTitleView(activity);
         setFieldVisibility();
         setCoordinatesText();
         registerForContextMenu(mPhotoGallery);
@@ -301,7 +323,8 @@ public class CreateObjectFragment
 
         if (!mHasAccurateCoordinate) {
             mHasAccurateCoordinate = true;
-            showCoordinateRefiningDialog();
+            // TODO: uncomment it
+//            showCoordinateRefiningDialog();
         }
     }
 
@@ -314,6 +337,7 @@ public class CreateObjectFragment
     }
 
 
+    // TODO: remove it
     protected void setBarsView(MainActivity activity)
     {
         String toolbarTitle = "";
@@ -344,14 +368,46 @@ public class CreateObjectFragment
     }
 
 
+    protected void setTitleView(MainActivity activity)
+    {
+        String title = "";
+
+        switch (mFoclStructLayerType) {
+            case FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT:
+                title = activity.getString(R.string.cable_laying);
+                break;
+
+            case FoclConstants.LAYERTYPE_FOCL_REAL_FOSC:
+                title = activity.getString(R.string.fosc_mounting);
+                break;
+
+            case FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CROSS:
+                title = activity.getString(R.string.cross_mounting);
+                break;
+
+            case FoclConstants.LAYERTYPE_FOCL_REAL_ACCESS_POINT:
+                title = activity.getString(R.string.access_point_mounting);
+                break;
+
+            case FoclConstants.LAYERTYPE_FOCL_REAL_SPECIAL_TRANSITION_POINT:
+                title = activity.getString(R.string.special_transition_laying);
+                break;
+        }
+
+        mTypeWorkTitle.setText(title);
+    }
+
+
     protected void setBlockedView()
     {
         mLineName.setText("");
 
         mLayingMethod.setEnabled(false);
         mFoscType.setEnabled(false);
+        mFoscPlacement.setEnabled(false);
         mOpticalCrossType.setEnabled(false);
         mSpecialLayingMethod.setEnabled(false);
+        mMarkType.setEnabled(false);
 
         mDescription.setText("");
         mDescription.setEnabled(false);
@@ -369,10 +425,14 @@ public class CreateObjectFragment
         mLayingMethod.setVisibility(View.GONE);
         mFoscTypeCaption.setVisibility(View.GONE);
         mFoscType.setVisibility(View.GONE);
+        mFoscPlacementCaption.setVisibility(View.GONE);
+        mFoscPlacement.setVisibility(View.GONE);
         mOpticalCrossTypeCaption.setVisibility(View.GONE);
         mOpticalCrossType.setVisibility(View.GONE);
         mSpecialLayingMethodCaption.setVisibility(View.GONE);
         mSpecialLayingMethod.setVisibility(View.GONE);
+        mMarkTypeCaption.setVisibility(View.GONE);
+        mMarkType.setVisibility(View.GONE);
 
         switch (mFoclStructLayerType) {
             case FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT:
@@ -383,6 +443,8 @@ public class CreateObjectFragment
             case FoclConstants.LAYERTYPE_FOCL_REAL_FOSC:
                 mFoscTypeCaption.setVisibility(View.VISIBLE);
                 mFoscType.setVisibility(View.VISIBLE);
+                mFoscPlacementCaption.setVisibility(View.VISIBLE);
+                mFoscPlacement.setVisibility(View.VISIBLE);
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CROSS:
@@ -396,6 +458,8 @@ public class CreateObjectFragment
             case FoclConstants.LAYERTYPE_FOCL_REAL_SPECIAL_TRANSITION_POINT:
                 mSpecialLayingMethodCaption.setVisibility(View.VISIBLE);
                 mSpecialLayingMethod.setVisibility(View.VISIBLE);
+                mMarkTypeCaption.setVisibility(View.VISIBLE);
+                mMarkType.setVisibility(View.VISIBLE);
                 break;
         }
     }
@@ -452,7 +516,7 @@ public class CreateObjectFragment
                     }
                 });
 
-        coordRefiningDialog.setCancelable(true); // TODO: true -> false
+        coordRefiningDialog.setCancelable(false);
         coordRefiningDialog.show(
                 getActivity().getSupportFragmentManager(), "CoordinateRefining");
     }

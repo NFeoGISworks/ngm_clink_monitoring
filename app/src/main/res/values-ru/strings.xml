@@ -115,17 +115,24 @@
 
     <string name="coordinates_colon">Коодинаты:</string>
 
-    <string name="description_colon">Комментарий в процессе строительства:</string>
-    <string name="description_hint">Введите комментарий к объекту</string>
+    <string name="description_colon">Комментарий:</string>
+    <string name="description_hint">Введите комментарий</string>
 
     <string name="laying_method_colon">Способ прокладки:</string>
+    <string name="laying_method_hint">Укажите способ прокладки</string>
 
     <string name="fosc_type_colon">Тип муфты:</string>
-    <string name="fosc_placement_colon">Место размещения оптической муфты:</string>
+    <string name="fosc_type_hint">Укажите тип муфты</string>
+    <string name="fosc_placement_colon">Место размещения муфты:</string>
+    <string name="fosc_placement_hint">Укажите место размещения муфты</string>
 
     <string name="optical_cross_type_colon">Тип кросса:</string>
+    <string name="optical_cross_type_hint">Укажите тип кросса</string>
 
     <string name="special_laying_method_colon">Способ прокладки:</string>
+    <string name="special_laying_method_hint">Укажите способ прокладки</string>
+    <string name="mark_type_colon">Тип отметки:</string>
+    <string name="mark_type_hint">Укажите тип отметки</string>
 
 
     <string name="specify_work_status">Укажите статус работ:</string>

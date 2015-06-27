@@ -50,9 +50,20 @@
                 android:orientation="vertical"
                 >
 
+                <!-- Common -->
+
+                <TextView
+                    android:id="@+id/type_work_title_cr"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:gravity="center"
+                    />
+
                 <TextView
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"
+                    android:layout_marginTop="5dp"
                     android:text="@string/communication_line_colon"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     />
@@ -68,14 +79,18 @@
                     android:layout_marginTop="10dp"
                     android:text="@string/coordinates_colon"
                     android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:visibility="gone"
                     />
 
                 <TextView
                     android:id="@+id/coordinates_cr"
                     android:text="--"
                     style="@style/selectedObjectStyle"
+                    android:visibility="gone"
                     />
 
+
+                <!-- Optical cable -->
 
                 <TextView
                     android:id="@+id/laying_method_caption_cr"
@@ -89,11 +104,13 @@
 
                 <TextView
                     android:id="@+id/laying_method_cr"
-                    android:text="@string/laying_method_colon"
+                    android:hint="@string/laying_method_hint"
                     style="@style/editObjectStyle"
                     android:visibility="gone"
                     />
 
+
+                <!-- FOSC -->
 
                 <TextView
                     android:id="@+id/fosc_type_caption_cr"
@@ -107,11 +124,30 @@
 
                 <TextView
                     android:id="@+id/fosc_type_cr"
-                    android:text="@string/fosc_type_colon"
+                    android:hint="@string/fosc_type_hint"
                     style="@style/editObjectStyle"
                     android:visibility="gone"
                     />
 
+                <TextView
+                    android:id="@+id/fosc_placement_caption_cr"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/fosc_placement_colon"
+                    android:visibility="gone"
+                    />
+
+                <TextView
+                    android:id="@+id/fosc_placement_cr"
+                    android:hint="@string/fosc_placement_hint"
+                    style="@style/editObjectStyle"
+                    android:visibility="gone"
+                    />
+
+
+                <!-- Optical cross -->
 
                 <TextView
                     android:id="@+id/optical_cross_type_caption_cr"
@@ -125,11 +161,18 @@
 
                 <TextView
                     android:id="@+id/optical_cross_type_cr"
-                    android:text="@string/optical_cross_type_colon"
+                    android:hint="@string/optical_cross_type_hint"
                     style="@style/editObjectStyle"
                     android:visibility="gone"
                     />
 
+
+                <!-- Access point -->
+
+                <!-- Nothing -->
+
+
+                <!-- Special transition -->
 
                 <TextView
                     android:id="@+id/special_laying_method_caption_cr"
@@ -143,11 +186,30 @@
 
                 <TextView
                     android:id="@+id/special_laying_method_cr"
-                    android:text="@string/special_laying_method_colon"
+                    android:hint="@string/special_laying_method_hint"
                     style="@style/editObjectStyle"
                     android:visibility="gone"
                     />
 
+                <TextView
+                    android:id="@+id/mark_type_caption_cr"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/mark_type_colon"
+                    android:visibility="gone"
+                    />
+
+                <TextView
+                    android:id="@+id/mark_type_cr"
+                    android:hint="@string/mark_type_hint"
+                    style="@style/editObjectStyle"
+                    android:visibility="gone"
+                    />
+
+
+                <!-- Common -->
 
                 <TextView
                     android:layout_height="wrap_content"

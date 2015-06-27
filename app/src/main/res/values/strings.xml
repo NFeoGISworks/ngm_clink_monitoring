@@ -115,17 +115,24 @@
 
     <string name="coordinates_colon">Coordinates:</string>
 
-    <string name="description_colon">Commentary during construction:</string>
-    <string name="description_hint">Enter the object commentary</string>
+    <string name="description_colon">Commentary:</string>
+    <string name="description_hint">Enter commentary</string>
 
     <string name="laying_method_colon">Laying method:</string>
+    <string name="laying_method_hint">Select laying method</string>
 
     <string name="fosc_type_colon">FOSC type:</string>
-    <string name="fosc_placement_colon">Место размещения оптической муфты:</string>
+    <string name="fosc_type_hint">Select FOSC type</string>
+    <string name="fosc_placement_colon">FOSC placement:</string>
+    <string name="fosc_placement_hint">Select FOSC placement</string>
 
     <string name="optical_cross_type_colon">Cross type:</string>
+    <string name="optical_cross_type_hint">Select cross type</string>
 
-    <string name="special_laying_method_colon">Способ прокладки:</string>
+    <string name="special_laying_method_colon">Laying method:</string>
+    <string name="special_laying_method_hint">Select laying method</string>
+    <string name="mark_type_colon">Mark type:</string>
+    <string name="mark_type_hint">Select mark type</string>
 
 
     <string name="specify_work_status">Specify work status:</string>
