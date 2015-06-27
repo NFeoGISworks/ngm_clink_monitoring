@@ -452,7 +452,7 @@ public class CreateObjectFragment
                     }
                 });
 
-        coordRefiningDialog.setCancelable(false);
+        coordRefiningDialog.setCancelable(true); // TODO: true -> false
         coordRefiningDialog.show(
                 getActivity().getSupportFragmentManager(), "CoordinateRefining");
     }

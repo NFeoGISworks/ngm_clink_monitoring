@@ -358,13 +358,13 @@ public class MainActivity
             case FoclConstants.FRAGMENT_SYNC_LOGIN:
             case FoclConstants.FRAGMENT_PERFORM_1ST_SYNC:
             case FoclConstants.FRAGMENT_LINE_LIST:
+            case FoclConstants.FRAGMENT_OBJECT_TYPES:
             case FoclConstants.FRAGMENT_OBJECT_LIST:
             case FoclConstants.FRAGMENT_OBJECT_STATUS:
             case FoclConstants.FRAGMENT_CREATE_OBJECT:
                 ft.hide(mStatusBarFragment);
                 break;
 
-            case FoclConstants.FRAGMENT_OBJECT_TYPES:
             case FoclConstants.FRAGMENT_MAP:
             default:
                 ft.show(mStatusBarFragment);

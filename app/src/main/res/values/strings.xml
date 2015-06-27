@@ -95,7 +95,7 @@
     <string name="fosc_mounting">FOSC mounting</string>
     <string name="cross_mounting">Cross mounting</string>
     <string name="access_point_mounting">Access point mounting</string>
-    <string name="special_transition_laying">Special transition</string>
+    <string name="special_transition_laying">Special transition laying</string>
     <string name="object_attributes">Object attributes</string>
 
     <string name="select_line_colon">Select line:</string>
