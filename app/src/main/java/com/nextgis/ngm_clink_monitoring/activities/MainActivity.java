@@ -38,6 +38,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -490,8 +491,27 @@ public class MainActivity
             case VIEW_STATE_LOGIN:
                 menu.findItem(R.id.menu_sync).setEnabled(false);
                 break;
+
             case VIEW_STATE_OBJECTS:
+                String tag = getMainFragmentTag();
+                switch (tag) {
+                    case FoclConstants.FRAGMENT_SYNC_LOGIN:
+                    case FoclConstants.FRAGMENT_PERFORM_1ST_SYNC:
+                    case FoclConstants.FRAGMENT_LINE_LIST:
+                    case FoclConstants.FRAGMENT_OBJECT_TYPES:
+                    case FoclConstants.FRAGMENT_OBJECT_LIST:
+                    case FoclConstants.FRAGMENT_OBJECT_STATUS:
+                    case FoclConstants.FRAGMENT_MAP:
+                    default:
+                        break;
+
+                    case FoclConstants.FRAGMENT_CREATE_OBJECT:
+                        MenuItemCompat.setShowAsAction(
+                                menu.findItem(R.id.menu_map), MenuItem.SHOW_AS_ACTION_ALWAYS);
+                        break;
+                }
                 break;
+
             case VIEW_STATE_MAP:
                 menu.findItem(R.id.menu_map).setVisible(false);
                 menu.findItem(R.id.menu_location).setVisible(true);

@@ -197,7 +197,7 @@ public class CreateObjectFragment
 
         MainActivity activity = (MainActivity) getActivity();
 
-        activity.setBarsView("");
+        setBarsView(activity);
         setTitleView(activity);
         setFieldVisibility();
         setCoordinatesText();
@@ -338,33 +338,40 @@ public class CreateObjectFragment
 
 
     // TODO: remove it
+//    protected void setBarsView(MainActivity activity)
+//    {
+//        String toolbarTitle = "";
+//
+//        switch (mFoclStructLayerType) {
+//            case FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT:
+//                toolbarTitle = activity.getString(R.string.cable_laying);
+//                break;
+//
+//            case FoclConstants.LAYERTYPE_FOCL_REAL_FOSC:
+//                toolbarTitle = activity.getString(R.string.fosc_mounting);
+//                break;
+//
+//            case FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CROSS:
+//                toolbarTitle = activity.getString(R.string.cross_mounting);
+//                break;
+//
+//            case FoclConstants.LAYERTYPE_FOCL_REAL_ACCESS_POINT:
+//                toolbarTitle = activity.getString(R.string.access_point_mounting);
+//                break;
+//
+//            case FoclConstants.LAYERTYPE_FOCL_REAL_SPECIAL_TRANSITION_POINT:
+//                toolbarTitle = activity.getString(R.string.special_transition_laying);
+//                break;
+//        }
+//
+//        activity.setBarsView(toolbarTitle);
+//    }
+
+
     protected void setBarsView(MainActivity activity)
     {
-        String toolbarTitle = "";
-
-        switch (mFoclStructLayerType) {
-            case FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT:
-                toolbarTitle = activity.getString(R.string.cable_laying);
-                break;
-
-            case FoclConstants.LAYERTYPE_FOCL_REAL_FOSC:
-                toolbarTitle = activity.getString(R.string.fosc_mounting);
-                break;
-
-            case FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CROSS:
-                toolbarTitle = activity.getString(R.string.cross_mounting);
-                break;
-
-            case FoclConstants.LAYERTYPE_FOCL_REAL_ACCESS_POINT:
-                toolbarTitle = activity.getString(R.string.access_point_mounting);
-                break;
-
-            case FoclConstants.LAYERTYPE_FOCL_REAL_SPECIAL_TRANSITION_POINT:
-                toolbarTitle = activity.getString(R.string.special_transition_laying);
-                break;
-        }
-
-        activity.setBarsView(toolbarTitle);
+        activity.setBarsView("");
+        activity.switchMenuView();
     }
 
 
