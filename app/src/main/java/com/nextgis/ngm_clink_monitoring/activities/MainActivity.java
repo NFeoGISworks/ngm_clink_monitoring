@@ -362,13 +362,13 @@ public class MainActivity
             case FoclConstants.FRAGMENT_OBJECT_LIST:
             case FoclConstants.FRAGMENT_OBJECT_STATUS:
             case FoclConstants.FRAGMENT_CREATE_OBJECT:
+            case FoclConstants.FRAGMENT_MAP:
+            default:
                 ft.hide(mStatusBarFragment);
                 break;
 
-            case FoclConstants.FRAGMENT_MAP:
-            default:
-                ft.show(mStatusBarFragment);
-                break;
+//                ft.show(mStatusBarFragment);
+//                break;
         }
 
         ft.commit();
