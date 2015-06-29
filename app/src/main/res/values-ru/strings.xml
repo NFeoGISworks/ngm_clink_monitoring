@@ -182,5 +182,7 @@
     <string name="object_creation_error">ОШИБКА создания объекта</string>
     <string name="confirmation">Подтверждение</string>
     <string name="confirm_cancel_object_creating">Вы уверены, что хотите отменить ввод данных?</string>
+    <string name="warning">Предупреждение</string>
+    <string name="coordinates_refining_process">Идет процесс уточнения координат. Дождитесь окончания</string>
 
 </resources>

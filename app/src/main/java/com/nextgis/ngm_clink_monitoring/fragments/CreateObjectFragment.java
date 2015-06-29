@@ -282,44 +282,27 @@ public class CreateObjectFragment
             @Override
             public void onClick(View v)
             {
-                Uri uri = Uri.parse(
-                        "content://" + FoclSettingsConstantsUI.AUTHORITY + "/" +
-                                mObjectLayerName);
+                if (mLocationTaker.isTaking()) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-                ContentValues values = new ContentValues();
-
-                values.put(FoclConstants.FIELD_DESCRIPTION, mDescription.getText().toString());
-
-                Calendar calendar = Calendar.getInstance();
-                values.put(FoclConstants.FIELD_BUILT_DATE, calendar.getTimeInMillis());
-
-                try {
-                    GeoPoint pt = new GeoPoint(
-                            mAccurateLocation.getLongitude(), mAccurateLocation.getLatitude());
-                    pt.setCRS(CRS_WGS84);
-                    pt.project(CRS_WEB_MERCATOR);
-                    GeoMultiPoint mpt = new GeoMultiPoint();
-                    mpt.add(pt);
-                    values.put(FIELD_GEOM, mpt.toBlob());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                Uri result = getActivity().getContentResolver().insert(uri, values);
-                if (result == null) {
-                    Log.d(
-                            TAG, "Layer: " + mObjectLayerName + ", insert FAILED");
-                    Toast.makeText(
-                            getActivity(), R.string.object_creation_error, Toast.LENGTH_LONG)
+                    builder.setTitle(getActivity().getString(R.string.warning))
+                            .setMessage(R.string.coordinates_refining_process)
+                            .setIcon(R.drawable.ic_action_warning)
+                            .setPositiveButton(
+                                    R.string.ok, new DialogInterface.OnClickListener()
+                                    {
+                                        @Override
+                                        public void onClick(
+                                                DialogInterface dialog,
+                                                int which)
+                                        {
+                                            // cancel
+                                        }
+                                    })
                             .show();
 
                 } else {
-                    mObjectId = Long.parseLong(result.getLastPathSegment());
-                    Log.d(
-                            TAG, "Layer: " + mObjectLayerName + ", id: " + mObjectId +
-                                    ", insert result: " + result);
-                    writePhotoAttaches();
-                    getActivity().onBackPressed();
+                    createObject();
                 }
             }
         };
@@ -592,7 +575,7 @@ public class CreateObjectFragment
         mRefiningProgress.setProgress(mTakeTimePct);
 
         setCoordinatesText();
-        setCoordinatesVisibility(false);
+        setCoordinatesVisibility(!mLocationTaker.isTaking());
 
         mLocationTaker.setOnProgressUpdateListener(
                 new AccurateLocationTaker.OnProgressUpdateListener()
@@ -1075,5 +1058,48 @@ public class CreateObjectFragment
         final GISApplication app = (GISApplication) getActivity().getApplication();
         String timeStamp = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
         return FileUtil.getDirWithCreate(app.getPhotoPath() + File.separator + timeStamp);
+    }
+
+
+    protected void createObject()
+    {
+        Uri uri = Uri.parse(
+                "content://" + FoclSettingsConstantsUI.AUTHORITY + "/" +
+                        mObjectLayerName);
+
+        ContentValues values = new ContentValues();
+
+        values.put(FoclConstants.FIELD_DESCRIPTION, mDescription.getText().toString());
+
+        Calendar calendar = Calendar.getInstance();
+        values.put(FoclConstants.FIELD_BUILT_DATE, calendar.getTimeInMillis());
+
+        try {
+            GeoPoint pt = new GeoPoint(
+                    mAccurateLocation.getLongitude(), mAccurateLocation.getLatitude());
+            pt.setCRS(CRS_WGS84);
+            pt.project(CRS_WEB_MERCATOR);
+            GeoMultiPoint mpt = new GeoMultiPoint();
+            mpt.add(pt);
+            values.put(FIELD_GEOM, mpt.toBlob());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Uri result = getActivity().getContentResolver().insert(uri, values);
+        if (result == null) {
+            Log.d(
+                    TAG, "Layer: " + mObjectLayerName + ", insert FAILED");
+            Toast.makeText(
+                    getActivity(), R.string.object_creation_error, Toast.LENGTH_LONG).show();
+
+        } else {
+            mObjectId = Long.parseLong(result.getLastPathSegment());
+            Log.d(
+                    TAG, "Layer: " + mObjectLayerName + ", id: " + mObjectId +
+                            ", insert result: " + result);
+            writePhotoAttaches();
+            getActivity().onBackPressed();
+        }
     }
 }
