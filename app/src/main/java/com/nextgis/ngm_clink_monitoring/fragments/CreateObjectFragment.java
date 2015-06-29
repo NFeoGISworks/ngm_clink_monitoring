@@ -657,19 +657,21 @@ public class CreateObjectFragment
 
             mCoordinates.setText(latText + ",  " + longText);
 
-            // TODO: prevPointLocation
-            Location prevPointLocation = new Location("");
-            prevPointLocation.setLatitude(9);
-            prevPointLocation.setLongitude(36);
-            float distance = mAccurateLocation.distanceTo(prevPointLocation);
+            if (mDistanceFromPrevPoint.isShown()) {
+                // TODO: prevPointLocation
+                Location prevPointLocation = new Location("");
+                prevPointLocation.setLatitude(9);
+                prevPointLocation.setLongitude(36);
+                float distance = mAccurateLocation.distanceTo(prevPointLocation);
 
-            DecimalFormat df = new DecimalFormat("0.0");
-            String mDistText = df.format(distance) + getString(R.string.distance_unit);
-            mDistanceFromPrevPoint.setText(mDistText);
-            mDistanceFromPrevPoint.setTextColor(
-                    distance > FoclConstants.MAX_DISTANCE_FROM_PREV_POINT
-                    ? 0xFF880000
-                    : 0xFF008800);
+                DecimalFormat df = new DecimalFormat("0.0");
+                String mDistText = df.format(distance) + getString(R.string.distance_unit);
+                mDistanceFromPrevPoint.setText(mDistText);
+                mDistanceFromPrevPoint.setTextColor(
+                        distance > FoclConstants.MAX_DISTANCE_FROM_PREV_POINT
+                        ? 0xFF880000
+                        : 0xFF008800);
+            }
 
         } else {
             mCoordinates.setText(getText(R.string.coordinates_not_defined));
