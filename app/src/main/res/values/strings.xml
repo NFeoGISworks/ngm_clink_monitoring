@@ -179,5 +179,7 @@
     <string name="coordinate_refining">Coordinate refining</string>
     <string name="coordinates_not_defined">The coordinates not defined. The object can not be created</string>
     <string name="object_creation_error">Object creation ERROR</string>
+    <string name="confirmation">Confirmation</string>
+    <string name="confirm_cancel_object_creating">Are you sure you want to cancel data entry?</string>
 
 </resources>

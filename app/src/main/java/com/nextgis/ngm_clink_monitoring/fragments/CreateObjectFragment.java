@@ -23,7 +23,6 @@
 package com.nextgis.ngm_clink_monitoring.fragments;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -40,11 +39,13 @@ import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -271,8 +272,8 @@ public class CreateObjectFragment
                     Log.d(
                             TAG, "Layer: " + mObjectLayerName + ", insert FAILED");
                     Toast.makeText(
-                            getActivity(), R.string.object_creation_error,
-                            Toast.LENGTH_LONG).show();
+                            getActivity(), R.string.object_creation_error, Toast.LENGTH_LONG)
+                            .show();
 
                 } else {
                     mObjectId = Long.parseLong(result.getLastPathSegment());
@@ -326,6 +327,56 @@ public class CreateObjectFragment
             // TODO: uncomment it
 //            showCoordinateRefiningDialog();
         }
+
+        getView().setFocusableInTouchMode(true);
+        getView().requestFocus();
+        getView().setOnKeyListener(
+                new View.OnKeyListener()
+                {
+                    @Override
+                    public boolean onKey(
+                            View v,
+                            int keyCode,
+                            KeyEvent event)
+                    {
+                        if (event.getAction() == KeyEvent.ACTION_UP &&
+                                keyCode == KeyEvent.KEYCODE_BACK) {
+
+                            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+                            builder.setTitle(getActivity().getString(R.string.confirmation))
+                                    .setMessage(R.string.confirm_cancel_object_creating)
+                                    .setIcon(R.drawable.ic_action_warning)
+                                    .setPositiveButton(
+                                            R.string.yes, new DialogInterface.OnClickListener()
+                                            {
+                                                @Override
+                                                public void onClick(
+                                                        DialogInterface dialog,
+                                                        int which)
+                                                {
+                                                    getActivity().onBackPressed();
+                                                }
+                                            })
+                                    .setNegativeButton(
+                                            R.string.no, new DialogInterface.OnClickListener()
+                                            {
+                                                @Override
+                                                public void onClick(
+                                                        DialogInterface dialog,
+                                                        int which)
+                                                {
+                                                    // cancel
+                                                }
+                                            })
+                                    .show();
+
+                            return true;
+                        }
+
+                        return false;
+                    }
+                });
     }
 
 
@@ -485,14 +536,12 @@ public class CreateObjectFragment
 
             String latText = getString(R.string.latitude_caption) + " " +
                     LocationUtil.formatLatitude(
-                            mAccurateLocation.getLatitude(), nFormat,
-                            getResources()) +
+                            mAccurateLocation.getLatitude(), nFormat, getResources()) +
                     getString(R.string.coord_lat);
 
             String longText = getString(R.string.longitude_caption) + " " +
                     LocationUtil.formatLongitude(
-                            mAccurateLocation.getLongitude(), nFormat,
-                            getResources()) +
+                            mAccurateLocation.getLongitude(), nFormat, getResources()) +
                     getString(R.string.coord_lon);
 
             mCoordinates.setText(latText + ",  " + longText);
