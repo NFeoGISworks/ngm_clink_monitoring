@@ -65,6 +65,7 @@ import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.activities.MainActivity;
 import com.nextgis.ngm_clink_monitoring.adapters.ObjectPhotoFileAdapter;
 import com.nextgis.ngm_clink_monitoring.dialogs.CoordinateRefiningDialog;
+import com.nextgis.ngm_clink_monitoring.dialogs.DistanceExceededDialog;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 import com.nextgis.ngm_clink_monitoring.map.FoclStruct;
 import com.nextgis.ngm_clink_monitoring.map.FoclVectorLayer;
@@ -110,10 +111,11 @@ public class CreateObjectFragment
     protected TextView mDistanceFromPrevPoint;
 
     protected AccurateLocationTaker mLocationTaker;
-    protected              int mTakeCount    = 0;
-    protected              int mTakeCountPct = 0;
-    protected              int mTakeTimePct  = 0;
-    protected static final int MAX_PCT       = 100;
+    protected              int   mTakeCount    = 0;
+    protected              int   mTakeCountPct = 0;
+    protected              int   mTakeTimePct  = 0;
+    protected static final int   MAX_PCT       = 100;
+    protected              float mDistance     = 0;
 
     protected TextView mLayingMethodCaption;
     protected TextView mLayingMethod;
@@ -316,9 +318,40 @@ public class CreateObjectFragment
                                                 int which)
                                         {
                                             startLocationTaking();
+                                            dialog.dismiss();
                                         }
                                     })
                             .show();
+
+                } else if (mDistanceFromPrevPoint.isShown() &&
+                        FoclConstants.MAX_DISTANCE_FROM_PREV_POINT < mDistance) {
+
+                    DistanceExceededDialog distanceExceededDialog = new DistanceExceededDialog();
+                    distanceExceededDialog.setCancelable(false);
+
+                    distanceExceededDialog.setOnRepeatClickedListener(
+                            new DistanceExceededDialog.OnRepeatClickedListener()
+                            {
+                                @Override
+                                public void onRepeatClicked()
+                                {
+                                    startLocationTaking();
+                                }
+                            });
+
+                    distanceExceededDialog.setOnNewPointClickedListener(
+                            new DistanceExceededDialog.OnNewPointClickedListener()
+                            {
+                                @Override
+                                public void onNewPointClicked()
+                                {
+                                    // TODO: change it
+                                }
+                            });
+
+                    distanceExceededDialog.show(
+                            getActivity().getSupportFragmentManager(),
+                            FoclConstants.FRAGMENT_DISTANCE_EXCEEDED);
 
                 } else {
                     createObject();
@@ -664,18 +697,19 @@ public class CreateObjectFragment
                 Location prevPointLocation = new Location("");
                 prevPointLocation.setLatitude(9);
                 prevPointLocation.setLongitude(36);
-                float distance = mAccurateLocation.distanceTo(prevPointLocation);
+                mDistance = mAccurateLocation.distanceTo(prevPointLocation);
 
                 DecimalFormat df = new DecimalFormat("0.0");
-                String mDistText = df.format(distance) + getString(R.string.distance_unit);
+                String mDistText = df.format(mDistance) + getString(R.string.distance_unit);
                 mDistanceFromPrevPoint.setText(mDistText);
                 mDistanceFromPrevPoint.setTextColor(
-                        distance > FoclConstants.MAX_DISTANCE_FROM_PREV_POINT
+                        mDistance > FoclConstants.MAX_DISTANCE_FROM_PREV_POINT
                         ? 0xFF880000
                         : 0xFF008800);
             }
 
         } else {
+            mDistance = 0;
             mCoordinates.setText(getText(R.string.coordinates_not_defined));
             mDistanceFromPrevPoint.setText("--");
             mDistanceFromPrevPoint.setTextColor(
@@ -698,8 +732,9 @@ public class CreateObjectFragment
 
     protected void startLocationTaking()
     {
-        mLocationTaker.startTaking();
+        mAccurateLocation = null;
 
+        mTakeCount = 0;
         mTakeCountPct = 0;
         mTakeTimePct = 0;
         mRefiningProgress.setSecondaryProgress(mTakeCountPct);
@@ -707,6 +742,8 @@ public class CreateObjectFragment
 
         setCoordinatesText();
         setCoordinatesVisibility(false);
+
+        mLocationTaker.startTaking();
     }
 
 

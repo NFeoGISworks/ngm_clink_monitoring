@@ -24,16 +24,17 @@ package com.nextgis.ngm_clink_monitoring.util;
 
 public interface FoclConstants
 {
-    String FRAGMENT_SYNC_LOGIN       = "NGWLogin";
-    String FRAGMENT_PERFORM_1ST_SYNC = "Perform1stSync";
-    String FRAGMENT_STATUS_BAR       = "StatusBar";
-    String FRAGMENT_OBJECT_TYPES     = "ObjectTypes";
-    String FRAGMENT_LINE_LIST        = "LineList";
-    String FRAGMENT_OBJECT_LIST      = "ObjectList";
-    String FRAGMENT_OBJECT_STATUS    = "ObjectStatus";
-    String FRAGMENT_CREATE_OBJECT    = "CreateObject";
-    String FRAGMENT_MAP              = "Map";
-    String FRAGMENT_ATTRIBUTES       = "Attributes";
+    String FRAGMENT_SYNC_LOGIN        = "NGWLogin";
+    String FRAGMENT_PERFORM_1ST_SYNC  = "Perform1stSync";
+    String FRAGMENT_STATUS_BAR        = "StatusBar";
+    String FRAGMENT_OBJECT_TYPES      = "ObjectTypes";
+    String FRAGMENT_LINE_LIST         = "LineList";
+    String FRAGMENT_OBJECT_LIST       = "ObjectList";
+    String FRAGMENT_OBJECT_STATUS     = "ObjectStatus";
+    String FRAGMENT_CREATE_OBJECT     = "CreateObject";
+    String FRAGMENT_MAP               = "Map";
+    String FRAGMENT_ATTRIBUTES        = "Attributes";
+    String FRAGMENT_DISTANCE_EXCEEDED = "DistanceExceeded";
 
     String JSON_REGION_KEY   = "region";
     String JSON_DISTRICT_KEY = "district";

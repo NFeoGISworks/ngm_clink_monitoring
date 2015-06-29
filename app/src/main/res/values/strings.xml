@@ -186,5 +186,8 @@
     <string name="coordinates_refining_process">The process of refinement the coordinates. Wait until it ends</string>
     <string name="coordinates_are_not_defined">Coordinates are not defined. Try again</string>
     <string name="repeat">Repeat</string>
+    <string name="new_starting_point">New starting point</string>
+    <string name="distance_from_prev_point_exceeded_colon">Distance from previous point is exceeded:</string>
+    <string name="shorten_distance_and_repeat_or_new">Shorten the distance and try to refining the coordinates.\n\nOr mark a new starting point.</string>
 
 </resources>
