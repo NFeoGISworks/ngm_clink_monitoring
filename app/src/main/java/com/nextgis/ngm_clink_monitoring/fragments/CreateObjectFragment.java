@@ -301,6 +301,25 @@ public class CreateObjectFragment
                                     })
                             .show();
 
+                } else if (null == mAccurateLocation) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+                    builder.setTitle(getActivity().getString(R.string.warning))
+                            .setMessage(R.string.coordinates_are_not_defined)
+                            .setIcon(R.drawable.ic_action_warning)
+                            .setPositiveButton(
+                                    R.string.repeat, new DialogInterface.OnClickListener()
+                                    {
+                                        @Override
+                                        public void onClick(
+                                                DialogInterface dialog,
+                                                int which)
+                                        {
+                                            startLocationTaking();
+                                        }
+                                    })
+                            .show();
+
                 } else {
                     createObject();
                 }
@@ -674,6 +693,20 @@ public class CreateObjectFragment
             mRefiningLayout.setVisibility(View.VISIBLE);
             mCoordinates.setVisibility(View.GONE);
         }
+    }
+
+
+    protected void startLocationTaking()
+    {
+        mLocationTaker.startTaking();
+
+        mTakeCountPct = 0;
+        mTakeTimePct = 0;
+        mRefiningProgress.setSecondaryProgress(mTakeCountPct);
+        mRefiningProgress.setProgress(mTakeTimePct);
+
+        setCoordinatesText();
+        setCoordinatesVisibility(false);
     }
 
 

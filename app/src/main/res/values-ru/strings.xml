@@ -184,5 +184,7 @@
     <string name="confirm_cancel_object_creating">Вы уверены, что хотите отменить ввод данных?</string>
     <string name="warning">Предупреждение</string>
     <string name="coordinates_refining_process">Идет процесс уточнения координат. Дождитесь окончания</string>
+    <string name="coordinates_are_not_defined">Координаты не определены. Попробуйте еще раз</string>
+    <string name="repeat">Повторить</string>
 
 </resources>

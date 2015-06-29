@@ -184,5 +184,7 @@
     <string name="confirm_cancel_object_creating">Are you sure you want to cancel data entry?</string>
     <string name="warning">Warning</string>
     <string name="coordinates_refining_process">The process of refinement the coordinates. Wait until it ends</string>
+    <string name="coordinates_are_not_defined">Coordinates are not defined. Try again</string>
+    <string name="repeat">Repeat</string>
 
 </resources>
