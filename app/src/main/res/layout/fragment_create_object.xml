@@ -110,6 +110,22 @@
                     android:visibility="gone"
                     />
 
+                <TextView
+                    android:id="@+id/distance_from_prev_point_caption_cr"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/distance_from_prev_point_colon"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:visibility="gone"
+                    />
+
+                <TextView
+                    android:id="@+id/distance_from_prev_point_cr"
+                    style="@style/selectedObjectStyle"
+                    android:visibility="gone"
+                    />
+
 
                 <!-- Optical cable -->
 

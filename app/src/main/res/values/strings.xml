@@ -83,7 +83,6 @@
     <string name="longitude_caption">Lg:</string>
     <string name="altitude_caption">Al:</string>
     <string name="accuracy_caption">Ac:</string>
-    <string name="distance_caption">Distance from the prev. point:</string>
 
     <string name="altitude_unit">m</string>
     <string name="accuracy_unit">m</string>
@@ -178,6 +177,8 @@
 
     <string name="coordinate_refining">Coordinate refining</string>
     <string name="coordinates_not_defined">The coordinates not defined</string>
+    <string name="distance_from_prev_point_colon">Distance from the previous point:</string>
+
     <string name="object_creation_error">Object creation ERROR</string>
     <string name="confirmation">Confirmation</string>
     <string name="confirm_cancel_object_creating">Are you sure you want to cancel data entry?</string>

@@ -110,7 +110,7 @@ public class StatusBarFragment
         mLongView.setText(getString(R.string.longitude_caption) + " " + mLongText);
 //        mAltView.setText(mAltText);
         mAccView.setText(getString(R.string.accuracy_caption) + " " + mAccText);
-        mDistView.setText(getString(R.string.distance_caption) + " " + mDistText);
+        mDistView.setText(getString(R.string.distance_from_prev_point_colon) + " " + mDistText);
     }
 
 

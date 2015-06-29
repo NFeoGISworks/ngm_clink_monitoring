@@ -79,6 +79,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -99,11 +100,14 @@ public class CreateObjectFragment
 
     protected TextView mTypeWorkTitle;
     protected TextView mLineName;
-    protected TextView mCoordinates;
 
     protected RelativeLayout mRefiningLayout;
     protected ProgressBar    mRefiningProgress;
     protected TextView       mRefiningText;
+
+    protected TextView mCoordinates;
+    protected TextView mDistanceFromPrevPointCaption;
+    protected TextView mDistanceFromPrevPoint;
 
     protected AccurateLocationTaker mLocationTaker;
     protected              int mTakeCount    = 0;
@@ -523,6 +527,8 @@ public class CreateObjectFragment
 
     protected void setFieldVisibility()
     {
+        mDistanceFromPrevPointCaption.setVisibility(View.GONE);
+        mDistanceFromPrevPoint.setVisibility(View.GONE);
         mLayingMethodCaption.setVisibility(View.GONE);
         mLayingMethod.setVisibility(View.GONE);
         mFoscTypeCaption.setVisibility(View.GONE);
@@ -538,6 +544,8 @@ public class CreateObjectFragment
 
         switch (mFoclStructLayerType) {
             case FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT:
+                mDistanceFromPrevPointCaption.setVisibility(View.VISIBLE);
+                mDistanceFromPrevPoint.setVisibility(View.VISIBLE);
                 mLayingMethodCaption.setVisibility(View.VISIBLE);
                 mLayingMethod.setVisibility(View.VISIBLE);
                 break;
@@ -572,7 +580,12 @@ public class CreateObjectFragment
         mRefiningLayout = (RelativeLayout) paretntView.findViewById(R.id.refining_layout_cr);
         mRefiningProgress = (ProgressBar) paretntView.findViewById(R.id.refining_progress_cr);
         mRefiningText = (TextView) paretntView.findViewById(R.id.refining_text_cr);
+
         mCoordinates = (TextView) paretntView.findViewById(R.id.coordinates_cr);
+        mDistanceFromPrevPointCaption =
+                (TextView) paretntView.findViewById(R.id.distance_from_prev_point_caption_cr);
+        mDistanceFromPrevPoint =
+                (TextView) paretntView.findViewById(R.id.distance_from_prev_point_cr);
 
         mRefiningProgress.setMax(MAX_PCT);
         mRefiningProgress.setSecondaryProgress(mTakeCountPct);
@@ -644,8 +657,25 @@ public class CreateObjectFragment
 
             mCoordinates.setText(latText + ",  " + longText);
 
+            // TODO: prevPointLocation
+            Location prevPointLocation = new Location("");
+            prevPointLocation.setLatitude(9);
+            prevPointLocation.setLongitude(36);
+            float distance = mAccurateLocation.distanceTo(prevPointLocation);
+
+            DecimalFormat df = new DecimalFormat("0.0");
+            String mDistText = df.format(distance) + getString(R.string.distance_unit);
+            mDistanceFromPrevPoint.setText(mDistText);
+            mDistanceFromPrevPoint.setTextColor(
+                    distance > FoclConstants.MAX_DISTANCE_FROM_PREV_POINT
+                    ? 0xFF880000
+                    : 0xFF008800);
+
         } else {
             mCoordinates.setText(getText(R.string.coordinates_not_defined));
+            mDistanceFromPrevPoint.setText("--");
+            mDistanceFromPrevPoint.setTextColor(
+                    getResources().getColor(R.color.selected_object_text_color));
         }
     }
 
