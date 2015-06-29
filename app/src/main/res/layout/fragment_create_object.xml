@@ -79,12 +79,33 @@
                     android:layout_marginTop="10dp"
                     android:text="@string/coordinates_colon"
                     android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:visibility="gone"
                     />
+
+                <RelativeLayout
+                    android:id="@+id/refining_layout_cr"
+                    android:layout_height="31dp"
+                    style="@style/RefiningLayoutStyle"
+                    android:visibility="visible"
+                    >
+
+                    <ProgressBar
+                        android:id="@+id/refining_progress_cr"
+                        android:layout_height="31dp"
+                        style="@style/RefiningProgressBarStyle"
+                        />
+
+                    <TextView
+                        android:id="@+id/refining_text_cr"
+                        android:layout_height="31dp"
+                        android:text="@string/coordinate_refining"
+                        style="@style/RefiningTextStyle"
+                        />
+
+                </RelativeLayout>
 
                 <TextView
                     android:id="@+id/coordinates_cr"
-                    android:text="--"
+                    android:layout_height="31dp"
                     style="@style/selectedObjectStyle"
                     android:visibility="gone"
                     />

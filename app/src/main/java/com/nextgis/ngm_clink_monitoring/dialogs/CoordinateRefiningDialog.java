@@ -58,7 +58,7 @@ public class CoordinateRefiningDialog
 
     protected OnGetAccurateLocationListener        mOnGetAccurateLocationListener;
 
-    final static int MAX_PCT = 100;
+    protected final static int MAX_PCT = 100;
 
 
     @Override

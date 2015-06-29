@@ -52,10 +52,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.nextgis.maplib.datasource.GeoMultiPoint;
 import com.nextgis.maplib.datasource.GeoPoint;
+import com.nextgis.maplib.location.AccurateLocationTaker;
 import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
@@ -84,6 +87,7 @@ import static com.nextgis.maplib.util.Constants.FIELD_GEOM;
 import static com.nextgis.maplib.util.Constants.TAG;
 import static com.nextgis.maplib.util.GeoConstants.CRS_WEB_MERCATOR;
 import static com.nextgis.maplib.util.GeoConstants.CRS_WGS84;
+import static com.nextgis.ngm_clink_monitoring.util.FoclConstants.*;
 
 
 public class CreateObjectFragment
@@ -96,6 +100,16 @@ public class CreateObjectFragment
     protected TextView mTypeWorkTitle;
     protected TextView mLineName;
     protected TextView mCoordinates;
+
+    protected RelativeLayout mRefiningLayout;
+    protected ProgressBar    mRefiningProgress;
+    protected TextView       mRefiningText;
+
+    protected AccurateLocationTaker mLocationTaker;
+    protected              int mTakeCount    = 0;
+    protected              int mTakeCountPct = 0;
+    protected              int mTakeTimePct  = 0;
+    protected static final int MAX_PCT       = 100;
 
     protected TextView mLayingMethodCaption;
     protected TextView mLayingMethod;
@@ -148,6 +162,27 @@ public class CreateObjectFragment
     {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+
+        mLocationTaker = new AccurateLocationTaker(
+                getActivity(), MAX_ACCURACY_TAKE_COUNT, MAX_ACCURACY_TAKE_TIME,
+                ACCURACY_PUBLISH_PROGRESS_DELAY, ACCURACY_CIRCULAR_ERROR_STR);
+
+        mLocationTaker.setOnGetCurrentAccurateLocationListener(
+                new AccurateLocationTaker.OnGetCurrentAccurateLocationListener()
+                {
+                    @Override
+                    public void onGetCurrentAccurateLocation(Location currentAccurateLocation)
+                    {
+                        if (MIN_ACCURACY_TAKE_COUNT <= mTakeCount &&
+                                null != currentAccurateLocation &&
+                                MAX_ACCURACY > currentAccurateLocation.getAccuracy()) {
+
+                            mLocationTaker.stopTaking();
+                        }
+                    }
+                });
+
+        mLocationTaker.startTaking();
     }
 
 
@@ -162,8 +197,8 @@ public class CreateObjectFragment
         // Common
         mTypeWorkTitle = (TextView) view.findViewById(R.id.type_work_title_cr);
         mLineName = (TextView) view.findViewById(R.id.line_name_cr);
-        mCoordinates = (TextView) view.findViewById(R.id.coordinates_cr);
 
+        setCoordinatesRefiningView(view);
 
         // Optical cable
         mLayingMethodCaption = (TextView) view.findViewById(R.id.laying_method_caption_cr);
@@ -201,7 +236,6 @@ public class CreateObjectFragment
         setBarsView(activity);
         setTitleView(activity);
         setFieldVisibility();
-        setCoordinatesText();
         registerForContextMenu(mPhotoGallery);
 
         mPhotoHintText.setText(R.string.take_photos_to_confirm);
@@ -381,8 +415,18 @@ public class CreateObjectFragment
 
 
     @Override
+    public void onDestroyView()
+    {
+        mLocationTaker.setOnProgressUpdateListener(null);
+        mLocationTaker.setOnGetAccurateLocationListener(null);
+        super.onDestroyView();
+    }
+
+
+    @Override
     public void onDestroy()
     {
+        mLocationTaker.stopTaking();
         deleteTempFiles();
         super.onDestroy();
     }
@@ -523,6 +567,60 @@ public class CreateObjectFragment
     }
 
 
+    protected void setCoordinatesRefiningView(View paretntView)
+    {
+        mRefiningLayout = (RelativeLayout) paretntView.findViewById(R.id.refining_layout_cr);
+        mRefiningProgress = (ProgressBar) paretntView.findViewById(R.id.refining_progress_cr);
+        mRefiningText = (TextView) paretntView.findViewById(R.id.refining_text_cr);
+        mCoordinates = (TextView) paretntView.findViewById(R.id.coordinates_cr);
+
+        mRefiningProgress.setMax(MAX_PCT);
+        mRefiningProgress.setSecondaryProgress(mTakeCountPct);
+        mRefiningProgress.setProgress(mTakeTimePct);
+
+        setCoordinatesText();
+        setCoordinatesVisibility(false);
+
+        mLocationTaker.setOnProgressUpdateListener(
+                new AccurateLocationTaker.OnProgressUpdateListener()
+                {
+                    @Override
+                    public void onProgressUpdate(Long... values)
+                    {
+                        mTakeCount = values[0].intValue();
+                        mTakeCountPct = mTakeCount * MAX_PCT / MAX_ACCURACY_TAKE_COUNT;
+                        mTakeTimePct = (int) (values[1] * MAX_PCT / MAX_ACCURACY_TAKE_TIME);
+
+                        mRefiningProgress.setSecondaryProgress(mTakeCountPct);
+                        mRefiningProgress.setProgress(mTakeTimePct);
+                    }
+                });
+
+        mLocationTaker.setOnGetAccurateLocationListener(
+                new AccurateLocationTaker.OnGetAccurateLocationListener()
+                {
+                    @Override
+                    public void onGetAccurateLocation(
+                            Location accurateLocation,
+                            Long... values)
+                    {
+                        if (null != accurateLocation) {
+                            mAccurateLocation = accurateLocation;
+
+                        } else {
+                            mAccurateLocation = null;
+                            Toast.makeText(
+                                    getActivity(), R.string.coordinates_not_defined,
+                                    Toast.LENGTH_LONG).show();
+                        }
+
+                        setCoordinatesText();
+                        setCoordinatesVisibility(true);
+                    }
+                });
+    }
+
+
     protected void setCoordinatesText()
     {
         if (null != mAccurateLocation) {
@@ -545,10 +643,26 @@ public class CreateObjectFragment
                     getString(R.string.coord_lon);
 
             mCoordinates.setText(latText + ",  " + longText);
+
+        } else {
+            mCoordinates.setText(getText(R.string.coordinates_not_defined));
         }
     }
 
 
+    protected void setCoordinatesVisibility(boolean isRefined)
+    {
+        if (isRefined) {
+            mRefiningLayout.setVisibility(View.GONE);
+            mCoordinates.setVisibility(View.VISIBLE);
+        } else {
+            mRefiningLayout.setVisibility(View.VISIBLE);
+            mCoordinates.setVisibility(View.GONE);
+        }
+    }
+
+
+    // TODO: remove it
     protected void showCoordinateRefiningDialog()
     {
         CoordinateRefiningDialog coordRefiningDialog = new CoordinateRefiningDialog();
