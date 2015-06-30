@@ -63,6 +63,8 @@ import com.nextgis.maplib.datasource.GeoMultiPoint;
 import com.nextgis.maplib.datasource.GeoPoint;
 import com.nextgis.maplib.location.AccurateLocationTaker;
 import com.nextgis.maplib.map.VectorLayer;
+import com.nextgis.maplib.util.GeoConstants;
+import com.nextgis.maplib.util.VectorCacheItem;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.activities.MainActivity;
@@ -87,6 +89,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import static com.nextgis.maplib.util.Constants.*;
 import static com.nextgis.maplib.util.GeoConstants.CRS_WEB_MERCATOR;
@@ -118,7 +121,7 @@ public class CreateObjectFragment
     protected              int   mTakeCountPct = 0;
     protected              int   mTakeTimePct  = 0;
     protected static final int   MAX_PCT       = 100;
-    protected              float mDistance     = 0;
+    protected              Float mDistance     = null;
 
     protected TextView mLayingMethodCaption;
     protected TextView mLayingMethod;
@@ -323,7 +326,7 @@ public class CreateObjectFragment
 
                 } else if (0 < mObjectCount &&
                         FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT ==
-                                mFoclStructLayerType &&
+                                mFoclStructLayerType && null != mDistance &&
                         FoclConstants.MAX_DISTANCE_FROM_PREV_POINT < mDistance) {
 
                     showDistanceExceededDialog();
@@ -376,6 +379,7 @@ public class CreateObjectFragment
 //            showCoordinateRefiningDialog();
         }
 
+        // onBackPressed
         getView().setFocusableInTouchMode(true);
         getView().requestFocus();
         getView().setOnKeyListener(
@@ -681,7 +685,7 @@ public class CreateObjectFragment
             }
 
         } else {
-            mDistance = 0;
+            mDistance = null;
             mCoordinates.setText(getText(R.string.coordinates_not_defined));
             mDistanceFromPrevPoint.setText("--");
             mDistanceFromPrevPoint.setTextColor(
@@ -763,7 +767,7 @@ public class CreateObjectFragment
     protected void startLocationTaking()
     {
         mAccurateLocation = null;
-        mDistance = 0;
+        mDistance = null;
 
         mTakeCount = 0;
         mTakeCountPct = 0;
@@ -1184,7 +1188,8 @@ public class CreateObjectFragment
             mpt.add(pt);
             values.put(FIELD_GEOM, mpt.toBlob());
 
-            if (FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT == mFoclStructLayerType && 0 == mObjectCount) {
+            if (FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT == mFoclStructLayerType &&
+                    0 == mObjectCount) {
                 values.put(FIELD_START_POINT, true);
             }
 
@@ -1210,24 +1215,62 @@ public class CreateObjectFragment
     }
 
 
-    protected float getDistanceFromPrevPoint(Location location)
+    protected Float getDistanceFromPrevPoint(Location location)
     {
-        Location prevPointLocation = new Location("");
-        prevPointLocation.setLatitude(9);
-        prevPointLocation.setLongitude(36);
-        return location.distanceTo(prevPointLocation);
+        List<VectorCacheItem> cache = mFoclVectorLayer.getVectorCache();
+        Float minDist = null;
+
+        if (0 < cache.size()) {
+
+            int ii = 0;
+            do {
+                VectorCacheItem item = cache.get(ii);
+                GeoMultiPoint mpt = (GeoMultiPoint) item.getGeoGeometry();
+
+                if (0 < mpt.size()) {
+
+                    int kk = 0;
+                    do {
+                        GeoPoint pt = new GeoPoint(mpt.get(kk));
+                        pt.setCRS(GeoConstants.CRS_WEB_MERCATOR);
+                        pt.project(GeoConstants.CRS_WGS84);
+
+                        Location dstLocation = new Location("");
+                        dstLocation.setLatitude(pt.getY());
+                        dstLocation.setLongitude(pt.getX());
+
+                        float dist = location.distanceTo(dstLocation);
+                        minDist = null == minDist ? dist : Math.min(minDist, dist);
+
+                        ++kk;
+                    } while (kk < mpt.size());
+                }
+
+                ++ii;
+            } while (ii < cache.size());
+        }
+
+        return minDist;
     }
 
 
-    public String getDistanceText(float distance)
+    public String getDistanceText(Float distance)
     {
+        if (null == distance) {
+            return "--";
+        }
+
         DecimalFormat df = new DecimalFormat("0.0");
         return df.format(distance) + " " + getString(R.string.distance_unit);
     }
 
 
-    public int getDistanceTextColor(float distance)
+    public int getDistanceTextColor(Float distance)
     {
+        if (null == distance) {
+            return 0xFF000000;
+        }
+
         return FoclConstants.MAX_DISTANCE_FROM_PREV_POINT < distance ? 0xFF880000 : 0xFF008800;
     }
 

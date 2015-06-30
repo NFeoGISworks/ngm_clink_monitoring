@@ -43,7 +43,7 @@ public class DistanceExceededDialog
 {
     protected CreateObjectFragment mParent;
 
-    protected float    mDistance;
+    protected Float    mDistance;
     protected TextView mDistanceView;
 
     protected Button mBtnRepeat;
@@ -53,7 +53,7 @@ public class DistanceExceededDialog
     protected OnNewPointClickedListener mOnNewPointClickedListener;
 
 
-    public void setParams(CreateObjectFragment parent, float distance)
+    public void setParams(CreateObjectFragment parent, Float distance)
     {
         mParent = parent;
         mDistance = distance;
