@@ -136,7 +136,7 @@ public class StatusBarFragment
         mLongText = LocationUtil.formatLongitude(location.getLongitude(), nFormat, getResources()) +
                 getString(R.string.coord_lon);
 
-        DecimalFormat df = new DecimalFormat("0.0");
+        DecimalFormat df = new DecimalFormat("0");
 
         double altitude = location.getAltitude();
         mAltText = df.format(altitude) + getString(R.string.altitude_unit);

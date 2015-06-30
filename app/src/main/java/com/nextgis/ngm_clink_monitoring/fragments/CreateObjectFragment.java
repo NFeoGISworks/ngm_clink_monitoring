@@ -1257,7 +1257,7 @@ public class CreateObjectFragment
             return "--";
         }
 
-        DecimalFormat df = new DecimalFormat("0.0");
+        DecimalFormat df = new DecimalFormat("0");
         return df.format(distance) + " " + getString(R.string.distance_unit);
     }
 
