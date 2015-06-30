@@ -32,6 +32,8 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -94,6 +96,7 @@ import static com.nextgis.ngm_clink_monitoring.util.FoclConstants.*;
 
 public class CreateObjectFragment
         extends Fragment
+        implements LocationListener
 {
     protected static final int REQUEST_TAKE_PHOTO = 1;
 
@@ -151,6 +154,9 @@ public class CreateObjectFragment
     protected String  mTempPhotoPath         = null;
     protected boolean mHasAccurateCoordinate = false;
 
+    protected LocationManager           mLocationManager;
+    protected OnDistanceChangedListener mOnDistanceChangedListener;
+
 
     public void setParams(
             Context context,
@@ -168,6 +174,12 @@ public class CreateObjectFragment
     {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+
+        mLocationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
+
+        if (FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT == mFoclStructLayerType) {
+            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+        }
 
         mLocationTaker = new AccurateLocationTaker(
                 getActivity(), MAX_ACCURACY_TAKE_COUNT, MAX_ACCURACY_TAKE_TIME,
@@ -323,35 +335,11 @@ public class CreateObjectFragment
                                     })
                             .show();
 
-                } else if (mDistanceFromPrevPoint.isShown() &&
+                } else if (FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT ==
+                        mFoclStructLayerType &&
                         FoclConstants.MAX_DISTANCE_FROM_PREV_POINT < mDistance) {
 
-                    DistanceExceededDialog distanceExceededDialog = new DistanceExceededDialog();
-                    distanceExceededDialog.setCancelable(false);
-
-                    distanceExceededDialog.setOnRepeatClickedListener(
-                            new DistanceExceededDialog.OnRepeatClickedListener()
-                            {
-                                @Override
-                                public void onRepeatClicked()
-                                {
-                                    startLocationTaking();
-                                }
-                            });
-
-                    distanceExceededDialog.setOnNewPointClickedListener(
-                            new DistanceExceededDialog.OnNewPointClickedListener()
-                            {
-                                @Override
-                                public void onNewPointClicked()
-                                {
-                                    // TODO: change it
-                                }
-                            });
-
-                    distanceExceededDialog.show(
-                            getActivity().getSupportFragmentManager(),
-                            FoclConstants.FRAGMENT_DISTANCE_EXCEEDED);
+                    showDistanceExceededDialog();
 
                 } else {
                     createObject();
@@ -466,6 +454,11 @@ public class CreateObjectFragment
     public void onDestroy()
     {
         mLocationTaker.stopTaking();
+
+        if (FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT == mFoclStructLayerType) {
+            mLocationManager.removeUpdates(this);
+        }
+
         deleteTempFiles();
         super.onDestroy();
     }
@@ -692,20 +685,10 @@ public class CreateObjectFragment
 
             mCoordinates.setText(latText + ",  " + longText);
 
-            if (mDistanceFromPrevPoint.isShown()) {
-                // TODO: prevPointLocation
-                Location prevPointLocation = new Location("");
-                prevPointLocation.setLatitude(9);
-                prevPointLocation.setLongitude(36);
-                mDistance = mAccurateLocation.distanceTo(prevPointLocation);
-
-                DecimalFormat df = new DecimalFormat("0.0");
-                String mDistText = df.format(mDistance) + getString(R.string.distance_unit);
-                mDistanceFromPrevPoint.setText(mDistText);
-                mDistanceFromPrevPoint.setTextColor(
-                        mDistance > FoclConstants.MAX_DISTANCE_FROM_PREV_POINT
-                        ? 0xFF880000
-                        : 0xFF008800);
+            if (FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT == mFoclStructLayerType) {
+                mDistance = getDistanceFromPrevPoint(mAccurateLocation);
+                mDistanceFromPrevPoint.setText(getDistanceText(mDistance));
+                mDistanceFromPrevPoint.setTextColor(getDistanceTextColor(mDistance));
             }
 
         } else {
@@ -1171,5 +1154,103 @@ public class CreateObjectFragment
             writePhotoAttaches();
             getActivity().onBackPressed();
         }
+    }
+
+
+    protected float getDistanceFromPrevPoint(Location location)
+    {
+        // TODO: prevPointLocation
+        Location prevPointLocation = new Location("");
+        prevPointLocation.setLatitude(9);
+        prevPointLocation.setLongitude(36);
+        return location.distanceTo(prevPointLocation);
+    }
+
+
+    public String getDistanceText(float distance)
+    {
+        DecimalFormat df = new DecimalFormat("0.0");
+        return df.format(distance) + " " + getString(R.string.distance_unit);
+    }
+
+
+    public int getDistanceTextColor(float distance)
+    {
+        return FoclConstants.MAX_DISTANCE_FROM_PREV_POINT < distance ? 0xFF880000 : 0xFF008800;
+    }
+
+
+    protected void showDistanceExceededDialog()
+    {
+        DistanceExceededDialog distanceExceededDialog = new DistanceExceededDialog();
+        distanceExceededDialog.setCancelable(false);
+        distanceExceededDialog.setParams(this, mDistance);
+        setOnOnDistanceChangedListener(distanceExceededDialog);
+
+        distanceExceededDialog.setOnRepeatClickedListener(
+                new DistanceExceededDialog.OnRepeatClickedListener()
+                {
+                    @Override
+                    public void onRepeatClicked()
+                    {
+                        startLocationTaking();
+                    }
+                });
+
+        distanceExceededDialog.setOnNewPointClickedListener(
+                new DistanceExceededDialog.OnNewPointClickedListener()
+                {
+                    @Override
+                    public void onNewPointClicked()
+                    {
+                        // TODO: change it
+                    }
+                });
+
+        distanceExceededDialog.show(
+                getActivity().getSupportFragmentManager(),
+                FoclConstants.FRAGMENT_DISTANCE_EXCEEDED);
+    }
+
+
+    @Override
+    public void onLocationChanged(Location location)
+    {
+        if (null != mOnDistanceChangedListener) {
+            mOnDistanceChangedListener.onDistanceChanged(getDistanceFromPrevPoint(location));
+        }
+    }
+
+
+    @Override
+    public void onStatusChanged(
+            String provider,
+            int status,
+            Bundle extras)
+    {
+    }
+
+
+    @Override
+    public void onProviderEnabled(String provider)
+    {
+    }
+
+
+    @Override
+    public void onProviderDisabled(String provider)
+    {
+    }
+
+
+    public void setOnOnDistanceChangedListener(OnDistanceChangedListener onOnDistanceChangedListener)
+    {
+        mOnDistanceChangedListener = onOnDistanceChangedListener;
+    }
+
+
+    public interface OnDistanceChangedListener
+    {
+        void onDistanceChanged(float distance);
     }
 }

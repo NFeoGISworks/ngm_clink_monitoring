@@ -188,6 +188,7 @@
     <string name="repeat">Повторить</string>
     <string name="new_starting_point">Новая начальная точка</string>
     <string name="distance_from_prev_point_exceeded_colon">Удаленность от предыдущей точки превышена:</string>
-    <string name="shorten_distance_and_repeat_or_new">Уменьшите расстояние и повторите определение координат.\n\nИли отметьте новую начальную точку.</string>
+    <string name="shorten_distance_and_repeat">Уменьшите расстояние и повторите определение координат.</string>
+    <string name="Or_new_start_point">Или отметьте новую начальную точку.</string>
 
 </resources>
