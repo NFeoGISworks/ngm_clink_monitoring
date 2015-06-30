@@ -64,7 +64,6 @@ import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.fragments.LineListFragment;
 import com.nextgis.ngm_clink_monitoring.fragments.MapFragment;
 import com.nextgis.ngm_clink_monitoring.fragments.Perform1stSyncFragment;
-import com.nextgis.ngm_clink_monitoring.fragments.StatusBarFragment;
 import com.nextgis.ngm_clink_monitoring.fragments.SyncLoginFragment;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
@@ -100,7 +99,8 @@ public class MainActivity
 
     protected Toolbar           mToolbar;
     protected TextView          mCustomToolbarTitle;
-    protected StatusBarFragment mStatusBarFragment;
+    // TODO: remove it
+//    protected StatusBarFragment mStatusBarFragment;
 
 
     @Override
@@ -158,18 +158,19 @@ public class MainActivity
         }
 
 
-        FragmentManager fm = getSupportFragmentManager();
-        mStatusBarFragment =
-                (StatusBarFragment) fm.findFragmentByTag(FoclConstants.FRAGMENT_STATUS_BAR);
-        if (null == mStatusBarFragment) {
-            mStatusBarFragment = new StatusBarFragment();
-            FragmentTransaction ft = fm.beginTransaction();
-            ft.replace(
-                    R.id.status_bar_fragment, mStatusBarFragment,
-                    FoclConstants.FRAGMENT_STATUS_BAR);
-            ft.hide(mStatusBarFragment);
-            ft.commit();
-        }
+        // TODO: remove it
+//        FragmentManager fm = getSupportFragmentManager();
+//        mStatusBarFragment =
+//                (StatusBarFragment) fm.findFragmentByTag(FoclConstants.FRAGMENT_STATUS_BAR);
+//        if (null == mStatusBarFragment) {
+//            mStatusBarFragment = new StatusBarFragment();
+//            FragmentTransaction ft = fm.beginTransaction();
+//            ft.replace(
+//                    R.id.status_bar_fragment, mStatusBarFragment,
+//                    FoclConstants.FRAGMENT_STATUS_BAR);
+//            ft.hide(mStatusBarFragment);
+//            ft.commit();
+//        }
 
         if (!app.hasAccount()) {
             mViewState = VIEW_STATE_LOGIN;
@@ -287,7 +288,8 @@ public class MainActivity
 
     public void setBarsView(String toolbarTitle)
     {
-        if (null == mToolbar || null == mStatusBarFragment) {
+        // TODO: remove commented
+        if (null == mToolbar /*|| null == mStatusBarFragment*/) {
             return;
         }
 
@@ -352,27 +354,28 @@ public class MainActivity
         }
 
 
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-
-        switch (tag) {
-            case FoclConstants.FRAGMENT_SYNC_LOGIN:
-            case FoclConstants.FRAGMENT_PERFORM_1ST_SYNC:
-            case FoclConstants.FRAGMENT_LINE_LIST:
-            case FoclConstants.FRAGMENT_OBJECT_TYPES:
-            case FoclConstants.FRAGMENT_OBJECT_LIST:
-            case FoclConstants.FRAGMENT_OBJECT_STATUS:
-            case FoclConstants.FRAGMENT_CREATE_OBJECT:
-            case FoclConstants.FRAGMENT_MAP:
-            default:
-                ft.hide(mStatusBarFragment);
-                break;
-
-//                ft.show(mStatusBarFragment);
+        // TODO: remove it
+//        FragmentManager fm = getSupportFragmentManager();
+//        FragmentTransaction ft = fm.beginTransaction();
+//
+//        switch (tag) {
+//            case FoclConstants.FRAGMENT_SYNC_LOGIN:
+//            case FoclConstants.FRAGMENT_PERFORM_1ST_SYNC:
+//            case FoclConstants.FRAGMENT_LINE_LIST:
+//            case FoclConstants.FRAGMENT_OBJECT_TYPES:
+//            case FoclConstants.FRAGMENT_OBJECT_LIST:
+//            case FoclConstants.FRAGMENT_OBJECT_STATUS:
+//            case FoclConstants.FRAGMENT_CREATE_OBJECT:
+//            case FoclConstants.FRAGMENT_MAP:
+//            default:
+//                ft.hide(mStatusBarFragment);
 //                break;
-        }
-
-        ft.commit();
+//
+////                ft.show(mStatusBarFragment);
+////                break;
+//        }
+//
+//        ft.commit();
     }
 
 
