@@ -175,35 +175,6 @@ public class CreateObjectFragment
     }
 
 
-    protected boolean setFoclProjectData(GISApplication app)
-    {
-        mFoclProject = app.getFoclProject();
-        if (null == mFoclProject) {
-            return false;
-        }
-
-        try {
-            mFoclStruct = (FoclStruct) mFoclProject.getLayer(mLineId);
-        } catch (Exception e) {
-            mFoclStruct = null;
-        }
-
-        if (null == mFoclStruct) {
-            return false;
-        }
-
-        mFoclVectorLayer = (FoclVectorLayer) mFoclStruct.getLayerByFoclType(
-                mFoclStructLayerType);
-
-        if (null == mFoclVectorLayer) {
-            return false;
-        }
-
-        mObjectLayerName = mFoclVectorLayer.getPath().getName();
-        return true;
-    }
-
-
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -238,35 +209,6 @@ public class CreateObjectFragment
                 });
 
         mLocationTaker.startTaking();
-    }
-
-
-    protected void setObjectCount()
-    {
-        final GISApplication app = (GISApplication) getActivity().getApplication();
-        mObjectCount = 0;
-
-        if (setFoclProjectData(app)) {
-
-            Uri uri = Uri.parse(
-                    "content://" + FoclSettingsConstantsUI.AUTHORITY + "/" + mObjectLayerName);
-            String proj[] = {FIELD_ID};
-
-            Cursor objectCursor;
-
-            try {
-                objectCursor =
-                        getActivity().getContentResolver().query(uri, proj, null, null, null);
-            } catch (Exception e) {
-                Log.d(TAG, e.getLocalizedMessage());
-                objectCursor = null;
-            }
-
-            if (null != objectCursor) {
-                mObjectCount = objectCursor.getCount();
-                objectCursor.close();
-            }
-        }
     }
 
 
@@ -760,6 +702,64 @@ public class CreateObjectFragment
     }
 
 
+    protected boolean setFoclProjectData(GISApplication app)
+    {
+        mFoclProject = app.getFoclProject();
+        if (null == mFoclProject) {
+            return false;
+        }
+
+        try {
+            mFoclStruct = (FoclStruct) mFoclProject.getLayer(mLineId);
+        } catch (Exception e) {
+            mFoclStruct = null;
+        }
+
+        if (null == mFoclStruct) {
+            return false;
+        }
+
+        mFoclVectorLayer = (FoclVectorLayer) mFoclStruct.getLayerByFoclType(
+                mFoclStructLayerType);
+
+        if (null == mFoclVectorLayer) {
+            return false;
+        }
+
+        mObjectLayerName = mFoclVectorLayer.getPath().getName();
+        return true;
+    }
+
+
+    protected void setObjectCount()
+    {
+        final GISApplication app = (GISApplication) getActivity().getApplication();
+        mObjectCount = 0;
+
+        if (setFoclProjectData(app)) {
+
+            Uri uri = Uri.parse(
+                    "content://" + FoclSettingsConstantsUI.AUTHORITY + "/" + mObjectLayerName);
+            String proj[] = {FIELD_ID};
+
+            Cursor objectCursor;
+
+            try {
+                objectCursor =
+                        getActivity().getContentResolver().query(uri, proj, null, null, null);
+            } catch (Exception e) {
+                Log.d(TAG, e.getLocalizedMessage());
+                objectCursor = null;
+            }
+
+            if (null != objectCursor) {
+                mObjectCount = objectCursor.getCount();
+                objectCursor.close();
+            }
+        }
+    }
+
+
     protected void startLocationTaking()
     {
         mAccurateLocation = null;
@@ -1212,7 +1212,6 @@ public class CreateObjectFragment
 
     protected float getDistanceFromPrevPoint(Location location)
     {
-        // TODO: prevPointLocation
         Location prevPointLocation = new Location("");
         prevPointLocation.setLatitude(9);
         prevPointLocation.setLongitude(36);
