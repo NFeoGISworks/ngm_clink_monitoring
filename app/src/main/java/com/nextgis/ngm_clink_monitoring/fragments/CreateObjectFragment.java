@@ -117,11 +117,12 @@ public class CreateObjectFragment
     protected TextView mDistanceFromPrevPoint;
 
     protected AccurateLocationTaker mLocationTaker;
-    protected              int   mTakeCount    = 0;
-    protected              int   mTakeCountPct = 0;
-    protected              int   mTakeTimePct  = 0;
-    protected static final int   MAX_PCT       = 100;
-    protected              Float mDistance     = null;
+    protected              int     mTakeCount     = 0;
+    protected              int     mTakeCountPct  = 0;
+    protected              int     mTakeTimePct   = 0;
+    protected static final int     MAX_PCT        = 100;
+    protected              Float   mDistance      = null;
+    protected              boolean mNewStartPoint = false;
 
     protected TextView mLayingMethodCaption;
     protected TextView mLayingMethod;
@@ -1189,7 +1190,7 @@ public class CreateObjectFragment
             values.put(FIELD_GEOM, mpt.toBlob());
 
             if (FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT == mFoclStructLayerType &&
-                    0 == mObjectCount) {
+                    (0 == mObjectCount || mNewStartPoint)) {
                 values.put(FIELD_START_POINT, true);
             }
 
@@ -1298,7 +1299,8 @@ public class CreateObjectFragment
                     @Override
                     public void onNewPointClicked()
                     {
-                        // TODO: change it
+                        mNewStartPoint = true;
+                        createObject();
                     }
                 });
 
