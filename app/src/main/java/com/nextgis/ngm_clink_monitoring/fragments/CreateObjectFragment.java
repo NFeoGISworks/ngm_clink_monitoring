@@ -29,6 +29,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
@@ -87,8 +88,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import static com.nextgis.maplib.util.Constants.FIELD_GEOM;
-import static com.nextgis.maplib.util.Constants.TAG;
+import static com.nextgis.maplib.util.Constants.*;
 import static com.nextgis.maplib.util.GeoConstants.CRS_WEB_MERCATOR;
 import static com.nextgis.maplib.util.GeoConstants.CRS_WGS84;
 import static com.nextgis.ngm_clink_monitoring.util.FoclConstants.*;
@@ -157,6 +157,12 @@ public class CreateObjectFragment
     protected LocationManager           mLocationManager;
     protected OnDistanceChangedListener mOnDistanceChangedListener;
 
+    protected int mObjectCount;
+
+    protected FoclProject     mFoclProject;
+    protected FoclStruct      mFoclStruct;
+    protected FoclVectorLayer mFoclVectorLayer;
+
 
     public void setParams(
             Context context,
@@ -166,6 +172,35 @@ public class CreateObjectFragment
         mContext = context;
         mLineId = lineId;
         mFoclStructLayerType = foclStructLayerType;
+    }
+
+
+    protected boolean setFoclProjectData(GISApplication app)
+    {
+        mFoclProject = app.getFoclProject();
+        if (null == mFoclProject) {
+            return false;
+        }
+
+        try {
+            mFoclStruct = (FoclStruct) mFoclProject.getLayer(mLineId);
+        } catch (Exception e) {
+            mFoclStruct = null;
+        }
+
+        if (null == mFoclStruct) {
+            return false;
+        }
+
+        mFoclVectorLayer = (FoclVectorLayer) mFoclStruct.getLayerByFoclType(
+                mFoclStructLayerType);
+
+        if (null == mFoclVectorLayer) {
+            return false;
+        }
+
+        mObjectLayerName = mFoclVectorLayer.getPath().getName();
+        return true;
     }
 
 
@@ -179,6 +214,8 @@ public class CreateObjectFragment
 
         if (FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT == mFoclStructLayerType) {
             mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+
+            setObjectCount();
         }
 
         mLocationTaker = new AccurateLocationTaker(
@@ -201,6 +238,35 @@ public class CreateObjectFragment
                 });
 
         mLocationTaker.startTaking();
+    }
+
+
+    protected void setObjectCount()
+    {
+        final GISApplication app = (GISApplication) getActivity().getApplication();
+        mObjectCount = 0;
+
+        if (setFoclProjectData(app)) {
+
+            Uri uri = Uri.parse(
+                    "content://" + FoclSettingsConstantsUI.AUTHORITY + "/" + mObjectLayerName);
+            String proj[] = {FIELD_ID};
+
+            Cursor objectCursor;
+
+            try {
+                objectCursor =
+                        getActivity().getContentResolver().query(uri, proj, null, null, null);
+            } catch (Exception e) {
+                Log.d(TAG, e.getLocalizedMessage());
+                objectCursor = null;
+            }
+
+            if (null != objectCursor) {
+                mObjectCount = objectCursor.getCount();
+                objectCursor.close();
+            }
+        }
     }
 
 
@@ -259,36 +325,14 @@ public class CreateObjectFragment
         mPhotoHintText.setText(R.string.take_photos_to_confirm);
 
         final GISApplication app = (GISApplication) activity.getApplication();
-        final FoclProject foclProject = app.getFoclProject();
 
-        if (null == foclProject) {
+        if (!setFoclProjectData(app)) {
             setBlockedView();
             return view;
         }
 
-        FoclStruct foclStruct;
-        try {
-            foclStruct = (FoclStruct) foclProject.getLayer(mLineId);
-        } catch (Exception e) {
-            foclStruct = null;
-        }
-
-        if (null == foclStruct) {
-            setBlockedView();
-            return view;
-        }
-
-        FoclVectorLayer layer = (FoclVectorLayer) foclStruct.getLayerByFoclType(
-                mFoclStructLayerType);
-
-        if (null == layer) {
-            setBlockedView();
-            return view;
-        }
-
-
-        mLineName.setText(Html.fromHtml(foclStruct.getHtmlFormattedName()));
-        mObjectLayerName = layer.getPath().getName();
+        setObjectCount();
+        mLineName.setText(Html.fromHtml(mFoclStruct.getHtmlFormattedName()));
 
 
         View.OnClickListener doneButtonOnClickListener = new View.OnClickListener()
@@ -335,8 +379,9 @@ public class CreateObjectFragment
                                     })
                             .show();
 
-                } else if (FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT ==
-                        mFoclStructLayerType &&
+                } else if (0 < mObjectCount &&
+                        FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT ==
+                                mFoclStructLayerType &&
                         FoclConstants.MAX_DISTANCE_FROM_PREV_POINT < mDistance) {
 
                     showDistanceExceededDialog();
@@ -572,8 +617,10 @@ public class CreateObjectFragment
 
         switch (mFoclStructLayerType) {
             case FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT:
-                mDistanceFromPrevPointCaption.setVisibility(View.VISIBLE);
-                mDistanceFromPrevPoint.setVisibility(View.VISIBLE);
+                if (0 < mObjectCount) {
+                    mDistanceFromPrevPointCaption.setVisibility(View.VISIBLE);
+                    mDistanceFromPrevPoint.setVisibility(View.VISIBLE);
+                }
                 mLayingMethodCaption.setVisibility(View.VISIBLE);
                 mLayingMethod.setVisibility(View.VISIBLE);
                 break;
@@ -716,6 +763,7 @@ public class CreateObjectFragment
     protected void startLocationTaking()
     {
         mAccurateLocation = null;
+        mDistance = 0;
 
         mTakeCount = 0;
         mTakeCountPct = 0;
@@ -1135,6 +1183,11 @@ public class CreateObjectFragment
             GeoMultiPoint mpt = new GeoMultiPoint();
             mpt.add(pt);
             values.put(FIELD_GEOM, mpt.toBlob());
+
+            if (FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT == mFoclStructLayerType && 0 == mObjectCount) {
+                values.put(FIELD_START_POINT, true);
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }

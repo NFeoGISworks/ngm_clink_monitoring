@@ -75,6 +75,7 @@ public interface FoclConstants
     String FIELD_LAYING_METHOD   = "laying_method";
     String FIELD_STATUS_BUILT    = "status_built";
     String FIELD_STATUS_BUILT_CH = "status_built_ch";
+    String FIELD_START_POINT     = "start_point";
 
     String FIELD_VALUE_UNKNOWN = "unknown";
     String FIELD_VALUE_PROJECT = "project";
