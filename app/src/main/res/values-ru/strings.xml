@@ -177,7 +177,7 @@
 
     <string name="coordinate_refining">Уточнение координат</string>
     <string name="coordinates_not_defined">Координаты не определены</string>
-    <string name="distance_from_prev_point_colon">Удаленность от предыдущей точки:</string>
+    <string name="distance_from_prev_point_colon">Расстояние от предыдущей точки:</string>
 
     <string name="object_creation_error">ОШИБКА создания объекта</string>
     <string name="confirmation">Подтверждение</string>
@@ -187,7 +187,7 @@
     <string name="coordinates_are_not_defined">Координаты не определены. Попробуйте еще раз</string>
     <string name="repeat">Повторить</string>
     <string name="new_starting_point">Новая начальная точка</string>
-    <string name="distance_from_prev_point_exceeded_colon">Удаленность от предыдущей точки превышена:</string>
+    <string name="distance_from_prev_point_exceeded_colon">Расстояние от предыдущей точки превышена:</string>
     <string name="shorten_distance_and_repeat">Уменьшите расстояние и повторите определение координат.</string>
     <string name="Or_new_start_point">Или отметьте новую начальную точку.</string>
 
