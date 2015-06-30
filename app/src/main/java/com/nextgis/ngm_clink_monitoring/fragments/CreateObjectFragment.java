@@ -975,14 +975,8 @@ public class CreateObjectFragment
         File tempPhotoFile = new File(mTempPhotoPath);
 
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
-            try {
-                BitmapUtil.writeLocationToExif(tempPhotoFile, mAccurateLocation);
-                setPhotoGalleryAdapter();
-                setPhotoGalleryVisibility(true);
-
-            } catch (IOException e) {
-                Log.d(TAG, e.getLocalizedMessage());
-            }
+            setPhotoGalleryAdapter();
+            setPhotoGalleryVisibility(true);
         }
 
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_CANCELED) {
@@ -994,6 +988,8 @@ public class CreateObjectFragment
     protected void writePhotoAttach(File tempPhotoFile)
             throws IOException
     {
+        BitmapUtil.writeLocationToExif(tempPhotoFile, mAccurateLocation);
+
         GISApplication app = (GISApplication) getActivity().getApplication();
         ContentResolver contentResolver = app.getContentResolver();
         String photoFileName = getPhotoFileName(tempPhotoFile);
