@@ -139,10 +139,10 @@
                     android:visibility="gone"
                     />
 
-                <TextView
+                <com.nextgis.ngm_clink_monitoring.fragments.ComboboxControl
                     android:id="@+id/laying_method_cr"
-                    android:hint="@string/laying_method_hint"
-                    style="@style/editObjectStyle"
+                    android:prompt="@string/laying_method_hint"
+                    style="@style/comboboxStyle"
                     android:visibility="gone"
                     />
 
@@ -159,10 +159,10 @@
                     android:visibility="gone"
                     />
 
-                <TextView
+                <com.nextgis.ngm_clink_monitoring.fragments.ComboboxControl
                     android:id="@+id/fosc_type_cr"
-                    android:hint="@string/fosc_type_hint"
-                    style="@style/editObjectStyle"
+                    android:prompt="@string/fosc_type_hint"
+                    style="@style/comboboxStyle"
                     android:visibility="gone"
                     />
 
@@ -176,10 +176,10 @@
                     android:visibility="gone"
                     />
 
-                <TextView
+                <com.nextgis.ngm_clink_monitoring.fragments.ComboboxControl
                     android:id="@+id/fosc_placement_cr"
-                    android:hint="@string/fosc_placement_hint"
-                    style="@style/editObjectStyle"
+                    android:prompt="@string/fosc_placement_hint"
+                    style="@style/comboboxStyle"
                     android:visibility="gone"
                     />
 
@@ -196,10 +196,10 @@
                     android:visibility="gone"
                     />
 
-                <TextView
+                <com.nextgis.ngm_clink_monitoring.fragments.ComboboxControl
                     android:id="@+id/optical_cross_type_cr"
-                    android:hint="@string/optical_cross_type_hint"
-                    style="@style/editObjectStyle"
+                    android:prompt="@string/optical_cross_type_hint"
+                    style="@style/comboboxStyle"
                     android:visibility="gone"
                     />
 
@@ -221,10 +221,10 @@
                     android:visibility="gone"
                     />
 
-                <TextView
+                <com.nextgis.ngm_clink_monitoring.fragments.ComboboxControl
                     android:id="@+id/special_laying_method_cr"
-                    android:hint="@string/special_laying_method_hint"
-                    style="@style/editObjectStyle"
+                    android:prompt="@string/special_laying_method_hint"
+                    style="@style/comboboxStyle"
                     android:visibility="gone"
                     />
 
@@ -238,12 +238,13 @@
                     android:visibility="gone"
                     />
 
-                <TextView
+                <com.nextgis.ngm_clink_monitoring.fragments.ComboboxControl
                     android:id="@+id/mark_type_cr"
-                    android:hint="@string/mark_type_hint"
-                    style="@style/editObjectStyle"
+                    android:prompt="@string/mark_type_hint"
+                    style="@style/comboboxStyle"
                     android:visibility="gone"
                     />
+                <!--style="@style/editObjectStyle"-->
 
 
                 <!-- Common -->

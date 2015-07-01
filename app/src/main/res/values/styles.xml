@@ -53,8 +53,10 @@
         <item name="android:listViewStyle">@style/listViewStyle</item>
         <item name="android:textViewStyle">@style/textViewStyle</item>
 
-    </style>
+        <item name="android:spinnerItemStyle">@style/SpinnerItem</item>
+        <item name="android:spinnerDropDownItemStyle">@style/SpinnerItem.DropDownItem</item>
 
+    </style>
 
     <style name="actionButtonStyle"
            parent="@style/Base.Widget.AppCompat.ActionButton">
@@ -218,6 +220,45 @@
 
         <item name="android:background">@drawable/edit_object_background</item>
         <item name="android:textColor">@color/edit_object_text_color</item>
+
+    </style>
+
+    <style name="comboboxStyle"
+           parent="">
+
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginBottom">0dp</item>
+        <item name="android:layout_marginLeft">0dp</item>
+        <item name="android:layout_marginRight">0dp</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:paddingRight">10dp</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <item name="android:lines">1</item>
+        <item name="android:minLines">1</item>
+        <item name="android:maxLines">1</item>
+
+    </style>
+
+    <style name="SpinnerItem"
+           parent="@android:style/Widget.TextView.SpinnerItem">
+
+        <item name="android:textColor">@color/color_700</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+
+    </style>
+
+    <style name="SpinnerItem.DropDownItem"
+           parent="@android:style/Widget.DropDownItem">
+
+        <item name="android:textColor">@color/color_700</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
 
     </style>
 
