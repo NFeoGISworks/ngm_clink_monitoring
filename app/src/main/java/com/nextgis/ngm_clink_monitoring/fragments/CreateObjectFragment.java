@@ -1336,7 +1336,6 @@ public class CreateObjectFragment
     protected void showDistanceExceededDialog()
     {
         DistanceExceededDialog distanceExceededDialog = new DistanceExceededDialog();
-        distanceExceededDialog.setCancelable(false);
         distanceExceededDialog.setParams(this, mDistance);
         setOnOnDistanceChangedListener(distanceExceededDialog);
 
