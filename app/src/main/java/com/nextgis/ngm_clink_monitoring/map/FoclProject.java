@@ -56,6 +56,7 @@ public class FoclProject
         implements INGWLayer
 {
     protected static final String JSON_ACCOUNT_KEY = "account";
+    protected static final String JSON_FOCL_DICTS_KEY = "focl_dicts";
 
     protected NetworkUtil mNet;
 
@@ -63,6 +64,8 @@ public class FoclProject
     protected String mCacheUrl;
     protected String mCacheLogin;
     protected String mCachePassword;
+
+    protected FoclDitcs mFoclDitcs;
 
 
     public FoclProject(
@@ -77,12 +80,21 @@ public class FoclProject
     }
 
 
-    public static String getFoclUrl(String server)
+    public static String getUserFoclListUrl(String server)
     {
         if (!server.startsWith("http")) {
             server = "http://" + server;
         }
-        return server + "/compulink/mobile/user_focl_list";
+        return server + FoclConstants.FOCL_USER_FOCL_LIST;
+    }
+
+
+    public static String getAllDictsUrl(String server)
+    {
+        if (!server.startsWith("http")) {
+            server = "http://" + server;
+        }
+        return server + FoclConstants.FOCL_ALL_DICTS;
     }
 
 
@@ -135,6 +147,11 @@ public class FoclProject
     {
         JSONObject rootConfig = super.toJSON();
         rootConfig.put(JSON_ACCOUNT_KEY, mAccountName);
+
+        if (null != mFoclDitcs) {
+            rootConfig.put(JSON_FOCL_DICTS_KEY, mFoclDitcs.toJSON());
+        }
+
         return rootConfig;
     }
 
@@ -145,6 +162,10 @@ public class FoclProject
     {
         super.fromJSON(jsonObject);
         setAccountName(jsonObject.getString(JSON_ACCOUNT_KEY));
+
+        if (jsonObject.has(JSON_FOCL_DICTS_KEY)) {
+            mFoclDitcs = new FoclDitcs(jsonObject.getJSONObject(JSON_FOCL_DICTS_KEY));
+        }
     }
 
 
@@ -327,13 +348,47 @@ public class FoclProject
                 }
             }
 
-            save();
             return "";
 
         } catch (JSONException | SQLiteException e) {
             e.printStackTrace();
             return e.getLocalizedMessage();
         }
+    }
+
+
+    protected String downloadData(String url)
+            throws IOException
+    {
+        final HttpGet get = new HttpGet(url); //get as GeoJSON
+        //basic auth
+        if (!TextUtils.isEmpty(mCacheLogin) && !TextUtils.isEmpty(mCachePassword)) {
+            get.setHeader("Accept", "*/*");
+            final String basicAuth = "Basic " + Base64.encodeToString(
+                    (mCacheLogin + ":" + mCachePassword).getBytes(), Base64.NO_WRAP);
+            get.setHeader("Authorization", basicAuth);
+        }
+
+        final DefaultHttpClient HTTPClient = mNet.getHttpClient();
+        final HttpResponse response = HTTPClient.execute(get);
+
+        // Check to see if we got success
+        final org.apache.http.StatusLine line = response.getStatusLine();
+        if (line.getStatusCode() != 200) {
+            Log.d(
+                    Constants.TAG,
+                    "Problem downloading FOCL: " + mCacheUrl + " HTTP response: " +
+                            line);
+            return getContext().getString(com.nextgis.maplib.R.string.error_download_data);
+        }
+
+        final HttpEntity entity = response.getEntity();
+        if (entity == null) {
+            Log.d(Constants.TAG, "No content downloading FOCL: " + mCacheUrl);
+            return getContext().getString(com.nextgis.maplib.R.string.error_download_data);
+        }
+
+        return EntityUtils.toString(entity);
     }
 
 
@@ -344,45 +399,30 @@ public class FoclProject
         }
 
         try {
+            JSONArray jsonArrayProject = new JSONArray(downloadData(getUserFoclListUrl(mCacheUrl)));
+            JSONObject jsonObjectDicts = new JSONObject(downloadData(getAllDictsUrl(mCacheUrl)));
 
-            final HttpGet get = new HttpGet(getFoclUrl(mCacheUrl)); //get as GeoJSON
-            //basic auth
-            if (!TextUtils.isEmpty(mCacheLogin) && !TextUtils.isEmpty(mCachePassword)) {
-                get.setHeader("Accept", "*/*");
-                final String basicAuth = "Basic " + Base64.encodeToString(
-                        (mCacheLogin + ":" + mCachePassword).getBytes(), Base64.NO_WRAP);
-                get.setHeader("Authorization", basicAuth);
+            String error = createOrUpdateFromJson(jsonArrayProject);
+
+            if (!TextUtils.isEmpty(error)) {
+                return error;
             }
 
-            final DefaultHttpClient HTTPClient = mNet.getHttpClient();
-            final HttpResponse response = HTTPClient.execute(get);
+            mFoclDitcs = new FoclDitcs();
+            error = mFoclDitcs.createOrUpdateFromJson(jsonObjectDicts);
 
-            // Check to see if we got success
-            final org.apache.http.StatusLine line = response.getStatusLine();
-            if (line.getStatusCode() != 200) {
-                Log.d(
-                        Constants.TAG,
-                        "Problem downloading FOCL: " + mCacheUrl + " HTTP response: " +
-                                line);
-                return getContext().getString(com.nextgis.maplib.R.string.error_download_data);
+            if (TextUtils.isEmpty(error)) {
+                save();
             }
 
-            final HttpEntity entity = response.getEntity();
-            if (entity == null) {
-                Log.d(Constants.TAG, "No content downloading FOCL: " + mCacheUrl);
-                return getContext().getString(com.nextgis.maplib.R.string.error_download_data);
-            }
-
-            String data = EntityUtils.toString(entity);
-            JSONArray jsonArray = new JSONArray(data);
-
-            return createOrUpdateFromJson(jsonArray);
+            return error;
 
         } catch (IOException e) {
             Log.d(
                     Constants.TAG, "Problem downloading FOCL: " + mCacheUrl + " Error: " +
                             e.getLocalizedMessage());
             return getContext().getString(com.nextgis.maplib.R.string.error_download_data);
+
         } catch (JSONException e) {
             e.printStackTrace();
             return getContext().getString(com.nextgis.maplib.R.string.error_download_data);

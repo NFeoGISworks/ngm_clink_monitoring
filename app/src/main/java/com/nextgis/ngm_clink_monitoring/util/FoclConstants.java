@@ -90,9 +90,12 @@ public interface FoclConstants
 
     String FOCL_PROJECT             = "FOCL_project";
     String FOCL_ACCOUNT_NAME        = "Compulink Monitoring";
+
     //TODO: remove it
     //String FOCL_DEFAULT_ACCOUNT_URL = "http://176.9.38.120/cl2";
     String FOCL_DEFAULT_ACCOUNT_URL = "https://gis.compulink.ru";
+    String FOCL_USER_FOCL_LIST = "/compulink/mobile/user_focl_list";
+    String FOCL_ALL_DICTS = "/compulink/mobile/all_dicts";
 
     // If you change it, change it in aFileDialog/res/values/strings/daidalos_confirm_move_to_folder
     String FOCL_DATA_DIR  = "ngm_clink_monitoring";
