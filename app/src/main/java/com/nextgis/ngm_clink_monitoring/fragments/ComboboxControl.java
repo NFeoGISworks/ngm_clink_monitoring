@@ -226,7 +226,7 @@ public class ComboboxControl
     }
 
 
-    public Object getValue()
+    public String getValue()
     {
         String valueAlias = (String) getSelectedItem();
         return mAliasValueMap.get(valueAlias);

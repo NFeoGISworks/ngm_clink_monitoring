@@ -1225,13 +1225,34 @@ public class CreateObjectFragment
             mpt.add(pt);
             values.put(FIELD_GEOM, mpt.toBlob());
 
-            if (FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT == mFoclStructLayerType &&
-                    (0 == mObjectCount || mNewStartPoint)) {
-                values.put(FIELD_START_POINT, true);
-            }
-
         } catch (IOException e) {
             e.printStackTrace();
+        }
+
+        switch (mFoclStructLayerType) {
+            case FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT:
+                if (0 == mObjectCount || mNewStartPoint) {
+                    values.put(FIELD_START_POINT, true);
+                }
+                values.put(FIELD_LAYING_METHOD, mLayingMethod.getValue());
+                break;
+
+            case FoclConstants.LAYERTYPE_FOCL_REAL_FOSC:
+                values.put(FIELD_FOSC_TYPE, mFoscType.getValue());
+                values.put(FIELD_FOSC_PLACEMENT, mFoscPlacement.getValue());
+                break;
+
+            case FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CROSS:
+                values.put(FIELD_OPTICAL_CROSS_TYPE, mOpticalCrossType.getValue());
+                break;
+
+            case FoclConstants.LAYERTYPE_FOCL_REAL_ACCESS_POINT:
+                break;
+
+            case FoclConstants.LAYERTYPE_FOCL_REAL_SPECIAL_TRANSITION_POINT:
+                values.put(FIELD_SPECIAL_LAYING_METHOD, mSpecialLayingMethod.getValue());
+                values.put(FIELD_MARK_TYPE, mMarkType.getValue());
+                break;
         }
 
         Uri result = getActivity().getContentResolver().insert(uri, values);

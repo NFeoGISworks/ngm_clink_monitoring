@@ -72,6 +72,7 @@ public interface FoclConstants
     String FIELD_DESCRIPTION = "description";
     String FIELD_BUILT_DATE  = "built_date";
 
+    String FIELD_START_POINT           = "start_point";
     String FIELD_LAYING_METHOD         = "laying_method";
     String FIELD_FOSC_TYPE             = "type_fosc";
     String FIELD_FOSC_PLACEMENT        = "fosc_placement";
@@ -81,7 +82,6 @@ public interface FoclConstants
 
     String FIELD_STATUS_BUILT    = "status_built";
     String FIELD_STATUS_BUILT_CH = "status_built_ch";
-    String FIELD_START_POINT     = "start_point";
 
     String FIELD_VALUE_UNKNOWN = "unknown";
     String FIELD_VALUE_PROJECT = "project";
