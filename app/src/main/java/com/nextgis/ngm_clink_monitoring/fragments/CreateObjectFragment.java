@@ -71,6 +71,7 @@ import com.nextgis.ngm_clink_monitoring.activities.MainActivity;
 import com.nextgis.ngm_clink_monitoring.adapters.ObjectPhotoFileAdapter;
 import com.nextgis.ngm_clink_monitoring.dialogs.CoordinateRefiningDialog;
 import com.nextgis.ngm_clink_monitoring.dialogs.DistanceExceededDialog;
+import com.nextgis.ngm_clink_monitoring.map.FoclDictItem;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 import com.nextgis.ngm_clink_monitoring.map.FoclStruct;
 import com.nextgis.ngm_clink_monitoring.map.FoclVectorLayer;
@@ -124,21 +125,21 @@ public class CreateObjectFragment
     protected              Float   mDistance      = null;
     protected              boolean mNewStartPoint = false;
 
-    protected TextView mLayingMethodCaption;
-    protected TextView mLayingMethod;
+    protected TextView        mLayingMethodCaption;
+    protected ComboboxControl mLayingMethod;
 
-    protected TextView mFoscTypeCaption;
-    protected TextView mFoscType;
-    protected TextView mFoscPlacementCaption;
-    protected TextView mFoscPlacement;
+    protected TextView        mFoscTypeCaption;
+    protected ComboboxControl mFoscType;
+    protected TextView        mFoscPlacementCaption;
+    protected ComboboxControl mFoscPlacement;
 
-    protected TextView mOpticalCrossTypeCaption;
-    protected TextView mOpticalCrossType;
+    protected TextView        mOpticalCrossTypeCaption;
+    protected ComboboxControl mOpticalCrossType;
 
-    protected TextView mSpecialLayingMethodCaption;
-    protected TextView mSpecialLayingMethod;
-    protected TextView mMarkTypeCaption;
-    protected TextView mMarkType;
+    protected TextView        mSpecialLayingMethodCaption;
+    protected ComboboxControl mSpecialLayingMethod;
+    protected TextView        mMarkTypeCaption;
+    protected ComboboxControl mMarkType;
 
     protected EditText     mDescription;
     protected TextView     mPhotoHintText;
@@ -232,17 +233,17 @@ public class CreateObjectFragment
 
         // Optical cable
         mLayingMethodCaption = (TextView) view.findViewById(R.id.laying_method_caption_cr);
-        mLayingMethod = (TextView) view.findViewById(R.id.laying_method_cr);
+        mLayingMethod = (ComboboxControl) view.findViewById(R.id.laying_method_cr);
 
         // FOSC
         mFoscTypeCaption = (TextView) view.findViewById(R.id.fosc_type_caption_cr);
-        mFoscType = (TextView) view.findViewById(R.id.fosc_type_cr);
+        mFoscType = (ComboboxControl) view.findViewById(R.id.fosc_type_cr);
         mFoscPlacementCaption = (TextView) view.findViewById(R.id.fosc_placement_caption_cr);
-        mFoscPlacement = (TextView) view.findViewById(R.id.fosc_placement_cr);
+        mFoscPlacement = (ComboboxControl) view.findViewById(R.id.fosc_placement_cr);
 
         // Optical cross
         mOpticalCrossTypeCaption = (TextView) view.findViewById(R.id.optical_cross_type_caption_cr);
-        mOpticalCrossType = (TextView) view.findViewById(R.id.optical_cross_type_cr);
+        mOpticalCrossType = (ComboboxControl) view.findViewById(R.id.optical_cross_type_cr);
 
         // Access point
         // nothing
@@ -250,9 +251,9 @@ public class CreateObjectFragment
         // Special transition
         mSpecialLayingMethodCaption =
                 (TextView) view.findViewById(R.id.special_laying_method_caption_cr);
-        mSpecialLayingMethod = (TextView) view.findViewById(R.id.special_laying_method_cr);
+        mSpecialLayingMethod = (ComboboxControl) view.findViewById(R.id.special_laying_method_cr);
         mMarkTypeCaption = (TextView) view.findViewById(R.id.mark_type_caption_cr);
-        mMarkType = (TextView) view.findViewById(R.id.mark_type_cr);
+        mMarkType = (ComboboxControl) view.findViewById(R.id.mark_type_cr);
 
 
         // Common
@@ -279,6 +280,7 @@ public class CreateObjectFragment
 
         setObjectCount();
         mLineName.setText(Html.fromHtml(mFoclStruct.getHtmlFormattedName()));
+        setFieldDicts();
 
 
         View.OnClickListener doneButtonOnClickListener = new View.OnClickListener()
@@ -592,6 +594,44 @@ public class CreateObjectFragment
                 mSpecialLayingMethod.setVisibility(View.VISIBLE);
                 mMarkTypeCaption.setVisibility(View.VISIBLE);
                 mMarkType.setVisibility(View.VISIBLE);
+                break;
+        }
+    }
+
+
+    protected void setFieldDicts()
+    {
+        FoclDictItem dictItem;
+
+        switch (mFoclStructLayerType) {
+            case FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT:
+                dictItem = mFoclProject.getFoclDitcs().get(FoclConstants.FIELD_LAYING_METHOD);
+                mLayingMethod.setValues(dictItem);
+                break;
+
+            case FoclConstants.LAYERTYPE_FOCL_REAL_FOSC:
+                dictItem = mFoclProject.getFoclDitcs().get(FoclConstants.FIELD_FOSC_TYPE);
+                mFoscType.setValues(dictItem);
+
+                dictItem = mFoclProject.getFoclDitcs().get(FoclConstants.FIELD_FOSC_PLACEMENT);
+                mFoscPlacement.setValues(dictItem);
+                break;
+
+            case FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CROSS:
+                dictItem = mFoclProject.getFoclDitcs().get(FoclConstants.FIELD_OPTICAL_CROSS_TYPE);
+                mOpticalCrossType.setValues(dictItem);
+                break;
+
+            case FoclConstants.LAYERTYPE_FOCL_REAL_ACCESS_POINT:
+                break;
+
+            case FoclConstants.LAYERTYPE_FOCL_REAL_SPECIAL_TRANSITION_POINT:
+                dictItem =
+                        mFoclProject.getFoclDitcs().get(FoclConstants.FIELD_SPECIAL_LAYING_METHOD);
+                mSpecialLayingMethod.setValues(dictItem);
+
+                dictItem = mFoclProject.getFoclDitcs().get(FoclConstants.FIELD_MARK_TYPE);
+                mMarkType.setValues(dictItem);
                 break;
         }
     }

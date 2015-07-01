@@ -156,6 +156,12 @@ public class FoclProject
     }
 
 
+    public FoclDitcs getFoclDitcs()
+    {
+        return mFoclDitcs;
+    }
+
+
     @Override
     public void fromJSON(JSONObject jsonObject)
             throws JSONException
