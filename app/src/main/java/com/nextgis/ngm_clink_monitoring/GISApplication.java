@@ -97,7 +97,6 @@ public class GISApplication
         super.onCreate();
 
         mNet = new NetworkUtil(this);
-        mGpsEventSource = new GpsEventSource(this);
 
         getMap();
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -106,8 +105,13 @@ public class GISApplication
             onFirstRun();
             sharedPreferences.edit()
                     .putBoolean(FoclSettingsConstantsUI.KEY_PREF_APP_FIRST_RUN, false)
+                    .putInt(SettingsConstants.KEY_PREF_LOCATION_SOURCE, GpsEventSource.GPS_PROVIDER)
+                    .putString(SettingsConstants.KEY_PREF_LOCATION_MIN_TIME, "0")
+                    .putString(SettingsConstants.KEY_PREF_LOCATION_MIN_DISTANCE, "0")
                     .commit();
         }
+
+        mGpsEventSource = new GpsEventSource(this);
 
         //turn on sync automatically (every 2 sec. on network exist) - to often?
         //ContentResolver.setMasterSyncAutomatically(true);
