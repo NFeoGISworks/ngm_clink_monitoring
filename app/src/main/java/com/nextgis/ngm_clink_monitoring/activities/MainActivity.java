@@ -32,6 +32,7 @@ import android.content.SyncResult;
 import android.content.SyncStatusObserver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -50,10 +51,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.nextgis.maplib.api.GpsEventListener;
 import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.datasource.GeoMultiPoint;
 import com.nextgis.maplib.datasource.GeoPoint;
+import com.nextgis.maplib.location.GpsEventSource;
 import com.nextgis.maplib.map.LayerGroup;
 import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.NGWVectorLayer;
@@ -83,7 +86,8 @@ import static com.nextgis.maplib.util.GeoConstants.CRS_WGS84;
 public class MainActivity
         extends AppCompatActivity
         implements GISApplication.OnReloadMapListener, GISApplication.OnAccountAddedListener,
-                   GISApplication.OnAccountDeletedListener
+                   GISApplication.OnAccountDeletedListener, GpsEventListener
+
 {
     protected static final int VIEW_STATE_UNKNOWN  = 0;
     protected static final int VIEW_STATE_LOGIN    = 1;
@@ -93,12 +97,13 @@ public class MainActivity
 
     protected SyncStatusObserver mSyncStatusObserver;
     protected Object             mSyncHandle;
+    protected GpsEventSource     mGpsEventSource;
 
     protected int     mViewState = VIEW_STATE_LOGIN;
     protected boolean mIsSyncing = false;
 
-    protected Toolbar           mToolbar;
-    protected TextView          mCustomToolbarTitle;
+    protected Toolbar  mToolbar;
+    protected TextView mCustomToolbarTitle;
     // TODO: remove it
 //    protected StatusBarFragment mStatusBarFragment;
 
@@ -109,6 +114,11 @@ public class MainActivity
         super.onCreate(savedInstanceState);
 
         final GISApplication app = (GISApplication) getApplication();
+
+        mGpsEventSource = app.getGpsEventSource();
+        if (null != mGpsEventSource) {
+            mGpsEventSource.addListener(this);
+        }
 
         // initialize the default settings
         PreferenceManager.setDefaultValues(this, R.xml.preferences_general, false);
@@ -181,6 +191,16 @@ public class MainActivity
         }
 
         setActivityView();
+    }
+
+
+    @Override
+    protected void onDestroy()
+    {
+        if (null != mGpsEventSource) {
+            mGpsEventSource.removeListener(this);
+        }
+        super.onDestroy();
     }
 
 
@@ -661,6 +681,27 @@ public class MainActivity
     {
         Intent intentAbout = new Intent(this, AboutActivity.class);
         startActivity(intentAbout);
+    }
+
+
+    @Override
+    public void onLocationChanged(Location location)
+    {
+        // do nothing. Only for "hot" state of the GPS
+    }
+
+
+    @Override
+    public void onBestLocationChanged(Location location)
+    {
+
+    }
+
+
+    @Override
+    public void onGpsStatusChanged(int event)
+    {
+
     }
 
 
