@@ -161,6 +161,13 @@ public class StatusBarFragment
 
 
     @Override
+    public void onBestLocationChanged(Location location)
+    {
+
+    }
+
+
+    @Override
     public void onGpsStatusChanged(int event)
     {
         switch (event) {
