@@ -33,8 +33,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -59,9 +57,11 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.nextgis.maplib.api.GpsEventListener;
 import com.nextgis.maplib.datasource.GeoMultiPoint;
 import com.nextgis.maplib.datasource.GeoPoint;
 import com.nextgis.maplib.location.AccurateLocationTaker;
+import com.nextgis.maplib.location.GpsEventSource;
 import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.util.GeoConstants;
 import com.nextgis.maplib.util.VectorCacheItem;
@@ -69,7 +69,6 @@ import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.activities.MainActivity;
 import com.nextgis.ngm_clink_monitoring.adapters.ObjectPhotoFileAdapter;
-import com.nextgis.ngm_clink_monitoring.dialogs.CoordinateRefiningDialog;
 import com.nextgis.ngm_clink_monitoring.dialogs.DistanceExceededDialog;
 import com.nextgis.ngm_clink_monitoring.map.FoclDictItem;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
@@ -100,7 +99,7 @@ import static com.nextgis.ngm_clink_monitoring.util.FoclConstants.*;
 
 public class CreateObjectFragment
         extends Fragment
-        implements LocationListener
+        implements GpsEventListener
 {
     protected static final int REQUEST_TAKE_PHOTO = 1;
 
@@ -117,7 +116,7 @@ public class CreateObjectFragment
     protected TextView mDistanceFromPrevPointCaption;
     protected TextView mDistanceFromPrevPoint;
 
-    protected AccurateLocationTaker mLocationTaker;
+    protected AccurateLocationTaker mAccurateLocationTaker;
     protected              int     mTakeCount     = 0;
     protected              int     mTakeCountPct  = 0;
     protected              int     mTakeTimePct   = 0;
@@ -156,10 +155,9 @@ public class CreateObjectFragment
 
     protected ObjectPhotoFileAdapter mObjectPhotoFileAdapter;
 
-    protected String  mTempPhotoPath         = null;
-    protected boolean mHasAccurateCoordinate = false;
+    protected String mTempPhotoPath = null;
 
-    protected LocationManager           mLocationManager;
+    protected GpsEventSource            mGpsEventSource;
     protected OnDistanceChangedListener mOnDistanceChangedListener;
 
     protected int mObjectCount;
@@ -186,19 +184,24 @@ public class CreateObjectFragment
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
 
-        mLocationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
+        GISApplication app = (GISApplication) getActivity().getApplication();
+        mGpsEventSource = app.getGpsEventSource();
 
         if (FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT == mFoclStructLayerType) {
-            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+            if (null != mGpsEventSource) {
+                mGpsEventSource.addListener(this);
+            }
 
             setObjectCount();
         }
 
-        mLocationTaker = new AccurateLocationTaker(
+        mAccurateLocationTaker = new AccurateLocationTaker(
                 getActivity(), MAX_ACCURACY_TAKE_COUNT, MAX_ACCURACY_TAKE_TIME,
                 ACCURACY_PUBLISH_PROGRESS_DELAY, ACCURACY_CIRCULAR_ERROR_STR);
 
-        mLocationTaker.setOnGetCurrentAccurateLocationListener(
+        mAccurateLocationTaker.setTakeOnBestLocation(true);
+
+        mAccurateLocationTaker.setOnGetCurrentAccurateLocationListener(
                 new AccurateLocationTaker.OnGetCurrentAccurateLocationListener()
                 {
                     @Override
@@ -208,12 +211,12 @@ public class CreateObjectFragment
                                 null != currentAccurateLocation &&
                                 MAX_ACCURACY > currentAccurateLocation.getAccuracy()) {
 
-                            mLocationTaker.stopTaking();
+                            mAccurateLocationTaker.stopTaking();
                         }
                     }
                 });
 
-        mLocationTaker.startTaking();
+        mAccurateLocationTaker.startTaking();
     }
 
 
@@ -288,7 +291,7 @@ public class CreateObjectFragment
             @Override
             public void onClick(View v)
             {
-                if (mLocationTaker.isTaking()) {
+                if (mAccurateLocationTaker.isTaking()) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
                     builder.setTitle(getActivity().getString(R.string.warning))
@@ -376,12 +379,6 @@ public class CreateObjectFragment
     {
         super.onResume();
 
-        if (!mHasAccurateCoordinate) {
-            mHasAccurateCoordinate = true;
-            // TODO: uncomment it
-//            showCoordinateRefiningDialog();
-        }
-
         // onBackPressed
         getView().setFocusableInTouchMode(true);
         getView().requestFocus();
@@ -438,8 +435,8 @@ public class CreateObjectFragment
     @Override
     public void onDestroyView()
     {
-        mLocationTaker.setOnProgressUpdateListener(null);
-        mLocationTaker.setOnGetAccurateLocationListener(null);
+        mAccurateLocationTaker.setOnProgressUpdateListener(null);
+        mAccurateLocationTaker.setOnGetAccurateLocationListener(null);
         super.onDestroyView();
     }
 
@@ -447,46 +444,17 @@ public class CreateObjectFragment
     @Override
     public void onDestroy()
     {
-        mLocationTaker.stopTaking();
+        mAccurateLocationTaker.stopTaking();
 
         if (FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT == mFoclStructLayerType) {
-            mLocationManager.removeUpdates(this);
+            if (null != mGpsEventSource) {
+                mGpsEventSource.removeListener(this);
+            }
         }
 
         deleteTempFiles();
         super.onDestroy();
     }
-
-
-    // TODO: remove it
-//    protected void setBarsView(MainActivity activity)
-//    {
-//        String toolbarTitle = "";
-//
-//        switch (mFoclStructLayerType) {
-//            case FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT:
-//                toolbarTitle = activity.getString(R.string.cable_laying);
-//                break;
-//
-//            case FoclConstants.LAYERTYPE_FOCL_REAL_FOSC:
-//                toolbarTitle = activity.getString(R.string.fosc_mounting);
-//                break;
-//
-//            case FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CROSS:
-//                toolbarTitle = activity.getString(R.string.cross_mounting);
-//                break;
-//
-//            case FoclConstants.LAYERTYPE_FOCL_REAL_ACCESS_POINT:
-//                toolbarTitle = activity.getString(R.string.access_point_mounting);
-//                break;
-//
-//            case FoclConstants.LAYERTYPE_FOCL_REAL_SPECIAL_TRANSITION_POINT:
-//                toolbarTitle = activity.getString(R.string.special_transition_laying);
-//                break;
-//        }
-//
-//        activity.setBarsView(toolbarTitle);
-//    }
 
 
     protected void setBarsView(MainActivity activity)
@@ -654,9 +622,9 @@ public class CreateObjectFragment
         mRefiningProgress.setProgress(mTakeTimePct);
 
         setCoordinatesText();
-        setCoordinatesVisibility(!mLocationTaker.isTaking());
+        setCoordinatesVisibility(!mAccurateLocationTaker.isTaking());
 
-        mLocationTaker.setOnProgressUpdateListener(
+        mAccurateLocationTaker.setOnProgressUpdateListener(
                 new AccurateLocationTaker.OnProgressUpdateListener()
                 {
                     @Override
@@ -671,7 +639,7 @@ public class CreateObjectFragment
                     }
                 });
 
-        mLocationTaker.setOnGetAccurateLocationListener(
+        mAccurateLocationTaker.setOnGetAccurateLocationListener(
                 new AccurateLocationTaker.OnGetAccurateLocationListener()
                 {
                     @Override
@@ -720,7 +688,7 @@ public class CreateObjectFragment
             mCoordinates.setText(latText + ",  " + longText);
 
             if (FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT == mFoclStructLayerType) {
-                mDistance = getDistanceFromPrevPoint(mAccurateLocation);
+                mDistance = getMinDistanceFromPrevPoints(mAccurateLocation);
                 mDistanceFromPrevPoint.setText(getDistanceText(mDistance));
                 mDistanceFromPrevPoint.setTextColor(getDistanceTextColor(mDistance));
             }
@@ -819,37 +787,7 @@ public class CreateObjectFragment
         setCoordinatesText();
         setCoordinatesVisibility(false);
 
-        mLocationTaker.startTaking();
-    }
-
-
-    // TODO: remove it
-    protected void showCoordinateRefiningDialog()
-    {
-        CoordinateRefiningDialog coordRefiningDialog = new CoordinateRefiningDialog();
-
-        coordRefiningDialog.setOnGetAccurateLocationListener(
-                new CoordinateRefiningDialog.OnGetAccurateLocationListener()
-                {
-                    @Override
-                    public void onGetAccurateLocation(Location accurateLocation)
-                    {
-                        if (null != accurateLocation) {
-                            mAccurateLocation = accurateLocation;
-                            setCoordinatesText();
-
-                        } else {
-                            Toast.makeText(
-                                    getActivity(), R.string.coordinates_not_defined,
-                                    Toast.LENGTH_LONG).show();
-                            getActivity().onBackPressed();
-                        }
-                    }
-                });
-
-        coordRefiningDialog.setCancelable(false);
-        coordRefiningDialog.show(
-                getActivity().getSupportFragmentManager(), "CoordinateRefining");
+        mAccurateLocationTaker.startTaking();
     }
 
 
@@ -1273,7 +1211,7 @@ public class CreateObjectFragment
     }
 
 
-    protected Float getDistanceFromPrevPoint(Location location)
+    protected Float getMinDistanceFromPrevPoints(Location location)
     {
         List<VectorCacheItem> cache = mFoclVectorLayer.getVectorCache();
         Float minDist = null;
@@ -1369,29 +1307,20 @@ public class CreateObjectFragment
     @Override
     public void onLocationChanged(Location location)
     {
+    }
+
+
+    @Override
+    public void onBestLocationChanged(Location location)
+    {
         if (null != mOnDistanceChangedListener) {
-            mOnDistanceChangedListener.onDistanceChanged(getDistanceFromPrevPoint(location));
+            mOnDistanceChangedListener.onDistanceChanged(getMinDistanceFromPrevPoints(location));
         }
     }
 
 
     @Override
-    public void onStatusChanged(
-            String provider,
-            int status,
-            Bundle extras)
-    {
-    }
-
-
-    @Override
-    public void onProviderEnabled(String provider)
-    {
-    }
-
-
-    @Override
-    public void onProviderDisabled(String provider)
+    public void onGpsStatusChanged(int event)
     {
     }
 
