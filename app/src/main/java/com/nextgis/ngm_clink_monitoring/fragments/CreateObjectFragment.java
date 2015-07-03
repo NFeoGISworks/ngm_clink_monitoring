@@ -1201,6 +1201,11 @@ public class CreateObjectFragment
                     getActivity(), R.string.object_creation_error, Toast.LENGTH_LONG).show();
 
         } else {
+
+            if (mFoclStruct.getStatus().equals(FoclConstants.FIELD_VALUE_STATUS_PROJECT)) {
+                mFoclStruct.setStatus(FoclConstants.FIELD_VALUE_STATUS_IN_PROGRESS);
+            }
+
             mObjectId = Long.parseLong(result.getLastPathSegment());
             Log.d(
                     TAG, "Layer: " + mObjectLayerName + ", id: " + mObjectId +

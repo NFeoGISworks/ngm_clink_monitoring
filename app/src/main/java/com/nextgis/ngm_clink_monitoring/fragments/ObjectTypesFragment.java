@@ -115,7 +115,17 @@ public class ObjectTypesFragment
 
         FoclDictItem dictItem = foclProject.getFoclDitcs().get(FoclConstants.FIELD_PROJ_STATUSES);
         mLineStatus.setValues(dictItem);
-        mLineStatus.setSelection(foclStruct.getStatus());
+
+        final FoclStruct finalFoclStruct = foclStruct;
+        // workaround, http://stackoverflow.com/a/17370964/4727406
+        mLineStatus.post(
+                new Runnable()
+                {
+                    public void run()
+                    {
+                        mLineStatus.setSelection(finalFoclStruct.getStatus());
+                    }
+                });
 
         View.OnClickListener buttonOnClickListener = new View.OnClickListener()
         {
