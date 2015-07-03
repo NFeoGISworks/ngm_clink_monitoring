@@ -39,7 +39,6 @@ import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 public class DistanceExceededDialog
         extends DialogFragment
         implements CreateObjectFragment.OnDistanceChangedListener
-
 {
     protected CreateObjectFragment mParent;
 
@@ -131,18 +130,18 @@ public class DistanceExceededDialog
     }
 
 
-    public void setOnRepeatClickedListener(OnRepeatClickedListener onRepeatClickedListener)
-    {
-        mOnRepeatClickedListener = onRepeatClickedListener;
-    }
-
-
     @Override
     public void onDistanceChanged(float distance)
     {
         mDistanceView.setText(mParent.getDistanceText(distance));
         mDistanceView.setTextColor(mParent.getDistanceTextColor(distance));
         mBtnRepeat.setEnabled(FoclConstants.MAX_DISTANCE_FROM_PREV_POINT >= distance);
+    }
+
+
+    public void setOnRepeatClickedListener(OnRepeatClickedListener onRepeatClickedListener)
+    {
+        mOnRepeatClickedListener = onRepeatClickedListener;
     }
 
 
