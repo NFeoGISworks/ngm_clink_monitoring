@@ -194,5 +194,6 @@
     <string name="distance_from_prev_point_exceeded_colon">Расстояние от предыдущей точки превышено:</string>
     <string name="shorten_distance_and_repeat">Уменьшите расстояние и повторите определение координат.</string>
     <string name="Or_new_start_point">Или отметьте новую начальную точку.</string>
+    <string name="change_line_status_confirmation">Вы действительно хотите изменить статус линии?</string>
 
 </resources>

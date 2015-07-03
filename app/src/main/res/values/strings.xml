@@ -194,5 +194,6 @@
     <string name="distance_from_prev_point_exceeded_colon">Distance from previous point is exceeded:</string>
     <string name="shorten_distance_and_repeat">Shorten the distance and try to refining the coordinates.</string>
     <string name="Or_new_start_point">Or mark a new starting point.</string>
+    <string name="change_line_status_confirmation">Do you really want to change the line status?</string>
 
 </resources>

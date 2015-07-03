@@ -25,6 +25,7 @@ package com.nextgis.ngm_clink_monitoring.fragments;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import com.nextgis.ngm_clink_monitoring.map.FoclDictItem;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 
@@ -33,14 +34,16 @@ import java.util.Map;
 
 
 public class StatusComboboxControl
-        extends ComboboxControl
+        extends Spinner
 {
-    protected Map<String, Integer> mValueIndexMap;
+    protected Context             mContext;
+    protected Map<String, String> mAliasValueMap;
 
 
     public StatusComboboxControl(Context context)
     {
         super(context);
+        mContext = context;
     }
 
 
@@ -49,6 +52,7 @@ public class StatusComboboxControl
             AttributeSet attrs)
     {
         super(context, attrs);
+        mContext = context;
     }
 
 
@@ -58,16 +62,15 @@ public class StatusComboboxControl
             int defStyleAttr)
     {
         super(context, attrs, defStyleAttr);
+        mContext = context;
     }
 
 
-    @Override
     public void setValues(FoclDictItem dictItem)
     {
         String value;
         String value_alias;
         mAliasValueMap = new HashMap<>();
-        mValueIndexMap = new HashMap<>();
         ArrayAdapter<String> spinnerArrayAdapter =
                 new ArrayAdapter<>(mContext, android.R.layout.simple_spinner_item);
 
@@ -81,7 +84,6 @@ public class StatusComboboxControl
             value_alias = value;
         }
         mAliasValueMap.put(value_alias, value);
-        mValueIndexMap.put(value, FoclConstants.STATUS_PROJECT_INDEX);
         spinnerArrayAdapter.add(value_alias);
 
 
@@ -94,7 +96,6 @@ public class StatusComboboxControl
             value_alias = value;
         }
         mAliasValueMap.put(value_alias, value);
-        mValueIndexMap.put(value, FoclConstants.STATUS_IN_PROGRESS_INDEX);
         spinnerArrayAdapter.add(value_alias);
 
 
@@ -107,7 +108,6 @@ public class StatusComboboxControl
             value_alias = value;
         }
         mAliasValueMap.put(value_alias, value);
-        mValueIndexMap.put(value, FoclConstants.STATUS_BUILT_INDEX);
         spinnerArrayAdapter.add(value_alias);
 
 
@@ -117,12 +117,22 @@ public class StatusComboboxControl
     }
 
 
-    public void setSelection(String realValue)
+    public String getValue()
     {
-        Integer index = mValueIndexMap.get(realValue);
-        if (null == index) {
-            index = FoclConstants.STATUS_PROJECT_INDEX;
+        String valueAlias = (String) getSelectedItem();
+        return mAliasValueMap.get(valueAlias);
+    }
+
+
+    public static int getStausId(String status) {
+        switch (status) {
+            case FoclConstants.FIELD_VALUE_STATUS_PROJECT:
+            default:
+                return FoclConstants.STATUS_PROJECT_INDEX;
+            case FoclConstants.FIELD_VALUE_STATUS_IN_PROGRESS:
+                return FoclConstants.STATUS_IN_PROGRESS_INDEX;
+            case FoclConstants.FIELD_VALUE_STATUS_BUILT:
+                return FoclConstants.STATUS_BUILT_INDEX;
         }
-        setSelection(index);
     }
 }

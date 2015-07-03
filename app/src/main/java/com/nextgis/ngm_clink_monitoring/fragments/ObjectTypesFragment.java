@@ -30,11 +30,13 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.TextView;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.activities.MainActivity;
+import com.nextgis.ngm_clink_monitoring.dialogs.YesNoDialog;
 import com.nextgis.ngm_clink_monitoring.map.FoclDictItem;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 import com.nextgis.ngm_clink_monitoring.map.FoclStruct;
@@ -46,14 +48,26 @@ public class ObjectTypesFragment
 {
     protected Integer mLineId;
 
-    protected TextView              mLineName;
+    protected TextView mLineName;
+
     protected StatusComboboxControl mLineStatus;
+    protected int                   mOldStatusSelection;
+    protected int                   mNewStatusSelection;
+    protected long                  mComboboxRestartTime;
+    protected boolean mIsOnInitStatus   = false;
+    protected boolean mIsOnYesStatus    = false;
+    protected boolean mIsOnNoStatus     = false;
+    protected boolean mIsOnCancelStatus = false;
+
+    protected AdapterView.OnItemSelectedListener mOnStatusItemSelectedListener;
 
     protected Button mBtnCableLaying;
     protected Button mBtnFoscMounting;
     protected Button mBtnCrossMounting;
     protected Button mBtnAccessPointMounting;
     protected Button mBtnSpecialTransitionLaying;
+
+    protected FoclStruct mFoclStruct;
 
 
     public void setParams(Integer lineId)
@@ -67,6 +81,128 @@ public class ObjectTypesFragment
     {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+
+        mComboboxRestartTime = System.currentTimeMillis();
+        mOnStatusItemSelectedListener = new AdapterView.OnItemSelectedListener()
+        {
+            @Override
+            public void onItemSelected(
+                    AdapterView<?> parent,
+                    View view,
+                    final int position,
+                    long id)
+            {
+                if (mIsOnInitStatus) {
+                    mIsOnInitStatus = false;
+                    return;
+                }
+
+                if (mIsOnYesStatus) {
+                    mIsOnYesStatus = false;
+                    return;
+                }
+
+                if (mIsOnNoStatus) {
+                    mIsOnNoStatus = false;
+                    return;
+                }
+
+                if (mIsOnCancelStatus) {
+                    mIsOnCancelStatus = false;
+                    return;
+                }
+
+                if (System.currentTimeMillis() - mComboboxRestartTime < 200) {
+                    // system generated event e.g. orientation change, activity startup. so ignore
+                    return;
+                }
+
+
+                mNewStatusSelection = mLineStatus.getSelectedItemPosition();
+
+                YesNoDialog yesNoDialog = new YesNoDialog();
+                yesNoDialog.setIcon(R.drawable.ic_action_warning)
+                        .setTitle(R.string.confirmation)
+                        .setMessage(R.string.change_line_status_confirmation)
+                        .setPositiveText(R.string.yes)
+                        .setNegativeText(R.string.no)
+                        .setOnPositiveClickedListener(
+                                new YesNoDialog.OnPositiveClickedListener()
+                                {
+                                    @Override
+                                    public void onPositiveClicked()
+                                    {
+                                        mIsOnYesStatus = true;
+                                        mFoclStruct.setStatus(mLineStatus.getValue());
+                                    }
+                                })
+                        .setOnNegativeClickedListener(
+                                new YesNoDialog.OnNegativeClickedListener()
+                                {
+                                    @Override
+                                    public void onNegativeClicked()
+                                    {
+                                        mIsOnNoStatus = true;
+                                    }
+                                })
+                        .setOnCancelListener(
+                                new YesNoDialog.OnCancelListener()
+                                {
+                                    @Override
+                                    public void onCancel()
+                                    {
+                                        mIsOnCancelStatus = true;
+                                    }
+                                })
+                        .setOnDismissListener(
+                                new YesNoDialog.OnDismissListener()
+                                {
+                                    @Override
+                                    public void onDismiss()
+                                    {
+                                        int currPos = mLineStatus.getSelectedItemPosition();
+
+                                        if (mIsOnYesStatus) {
+                                            mOldStatusSelection = mNewStatusSelection;
+                                        }
+
+                                        if (mIsOnYesStatus && (currPos != mNewStatusSelection)) {
+                                            mLineStatus.setSelection(mNewStatusSelection);
+                                        }
+
+                                        if (mIsOnYesStatus && (currPos == mNewStatusSelection)) {
+                                            mIsOnYesStatus = false;
+                                        }
+
+                                        if (mIsOnNoStatus && (currPos != mOldStatusSelection)) {
+                                            mLineStatus.setSelection(mOldStatusSelection);
+                                        }
+
+                                        if (mIsOnNoStatus && (currPos == mOldStatusSelection)) {
+                                            mIsOnNoStatus = false;
+                                        }
+
+                                        if (mIsOnCancelStatus && (currPos != mOldStatusSelection)) {
+                                            mLineStatus.setSelection(mOldStatusSelection);
+                                        }
+
+                                        if (mIsOnCancelStatus && (currPos == mOldStatusSelection)) {
+                                            mIsOnCancelStatus = false;
+                                        }
+                                    }
+                                });
+
+                yesNoDialog.show(
+                        getActivity().getSupportFragmentManager(),
+                        FoclConstants.FRAGMENT_YES_NO_DIALOG + "NewStatusSelected");
+            }
+
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent)
+            {
+            }
+        };
     }
 
 
@@ -76,6 +212,8 @@ public class ObjectTypesFragment
             ViewGroup container,
             Bundle savedInstanceState)
     {
+        mComboboxRestartTime = System.currentTimeMillis();
+
         final MainActivity activity = (MainActivity) getActivity();
         activity.setBarsView(null);
 
@@ -92,38 +230,39 @@ public class ObjectTypesFragment
                 (Button) view.findViewById(R.id.btn_special_transition_laying_ot);
 
         GISApplication app = (GISApplication) getActivity().getApplication();
-        FoclProject foclProject = app.getFoclProject();
+        final FoclProject foclProject = app.getFoclProject();
 
         if (null == foclProject) {
             setBlockedView();
             return view;
         }
 
-        FoclStruct foclStruct;
         try {
-            foclStruct = (FoclStruct) foclProject.getLayer(mLineId);
+            mFoclStruct = (FoclStruct) foclProject.getLayer(mLineId);
         } catch (Exception e) {
-            foclStruct = null;
+            mFoclStruct = null;
         }
 
-        if (null == foclStruct) {
+        if (null == mFoclStruct) {
             setBlockedView();
             return view;
         }
 
-        mLineName.setText(Html.fromHtml(foclStruct.getHtmlFormattedName()));
+        mLineName.setText(Html.fromHtml(mFoclStruct.getHtmlFormattedName()));
 
         FoclDictItem dictItem = foclProject.getFoclDitcs().get(FoclConstants.FIELD_PROJ_STATUSES);
         mLineStatus.setValues(dictItem);
+        mLineStatus.setOnItemSelectedListener(mOnStatusItemSelectedListener);
+        mOldStatusSelection = StatusComboboxControl.getStausId(mFoclStruct.getStatus());
 
-        final FoclStruct finalFoclStruct = foclStruct;
         // workaround, http://stackoverflow.com/a/17370964/4727406
         mLineStatus.post(
                 new Runnable()
                 {
                     public void run()
                     {
-                        mLineStatus.setSelection(finalFoclStruct.getStatus());
+                        mIsOnInitStatus = true;
+                        mLineStatus.setSelection(mOldStatusSelection);
                     }
                 });
 
