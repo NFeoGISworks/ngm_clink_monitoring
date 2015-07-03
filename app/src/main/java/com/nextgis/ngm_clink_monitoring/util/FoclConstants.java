@@ -35,6 +35,7 @@ public interface FoclConstants
     String FRAGMENT_MAP               = "Map";
     String FRAGMENT_ATTRIBUTES        = "Attributes";
     String FRAGMENT_DISTANCE_EXCEEDED = "DistanceExceeded";
+    String FRAGMENT_YES_NO_DIALOG     = "YesNoDialog";
 
     String JSON_STATUS_KEY   = "status";
     String JSON_REGION_KEY   = "region";
