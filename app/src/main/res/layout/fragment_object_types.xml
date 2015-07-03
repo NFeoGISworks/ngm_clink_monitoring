@@ -56,7 +56,21 @@
                 />
 
             <TextView
-                android:id="@+id/work_type_caption"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginTop="10dp"
+                android:text="@string/line_status_colon"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                />
+
+            <com.nextgis.ngm_clink_monitoring.fragments.StatusComboboxControl
+                android:id="@+id/line_status_ot"
+                android:prompt="@string/line_status_hint"
+                style="@style/comboboxStyle"
+                />
+
+            <TextView
+                android:id="@+id/work_type_caption_ot"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_marginTop="10dp"
@@ -74,31 +88,31 @@
                 >
 
                 <Button
-                    android:id="@+id/btn_cable_laying"
+                    android:id="@+id/btn_cable_laying_ot"
                     android:text="@string/cable_laying"
                     style="@style/startButton"
                     />
 
                 <Button
-                    android:id="@+id/btn_fosc_mounting"
+                    android:id="@+id/btn_fosc_mounting_ot"
                     android:text="@string/fosc_mounting"
                     style="@style/startButtonMiddle"
                     />
 
                 <Button
-                    android:id="@+id/btn_cross_mounting"
+                    android:id="@+id/btn_cross_mounting_ot"
                     android:text="@string/cross_mounting"
                     style="@style/startButtonMiddle"
                     />
 
                 <Button
-                    android:id="@+id/btn_access_point_mounting"
+                    android:id="@+id/btn_access_point_mounting_ot"
                     android:text="@string/access_point_mounting"
                     style="@style/startButtonMiddle"
                     />
 
                 <Button
-                    android:id="@+id/btn_special_transition_laying"
+                    android:id="@+id/btn_special_transition_laying_ot"
                     android:text="@string/special_transition_laying"
                     style="@style/startButtonMiddle"
                     />

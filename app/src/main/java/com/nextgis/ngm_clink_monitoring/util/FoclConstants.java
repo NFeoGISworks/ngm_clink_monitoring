@@ -36,6 +36,7 @@ public interface FoclConstants
     String FRAGMENT_ATTRIBUTES        = "Attributes";
     String FRAGMENT_DISTANCE_EXCEEDED = "DistanceExceeded";
 
+    String JSON_STATUS_KEY   = "status";
     String JSON_REGION_KEY   = "region";
     String JSON_DISTRICT_KEY = "district";
 
@@ -72,6 +73,7 @@ public interface FoclConstants
     String FIELD_DESCRIPTION = "description";
     String FIELD_BUILT_DATE  = "built_date";
 
+    String FIELD_PROJ_STATUSES         = "proj_statuses";
     String FIELD_START_POINT           = "start_point";
     String FIELD_LAYING_METHOD         = "laying_method";
     String FIELD_FOSC_TYPE             = "type_fosc";
@@ -79,6 +81,14 @@ public interface FoclConstants
     String FIELD_OPTICAL_CROSS_TYPE    = "type_optical_cross";
     String FIELD_SPECIAL_LAYING_METHOD = "special_laying_method";
     String FIELD_MARK_TYPE             = "number";
+
+    String FIELD_VALUE_STATUS_PROJECT     = "project";
+    String FIELD_VALUE_STATUS_IN_PROGRESS = "in_progress";
+    String FIELD_VALUE_STATUS_BUILT       = "built";
+
+    int STATUS_PROJECT_INDEX     = 0;
+    int STATUS_IN_PROGRESS_INDEX = 1;
+    int STATUS_BUILT_INDEX       = 2;
 
     String FIELD_STATUS_BUILT    = "status_built";
     String FIELD_STATUS_BUILT_CH = "status_built_ch";

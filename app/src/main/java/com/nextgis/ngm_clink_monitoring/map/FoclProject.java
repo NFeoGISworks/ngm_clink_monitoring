@@ -181,6 +181,11 @@ public class FoclProject
             throws JSONException, SQLiteException
     {
         long structId = jsonStruct.getLong(Constants.JSON_ID_KEY);
+
+        String structStatus = jsonStruct.isNull(FoclConstants.JSON_STATUS_KEY)
+                            ? FoclConstants.FIELD_VALUE_STATUS_PROJECT
+                            : jsonStruct.getString(FoclConstants.JSON_STATUS_KEY);
+
         String structName = jsonStruct.isNull(Constants.JSON_NAME_KEY)
                             ? ""
                             : jsonStruct.getString(Constants.JSON_NAME_KEY);
@@ -194,6 +199,10 @@ public class FoclProject
         FoclStruct foclStruct = getFoclStructByRemoteId(structId);
 
         if (null != foclStruct) {
+
+            if (!foclStruct.getStatus().equals(structStatus)) {
+                foclStruct.setStatus(structStatus);
+            }
 
             if (!foclStruct.getName().equals(structName)) {
                 foclStruct.setName(structName);
@@ -217,11 +226,11 @@ public class FoclProject
 
             List<ILayer> layers = foclStruct.getLayers();
             for (int i = 0; i < layers.size(); ++i) {
-                ILayer layer = layers.get(i);
                 if (Thread.currentThread().isInterrupted()) {
                     break;
                 }
 
+                ILayer layer = layers.get(i);
                 FoclVectorLayer foclVectorLayer = (FoclVectorLayer) layer;
 
                 if (!layerIdList.contains(foclVectorLayer.getRemoteId())) {
@@ -234,6 +243,7 @@ public class FoclProject
             foclStruct = new FoclStruct(getContext(), createLayerStorage(), mLayerFactory);
 
             foclStruct.setRemoteId(structId);
+            foclStruct.setStatus(structStatus);
             foclStruct.setName(structName);
             foclStruct.setRegion(structRegion);
             foclStruct.setDistrict(structDistrict);

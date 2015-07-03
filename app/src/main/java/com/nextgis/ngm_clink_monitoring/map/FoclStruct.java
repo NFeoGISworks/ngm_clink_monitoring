@@ -43,6 +43,7 @@ public class FoclStruct
     protected long   mRemoteId;
     protected String mRegion;
     protected String mDistrict;
+    protected String mStatus;
 
 
     public FoclStruct(
@@ -64,6 +65,18 @@ public class FoclStruct
     public void setRemoteId(long remoteId)
     {
         mRemoteId = remoteId;
+    }
+
+
+    public String getStatus()
+    {
+        return mStatus;
+    }
+
+
+    public void setStatus(String status)
+    {
+        mStatus = status;
     }
 
 
@@ -167,6 +180,7 @@ public class FoclStruct
     {
         JSONObject rootConfig = super.toJSON();
         rootConfig.put(Constants.JSON_ID_KEY, mRemoteId);
+        rootConfig.put(FoclConstants.JSON_STATUS_KEY, mStatus);
         rootConfig.put(FoclConstants.JSON_REGION_KEY, mRegion);
         rootConfig.put(FoclConstants.JSON_DISTRICT_KEY, mDistrict);
 
@@ -180,6 +194,7 @@ public class FoclStruct
     {
         super.fromJSON(jsonObject);
         mRemoteId = jsonObject.getLong(Constants.JSON_ID_KEY);
+        mStatus = jsonObject.getString(FoclConstants.JSON_STATUS_KEY);
         mRegion = jsonObject.getString(FoclConstants.JSON_REGION_KEY);
         mDistrict = jsonObject.getString(FoclConstants.JSON_DISTRICT_KEY);
     }

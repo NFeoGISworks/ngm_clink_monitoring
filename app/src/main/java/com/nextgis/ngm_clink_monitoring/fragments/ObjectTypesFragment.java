@@ -35,6 +35,7 @@ import android.widget.TextView;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.activities.MainActivity;
+import com.nextgis.ngm_clink_monitoring.map.FoclDictItem;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 import com.nextgis.ngm_clink_monitoring.map.FoclStruct;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
@@ -45,12 +46,14 @@ public class ObjectTypesFragment
 {
     protected Integer mLineId;
 
-    protected TextView mLineName;
-    protected Button   mBtnCableLaying;
-    protected Button   mBtnFoscMounting;
-    protected Button   mBtnCrossMounting;
-    protected Button   mBtnAccessPointMounting;
-    protected Button   mBtnSpecialTransitionLaying;
+    protected TextView              mLineName;
+    protected StatusComboboxControl mLineStatus;
+
+    protected Button mBtnCableLaying;
+    protected Button mBtnFoscMounting;
+    protected Button mBtnCrossMounting;
+    protected Button mBtnAccessPointMounting;
+    protected Button mBtnSpecialTransitionLaying;
 
 
     public void setParams(Integer lineId)
@@ -79,13 +82,14 @@ public class ObjectTypesFragment
         final View view = inflater.inflate(R.layout.fragment_object_types, null);
 
         mLineName = (TextView) view.findViewById(R.id.line_name_ot);
+        mLineStatus = (StatusComboboxControl) view.findViewById(R.id.line_status_ot);
 
-        mBtnCableLaying = (Button) view.findViewById(R.id.btn_cable_laying);
-        mBtnFoscMounting = (Button) view.findViewById(R.id.btn_fosc_mounting);
-        mBtnCrossMounting = (Button) view.findViewById(R.id.btn_cross_mounting);
-        mBtnAccessPointMounting = (Button) view.findViewById(R.id.btn_access_point_mounting);
+        mBtnCableLaying = (Button) view.findViewById(R.id.btn_cable_laying_ot);
+        mBtnFoscMounting = (Button) view.findViewById(R.id.btn_fosc_mounting_ot);
+        mBtnCrossMounting = (Button) view.findViewById(R.id.btn_cross_mounting_ot);
+        mBtnAccessPointMounting = (Button) view.findViewById(R.id.btn_access_point_mounting_ot);
         mBtnSpecialTransitionLaying =
-                (Button) view.findViewById(R.id.btn_special_transition_laying);
+                (Button) view.findViewById(R.id.btn_special_transition_laying_ot);
 
         GISApplication app = (GISApplication) getActivity().getApplication();
         FoclProject foclProject = app.getFoclProject();
@@ -109,6 +113,10 @@ public class ObjectTypesFragment
 
         mLineName.setText(Html.fromHtml(foclStruct.getHtmlFormattedName()));
 
+        FoclDictItem dictItem = foclProject.getFoclDitcs().get(FoclConstants.FIELD_PROJ_STATUSES);
+        mLineStatus.setValues(dictItem);
+        mLineStatus.setSelection(foclStruct.getStatus());
+
         View.OnClickListener buttonOnClickListener = new View.OnClickListener()
         {
             @Override
@@ -117,19 +125,19 @@ public class ObjectTypesFragment
                 int foclStructLayerType;
 
                 switch (v.getId()) {
-                    case R.id.btn_cable_laying:
+                    case R.id.btn_cable_laying_ot:
                         foclStructLayerType = FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT;
                         break;
-                    case R.id.btn_fosc_mounting:
+                    case R.id.btn_fosc_mounting_ot:
                         foclStructLayerType = FoclConstants.LAYERTYPE_FOCL_REAL_FOSC;
                         break;
-                    case R.id.btn_cross_mounting:
+                    case R.id.btn_cross_mounting_ot:
                         foclStructLayerType = FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CROSS;
                         break;
-                    case R.id.btn_access_point_mounting:
+                    case R.id.btn_access_point_mounting_ot:
                         foclStructLayerType = FoclConstants.LAYERTYPE_FOCL_REAL_ACCESS_POINT;
                         break;
-                    case R.id.btn_special_transition_laying:
+                    case R.id.btn_special_transition_laying_ot:
                         foclStructLayerType =
                                 FoclConstants.LAYERTYPE_FOCL_REAL_SPECIAL_TRANSITION_POINT;
                         break;
@@ -173,6 +181,7 @@ public class ObjectTypesFragment
     protected void setBlockedView()
     {
         mLineName.setText("");
+        mLineStatus.setEnabled(false);
         mBtnCableLaying.setEnabled(false);
         mBtnFoscMounting.setEnabled(false);
         mBtnCrossMounting.setEnabled(false);
