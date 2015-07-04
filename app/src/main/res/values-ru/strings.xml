@@ -116,7 +116,7 @@
     <string name="line_status_hint">Укажите статус строительства</string>
 
 
-    <string name="coordinates_colon">Коодинаты:</string>
+    <string name="coordinates_colon">Координаты:</string>
 
     <string name="description_colon">Комментарий:</string>
     <string name="description_hint">Введите комментарий</string>
@@ -179,7 +179,7 @@
 
     <string name="menu_done">Готово</string>
 
-    <string name="coordinate_refining">Уточнение координат</string>
+    <string name="coordinate_refining">Определение координат</string>
     <string name="coordinates_not_defined">Координаты не определены</string>
     <string name="distance_from_prev_point_colon">Расстояние от предыдущей точки:</string>
 
