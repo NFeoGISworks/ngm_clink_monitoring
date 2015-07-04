@@ -28,10 +28,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.TextView;
+import android.widget.CheckedTextView;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 import com.nextgis.ngm_clink_monitoring.map.FoclStruct;
+import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 
 
 public class LineNameAdapter
@@ -84,8 +85,12 @@ public class LineNameAdapter
 
         FoclStruct foclStruct = (FoclStruct) getItem(position);
 
-        TextView tvFoclStructName = (TextView) convertView.findViewById(R.id.focl_struct_name);
+        CheckedTextView tvFoclStructName =
+                (CheckedTextView) convertView.findViewById(R.id.focl_struct_name);
+
         tvFoclStructName.setText(Html.fromHtml(foclStruct.getHtmlFormattedName()));
+        tvFoclStructName.setChecked(
+                foclStruct.getStatus().equals(FoclConstants.FIELD_VALUE_STATUS_BUILT));
 
         return convertView;
     }

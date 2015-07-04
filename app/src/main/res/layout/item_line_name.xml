@@ -30,9 +30,10 @@
     android:orientation="horizontal"
     >
 
-    <TextView
+    <CheckedTextView
         android:id="@+id/focl_struct_name"
-        style="@style/listItemStyle"
+        android:checked="false"
+        style="@style/listItemCheckedStyle"
         />
 
 </LinearLayout>
