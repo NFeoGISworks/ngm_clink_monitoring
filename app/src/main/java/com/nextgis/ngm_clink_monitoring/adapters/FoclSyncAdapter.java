@@ -79,6 +79,9 @@ public class FoclSyncAdapter
             ContentProviderClient contentProviderClient,
             SyncResult syncResult)
     {
+        // For service debug
+//        android.os.Debug.waitForDebugger();
+
         Context context = getContext();
         sendNotification(context, NOTIFICATION_START, null);
 
@@ -122,7 +125,7 @@ public class FoclSyncAdapter
 
             // Second, we update FoclProject, can delete some or all layers
             FoclProject foclProject = (FoclProject) layerGroup;
-            mError = foclProject.download();
+            mError = foclProject.sync();
         }
     }
 

@@ -40,10 +40,11 @@ import java.util.List;
 public class FoclStruct
         extends LayerGroup
 {
-    protected long   mRemoteId;
+    protected long mRemoteId;
     protected String mRegion;
     protected String mDistrict;
     protected String mStatus;
+    protected Long mStatusUpdateTime = null;
 
 
     public FoclStruct(
@@ -77,6 +78,18 @@ public class FoclStruct
     public void setStatus(String status)
     {
         mStatus = status;
+    }
+
+
+    public Long getStatusUpdateTime()
+    {
+        return mStatusUpdateTime;
+    }
+
+
+    public void setStatusUpdateTime(Long statusUpdateTime)
+    {
+        mStatusUpdateTime = statusUpdateTime;
     }
 
 
@@ -184,6 +197,10 @@ public class FoclStruct
         rootConfig.put(FoclConstants.JSON_REGION_KEY, mRegion);
         rootConfig.put(FoclConstants.JSON_DISTRICT_KEY, mDistrict);
 
+        if (null != mStatusUpdateTime) {
+            rootConfig.put(FoclConstants.JSON_UPDATE_DT_KEY, mStatusUpdateTime);
+        }
+
         return rootConfig;
     }
 
@@ -197,5 +214,9 @@ public class FoclStruct
         mStatus = jsonObject.getString(FoclConstants.JSON_STATUS_KEY);
         mRegion = jsonObject.getString(FoclConstants.JSON_REGION_KEY);
         mDistrict = jsonObject.getString(FoclConstants.JSON_DISTRICT_KEY);
+
+        if (jsonObject.has(FoclConstants.JSON_UPDATE_DT_KEY)) {
+            mStatusUpdateTime = jsonObject.getLong(FoclConstants.JSON_UPDATE_DT_KEY);
+        }
     }
 }

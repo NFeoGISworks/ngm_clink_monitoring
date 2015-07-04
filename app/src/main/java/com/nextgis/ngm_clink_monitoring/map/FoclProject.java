@@ -85,7 +85,7 @@ public class FoclProject
         if (!server.startsWith("http")) {
             server = "http://" + server;
         }
-        return server + FoclConstants.FOCL_USER_FOCL_LIST;
+        return server + FoclConstants.FOCL_USER_FOCL_LIST_URL;
     }
 
 
@@ -94,7 +94,16 @@ public class FoclProject
         if (!server.startsWith("http")) {
             server = "http://" + server;
         }
-        return server + FoclConstants.FOCL_ALL_DICTS;
+        return server + FoclConstants.FOCL_ALL_DICTS_URL;
+    }
+
+
+    public static String getSetFoclStatusUrl(String server)
+    {
+        if (!server.startsWith("http")) {
+            server = "http://" + server;
+        }
+        return server + FoclConstants.FOCL_SET_FOCL_STATUS_URL;
     }
 
 
@@ -171,6 +180,61 @@ public class FoclProject
 
         if (jsonObject.has(JSON_FOCL_DICTS_KEY)) {
             mFoclDitcs = new FoclDitcs(jsonObject.getJSONObject(JSON_FOCL_DICTS_KEY));
+        }
+    }
+
+
+    public String sync()
+    {
+        for (ILayer layer : mLayers) {
+            if (Thread.currentThread().isInterrupted()) {
+                break;
+            }
+
+            FoclStruct foclStruct = (FoclStruct) layer;
+            String status = foclStruct.getStatus();
+
+            if (status.equals(FoclConstants.FIELD_VALUE_STATUS_BUILT)) {
+                long id = foclStruct.getRemoteId();
+                long updateDate = foclStruct.getStatusUpdateTime(); // must not be null!
+
+                if (!sendLineStatusOnServer(id, status, updateDate)) {
+                    String error = "Set status line failed";
+                    Log.d(Constants.TAG, error);
+                    return error;
+                }
+            }
+        }
+
+        return download();
+    }
+
+    protected boolean sendLineStatusOnServer(
+            long foclStructId,
+            String lineStatus,
+            long updateDate)
+    {
+        if (!mNet.isNetworkAvailable()) {
+            return false;
+        }
+
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put(Constants.JSON_ID_KEY, foclStructId);
+            jsonObject.put(FoclConstants.JSON_STATUS_KEY, lineStatus);
+            jsonObject.put(FoclConstants.JSON_UPDATE_DT_KEY, updateDate);
+
+            String payload = jsonObject.toString();
+            Log.d(Constants.TAG, "payload: " + payload);
+
+            String data = mNet.put(
+                    getSetFoclStatusUrl(mCacheUrl), payload, mCacheLogin, mCachePassword);
+
+            return null != data;
+
+        } catch (JSONException | IOException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 

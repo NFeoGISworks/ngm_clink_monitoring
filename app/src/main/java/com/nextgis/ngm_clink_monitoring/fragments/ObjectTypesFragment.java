@@ -22,6 +22,7 @@
 
 package com.nextgis.ngm_clink_monitoring.fragments;
 
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -33,6 +34,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.TextView;
+import com.nextgis.maplib.location.GpsEventSource;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.activities.MainActivity;
@@ -135,6 +137,20 @@ public class ObjectTypesFragment
                                     {
                                         mIsOnYesStatus = true;
                                         mFoclStruct.setStatus(mLineStatus.getValue());
+
+                                        GISApplication app = (GISApplication) getActivity().getApplication();
+                                        GpsEventSource gps = app.getGpsEventSource();
+                                        Location lastLoc = gps.getLastKnownLocation();
+
+                                        long time;
+                                        if (null != lastLoc) {
+                                            time = lastLoc.getTime();
+                                        } else {
+                                            time = System.currentTimeMillis();
+                                        }
+
+                                        mFoclStruct.setStatusUpdateTime(time);
+                                        mFoclStruct.save();
                                     }
                                 })
                         .setOnNegativeClickedListener(
