@@ -50,12 +50,14 @@ public class YesNoDialog
     protected OnCancelListener          mOnCancelListener;
     protected OnDismissListener         mOnDismissListener;
 
+    protected boolean mKeepInstance = true;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
+        setRetainInstance(mKeepInstance);
     }
 
 
@@ -73,7 +75,7 @@ public class YesNoDialog
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
-        LayoutInflater inflater = LayoutInflater.from(getActivity());
+        LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_yes_no, null);
 
         mBtnPositive = (Button) view.findViewById(R.id.btn_positive_yn);
@@ -123,20 +125,19 @@ public class YesNoDialog
 
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setView(view);
 
         if (null != mIconId) {
             builder.setIcon(mIconId);
-        }
-
-        if (null != mMessageId) {
-            builder.setMessage(mMessageId);
         }
 
         if (null != mTitleId) {
             builder.setTitle(mTitleId);
         }
 
-        builder.setView(view);
+        if (null != mMessageId) {
+            builder.setMessage(mMessageId);
+        }
 
         return builder.create();
     }
@@ -159,6 +160,13 @@ public class YesNoDialog
             mOnDismissListener.onDismiss();
         }
         super.onDismiss(dialog);
+    }
+
+
+    public YesNoDialog setKeepInstance(boolean keepInstance)
+    {
+        mKeepInstance = keepInstance;
+        return this;
     }
 
 

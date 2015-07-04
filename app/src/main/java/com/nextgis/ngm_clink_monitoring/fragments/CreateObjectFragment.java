@@ -46,7 +46,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -371,64 +370,6 @@ public class CreateObjectFragment
         setPhotoGalleryVisibility(true);
 
         return view;
-    }
-
-
-    @Override
-    public void onResume()
-    {
-        super.onResume();
-
-        // onBackPressed
-        getView().setFocusableInTouchMode(true);
-        getView().requestFocus();
-        getView().setOnKeyListener(
-                new View.OnKeyListener()
-                {
-                    @Override
-                    public boolean onKey(
-                            View v,
-                            int keyCode,
-                            KeyEvent event)
-                    {
-                        if (event.getAction() == KeyEvent.ACTION_UP &&
-                                keyCode == KeyEvent.KEYCODE_BACK) {
-
-                            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-                            builder.setTitle(getActivity().getString(R.string.confirmation))
-                                    .setMessage(R.string.confirm_cancel_object_creating)
-                                    .setIcon(R.drawable.ic_action_warning)
-                                    .setPositiveButton(
-                                            R.string.yes, new DialogInterface.OnClickListener()
-                                            {
-                                                @Override
-                                                public void onClick(
-                                                        DialogInterface dialog,
-                                                        int which)
-                                                {
-                                                    getActivity().onBackPressed();
-                                                }
-                                            })
-                                    .setNegativeButton(
-                                            R.string.no, new DialogInterface.OnClickListener()
-                                            {
-                                                @Override
-                                                public void onClick(
-                                                        DialogInterface dialog,
-                                                        int which)
-                                                {
-                                                    // cancel
-                                                }
-                                            })
-                                    .show();
-
-                            return true;
-                        }
-
-                        return false;
-                    }
-                });
     }
 
 

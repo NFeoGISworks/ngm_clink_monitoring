@@ -64,6 +64,7 @@ import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.util.AccountUtil;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
+import com.nextgis.ngm_clink_monitoring.dialogs.YesNoDialog;
 import com.nextgis.ngm_clink_monitoring.fragments.LineListFragment;
 import com.nextgis.ngm_clink_monitoring.fragments.MapFragment;
 import com.nextgis.ngm_clink_monitoring.fragments.Perform1stSyncFragment;
@@ -191,6 +192,16 @@ public class MainActivity
         }
 
         setActivityView();
+
+        // workaround for YesNoDialog destroying by the screen rotation
+        FragmentManager fm = getSupportFragmentManager();
+        Fragment fr =
+                fm.findFragmentByTag(FoclConstants.FRAGMENT_YES_NO_DIALOG + "CancelObjectCreating");
+        if (null != fr) {
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.remove(fr);
+            ft.commit();
+        }
     }
 
 
@@ -618,6 +629,46 @@ public class MainActivity
     @Override
     public void onBackPressed()
     {
+        String tag = getMainFragmentTag();
+
+        if (TextUtils.isEmpty(tag)) {
+            tag = "";
+        }
+
+        if (tag.equals(FoclConstants.FRAGMENT_CREATE_OBJECT)) {
+            YesNoDialog yesNoDialog = new YesNoDialog();
+            yesNoDialog.setIcon(R.drawable.ic_action_warning)
+                    .setTitle(R.string.confirmation)
+                    .setMessage(R.string.confirm_cancel_object_creating)
+                    .setPositiveText(R.string.yes)
+                    .setNegativeText(R.string.no)
+                    .setOnPositiveClickedListener(
+                            new YesNoDialog.OnPositiveClickedListener()
+                            {
+                                @Override
+                                public void onPositiveClicked()
+                                {
+                                    getSupportFragmentManager().popBackStackImmediate();
+                                    mViewState = getActivityViewStateByMainFragment();
+                                    switchMenuView();
+                                }
+                            })
+                    .setOnNegativeClickedListener(
+                            new YesNoDialog.OnNegativeClickedListener()
+                            {
+                                @Override
+                                public void onNegativeClicked()
+                                {
+                                }
+                            });
+
+            yesNoDialog.show(
+                    getSupportFragmentManager(),
+                    FoclConstants.FRAGMENT_YES_NO_DIALOG + "CancelObjectCreating");
+
+            return;
+        }
+
         super.onBackPressed();
         mViewState = getActivityViewStateByMainFragment();
         switchMenuView();

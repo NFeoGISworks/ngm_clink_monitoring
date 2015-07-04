@@ -124,7 +124,8 @@ public class ObjectTypesFragment
                 mNewStatusSelection = mLineStatus.getSelectedItemPosition();
 
                 YesNoDialog yesNoDialog = new YesNoDialog();
-                yesNoDialog.setIcon(R.drawable.ic_action_warning)
+                yesNoDialog.setKeepInstance(true)
+                        .setIcon(R.drawable.ic_action_warning)
                         .setTitle(R.string.confirmation)
                         .setMessage(R.string.change_line_status_confirmation)
                         .setPositiveText(R.string.yes)
@@ -138,7 +139,8 @@ public class ObjectTypesFragment
                                         mIsOnYesStatus = true;
                                         mFoclStruct.setStatus(mLineStatus.getValue());
 
-                                        GISApplication app = (GISApplication) getActivity().getApplication();
+                                        GISApplication app =
+                                                (GISApplication) getActivity().getApplication();
                                         GpsEventSource gps = app.getGpsEventSource();
                                         Location lastLoc = gps.getLastKnownLocation();
 
