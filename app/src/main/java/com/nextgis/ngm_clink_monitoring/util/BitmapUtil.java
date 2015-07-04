@@ -32,6 +32,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 
@@ -129,6 +130,8 @@ public class BitmapUtil
 
         ExifInterface exif = new ExifInterface(imgFile.getCanonicalPath());
 
+
+        // write GPSLatitude
         double lat = location.getLatitude();
         double absLat = Math.abs(lat);
         String dms = Location.convert(absLat, Location.FORMAT_SECONDS);
@@ -146,6 +149,8 @@ public class BitmapUtil
         exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE, latitudeStr);
         exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, lat > 0 ? "N" : "S");
 
+
+        // write GPSLongitude
         double lon = location.getLongitude();
         double absLon = Math.abs(lon);
         dms = Location.convert(absLon, Location.FORMAT_SECONDS);
@@ -161,6 +166,28 @@ public class BitmapUtil
         String longitudeStr = splits[0] + "/1," + splits[1] + "/1," + seconds + "/1";
         exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, longitudeStr);
         exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, lon > 0 ? "E" : "W");
+
+
+        // write GPSDateStamp and GPSTimeStamp
+        long locationTime = location.getTime();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(locationTime);
+
+        int timeYear = calendar.get(Calendar.YEAR);
+        int timeMonth = calendar.get(Calendar.MONTH);
+        ++timeMonth;
+        int timeDayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+
+        int timeHourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
+        int timeMinutes = calendar.get(Calendar.MINUTE);
+        int timeSeconds = calendar.get(Calendar.SECOND);
+
+        String exifGPSDatestamp = timeYear + ":" + timeMonth + ":" + timeDayOfMonth;
+        String exifGPSTimestamp = timeHourOfDay + "/1," + timeMinutes + "/1," + timeSeconds + "/1";
+
+        exif.setAttribute(ExifInterface.TAG_GPS_DATESTAMP, exifGPSDatestamp);
+        exif.setAttribute(ExifInterface.TAG_GPS_TIMESTAMP, exifGPSTimestamp);
+
 
         exif.saveAttributes();
     }

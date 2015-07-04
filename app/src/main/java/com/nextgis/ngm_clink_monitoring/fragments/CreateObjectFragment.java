@@ -87,7 +87,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -1095,8 +1094,9 @@ public class CreateObjectFragment
 
         values.put(FoclConstants.FIELD_DESCRIPTION, mDescription.getText().toString());
 
-        Calendar calendar = Calendar.getInstance();
-        values.put(FoclConstants.FIELD_BUILT_DATE, calendar.getTimeInMillis());
+//        Calendar calendar = Calendar.getInstance();
+//        values.put(FoclConstants.FIELD_BUILT_DATE, calendar.getTimeInMillis());
+        values.put(FoclConstants.FIELD_BUILT_DATE, mAccurateLocation.getTime());
 
         try {
             GeoPoint pt = new GeoPoint(
