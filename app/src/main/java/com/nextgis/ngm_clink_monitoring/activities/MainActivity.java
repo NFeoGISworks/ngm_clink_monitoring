@@ -295,6 +295,7 @@ public class MainActivity
             case FoclConstants.FRAGMENT_LINE_LIST:
             case FoclConstants.FRAGMENT_OBJECT_LIST:
             case FoclConstants.FRAGMENT_OBJECT_STATUS:
+            case FoclConstants.FRAGMENT_CREATE_OBJECT:
                 return VIEW_STATE_OBJECTS;
 
             case FoclConstants.FRAGMENT_MAP:
