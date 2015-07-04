@@ -196,7 +196,7 @@ public class FoclProject
 
             if (status.equals(FoclConstants.FIELD_VALUE_STATUS_BUILT)) {
                 long id = foclStruct.getRemoteId();
-                long updateDate = foclStruct.getStatusUpdateTime(); // must not be null!
+                long updateDate = foclStruct.getStatusUpdateTime() / 1000; // must not be null!
 
                 if (!sendLineStatusOnServer(id, status, updateDate)) {
                     String error = "Set status line failed";
