@@ -112,8 +112,9 @@ public class ObjectTypesFragment
                     return;
                 }
 
+                // http://stackoverflow.com/a/7922086/4727406
                 if (System.currentTimeMillis() - mComboboxRestartTime < 200) {
-                    // system generated event e.g. orientation change, activity startup. so ignore
+                    // System generated event e.g. orientation change, activity startup. So ignore
                     return;
                 }
 
@@ -164,30 +165,28 @@ public class ObjectTypesFragment
 
                                         if (mIsOnYesStatus) {
                                             mOldStatusSelection = mNewStatusSelection;
+
+                                            if (currPos == mNewStatusSelection) {
+                                                mIsOnYesStatus = false;
+                                            } else {
+                                                mLineStatus.setSelection(mNewStatusSelection);
+                                            }
                                         }
 
-                                        if (mIsOnYesStatus && (currPos != mNewStatusSelection)) {
-                                            mLineStatus.setSelection(mNewStatusSelection);
+                                        if (mIsOnNoStatus) {
+                                            if (currPos == mOldStatusSelection) {
+                                                mIsOnNoStatus = false;
+                                            } else {
+                                                mLineStatus.setSelection(mOldStatusSelection);
+                                            }
                                         }
 
-                                        if (mIsOnYesStatus && (currPos == mNewStatusSelection)) {
-                                            mIsOnYesStatus = false;
-                                        }
-
-                                        if (mIsOnNoStatus && (currPos != mOldStatusSelection)) {
-                                            mLineStatus.setSelection(mOldStatusSelection);
-                                        }
-
-                                        if (mIsOnNoStatus && (currPos == mOldStatusSelection)) {
-                                            mIsOnNoStatus = false;
-                                        }
-
-                                        if (mIsOnCancelStatus && (currPos != mOldStatusSelection)) {
-                                            mLineStatus.setSelection(mOldStatusSelection);
-                                        }
-
-                                        if (mIsOnCancelStatus && (currPos == mOldStatusSelection)) {
-                                            mIsOnCancelStatus = false;
+                                        if (mIsOnCancelStatus) {
+                                            if (currPos == mOldStatusSelection) {
+                                                mIsOnCancelStatus = false;
+                                            } else {
+                                                mLineStatus.setSelection(mOldStatusSelection);
+                                            }
                                         }
                                     }
                                 });
