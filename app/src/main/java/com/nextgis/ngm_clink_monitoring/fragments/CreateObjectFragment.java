@@ -78,6 +78,7 @@ import com.nextgis.ngm_clink_monitoring.util.FileUtil;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
 import com.nextgis.ngm_clink_monitoring.util.LocationUtil;
+import com.nextgis.ngm_clink_monitoring.util.ViewUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -290,6 +291,8 @@ public class CreateObjectFragment
             @Override
             public void onClick(View v)
             {
+                ViewUtil.hideSoftKeyboard(getActivity());
+
                 if (mAccurateLocationTaker.isTaking()) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
@@ -1153,7 +1156,7 @@ public class CreateObjectFragment
                     TAG, "Layer: " + mObjectLayerName + ", id: " + mObjectId +
                             ", insert result: " + result);
             writePhotoAttaches();
-            getActivity().onBackPressed();
+            getActivity().getSupportFragmentManager().popBackStackImmediate();
         }
     }
 

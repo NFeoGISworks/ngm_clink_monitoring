@@ -22,9 +22,11 @@
 
 package com.nextgis.ngm_clink_monitoring.util;
 
+import android.app.Activity;
 import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -126,5 +128,17 @@ public class ViewUtil
     {
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
         return params.bottomMargin;
+    }
+
+
+    public static void hideSoftKeyboard(Activity activity)
+    {
+        View view = activity.getCurrentFocus();
+
+        if (null != view) {
+            InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(
+                    Activity.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 }
