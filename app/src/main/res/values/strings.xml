@@ -112,7 +112,7 @@
     <string name="special_transition_colon">Special transition:</string>
 
 
-    <string name="line_status_colon">Status:</string>
+    <string name="line_status_colon">Construction status:</string>
     <string name="line_status_hint">Select the status of building</string>
 
 
