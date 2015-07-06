@@ -667,11 +667,10 @@ public class MainActivity
                                 {
                                     // cancel
                                 }
-                            });
-
-            yesNoDialog.show(
-                    getSupportFragmentManager(),
-                    FoclConstants.FRAGMENT_YES_NO_DIALOG + "CancelObjectCreating");
+                            })
+                    .show(
+                            getSupportFragmentManager(),
+                            FoclConstants.FRAGMENT_YES_NO_DIALOG + "CancelObjectCreating");
 
             return;
         }

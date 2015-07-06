@@ -26,7 +26,6 @@ import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -40,7 +39,6 @@ import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -294,44 +292,44 @@ public class CreateObjectFragment
                 ViewUtil.hideSoftKeyboard(getActivity());
 
                 if (mAccurateLocationTaker.isTaking()) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-                    builder.setTitle(getActivity().getString(R.string.warning))
-                            .setMessage(R.string.coordinates_refining_process)
+                    YesNoDialog dialog = new YesNoDialog();
+                    dialog.setKeepInstance(true)
                             .setIcon(R.drawable.ic_action_warning)
-                            .setPositiveButton(
-                                    R.string.ok, new DialogInterface.OnClickListener()
+                            .setTitle(R.string.warning)
+                            .setMessage(R.string.coordinates_refining_process)
+                            .setPositiveText(R.string.ok)
+                            .setOnPositiveClickedListener(
+                                    new YesNoDialog.OnPositiveClickedListener()
                                     {
                                         @Override
-                                        public void onClick(
-                                                DialogInterface dialog,
-                                                int which)
+                                        public void onPositiveClicked()
                                         {
                                             // cancel
                                         }
                                     })
-                            .show();
+                            .show(
+                                    getActivity().getSupportFragmentManager(),
+                                    FoclConstants.FRAGMENT_YES_NO_DIALOG + "CoordRefiningProcess");
 
                 } else if (null == mAccurateLocation) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-                    builder.setTitle(getActivity().getString(R.string.warning))
-                            .setMessage(R.string.coordinates_not_defined_try_again)
+                    YesNoDialog dialog = new YesNoDialog();
+                    dialog.setKeepInstance(true)
                             .setIcon(R.drawable.ic_action_warning)
-                            .setPositiveButton(
-                                    R.string.determine_coordinates,
-                                    new DialogInterface.OnClickListener()
+                            .setTitle(R.string.warning)
+                            .setMessage(R.string.coordinates_not_defined_try_again)
+                            .setPositiveText(R.string.determine_coordinates)
+                            .setOnPositiveClickedListener(
+                                    new YesNoDialog.OnPositiveClickedListener()
                                     {
                                         @Override
-                                        public void onClick(
-                                                DialogInterface dialog,
-                                                int which)
+                                        public void onPositiveClicked()
                                         {
                                             startLocationTaking();
-                                            dialog.dismiss();
                                         }
                                     })
-                            .show();
+                            .show(
+                                    getActivity().getSupportFragmentManager(),
+                                    FoclConstants.FRAGMENT_YES_NO_DIALOG + "CoordinatesTryAgain");
 
                 } else if (0 < mObjectCount &&
                         FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT ==
@@ -798,25 +796,24 @@ public class CreateObjectFragment
                 break;
 
             case R.id.menu_delete_photo:
-                AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
-                alertDialog.setIcon(R.drawable.ic_action_warning)
-                        .setTitle(mContext.getResources().getString(R.string.delete_photo_ask))
-                        .setMessage(
-                                mContext.getResources().getString(R.string.delete_photo_message))
-                        .setNegativeButton(mContext.getResources().getString(R.string.cancel), null)
-                        .setPositiveButton(
-                                mContext.getResources().getString(R.string.ok),
-
-                                new DialogInterface.OnClickListener()
+                YesNoDialog dialog = new YesNoDialog();
+                dialog.setKeepInstance(true)
+                        .setIcon(R.drawable.ic_action_warning)
+                        .setTitle(R.string.delete_photo_ask)
+                        .setMessage(R.string.delete_photo_message_2)
+                        .setPositiveText(R.string.ok)
+                        .setOnPositiveClickedListener(
+                                new YesNoDialog.OnPositiveClickedListener()
                                 {
-                                    public void onClick(
-                                            DialogInterface dialog,
-                                            int which)
+                                    @Override
+                                    public void onPositiveClicked()
                                     {
                                         deletePhoto(itemId);
                                     }
                                 })
-                        .show();
+                        .show(
+                                getActivity().getSupportFragmentManager(),
+                                FoclConstants.FRAGMENT_YES_NO_DIALOG + "DeletePhoto");
                 break;
         }
 

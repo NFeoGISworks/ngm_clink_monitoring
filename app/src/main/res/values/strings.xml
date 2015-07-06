@@ -50,6 +50,7 @@
 
     <string name="delete_photo_ask">Delete photo?</string>
     <string name="delete_photo_message">Photo will also be deleted on the server during the next synchronization.</string>
+    <string name="delete_photo_message_2">Photo will be deleted</string>
 
     <string name="moving">Moving…</string>
     <string name="warning_data_moving">Dangerous operation! Don\'t cancel it or kill the application during the data moving to new location! You data may be broken or lost!</string>

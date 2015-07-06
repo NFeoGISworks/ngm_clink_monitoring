@@ -50,6 +50,7 @@
 
     <string name="delete_photo_ask">Удалить фото?</string>
     <string name="delete_photo_message">Фотография будет также удалена на сервере при очередной синхронизации.</string>
+    <string name="delete_photo_message_2">Фотография будет удалена.</string>
 
     <string name="moving">Перемещение…</string>
     <string name="warning_data_moving">Внимание! Не отменяйте операцию и не останавливайте приложение в процессе перемещения данных на новое место. Может привести к потере данных!</string>
