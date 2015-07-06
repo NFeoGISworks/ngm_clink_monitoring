@@ -82,7 +82,7 @@ public interface FoclConstants
     String FIELD_FOSC_PLACEMENT        = "fosc_placement";
     String FIELD_OPTICAL_CROSS_TYPE    = "type_optical_cross";
     String FIELD_SPECIAL_LAYING_METHOD = "special_laying_method";
-    String FIELD_MARK_TYPE             = "number";
+    String FIELD_MARK_TYPE             = "special_laying_number";
 
     String FIELD_VALUE_STATUS_PROJECT     = "project";
     String FIELD_VALUE_STATUS_IN_PROGRESS = "in_progress";
