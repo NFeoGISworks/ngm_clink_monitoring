@@ -37,7 +37,7 @@ import com.nextgis.ngm_clink_monitoring.R;
 import java.text.DecimalFormat;
 
 
-public class LocationUtil
+public class FoclLocationUtil
 {
     public static final char DEGREE_CHAR = (char) 0x00B0;
 

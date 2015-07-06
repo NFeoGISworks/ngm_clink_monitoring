@@ -77,8 +77,8 @@ import com.nextgis.ngm_clink_monitoring.map.FoclVectorLayer;
 import com.nextgis.ngm_clink_monitoring.util.BitmapUtil;
 import com.nextgis.ngm_clink_monitoring.util.FileUtil;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
+import com.nextgis.ngm_clink_monitoring.util.FoclLocationUtil;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
-import com.nextgis.ngm_clink_monitoring.util.LocationUtil;
 import com.nextgis.ngm_clink_monitoring.util.ViewUtil;
 
 import java.io.File;
@@ -666,12 +666,12 @@ public class CreateObjectFragment
                     Location.FORMAT_DEGREES);
 
             String latText = getString(R.string.latitude_caption) + " " +
-                    LocationUtil.formatLatitude(
+                    FoclLocationUtil.formatLatitude(
                             mAccurateLocation.getLatitude(), nFormat, getResources()) +
                     getString(R.string.coord_lat);
 
             String longText = getString(R.string.longitude_caption) + " " +
-                    LocationUtil.formatLongitude(
+                    FoclLocationUtil.formatLongitude(
                             mAccurateLocation.getLongitude(), nFormat, getResources()) +
                     getString(R.string.coord_lon);
 
@@ -956,9 +956,10 @@ public class CreateObjectFragment
     protected void writePhotoAttach(File tempPhotoFile)
             throws IOException
     {
-        BitmapUtil.writeLocationToExif(tempPhotoFile, mAccurateLocation);
-
         GISApplication app = (GISApplication) getActivity().getApplication();
+
+        BitmapUtil.writeLocationToExif(tempPhotoFile, mAccurateLocation, app.getGpsTimeOffset());
+
         ContentResolver contentResolver = app.getContentResolver();
         String photoFileName = getPhotoFileName(tempPhotoFile);
 
@@ -1133,17 +1134,18 @@ public class CreateObjectFragment
 
     protected void createObject()
     {
+        GISApplication app = (GISApplication) getActivity().getApplication();
+
         Uri uri = Uri.parse(
                 "content://" + FoclSettingsConstantsUI.AUTHORITY + "/" +
                         mObjectLayerName);
 
         ContentValues values = new ContentValues();
 
+        values.put(
+                FoclConstants.FIELD_BUILT_DATE,
+                mAccurateLocation.getTime() + app.getGpsTimeOffset());
         values.put(FoclConstants.FIELD_DESCRIPTION, mDescription.getText().toString());
-
-//        Calendar calendar = Calendar.getInstance();
-//        values.put(FoclConstants.FIELD_BUILT_DATE, calendar.getTimeInMillis());
-        values.put(FoclConstants.FIELD_BUILT_DATE, mAccurateLocation.getTime());
 
         try {
             GeoPoint pt = new GeoPoint(

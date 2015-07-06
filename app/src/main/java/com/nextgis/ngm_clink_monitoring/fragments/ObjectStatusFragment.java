@@ -609,7 +609,7 @@ public class ObjectStatusFragment
             String photoFileName = getPhotoFileName();
 
             try {
-                BitmapUtil.writeLocationToExif(tempPhotoFile, app.getCurrentLocation());
+                BitmapUtil.writeLocationToExif(tempPhotoFile, app.getCurrentLocation(), 0);
             } catch (IOException e) {
                 Log.d(TAG, e.getLocalizedMessage());
             }

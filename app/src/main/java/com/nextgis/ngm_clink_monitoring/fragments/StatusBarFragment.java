@@ -38,8 +38,8 @@ import com.nextgis.maplib.api.GpsEventListener;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
+import com.nextgis.ngm_clink_monitoring.util.FoclLocationUtil;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
-import com.nextgis.ngm_clink_monitoring.util.LocationUtil;
 
 import java.text.DecimalFormat;
 
@@ -130,10 +130,11 @@ public class StatusBarFragment
         int nFormat = prefs.getInt(
                 FoclSettingsConstantsUI.KEY_PREF_COORD_FORMAT + "_int", Location.FORMAT_DEGREES);
 
-        mLatText = LocationUtil.formatLatitude(location.getLatitude(), nFormat, getResources()) +
+        mLatText = FoclLocationUtil.formatLatitude(location.getLatitude(), nFormat, getResources()) +
                 getString(R.string.coord_lat);
 
-        mLongText = LocationUtil.formatLongitude(location.getLongitude(), nFormat, getResources()) +
+        mLongText = FoclLocationUtil.formatLongitude(
+                location.getLongitude(), nFormat, getResources()) +
                 getString(R.string.coord_lon);
 
         DecimalFormat df = new DecimalFormat("0");

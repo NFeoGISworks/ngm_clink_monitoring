@@ -34,6 +34,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -62,6 +63,7 @@ import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.NGWVectorLayer;
 import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.util.AccountUtil;
+import com.nextgis.maplib.util.Constants;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.dialogs.YesNoDialog;
@@ -70,8 +72,9 @@ import com.nextgis.ngm_clink_monitoring.fragments.MapFragment;
 import com.nextgis.ngm_clink_monitoring.fragments.Perform1stSyncFragment;
 import com.nextgis.ngm_clink_monitoring.fragments.SyncLoginFragment;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
+import com.nextgis.ngm_clink_monitoring.util.FoclLocationUtil;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
-import com.nextgis.ngm_clink_monitoring.util.LocationUtil;
+import com.nextgis.ngm_clink_monitoring.util.SntpClient;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -99,6 +102,9 @@ public class MainActivity
     protected SyncStatusObserver mSyncStatusObserver;
     protected Object             mSyncHandle;
     protected GpsEventSource     mGpsEventSource;
+
+    protected Long mClockOffset   = null;
+    protected Long mGpsTimeOffset = null;
 
     protected int     mViewState = VIEW_STATE_LOGIN;
     protected boolean mIsSyncing = false;
@@ -437,8 +443,8 @@ public class MainActivity
     {
         super.onResume();
 
-        if (!LocationUtil.isOnlyGpsLocationModeEnabled(this)) {
-            LocationUtil.showSettingsLocationAlert(this);
+        if (!FoclLocationUtil.isOnlyGpsLocationModeEnabled(this)) {
+            FoclLocationUtil.showSettingsLocationAlert(this);
         }
 
         GISApplication app = (GISApplication) getApplication();
@@ -740,7 +746,23 @@ public class MainActivity
     @Override
     public void onLocationChanged(Location location)
     {
-        // do nothing. Only for "hot" state of the GPS
+        if (null == mClockOffset) {
+            new GetNtpAsyncTask().execute();
+        }
+
+        if (null == mGpsTimeOffset && null != mClockOffset) {
+            GISApplication app = (GISApplication) getApplication();
+
+            long currTime = System.currentTimeMillis();
+            long gpsLocalTimeOffset = location.getTime() - currTime;
+            mGpsTimeOffset = mClockOffset - gpsLocalTimeOffset;
+            app.setGpsTimeOffset(mGpsTimeOffset);
+
+            Log.d(Constants.TAG, "GpsTimeOffset: " + mGpsTimeOffset);
+            Log.d(Constants.TAG, "GpsTime: " + location.getTime());
+            Log.d(Constants.TAG, "gpsLocalTimeOffset: " + gpsLocalTimeOffset);
+            Log.d(Constants.TAG, "currTime: " + currTime);
+        }
     }
 
 
@@ -755,6 +777,41 @@ public class MainActivity
     public void onGpsStatusChanged(int event)
     {
 
+    }
+
+
+    class GetNtpAsyncTask
+            extends AsyncTask<String, Void, SntpClient>
+    {
+        @Override
+        protected SntpClient doInBackground(String... params)
+        {
+            GISApplication app = (GISApplication) getApplication();
+
+            if (app.isNetworkAvailable()) {
+                SntpClient sntpClient = new SntpClient();
+
+                if (sntpClient.requestTime(
+                        FoclConstants.FOCL_NTP_URL, FoclConstants.FOCL_NTP_TIMEOUT_MILLIS)) {
+
+                    return sntpClient;
+                }
+            }
+
+            return null;
+        }
+
+
+        @Override
+        protected void onPostExecute(SntpClient sntpClient)
+        {
+            if (null != sntpClient) {
+                mClockOffset = sntpClient.getClockOffset();
+                Log.d(Constants.TAG, "ClockOffset: " + mClockOffset);
+                Log.d(Constants.TAG, "currentTimeMillis: " + System.currentTimeMillis());
+                Log.d(Constants.TAG, "NtpTime: " + sntpClient.getNtpTime());
+            }
+        }
     }
 
 

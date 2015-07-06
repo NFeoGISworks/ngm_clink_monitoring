@@ -77,6 +77,8 @@ public class GISApplication
 
     protected Location mCurrentLocation = null;
 
+    protected Long mGpsTimeOffset = null;
+
     protected OnAccountAddedListener   mOnAccountAddedListener   = null;
     protected OnAccountDeletedListener mOnAccountDeletedListener = null;
     protected OnReloadMapListener      mOnReloadMapListener      = null;
@@ -555,6 +557,32 @@ public class GISApplication
     public void setCurrentLocation(Location currentLocation)
     {
         mCurrentLocation = currentLocation;
+    }
+
+
+    public Long getGpsTimeOffset()
+    {
+        if (null == mGpsTimeOffset) {
+            SharedPreferences sharedPreferences =
+                    PreferenceManager.getDefaultSharedPreferences(this);
+            mGpsTimeOffset = sharedPreferences.getLong(
+                    FoclSettingsConstantsUI.KEY_PREF_GPS_TIME_OFFSET, 0);
+            Log.d(Constants.TAG, "Stored GpsTimeOffset: " + mGpsTimeOffset);
+        }
+
+        return mGpsTimeOffset;
+    }
+
+
+    public void setGpsTimeOffset(Long gpsTimeOffset)
+    {
+        mGpsTimeOffset = gpsTimeOffset;
+
+        SharedPreferences sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences.edit()
+                .putLong(FoclSettingsConstantsUI.KEY_PREF_GPS_TIME_OFFSET, mGpsTimeOffset)
+                .commit();
     }
 
 

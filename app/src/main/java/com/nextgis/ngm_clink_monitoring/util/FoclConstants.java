@@ -116,6 +116,9 @@ public interface FoclConstants
     String FOCL_ALL_DICTS_URL       = "/compulink/mobile/all_dicts";
     String FOCL_SET_FOCL_STATUS_URL = "/compulink/mobile/set_focl_status";
 
+    String FOCL_NTP_URL = "pool.ntp.org";
+    int FOCL_NTP_TIMEOUT_MILLIS = 10000;
+
     // If you change it, change it in aFileDialog/res/values/strings/daidalos_confirm_move_to_folder
     String FOCL_DATA_DIR  = "ngm_clink_monitoring";
     String FOCL_PHOTO_DIR = "photo";

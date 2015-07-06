@@ -54,6 +54,7 @@ public interface FoclSettingsConstantsUI
     String KEY_PREF_SHOW_INFO     = "map_show_info";
     String KEY_PREF_APP_FIRST_RUN = "app_first_run";
     String KEY_PREF_MAP           = "map";
+    String KEY_PREF_GPS_TIME_OFFSET = "gps_time_offset";
 
     /**
      * Preference keys - in UI

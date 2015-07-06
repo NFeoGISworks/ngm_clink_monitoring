@@ -27,6 +27,8 @@ import android.graphics.Matrix;
 import android.location.Location;
 import android.media.ExifInterface;
 import android.os.Build;
+import android.util.Log;
+import com.nextgis.maplib.util.Constants;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,6 +36,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 
 public class BitmapUtil
@@ -121,7 +124,8 @@ public class BitmapUtil
 
     public static void writeLocationToExif(
             File imgFile,
-            Location location)
+            Location location,
+            long gpsTimeOffset)
             throws IOException
     {
         if (location == null) {
@@ -169,9 +173,11 @@ public class BitmapUtil
 
 
         // write GPSDateStamp and GPSTimeStamp
-        long locationTime = location.getTime();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(locationTime);
+        TimeZone timeZone = TimeZone.getDefault();
+        timeZone.setRawOffset(0);
+        Calendar calendar = Calendar.getInstance(timeZone);
+        calendar.setTimeInMillis(location.getTime() + gpsTimeOffset);
+        Log.d(Constants.TAG, "write EXIF, AccurateGpsTime: " + location.getTime() + gpsTimeOffset);
 
         int timeYear = calendar.get(Calendar.YEAR);
         int timeMonth = calendar.get(Calendar.MONTH);
@@ -188,6 +194,8 @@ public class BitmapUtil
         exif.setAttribute(ExifInterface.TAG_GPS_DATESTAMP, exifGPSDatestamp);
         exif.setAttribute(ExifInterface.TAG_GPS_TIMESTAMP, exifGPSTimestamp);
 
+        Log.d(Constants.TAG, "write EXIF, exifGPSDatestamp: " + exifGPSDatestamp);
+        Log.d(Constants.TAG, "write EXIF, exifGPSTimestamp: " + exifGPSTimestamp);
 
         exif.saveAttributes();
     }
