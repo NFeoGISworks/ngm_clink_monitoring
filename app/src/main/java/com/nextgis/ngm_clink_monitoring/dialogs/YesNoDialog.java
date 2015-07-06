@@ -50,7 +50,7 @@ public class YesNoDialog
     protected OnCancelListener          mOnCancelListener;
     protected OnDismissListener         mOnDismissListener;
 
-    protected boolean mKeepInstance = true;
+    protected boolean mKeepInstance = false;
 
 
     @Override

@@ -69,6 +69,7 @@ import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.activities.MainActivity;
 import com.nextgis.ngm_clink_monitoring.adapters.ObjectPhotoFileAdapter;
 import com.nextgis.ngm_clink_monitoring.dialogs.DistanceExceededDialog;
+import com.nextgis.ngm_clink_monitoring.dialogs.YesNoDialog;
 import com.nextgis.ngm_clink_monitoring.map.FoclDictItem;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 import com.nextgis.ngm_clink_monitoring.map.FoclStruct;
@@ -1243,8 +1244,36 @@ public class CreateObjectFragment
                     @Override
                     public void onNewPointClicked()
                     {
-                        mNewStartPoint = true;
-                        createObject();
+                        YesNoDialog newPointDialog = new YesNoDialog();
+                        newPointDialog.setKeepInstance(true)
+                                .setIcon(R.drawable.ic_action_warning)
+                                .setTitle(R.string.confirmation)
+                                .setMessage(R.string.confirm_new_start_point_creating)
+                                .setPositiveText(R.string.yes)
+                                .setNegativeText(R.string.no)
+                                .setOnPositiveClickedListener(
+                                        new YesNoDialog.OnPositiveClickedListener()
+                                        {
+                                            @Override
+                                            public void onPositiveClicked()
+                                            {
+                                                mNewStartPoint = true;
+                                                createObject();
+                                            }
+                                        })
+                                .setOnNegativeClickedListener(
+                                        new YesNoDialog.OnNegativeClickedListener()
+                                        {
+                                            @Override
+                                            public void onNegativeClicked()
+                                            {
+                                                // cancel
+                                            }
+                                        });
+
+                        newPointDialog.show(
+                                getActivity().getSupportFragmentManager(),
+                                FoclConstants.FRAGMENT_YES_NO_DIALOG + "newPointDialog");
                     }
                 });
 

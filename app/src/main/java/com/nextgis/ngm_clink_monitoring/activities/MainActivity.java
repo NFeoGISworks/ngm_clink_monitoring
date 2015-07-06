@@ -659,6 +659,7 @@ public class MainActivity
                                 @Override
                                 public void onNegativeClicked()
                                 {
+                                    // cancel
                                 }
                             });
 
