@@ -52,6 +52,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.nextgis.maplib.api.GpsEventListener;
@@ -108,9 +109,10 @@ public class CreateObjectFragment
 
     protected ProgressBar mRefiningProgress;
 
-    protected TextView mCoordinates;
-    protected TextView mDistanceFromPrevPointCaption;
-    protected TextView mDistanceFromPrevPoint;
+    protected TextView    mCoordinates;
+    protected TableLayout mDistanceLayout;
+    protected TextView    mDistanceFromPrevPointCaption;
+    protected TextView    mDistanceFromPrevPoint;
 
     protected AccurateLocationTaker mAccurateLocationTaker;
     protected              int     mTakeCount                = 0;
@@ -472,8 +474,7 @@ public class CreateObjectFragment
 
     protected void setFieldVisibility()
     {
-        mDistanceFromPrevPointCaption.setVisibility(View.GONE);
-        mDistanceFromPrevPoint.setVisibility(View.GONE);
+        mDistanceLayout.setVisibility(View.GONE);
         mLayingMethodCaption.setVisibility(View.GONE);
         mLayingMethod.setVisibility(View.GONE);
         mFoscTypeCaption.setVisibility(View.GONE);
@@ -489,10 +490,7 @@ public class CreateObjectFragment
 
         switch (mFoclStructLayerType) {
             case FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT:
-                if (0 < mObjectCount) {
-                    mDistanceFromPrevPointCaption.setVisibility(View.VISIBLE);
-                    mDistanceFromPrevPoint.setVisibility(View.VISIBLE);
-                }
+                mDistanceLayout.setVisibility(View.VISIBLE);
                 mLayingMethodCaption.setVisibility(View.VISIBLE);
                 mLayingMethod.setVisibility(View.VISIBLE);
                 break;
@@ -565,6 +563,7 @@ public class CreateObjectFragment
         mRefiningProgress = (ProgressBar) paretntView.findViewById(R.id.refining_progress_cr);
 
         mCoordinates = (TextView) paretntView.findViewById(R.id.coordinates_cr);
+        mDistanceLayout = (TableLayout) paretntView.findViewById(R.id.distance_layout_cr);
         mDistanceFromPrevPointCaption =
                 (TextView) paretntView.findViewById(R.id.distance_from_prev_point_caption_cr);
         mDistanceFromPrevPoint =
