@@ -189,7 +189,7 @@
     <string name="confirm_new_start_point_creating">Will be created a new starting point. Are you sure?</string>
     <string name="warning">Warning</string>
     <string name="coordinates_refining_process">The process of refinement the coordinates. Wait until it ends.</string>
-    <string name="coordinates_not_defined_try_again">Coordinates are not defined. Try again.</string>
+    <string name="coordinates_not_defined_try_again">Coordinates are not defined. Make sure there is a good view of the sky, and try again.</string>
     <string name="coordinates_not_defined_change_location">Coordinates are not defined. Please change your location and try again.</string>
     <string name="determine_coordinates">Determine the coordinates</string>
     <string name="starting_point">Starting point</string>
