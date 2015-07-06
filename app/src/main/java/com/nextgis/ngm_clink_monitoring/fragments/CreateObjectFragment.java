@@ -321,7 +321,7 @@ public class CreateObjectFragment
                             .setMessage(R.string.coordinates_not_defined_try_again)
                             .setIcon(R.drawable.ic_action_warning)
                             .setPositiveButton(
-                                    R.string.repeat, new DialogInterface.OnClickListener()
+                                    R.string.determine_coordinates, new DialogInterface.OnClickListener()
                                     {
                                         @Override
                                         public void onClick(

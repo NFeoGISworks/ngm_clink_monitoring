@@ -45,6 +45,8 @@
             android:layout_marginRight="24dp"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:visibility="invisible"
             />
@@ -56,6 +58,8 @@
             android:layout_weight="1"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:visibility="invisible"
             />
