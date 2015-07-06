@@ -1228,12 +1228,23 @@ public class CreateObjectFragment
         distanceExceededDialog.setParams(this, mDistance);
         setOnOnDistanceChangedListener(distanceExceededDialog);
 
+        distanceExceededDialog.setOnCancelListener(
+                new DistanceExceededDialog.OnCancelListener()
+                {
+                    @Override
+                    public void onCancel()
+                    {
+                        setOnOnDistanceChangedListener(null);
+                    }
+                });
+
         distanceExceededDialog.setOnRepeatClickedListener(
                 new DistanceExceededDialog.OnRepeatClickedListener()
                 {
                     @Override
                     public void onRepeatClicked()
                     {
+                        setOnOnDistanceChangedListener(null);
                         startLocationTaking();
                     }
                 });
@@ -1244,6 +1255,8 @@ public class CreateObjectFragment
                     @Override
                     public void onNewPointClicked()
                     {
+                        setOnOnDistanceChangedListener(null);
+
                         YesNoDialog newPointDialog = new YesNoDialog();
                         newPointDialog.setKeepInstance(true)
                                 .setIcon(R.drawable.ic_action_warning)
@@ -1273,7 +1286,7 @@ public class CreateObjectFragment
 
                         newPointDialog.show(
                                 getActivity().getSupportFragmentManager(),
-                                FoclConstants.FRAGMENT_YES_NO_DIALOG + "newPointDialog");
+                                FoclConstants.FRAGMENT_YES_NO_DIALOG + "NewPointDialog");
                     }
                 });
 
