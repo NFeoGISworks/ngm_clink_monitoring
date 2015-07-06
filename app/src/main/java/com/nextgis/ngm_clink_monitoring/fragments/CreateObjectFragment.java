@@ -46,6 +46,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -53,7 +54,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.nextgis.maplib.api.GpsEventListener;
@@ -108,9 +108,7 @@ public class CreateObjectFragment
     protected TextView mTypeWorkTitle;
     protected TextView mLineName;
 
-    protected RelativeLayout mRefiningLayout;
-    protected ProgressBar    mRefiningProgress;
-    protected TextView       mRefiningText;
+    protected ProgressBar mRefiningProgress;
 
     protected TextView mCoordinates;
     protected TextView mDistanceFromPrevPointCaption;
@@ -321,7 +319,8 @@ public class CreateObjectFragment
                             .setMessage(R.string.coordinates_not_defined_try_again)
                             .setIcon(R.drawable.ic_action_warning)
                             .setPositiveButton(
-                                    R.string.determine_coordinates, new DialogInterface.OnClickListener()
+                                    R.string.determine_coordinates,
+                                    new DialogInterface.OnClickListener()
                                     {
                                         @Override
                                         public void onClick(
@@ -565,9 +564,7 @@ public class CreateObjectFragment
 
     protected void setCoordinatesRefiningView(View paretntView)
     {
-        mRefiningLayout = (RelativeLayout) paretntView.findViewById(R.id.refining_layout_cr);
         mRefiningProgress = (ProgressBar) paretntView.findViewById(R.id.refining_progress_cr);
-        mRefiningText = (TextView) paretntView.findViewById(R.id.refining_text_cr);
 
         mCoordinates = (TextView) paretntView.findViewById(R.id.coordinates_cr);
         mDistanceFromPrevPointCaption =
@@ -686,6 +683,7 @@ public class CreateObjectFragment
         } else {
             mDistance = null;
             mCoordinates.setText(getText(R.string.coordinates_not_defined));
+            mCoordinates.setGravity(Gravity.CENTER);
             mDistanceFromPrevPoint.setText("--");
             mDistanceFromPrevPoint.setTextColor(
                     getResources().getColor(R.color.selected_object_text_color));
@@ -696,11 +694,12 @@ public class CreateObjectFragment
     protected void setCoordinatesVisibility(boolean isRefined)
     {
         if (isRefined) {
-            mRefiningLayout.setVisibility(View.GONE);
-            mCoordinates.setVisibility(View.VISIBLE);
+            mRefiningProgress.setVisibility(View.INVISIBLE);
+            mCoordinates.setGravity(Gravity.LEFT);
         } else {
-            mRefiningLayout.setVisibility(View.VISIBLE);
-            mCoordinates.setVisibility(View.GONE);
+            mRefiningProgress.setVisibility(View.VISIBLE);
+            mCoordinates.setText(getText(R.string.coordinate_refining));
+            mCoordinates.setGravity(Gravity.CENTER);
         }
     }
 
