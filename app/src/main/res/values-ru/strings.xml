@@ -122,6 +122,13 @@
     <string name="description_colon">Комментарий:</string>
     <string name="description_hint">Введите комментарий</string>
 
+    <string name="laying_method">Способ прокладки</string>
+    <string name="fosc_type">Тип муфты</string>
+    <string name="fosc_placement">Место размещения муфты</string>
+    <string name="optical_cross_type">Тип кросса</string>
+    <string name="special_laying_method">Способ прокладки</string>
+    <string name="mark_type">Точка входа/выхода</string>
+
     <string name="laying_method_colon">Способ прокладки:</string>
     <string name="laying_method_hint">Укажите способ прокладки</string>
 
@@ -199,5 +206,7 @@
     <string name="shorten_distance_and_repeat">Уменьшите расстояние и повторите определение координат.</string>
     <string name="Or_new_start_point">Или отметьте новую начальную точку.</string>
     <string name="change_line_status_confirmation">Вы действительно хотите изменить статус линии?</string>
+
+    <string name="empty_field_warning">Поле \"%1$s\" должно быть заполнено.</string>
 
 </resources>

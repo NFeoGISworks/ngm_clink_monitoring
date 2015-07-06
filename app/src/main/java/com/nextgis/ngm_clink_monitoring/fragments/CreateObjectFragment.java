@@ -1129,6 +1129,68 @@ public class CreateObjectFragment
 
     protected void createObject()
     {
+        String fieldName = null;
+
+        switch (mFoclStructLayerType) {
+            case FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT:
+                if (null == mLayingMethod.getValue()) {
+                    fieldName = getActivity().getString(R.string.laying_method);
+                }
+                break;
+
+            case FoclConstants.LAYERTYPE_FOCL_REAL_FOSC:
+//                if (null == mFoscType.getValue()) {
+//                    fieldName = getActivity().getString(R.string.fosc_type);
+//                    break;
+//                }
+                if (null == mFoscPlacement.getValue()) {
+                    fieldName = getActivity().getString(R.string.fosc_placement);
+                }
+                break;
+
+            case FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CROSS:
+//                if (null == mOpticalCrossType.getValue()) {
+//                    fieldName = getActivity().getString(R.string.optical_cross_type);
+//                }
+                break;
+
+            case FoclConstants.LAYERTYPE_FOCL_REAL_ACCESS_POINT:
+                break;
+
+            case FoclConstants.LAYERTYPE_FOCL_REAL_SPECIAL_TRANSITION_POINT:
+                if (null == mSpecialLayingMethod.getValue()) {
+                    fieldName = getActivity().getString(R.string.special_laying_method);
+                    break;
+                }
+                if (null == mMarkType.getValue()) {
+                    fieldName = getActivity().getString(R.string.mark_type);
+                }
+                break;
+        }
+
+        if (null != fieldName) {
+            YesNoDialog dialog = new YesNoDialog();
+            dialog.setKeepInstance(true)
+                    .setIcon(R.drawable.ic_action_warning)
+                    .setTitle(R.string.warning)
+                    .setMessage(String.format(getString(R.string.empty_field_warning), fieldName))
+                    .setPositiveText(R.string.ok)
+                    .setOnPositiveClickedListener(
+                            new YesNoDialog.OnPositiveClickedListener()
+                            {
+                                @Override
+                                public void onPositiveClicked()
+                                {
+                                    // cancel
+                                }
+                            })
+                    .show(
+                            getActivity().getSupportFragmentManager(),
+                            FoclConstants.FRAGMENT_YES_NO_DIALOG + "FieldsNotNull");
+            return;
+        }
+
+
         GISApplication app = (GISApplication) getActivity().getApplication();
 
         Uri uri = Uri.parse(

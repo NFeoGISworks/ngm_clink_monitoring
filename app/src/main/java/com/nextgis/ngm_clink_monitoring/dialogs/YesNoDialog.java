@@ -38,12 +38,19 @@ public class YesNoDialog
         extends DialogFragment
 {
     protected Integer mIconId;
+
     protected Integer mTitleId;
     protected Integer mMessageId;
     protected Integer mPositiveTextId;
     protected Integer mNegativeTextId;
-    protected Button  mBtnPositive;
-    protected Button  mBtnNegative;
+
+    protected CharSequence mTitleText;
+    protected CharSequence mMessageText;
+    protected CharSequence mPositiveText;
+    protected CharSequence mNegativeText;
+
+    protected Button mBtnPositive;
+    protected Button mBtnNegative;
 
     protected OnPositiveClickedListener mOnPositiveClickedListener;
     protected OnNegativeClickedListener mOnNegativeClickedListener;
@@ -91,6 +98,18 @@ public class YesNoDialog
             mBtnNegative.setText(mNegativeTextId);
         }
 
+
+        if (null != mPositiveText) {
+            mBtnPositive.setVisibility(View.VISIBLE);
+            mBtnPositive.setText(mPositiveText);
+        }
+
+        if (null != mNegativeText) {
+            mBtnNegative.setVisibility(View.VISIBLE);
+            mBtnNegative.setText(mNegativeText);
+        }
+
+
         if (null != mOnPositiveClickedListener) {
             mBtnPositive.setVisibility(View.VISIBLE);
             mBtnPositive.setOnClickListener(
@@ -135,8 +154,16 @@ public class YesNoDialog
             builder.setTitle(mTitleId);
         }
 
+        if (null != mTitleText) {
+            builder.setTitle(mTitleText);
+        }
+
         if (null != mMessageId) {
             builder.setMessage(mMessageId);
+        }
+
+        if (null != mMessageText) {
+            builder.setMessage(mMessageText);
         }
 
         return builder.create();
@@ -201,6 +228,34 @@ public class YesNoDialog
     public YesNoDialog setNegativeText(int negativeTextId)
     {
         mNegativeTextId = negativeTextId;
+        return this;
+    }
+
+
+    public YesNoDialog setTitle(CharSequence titleText)
+    {
+        mTitleText = titleText;
+        return this;
+    }
+
+
+    public YesNoDialog setMessage(CharSequence messageText)
+    {
+        mMessageText = messageText;
+        return this;
+    }
+
+
+    public YesNoDialog setPositiveText(CharSequence positiveText)
+    {
+        mPositiveText = positiveText;
+        return this;
+    }
+
+
+    public YesNoDialog setNegativeText(CharSequence negativeText)
+    {
+        mNegativeText = negativeText;
         return this;
     }
 

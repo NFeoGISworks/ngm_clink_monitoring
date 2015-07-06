@@ -122,6 +122,13 @@
     <string name="description_colon">Commentary:</string>
     <string name="description_hint">Enter commentary</string>
 
+    <string name="laying_method">Laying method</string>
+    <string name="fosc_type">FOSC type</string>
+    <string name="fosc_placement">FOSC placement</string>
+    <string name="optical_cross_type">Cross type</string>
+    <string name="special_laying_method">Laying method</string>
+    <string name="mark_type">Point of entry/exit</string>
+
     <string name="laying_method_colon">Laying method:</string>
     <string name="laying_method_hint">Select laying method</string>
 
@@ -199,5 +206,7 @@
     <string name="shorten_distance_and_repeat">Shorten the distance and try to refining the coordinates.</string>
     <string name="Or_new_start_point">Or mark a new starting point.</string>
     <string name="change_line_status_confirmation">Do you really want to change the line status?</string>
+
+    <string name="empty_field_warning">Field \"%1$s\" must be filled.</string>
 
 </resources>
