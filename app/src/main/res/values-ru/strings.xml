@@ -134,7 +134,7 @@
 
     <string name="special_laying_method_colon">Способ прокладки:</string>
     <string name="special_laying_method_hint">Укажите способ прокладки</string>
-    <string name="mark_type_colon">Тип отметки:</string>
+    <string name="mark_type_colon">Точка входа/выхода:</string>
     <string name="mark_type_hint">Укажите тип отметки</string>
 
 
