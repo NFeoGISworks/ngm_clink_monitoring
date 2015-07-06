@@ -28,6 +28,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -112,10 +113,26 @@ public class MapFragment
             Bundle savedInstanceState)
     {
         MainActivity activity = (MainActivity) getActivity();
-        activity.setBarsView(null);
+        activity.setBarsView("");
+        activity.switchMenuView();
 
         View view = inflater.inflate(R.layout.fragment_map, container, false);
         mMapRelativeLayout = (RelativeLayout) view.findViewById(R.id.rl_map);
+
+        ActionBar actionBar = activity.getSupportActionBar();
+        if (actionBar != null) {
+            View customActionBarView = actionBar.getCustomView();
+            View saveMenuItem = customActionBarView.findViewById(R.id.custom_toolbar_button_layout);
+            saveMenuItem.setOnClickListener(
+                    new OnClickListener()
+                    {
+                        @Override
+                        public void onClick(View v)
+                        {
+                            getActivity().onBackPressed();
+                        }
+                    });
+        }
 
         //search relative view of map, if not found - add it
         if (mMapView != null) {

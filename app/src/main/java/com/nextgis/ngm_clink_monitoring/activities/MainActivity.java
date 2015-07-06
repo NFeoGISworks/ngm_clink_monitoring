@@ -50,6 +50,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.nextgis.maplib.api.GpsEventListener;
@@ -109,8 +110,10 @@ public class MainActivity
     protected int     mViewState = VIEW_STATE_LOGIN;
     protected boolean mIsSyncing = false;
 
-    protected Toolbar  mToolbar;
-    protected TextView mCustomToolbarTitle;
+    protected Toolbar   mToolbar;
+    protected TextView  mCustomToolbarTitle;
+    protected TextView  mCustomToolbarButton;
+    protected ImageView mCustomToolbarImage;
     // TODO: remove it
 //    protected StatusBarFragment mStatusBarFragment;
 
@@ -169,6 +172,10 @@ public class MainActivity
 
             mCustomToolbarTitle =
                     (TextView) customActionBarView.findViewById(R.id.custom_toolbar_title);
+            mCustomToolbarButton =
+                    (TextView) customActionBarView.findViewById(R.id.custom_toolbar_button);
+            mCustomToolbarImage =
+                    (ImageView) customActionBarView.findViewById(R.id.custom_toolbar_image);
 
             actionBar.setDisplayOptions(0, ActionBar.DISPLAY_SHOW_CUSTOM);
             actionBar.setCustomView(customActionBarView);
@@ -346,7 +353,6 @@ public class MainActivity
             case FoclConstants.FRAGMENT_LINE_LIST:
             case FoclConstants.FRAGMENT_OBJECT_TYPES:
             case FoclConstants.FRAGMENT_OBJECT_LIST:
-            case FoclConstants.FRAGMENT_MAP:
             case FoclConstants.FRAGMENT_OBJECT_STATUS:
             default:
                 if (actionBar != null) {
@@ -362,13 +368,17 @@ public class MainActivity
 
             case FoclConstants.FRAGMENT_CREATE_OBJECT:
                 if (actionBar != null) {
-                    // Show the custom action bar but hide the home icon and title
-                    actionBar.setDisplayOptions(
-                            ActionBar.DISPLAY_SHOW_CUSTOM,
-                            ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME |
-                                    ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE |
-                                    ActionBar.DISPLAY_USE_LOGO);
                     mCustomToolbarTitle.setText(toolbarTitle == null ? getTitle() : toolbarTitle);
+                    setCustomToolbarButtonView(
+                            actionBar, R.string.menu_done, R.drawable.ic_action_apply);
+                }
+                break;
+
+            case FoclConstants.FRAGMENT_MAP:
+                if (actionBar != null) {
+                    mCustomToolbarTitle.setText(toolbarTitle == null ? getTitle() : toolbarTitle);
+                    setCustomToolbarButtonView(
+                            actionBar, R.string.menu_back, R.drawable.abc_ic_ab_back_mtrl_am_alpha);
                 }
                 break;
         }
@@ -380,13 +390,13 @@ public class MainActivity
             case FoclConstants.FRAGMENT_LINE_LIST:
             case FoclConstants.FRAGMENT_OBJECT_STATUS:
             case FoclConstants.FRAGMENT_CREATE_OBJECT:
+            case FoclConstants.FRAGMENT_MAP:
             default:
                 mToolbar.setNavigationIcon(null);
                 break;
 
             case FoclConstants.FRAGMENT_OBJECT_TYPES:
             case FoclConstants.FRAGMENT_OBJECT_LIST:
-            case FoclConstants.FRAGMENT_MAP:
                 mToolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
                 break;
         }
@@ -414,6 +424,22 @@ public class MainActivity
 //        }
 //
 //        ft.commit();
+    }
+
+
+    protected void setCustomToolbarButtonView(
+            ActionBar actionBar,
+            int textResId,
+            int iconResId)
+    {
+        // Show the custom action bar but hide the home icon and title
+        actionBar.setDisplayOptions(
+                ActionBar.DISPLAY_SHOW_CUSTOM,
+                ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME |
+                        ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE |
+                        ActionBar.DISPLAY_USE_LOGO);
+        mCustomToolbarButton.setText(textResId);
+        mCustomToolbarImage.setImageResource(iconResId);
     }
 
 

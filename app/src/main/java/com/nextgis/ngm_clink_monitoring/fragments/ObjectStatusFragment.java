@@ -313,7 +313,7 @@ public class ObjectStatusFragment
         ActionBar actionBar = activity.getSupportActionBar();
         if (actionBar != null) {
             View customActionBarView = actionBar.getCustomView();
-            View saveMenuItem = customActionBarView.findViewById(R.id.save_menu_item);
+            View saveMenuItem = customActionBarView.findViewById(R.id.custom_toolbar_button_layout);
             saveMenuItem.setOnClickListener(statusButtonOnClickListener); // TODO: it is test
         }
 

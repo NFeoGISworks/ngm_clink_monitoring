@@ -179,6 +179,7 @@
     <string name="copyright"><![CDATA[Copyright © <a href=\"http://nextgis.com\">NextGIS</a>, 2012–2015]]></string>
 
     <string name="menu_done">Done</string>
+    <string name="menu_back">Back</string>
 
     <string name="coordinate_refining">Coordinate refining</string>
     <string name="coordinates_not_defined">Coordinates are not defined</string>

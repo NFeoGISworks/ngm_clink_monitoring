@@ -31,7 +31,7 @@
     <!--TODO: check on API 8 for android:showDividers="end"-->
 
     <LinearLayout
-        android:id="@+id/save_menu_item"
+        android:id="@+id/custom_toolbar_button_layout"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:orientation="horizontal"
@@ -50,6 +50,7 @@
             >
 
             <ImageView
+                android:id="@+id/custom_toolbar_image"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
@@ -60,6 +61,7 @@
                 />
 
             <TextView
+                android:id="@+id/custom_toolbar_button"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginRight="10dp"
