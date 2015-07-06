@@ -508,8 +508,8 @@ public class CreateObjectFragment
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CROSS:
-                mOpticalCrossTypeCaption.setVisibility(View.VISIBLE);
-                mOpticalCrossType.setVisibility(View.VISIBLE);
+//                mOpticalCrossTypeCaption.setVisibility(View.VISIBLE);
+//                mOpticalCrossType.setVisibility(View.VISIBLE);
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_REAL_ACCESS_POINT:
@@ -1174,7 +1174,7 @@ public class CreateObjectFragment
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CROSS:
-                values.put(FIELD_OPTICAL_CROSS_TYPE, mOpticalCrossType.getValue());
+//                values.put(FIELD_OPTICAL_CROSS_TYPE, mOpticalCrossType.getValue());
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_REAL_ACCESS_POINT:
