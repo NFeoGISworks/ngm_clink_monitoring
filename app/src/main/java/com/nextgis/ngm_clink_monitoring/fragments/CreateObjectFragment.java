@@ -117,12 +117,14 @@ public class CreateObjectFragment
     protected TextView mDistanceFromPrevPoint;
 
     protected AccurateLocationTaker mAccurateLocationTaker;
-    protected              int     mTakeCount     = 0;
-    protected              int     mTakeCountPct  = 0;
-    protected              int     mTakeTimePct   = 0;
-    protected static final int     MAX_PCT        = 100;
-    protected              Float   mDistance      = null;
-    protected              boolean mNewStartPoint = false;
+    protected              int     mTakeCount                = 0;
+    protected              int     mTakeCountPct             = 0;
+    protected              int     mTakeTimePct              = 0;
+    protected              int     mTakingLoopCount          = 0;
+    protected static final int     MAX_PCT                   = 100;
+    protected              Float   mDistance                 = null;
+    protected              boolean mNewStartPoint            = false;
+    protected              boolean mShowChangeLocationDialog = false;
 
     protected TextView        mLayingMethodCaption;
     protected ComboboxControl mLayingMethod;
@@ -316,7 +318,7 @@ public class CreateObjectFragment
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
                     builder.setTitle(getActivity().getString(R.string.warning))
-                            .setMessage(R.string.coordinates_are_not_defined)
+                            .setMessage(R.string.coordinates_not_defined_try_again)
                             .setIcon(R.drawable.ic_action_warning)
                             .setPositiveButton(
                                     R.string.repeat, new DialogInterface.OnClickListener()
@@ -398,6 +400,18 @@ public class CreateObjectFragment
 
         deleteTempFiles();
         super.onDestroy();
+    }
+
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+
+        if (mShowChangeLocationDialog) {
+            mShowChangeLocationDialog = false;
+            showChangeLocationDialog();
+        }
     }
 
 
@@ -591,20 +605,52 @@ public class CreateObjectFragment
                             Location accurateLocation,
                             Long... values)
                     {
+                        ++mTakingLoopCount;
+
                         if (null != accurateLocation) {
                             mAccurateLocation = accurateLocation;
+                            setCoordinatesText();
+                            setCoordinatesVisibility(true);
 
                         } else {
                             mAccurateLocation = null;
-                            Toast.makeText(
-                                    getActivity(), R.string.coordinates_not_defined,
-                                    Toast.LENGTH_LONG).show();
-                        }
 
-                        setCoordinatesText();
-                        setCoordinatesVisibility(true);
+                            if (1 == mTakingLoopCount) {
+                                if (CreateObjectFragment.this.isResumed()) {
+                                    showChangeLocationDialog();
+                                } else {
+                                    mShowChangeLocationDialog = true;
+                                }
+                            }
+
+                            startLocationTaking();
+                        }
                     }
                 });
+    }
+
+
+    protected void showChangeLocationDialog()
+    {
+        YesNoDialog changeLocationDialog = new YesNoDialog();
+        changeLocationDialog.setKeepInstance(true)
+                .setIcon(R.drawable.ic_action_warning)
+                .setTitle(R.string.warning)
+                .setMessage(
+                        R.string.coordinates_not_defined_change_location)
+                .setPositiveText(R.string.ok)
+                .setOnPositiveClickedListener(
+                        new YesNoDialog.OnPositiveClickedListener()
+                        {
+                            @Override
+                            public void onPositiveClicked()
+                            {
+                                // close
+                            }
+                        })
+                .show(
+                        getActivity().getSupportFragmentManager(),
+                        FoclConstants.FRAGMENT_YES_NO_DIALOG + "ChangeLocation");
     }
 
 
