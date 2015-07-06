@@ -193,7 +193,7 @@
     <string name="coordinates_not_defined_change_location">Координаты не моугт быть определены. Пожалуйста, измените Ваше местоположение и попробуйте еще раз.</string>
     <string name="determine_coordinates">Определить координаты</string>
     <string name="starting_point">Начальная точка</string>
-    <string name="distance_from_prev_point_exceeded_colon">Расстояние от предыдущей точки превышено:</string>
+    <string name="distance_from_prev_point_exceeded">Расстояние от предыдущей точки съема координат превышает максимально допустимое - 200 м. Переместитесь ближе к предыдущей точке съема координат и переснимите координаты или отметьте новую начальную точку прокладки кабеля.</string>
     <string name="shorten_distance_and_repeat">Уменьшите расстояние и повторите определение координат.</string>
     <string name="Or_new_start_point">Или отметьте новую начальную точку.</string>
     <string name="change_line_status_confirmation">Вы действительно хотите изменить статус линии?</string>

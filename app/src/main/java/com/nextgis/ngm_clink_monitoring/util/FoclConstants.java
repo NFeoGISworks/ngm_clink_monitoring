@@ -128,7 +128,7 @@ public interface FoclConstants
     int PHOTO_MAX_SIZE_PX           = 640;
     int PHOTO_JPEG_COMPRESS_QUALITY = 75;
 
-    int MAX_DISTANCE_FROM_PREV_POINT = 150;
+    int MAX_DISTANCE_FROM_PREV_POINT = 200;
 
     int    MAX_ACCURACY                    = 10;
     int    MIN_ACCURACY_TAKE_COUNT         = 5;

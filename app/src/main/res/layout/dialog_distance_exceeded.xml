@@ -42,30 +42,13 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="@string/distance_from_prev_point_exceeded_colon"
+            android:text="@string/distance_from_prev_point_exceeded"
             />
 
         <TextView
             android:id="@+id/distance_from_prev_point_de"
             android:gravity="center_horizontal"
             style="@style/selectedObjectStyle"
-            />
-
-        <TextView
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:layout_marginTop="10dp"
-            android:text="@string/shorten_distance_and_repeat"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            />
-
-        <TextView
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:layout_marginTop="10dp"
-            android:layout_gravity="center"
-            android:text="@string/Or_new_start_point"
-            android:textAppearance="?android:attr/textAppearanceSmall"
             />
 
         <Button
@@ -85,7 +68,7 @@
             android:id="@+id/btn_new_start_point_de"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="10dp"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
             android:paddingLeft="5dp"
