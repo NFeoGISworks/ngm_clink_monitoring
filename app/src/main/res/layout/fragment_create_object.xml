@@ -54,18 +54,15 @@
 
                 <TextView
                     android:id="@+id/type_work_title_cr"
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:gravity="center"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="0dp"
+                    style="@style/largeCaptionStyle"
                     />
 
                 <TextView
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:layout_marginTop="5dp"
                     android:text="@string/communication_line_colon"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:layout_marginTop="0dp"
+                    style="@style/smallCaptionStyle"
                     />
 
                 <TextView
@@ -74,15 +71,12 @@
                     />
 
                 <TextView
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:layout_marginTop="10dp"
                     android:text="@string/coordinates_colon"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    style="@style/smallCaptionStyle"
                     />
 
                 <RelativeLayout
-                    style="@style/RefiningLayoutStyle"
+                    style="@style/refiningLayoutStyle"
                     >
 
                     <TextView
@@ -95,61 +89,53 @@
                     <ProgressBar
                         android:id="@+id/refining_progress_cr"
                         android:layout_below="@+id/coordinates_cr"
-                        style="@style/RefiningProgressBarStyle"
+                        style="@style/refiningProgressBarStyle"
                         android:visibility="visible"
                         />
 
                 </RelativeLayout>
 
-                <TableLayout
+                <RelativeLayout
                     xmlns:android="http://schemas.android.com/apk/res/android"
                     android:id="@+id/distance_layout_cr"
-                    android:stretchColumns="0,1"
-                    style="@style/RefiningLayoutStyle"
-                    android:visibility="gone"
+                    style="@style/distanceLayoutStyle"
+                    android:visibility="visible"
                     >
 
-                    <TableRow
-                        android:layout_height="wrap_content"
+                    <TextView
+                        android:id="@+id/distance_from_prev_point_caption_cr"
                         android:layout_width="wrap_content"
-                        >
+                        android:layout_marginTop="0dp"
+                        android:layout_marginBottom="0dp"
+                        android:gravity="start"
+                        android:layout_alignParentLeft="true"
+                        android:layout_toLeftOf="@+id/distance_from_prev_point_cr"
+                        android:text="@string/distance_from_prev_point_colon"
+                        style="@style/smallCaptionStyle"
+                        />
 
-                        <TextView
-                            android:id="@+id/distance_from_prev_point_caption_cr"
-                            android:layout_height="wrap_content"
-                            android:layout_width="wrap_content"
-                            android:layout_marginTop="0dp"
-                            android:layout_gravity="start"
-                            android:layout_weight="1"
-                            android:text="@string/distance_from_prev_point_colon"
-                            android:textAppearance="?android:attr/textAppearanceSmall"
-                            />
+                    <TextView
+                        android:id="@+id/distance_from_prev_point_cr"
+                        android:layout_width="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_gravity="end"
+                        android:layout_alignParentRight="true"
+                        android:minWidth="75dp"
+                        android:gravity="end"
+                        android:ellipsize="start"
+                        style="@style/distanceTextStyle"
+                        />
 
-                        <TextView
-                            android:id="@+id/distance_from_prev_point_cr"
-                            android:layout_width="wrap_content"
-                            android:layout_marginTop="0dp"
-                            android:layout_marginLeft="10dp"
-                            android:layout_gravity="end"
-                            android:layout_weight="1"
-                            android:gravity="end"
-                            android:minWidth="130dp"
-                            style="@style/selectedObjectStyle"
-                            />
+                </RelativeLayout>
 
-                    </TableRow>
-
-                </TableLayout>
 
                 <!-- Optical cable -->
 
                 <TextView
                     android:id="@+id/laying_method_caption_cr"
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:layout_marginTop="10dp"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:text="@string/laying_method_colon"
+                    android:layout_marginBottom="0dp"
+                    style="@style/comboboxSmallCaptionStyle"
                     android:visibility="gone"
                     />
 
@@ -165,11 +151,8 @@
 
                 <TextView
                     android:id="@+id/fosc_type_caption_cr"
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:layout_marginTop="10dp"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:text="@string/fosc_type_colon"
+                    style="@style/comboboxSmallCaptionStyle"
                     android:visibility="gone"
                     />
 
@@ -182,11 +165,8 @@
 
                 <TextView
                     android:id="@+id/fosc_placement_caption_cr"
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:layout_marginTop="10dp"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:text="@string/fosc_placement_colon"
+                    style="@style/comboboxSmallCaptionStyle"
                     android:visibility="gone"
                     />
 
@@ -202,11 +182,8 @@
 
                 <TextView
                     android:id="@+id/optical_cross_type_caption_cr"
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:layout_marginTop="10dp"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:text="@string/optical_cross_type_colon"
+                    style="@style/comboboxSmallCaptionStyle"
                     android:visibility="gone"
                     />
 
@@ -227,11 +204,8 @@
 
                 <TextView
                     android:id="@+id/special_laying_method_caption_cr"
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:layout_marginTop="10dp"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:text="@string/special_laying_method_colon"
+                    style="@style/comboboxSmallCaptionStyle"
                     android:visibility="gone"
                     />
 
@@ -244,11 +218,8 @@
 
                 <TextView
                     android:id="@+id/mark_type_caption_cr"
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:layout_marginTop="10dp"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:text="@string/mark_type_colon"
+                    style="@style/comboboxSmallCaptionStyle"
                     android:visibility="gone"
                     />
 
@@ -258,17 +229,13 @@
                     style="@style/comboboxStyle"
                     android:visibility="gone"
                     />
-                <!--style="@style/editObjectStyle"-->
 
 
                 <!-- Common -->
 
                 <TextView
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:layout_marginTop="10dp"
                     android:text="@string/description_colon"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    style="@style/smallCaptionStyle"
                     />
 
                 <EditText
@@ -295,17 +262,15 @@
 
                 <TextView
                     android:id="@+id/photo_hint_text_cr"
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
                     android:layout_marginTop="15dp"
                     android:paddingTop="5dp"
                     android:paddingBottom="5dp"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
                     android:background="@drawable/photo_hint_background"
-                    android:text="@string/take_photos_to_confirm"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="@color/photo_hint_text_color"
+                    android:text="@string/take_photos_to_confirm"
+                    style="@style/smallCaptionStyle"
                     android:visibility="visible"
                     />
 

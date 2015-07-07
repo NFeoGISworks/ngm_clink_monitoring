@@ -39,18 +39,16 @@
         >
 
         <TextView
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="10dp"
             android:text="@string/select_line_colon"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:gravity="center"
+            style="@style/mediumCaptionStyle"
             />
 
         <ListView
             android:id="@+id/line_list_ln"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:layout_marginTop="5dp"
             />
 
     </LinearLayout>

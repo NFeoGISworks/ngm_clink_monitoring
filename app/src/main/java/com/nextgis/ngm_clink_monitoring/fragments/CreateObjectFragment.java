@@ -52,7 +52,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TableLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.nextgis.maplib.api.GpsEventListener;
@@ -109,10 +109,10 @@ public class CreateObjectFragment
 
     protected ProgressBar mRefiningProgress;
 
-    protected TextView    mCoordinates;
-    protected TableLayout mDistanceLayout;
-    protected TextView    mDistanceFromPrevPointCaption;
-    protected TextView    mDistanceFromPrevPoint;
+    protected TextView       mCoordinates;
+    protected RelativeLayout mDistanceLayout;
+    protected TextView       mDistanceFromPrevPointCaption;
+    protected TextView       mDistanceFromPrevPoint;
 
     protected AccurateLocationTaker mAccurateLocationTaker;
     protected              int     mTakeCount                = 0;
@@ -563,7 +563,7 @@ public class CreateObjectFragment
         mRefiningProgress = (ProgressBar) paretntView.findViewById(R.id.refining_progress_cr);
 
         mCoordinates = (TextView) paretntView.findViewById(R.id.coordinates_cr);
-        mDistanceLayout = (TableLayout) paretntView.findViewById(R.id.distance_layout_cr);
+        mDistanceLayout = (RelativeLayout) paretntView.findViewById(R.id.distance_layout_cr);
         mDistanceFromPrevPointCaption =
                 (TextView) paretntView.findViewById(R.id.distance_from_prev_point_caption_cr);
         mDistanceFromPrevPoint =

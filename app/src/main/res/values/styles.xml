@@ -58,13 +58,153 @@
 
     </style>
 
-    <style name="actionButtonStyle"
-           parent="@style/Base.Widget.AppCompat.ActionButton">
 
-        <item name="android:paddingLeft">0dp</item>
-        <item name="android:paddingRight">0dp</item>
+    <style name="textViewStyle"
+           parent="@android:style/Widget.TextView">
+
+        <item name="android:textColor">@color/primary_text_color</item>
+        <item name="android:textColorLink">@color/secondary_text_normal_color</item>
 
     </style>
+
+
+    <style name="captionStyle"
+           parent="@style/textViewStyle">
+
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+
+    </style>
+
+    <style name="largeCaptionStyle"
+           parent="@style/captionStyle">
+
+        <item name="android:layout_marginTop">12dp</item>
+        <item name="android:layout_marginBottom">4dp</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+
+    </style>
+
+    <style name="mediumCaptionStyle"
+           parent="@style/captionStyle">
+
+        <item name="android:layout_marginTop">12dp</item>
+        <item name="android:layout_marginBottom">5dp</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+
+    </style>
+
+    <style name="smallCaptionStyle"
+           parent="@style/captionStyle">
+
+        <item name="android:layout_marginTop">14dp</item>
+        <item name="android:layout_marginBottom">4dp</item>
+        <item name="android:layout_gravity">start</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
+
+    </style>
+
+    <style name="comboboxSmallCaptionStyle"
+           parent="@style/smallCaptionStyle">
+
+        <item name="android:layout_marginBottom">0dp</item>
+
+    </style>
+
+
+    <style name="selectedLineStyle"
+           parent="@style/textViewStyle">
+
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_gravity">start</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:paddingRight">10dp</item>
+        <item name="android:background">@drawable/selected_object_background</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <item name="android:textColor">@color/selected_object_text_color</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:lines">2</item>
+        <item name="android:minLines">1</item>
+        <item name="android:maxLines">2</item>
+
+    </style>
+
+
+    <style name="editDescriptionStyle"
+           parent="@style/textViewStyle">
+
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_gravity">start</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:paddingRight">10dp</item>
+        <item name="android:background">@drawable/edit_object_background</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <item name="android:textColor">@color/edit_object_text_color</item>
+        <item name="android:gravity">start|top</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:lines">2</item>
+        <item name="android:minLines">2</item>
+        <item name="android:maxLines">2</item>
+
+    </style>
+
+
+    <style name="listItemStyle"
+           parent="@style/textViewStyle">
+
+        <item name="android:layout_height">52dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_marginTop">5dp</item>
+        <item name="android:layout_marginBottom">5dp</item>
+        <item name="android:layout_marginLeft">0dp</item>
+        <item name="android:layout_marginRight">0dp</item>
+        <item name="android:layout_gravity">start</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:paddingRight">10dp</item>
+        <item name="android:background">@drawable/list_item_background</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <item name="android:textColor">@color/button_text_color</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:lines">2</item>
+        <item name="android:minLines">2</item>
+        <item name="android:maxLines">2</item>
+
+    </style>
+
+    <style name="listItemCheckedStyle"
+           parent="@style/listItemStyle">
+
+        <!--<item name="android:checkMark">?android:attr/listChoiceIndicatorMultiple</item>-->
+
+        <!--<item name="android:checkMark">?android:attr/textCheckMark</item>-->
+
+        <item name="android:checkMark">@drawable/check_mark</item>
+
+    </style>
+
+
+    <style name="listViewStyle"
+           parent="@android:style/Widget.ListView">
+
+        <item name="android:listSelector">@color/list_view_list_selector_color</item>
+        <item name="android:divider">@null</item>
+
+    </style>
+
 
     <style name="buttonStyle"
            parent="@android:style/Widget.Button">
@@ -105,29 +245,22 @@
 
     </style>
 
-    <style name="listViewStyle"
-           parent="@android:style/Widget.ListView">
+    <style name="actionButtonStyle"
+           parent="@style/Base.Widget.AppCompat.ActionButton">
 
-        <item name="android:listSelector">@color/list_view_list_selector_color</item>
-        <item name="android:divider">@null</item>
-
-    </style>
-
-    <style name="textViewStyle"
-           parent="@android:style/Widget.TextView">
-
-        <item name="android:textColor">@color/primary_text_color</item>
-        <item name="android:textColorLink">@color/secondary_text_normal_color</item>
+        <item name="android:paddingLeft">0dp</item>
+        <item name="android:paddingRight">0dp</item>
 
     </style>
 
-    <style name="listItemStyle"
+
+    <style name="selectedObjectStyle"
            parent="@style/textViewStyle">
 
-        <item name="android:layout_height">52dp</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_marginTop">5dp</item>
-        <item name="android:layout_marginBottom">5dp</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginBottom">0dp</item>
         <item name="android:layout_marginLeft">0dp</item>
         <item name="android:layout_marginRight">0dp</item>
         <item name="android:layout_gravity">center_vertical</item>
@@ -135,56 +268,28 @@
         <item name="android:paddingBottom">5dp</item>
         <item name="android:paddingLeft">10dp</item>
         <item name="android:paddingRight">10dp</item>
-        <item name="android:background">@drawable/list_item_background</item>
-        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
-        <item name="android:textColor">@color/button_text_color</item>
-        <item name="android:ellipsize">end</item>
-        <item name="android:gravity">center_vertical</item>
-        <item name="android:lines">2</item>
-        <item name="android:minLines">2</item>
-        <item name="android:maxLines">2</item>
-
-    </style>
-
-    <style name="listItemCheckedStyle"
-           parent="@style/listItemStyle">
-
-        <!--<item name="android:checkMark">?android:attr/listChoiceIndicatorMultiple</item>-->
-
-        <!--<item name="android:checkMark">?android:attr/textCheckMark</item>-->
-
-        <item name="android:checkMark">@drawable/check_mark</item>
-
-    </style>
-
-    <style name="selectedObjectStyle"
-           parent="@style/listItemStyle">
-
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">10dp</item>
-        <item name="android:layout_marginBottom">0dp</item>
         <item name="android:background">@drawable/selected_object_background</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
         <item name="android:textColor">@color/selected_object_text_color</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:ellipsize">end</item>
         <item name="android:lines">1</item>
         <item name="android:minLines">1</item>
         <item name="android:maxLines">1</item>
 
     </style>
 
-    <style name="RefiningLayoutStyle"
+
+    <style name="refiningLayoutStyle"
            parent="">
 
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_marginTop">10dp</item>
-        <item name="android:layout_marginBottom">0dp</item>
-        <item name="android:layout_marginLeft">0dp</item>
-        <item name="android:layout_marginRight">0dp</item>
-        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:layout_gravity">start</item>
 
     </style>
 
-    <style name="RefiningProgressBarStyle"
+    <style name="refiningProgressBarStyle"
            parent="">
         <!--parent="@android:style/Widget.ProgressBar.Horizontal">-->
 
@@ -199,7 +304,7 @@
 
     </style>
 
-    <style name="RefiningTextStyle"
+    <style name="refiningTextStyle"
            parent="@style/selectedObjectStyle">
 
         <item name="android:layout_height">wrap_content</item>
@@ -212,52 +317,46 @@
     </style>
 
 
-    <!--TODO: remove it-->
+    <style name="distanceLayoutStyle"
+           parent="">
 
-    <!--
-        <style name="RefiningTextStyle"
-               parent="">
-
-            <item name="android:layout_width">match_parent</item>
-            <item name="android:layout_gravity">center_vertical</item>
-            <item name="android:paddingTop">5dp</item>
-            <item name="android:paddingBottom">5dp</item>
-            <item name="android:paddingLeft">10dp</item>
-            <item name="android:paddingRight">10dp</item>
-            <item name="android:gravity">center</item>
-            <item name="android:ellipsize">end</item>
-            <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
-            <item name="android:textColor">@color/color_50</item>
-            <item name="android:lines">1</item>
-            <item name="android:minLines">1</item>
-            <item name="android:maxLines">1</item>
-            <item name="android:singleLine">true</item>
-
-        </style>
-    -->
-
-    <style name="editObjectStyle"
-           parent="@style/selectedObjectStyle">
-
-        <item name="android:background">@drawable/edit_object_background</item>
-        <item name="android:textColor">@color/edit_object_text_color</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_marginTop">6dp</item>
+        <item name="android:layout_marginBottom">0dp</item>
+        <item name="android:layout_gravity">start</item>
 
     </style>
+
+    <style name="distanceTextStyle"
+           parent="@style/textViewStyle">
+
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:paddingRight">10dp</item>
+        <item name="android:background">@drawable/selected_object_background</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <item name="android:textColor">@color/selected_object_text_color</item>
+        <item name="android:lines">1</item>
+        <item name="android:minLines">1</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:singleLine">true</item>
+
+    </style>
+
 
     <style name="comboboxStyle"
            parent="">
 
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_marginTop">10dp</item>
-        <item name="android:layout_marginBottom">0dp</item>
-        <item name="android:layout_marginLeft">0dp</item>
-        <item name="android:layout_marginRight">0dp</item>
         <item name="android:paddingTop">5dp</item>
         <item name="android:paddingBottom">5dp</item>
         <item name="android:paddingLeft">10dp</item>
         <item name="android:paddingRight">10dp</item>
-        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:layout_gravity">start</item>
         <item name="android:ellipsize">end</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
@@ -266,6 +365,7 @@
         <item name="android:maxLines">1</item>
 
     </style>
+
 
     <style name="SpinnerItem"
            parent="@android:style/Widget.TextView.SpinnerItem">
@@ -280,27 +380,6 @@
 
         <item name="android:textColor">@color/color_700</item>
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
-
-    </style>
-
-    <style name="editDescriptionStyle"
-           parent="@style/editObjectStyle">
-
-        <item name="android:background">@drawable/edit_object_background</item>
-        <item name="android:textColor">@color/edit_object_text_color</item>
-        <item name="android:lines">2</item>
-        <item name="android:minLines">2</item>
-        <item name="android:maxLines">2</item>
-
-    </style>
-
-    <style name="selectedLineStyle"
-           parent="@style/selectedObjectStyle">
-
-        <!--<item name="android:layout_height">52dp</item>-->
-        <item name="android:lines">2</item>
-        <item name="android:minLines">1</item>
-        <item name="android:maxLines">2</item>
 
     </style>
 
