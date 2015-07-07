@@ -104,7 +104,7 @@
         <item name="android:layout_marginTop">14dp</item>
         <item name="android:layout_marginBottom">4dp</item>
         <item name="android:layout_gravity">start</item>
-        <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
+        <item name="android:textSize">16sp</item>
 
     </style>
 
