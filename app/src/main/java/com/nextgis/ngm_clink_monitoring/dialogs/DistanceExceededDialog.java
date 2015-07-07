@@ -36,7 +36,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.fragments.CreateObjectFragment;
-import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 
 
 public class DistanceExceededDialog
@@ -110,7 +109,7 @@ public class DistanceExceededDialog
         mDistanceView.setText(mParent.getDistanceText(mDistance));
         mDistanceView.setTextColor(mParent.getDistanceTextColor(mDistance));
 
-        mBtnRepeat.setEnabled(false);
+//        mBtnRepeat.setEnabled(false);
 
         mBtnRepeat.setOnClickListener(
                 new View.OnClickListener()
@@ -165,7 +164,7 @@ public class DistanceExceededDialog
         if (mIsViewCreated) {
             mDistanceView.setText(mParent.getDistanceText(distance));
             mDistanceView.setTextColor(mParent.getDistanceTextColor(distance));
-            mBtnRepeat.setEnabled(FoclConstants.MAX_DISTANCE_FROM_PREV_POINT >= distance);
+//            mBtnRepeat.setEnabled(FoclConstants.MAX_DISTANCE_FROM_PREV_POINT >= distance);
         }
     }
 
