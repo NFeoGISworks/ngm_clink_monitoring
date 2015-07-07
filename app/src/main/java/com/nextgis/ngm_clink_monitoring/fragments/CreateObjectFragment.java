@@ -608,13 +608,13 @@ public class CreateObjectFragment
                         } else {
                             mAccurateLocation = null;
 
-                            if (1 == mTakingLoopCount) {
+//                            if (1 == mTakingLoopCount) {
                                 if (CreateObjectFragment.this.isResumed()) {
                                     showChangeLocationDialog();
                                 } else {
                                     mShowChangeLocationDialog = true;
                                 }
-                            }
+//                            }
 
                             startLocationTaking();
                         }
