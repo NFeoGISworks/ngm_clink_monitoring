@@ -102,6 +102,8 @@
     <color name="button_normal_color_end">@color/color_000</color>
     <color name="button_normal_stroke_color">@color/color_999</color>
 
+    <color name="button_2_normal_stroke_color">@color/color_500</color>
+
     <color name="button_pressed_text_color">@color/color_000</color>
     <color name="button_pressed_color_start">@color/color_900</color>
     <color name="button_pressed_color_end">@color/color_900</color>

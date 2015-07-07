@@ -234,6 +234,13 @@
 
     </style>
 
+    <style name="buttonStyle2"
+           parent="buttonStyle">
+
+        <item name="android:background">@drawable/btn_default_2</item>
+
+    </style>
+
     <style name="statusButton"
            parent="@style/buttonStyle">
 
