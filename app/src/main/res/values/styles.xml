@@ -53,15 +53,34 @@
         <item name="android:listViewStyle">@style/listViewStyle</item>
         <item name="android:textViewStyle">@style/textViewStyle</item>
 
+        <!--<item name="android:spinnerStyle">@style/SpinnerStyle</item>-->
+        <!--<item name="android:dropDownSpinnerStyle">@style/SpinnerStyle</item>-->
         <item name="android:spinnerItemStyle">@style/SpinnerItem</item>
         <item name="android:spinnerDropDownItemStyle">@style/SpinnerItem.DropDownItem</item>
 
     </style>
 
 
+<!--
+    <style name="SpinnerStyle" parent="@android:style/Widget.Spinner">
+        <item name="android:spinnerMode">dropdown</item>
+        &lt;!&ndash;<item name="android:background">@drawable/spinner</item>&ndash;&gt;
+        &lt;!&ndash;<item name="android:dropDownSelector">@drawable/spinner</item>&ndash;&gt;
+        <item name="android:popupBackground">@drawable/spinner</item>
+        <item name="android:dropDownVerticalOffset">0dip</item>
+        <item name="android:dropDownHorizontalOffset">0dip</item>
+        <item name="android:dropDownWidth">wrap_content</item>
+        &lt;!&ndash;<item name="android:popupPromptView">@layout/simple_dropdown_hint</item>&ndash;&gt;
+        <item name="android:gravity">start|center_vertical</item>
+        &lt;!&ndash;<item name="android:disableChildrenWhenDisabled">true</item>&ndash;&gt;
+    </style>
+-->
+
+
     <style name="textViewStyle"
            parent="@android:style/Widget.TextView">
 
+        <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/primary_text_color</item>
         <item name="android:textColorLink">@color/secondary_text_normal_color</item>
 
@@ -148,7 +167,7 @@
         <item name="android:paddingBottom">5dp</item>
         <item name="android:paddingLeft">10dp</item>
         <item name="android:paddingRight">10dp</item>
-        <item name="android:background">@drawable/edit_object_background</item>
+        <!--<item name="android:background">@drawable/edit_object_background</item>-->
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
         <item name="android:textColor">@color/edit_object_text_color</item>
         <item name="android:gravity">start|top</item>
@@ -210,6 +229,7 @@
            parent="@android:style/Widget.Button">
 
         <item name="android:background">@drawable/btn_default</item>
+        <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/button_text_color</item>
 
     </style>
@@ -332,11 +352,12 @@
            parent="@style/textViewStyle">
 
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_vertical</item>
         <item name="android:paddingTop">5dp</item>
         <item name="android:paddingBottom">5dp</item>
         <item name="android:paddingLeft">10dp</item>
         <item name="android:paddingRight">10dp</item>
-        <item name="android:background">@drawable/selected_object_background</item>
+        <!--<item name="android:background">@drawable/selected_object_background</item>-->
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
         <item name="android:textColor">@color/selected_object_text_color</item>
         <item name="android:lines">1</item>
@@ -349,6 +370,7 @@
 
     <style name="comboboxStyle"
            parent="">
+
 
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">match_parent</item>
@@ -370,7 +392,9 @@
     <style name="SpinnerItem"
            parent="@android:style/Widget.TextView.SpinnerItem">
 
-        <item name="android:textColor">@color/color_700</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/spinner_item_text_color</item>
+        <item name="android:background">@drawable/spinner_item</item>
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
 
     </style>
@@ -378,7 +402,9 @@
     <style name="SpinnerItem.DropDownItem"
            parent="@android:style/Widget.DropDownItem">
 
-        <item name="android:textColor">@color/color_700</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/spinner_drop_down_item_text_color</item>
+        <item name="android:background">@drawable/spinner_drop_down_item</item>
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
 
     </style>

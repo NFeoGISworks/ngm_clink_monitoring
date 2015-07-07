@@ -26,12 +26,12 @@
 
     <!-- When the window does not have focus. -->
 
-    <item android:drawable="@drawable/gallery_item_selected_default"
+    <item android:drawable="@drawable/gallery_item_selected_normal"
           android:state_selected="true"
           android:state_window_focused="false"
         />
 
-    <item android:drawable="@drawable/gallery_item_unselected_default"
+    <item android:drawable="@drawable/gallery_item_unselected_normal"
           android:state_selected="false"
           android:state_window_focused="false"
         />
@@ -49,7 +49,7 @@
           android:state_focused="true"
         />
 
-    <item android:drawable="@drawable/gallery_item_selected_default"
+    <item android:drawable="@drawable/gallery_item_selected_normal"
           android:state_selected="true"
         />
 
@@ -58,7 +58,7 @@
           android:state_pressed="true"
         />
 
-    <item android:drawable="@drawable/gallery_item_unselected_default"
+    <item android:drawable="@drawable/gallery_item_unselected_normal"
         />
 
 </selector>

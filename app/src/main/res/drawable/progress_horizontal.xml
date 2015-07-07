@@ -27,12 +27,17 @@
         <shape>
             <corners android:radius="2dip"/>
             <gradient
-                android:startColor="#0e9d9e9d"
-                android:centerColor="#0e5a5d5a"
-                android:endColor="#0e747674"
-                android:centerY="0.75"
+                android:startColor="@color/color_050"
+                android:centerColor="@color/color_050"
+                android:endColor="@color/color_050"
+                android:centerY="0.5"
                 android:angle="270"
                 />
+
+            <!--android:startColor="#0e9d9e9d"-->
+            <!--android:centerColor="#0e5a5d5a"-->
+            <!--android:endColor="#0e747674"-->
+
         </shape>
     </item>
 
@@ -41,10 +46,10 @@
             <shape>
                 <corners android:radius="2dip"/>
                 <gradient
-                    android:startColor="@color/color_300_d0"
-                    android:centerColor="@color/color_500_d0"
-                    android:endColor="@color/color_700_d0"
-                    android:centerY="0.75"
+                    android:startColor="@color/color_800_b0"
+                    android:centerColor="@color/color_999_b0"
+                    android:endColor="@color/color_800_b0"
+                    android:centerY="0.5"
                     android:angle="270"
                     />
             </shape>
@@ -56,10 +61,10 @@
             <shape>
                 <corners android:radius="2dip"/>
                 <gradient
-                    android:startColor="@color/color_300_ff"
-                    android:centerColor="@color/color_500_ff"
-                    android:endColor="@color/color_700_ff"
-                    android:centerY="0.75"
+                    android:startColor="@color/color_800_ff"
+                    android:centerColor="@color/color_999_ff"
+                    android:endColor="@color/color_800_ff"
+                    android:centerY="0.5"
                     android:angle="270"
                     />
             </shape>

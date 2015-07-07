@@ -44,7 +44,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -680,8 +679,8 @@ public class CreateObjectFragment
         } else {
             mDistance = null;
             mCoordinates.setText(getText(R.string.coordinates_not_defined));
-            mCoordinates.setGravity(Gravity.CENTER);
-            mDistanceFromPrevPoint.setText("--");
+//            mCoordinates.setGravity(Gravity.CENTER);
+            mDistanceFromPrevPoint.setText("---");
             mDistanceFromPrevPoint.setTextColor(
                     getResources().getColor(R.color.selected_object_text_color));
         }
@@ -692,11 +691,11 @@ public class CreateObjectFragment
     {
         if (isRefined) {
             mRefiningProgress.setVisibility(View.INVISIBLE);
-            mCoordinates.setGravity(Gravity.LEFT);
+//            mCoordinates.setGravity(Gravity.LEFT);
         } else {
             mRefiningProgress.setVisibility(View.VISIBLE);
             mCoordinates.setText(getText(R.string.coordinate_refining));
-            mCoordinates.setGravity(Gravity.CENTER);
+//            mCoordinates.setGravity(Gravity.CENTER);
         }
     }
 

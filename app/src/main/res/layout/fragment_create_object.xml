@@ -82,6 +82,7 @@
                     <TextView
                         android:id="@+id/coordinates_cr"
                         android:layout_marginTop="0dp"
+                        android:gravity="center"
                         style="@style/selectedObjectStyle"
                         android:visibility="visible"
                         />
@@ -107,7 +108,8 @@
                         android:layout_width="wrap_content"
                         android:layout_marginTop="0dp"
                         android:layout_marginBottom="0dp"
-                        android:gravity="start"
+                        android:gravity="start|center_vertical"
+                        android:layout_centerVertical="true"
                         android:layout_alignParentLeft="true"
                         android:layout_toLeftOf="@+id/distance_from_prev_point_cr"
                         android:text="@string/distance_from_prev_point_colon"

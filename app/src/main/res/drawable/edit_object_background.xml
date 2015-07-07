@@ -35,7 +35,7 @@
 
     <stroke
         android:color="@color/edit_object_stroke_color"
-        android:width="1dp"
+        android:width="4dp"
         />
 
 </shape>

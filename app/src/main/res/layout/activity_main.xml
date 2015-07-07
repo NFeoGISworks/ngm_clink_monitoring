@@ -28,6 +28,7 @@
     android:orientation="vertical"
     tools:context=".MainActivity"
     tools:ignore="MergeRootFrame"
+    android:background="@color/color_white"
     >
 
     <android.support.v7.widget.Toolbar
