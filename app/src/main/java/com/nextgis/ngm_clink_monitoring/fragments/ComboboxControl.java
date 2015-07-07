@@ -32,6 +32,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
+import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.map.FoclDictItem;
 
 import java.lang.reflect.InvocationHandler;
@@ -168,6 +169,7 @@ public class ComboboxControl
                         Context.LAYOUT_INFLATER_SERVICE)).inflate(
                         android.R.layout.simple_spinner_item, parent, false);
                 v.setText(getPrompt());
+                v.setTextColor(getResources().getColor(R.color.color_600));
                 return v;
             }
             return mSpinnerAdapter.getView(position, convertView, parent);
