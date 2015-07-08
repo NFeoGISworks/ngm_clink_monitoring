@@ -95,7 +95,6 @@ public class ObjectTypesFragment
                     long id)
             {
                 // TODO: begin -- bug #155, remove it
-/*
                 mFoclStruct.setStatus(mLineStatus.getValue());
                 mFoclStruct.setIsStatusChanged(true);
 
@@ -116,7 +115,6 @@ public class ObjectTypesFragment
                 if (true) {
                     return;
                 }
-*/
                 // TODO: end -- bug #155, remove it
 
 
