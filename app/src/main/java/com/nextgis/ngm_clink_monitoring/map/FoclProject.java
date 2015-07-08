@@ -487,7 +487,9 @@ public class FoclProject
 
             String error = createOrUpdateFromJson(jsonArrayProject);
 
-            if (!TextUtils.isEmpty(error)) {
+            if (TextUtils.isEmpty(error)) {
+                save();
+            } else {
                 return error;
             }
 

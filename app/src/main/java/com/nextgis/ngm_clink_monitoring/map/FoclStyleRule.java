@@ -187,14 +187,20 @@ public class FoclStyleRule
                     cursor = null;
                 }
 
-                if (null != cursor) {
-                    if (cursor.moveToFirst()) {
-                        type = cursor.getString(
-                                cursor.getColumnIndex(FoclConstants.FIELD_LAYING_METHOD));
-                        status = cursor.getString(
-                                cursor.getColumnIndex(FoclConstants.FIELD_STATUS_BUILT));
+                try {
+                    if (null != cursor) {
+                        if (cursor.moveToFirst()) {
+                            type = cursor.getString(
+                                    cursor.getColumnIndex(FoclConstants.FIELD_LAYING_METHOD));
+                            status = cursor.getString(
+                                    cursor.getColumnIndex(FoclConstants.FIELD_STATUS_BUILT));
+                        }
+                        cursor.close();
                     }
+
+                } catch (Exception e) {
                     cursor.close();
+                    Log.d(TAG, e.getLocalizedMessage());
                 }
 
                 break;

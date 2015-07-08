@@ -97,6 +97,7 @@ public class ObjectTypesFragment
                 // TODO: begin -- bug #155, remove it
 /*
                 mFoclStruct.setStatus(mLineStatus.getValue());
+                mFoclStruct.setIsStatusChanged(true);
 
                 GISApplication app = (GISApplication) getActivity().getApplication();
                 GpsEventSource gps = app.getGpsEventSource();
