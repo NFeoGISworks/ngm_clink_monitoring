@@ -94,6 +94,31 @@ public class ObjectTypesFragment
                     final int position,
                     long id)
             {
+                // TODO: begin -- bug #155, remove it
+/*
+                mFoclStruct.setStatus(mLineStatus.getValue());
+
+                GISApplication app = (GISApplication) getActivity().getApplication();
+                GpsEventSource gps = app.getGpsEventSource();
+                Location lastLoc = gps.getLastKnownLocation();
+
+                long time;
+                if (null != lastLoc) {
+                    time = lastLoc.getTime();
+                } else {
+                    time = System.currentTimeMillis();
+                }
+
+                mFoclStruct.setStatusUpdateTime(time);
+                mFoclStruct.save();
+
+                if (true) {
+                    return;
+                }
+*/
+                // TODO: end -- bug #155, remove it
+
+
                 if (mIsOnInitStatus) {
                     mIsOnInitStatus = false;
                     return;
@@ -138,6 +163,7 @@ public class ObjectTypesFragment
                                     {
                                         mIsOnYesStatus = true;
                                         mFoclStruct.setStatus(mLineStatus.getValue());
+                                        mFoclStruct.setIsStatusChanged(true);
 
                                         GISApplication app =
                                                 (GISApplication) getActivity().getApplication();

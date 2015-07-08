@@ -192,13 +192,16 @@ public class FoclProject
             }
 
             FoclStruct foclStruct = (FoclStruct) layer;
-            String status = foclStruct.getStatus();
 
-            if (status.equals(FoclConstants.FIELD_VALUE_STATUS_BUILT)) {
+            if (foclStruct.isStatusChanged()) {
                 long id = foclStruct.getRemoteId();
+                String status = foclStruct.getStatus();
                 long updateDate = foclStruct.getStatusUpdateTime() / 1000; // must not be null!
 
-                if (!sendLineStatusOnServer(id, status, updateDate)) {
+                if (sendLineStatusOnServer(id, status, updateDate)) {
+                    foclStruct.setIsStatusChanged(false);
+                    foclStruct.save();
+                } else {
                     String error = "Set status line failed";
                     Log.d(Constants.TAG, error);
                     return error;
@@ -225,7 +228,7 @@ public class FoclProject
             jsonObject.put(FoclConstants.JSON_UPDATE_DT_KEY, updateDate);
 
             String payload = jsonObject.toString();
-            Log.d(Constants.TAG, "payload: " + payload);
+            Log.d(Constants.TAG, "send status, payload: " + payload);
 
             String data = mNet.put(
                     getSetFoclStatusUrl(mCacheUrl), payload, mCacheLogin, mCachePassword);

@@ -43,8 +43,10 @@ public class FoclStruct
     protected long mRemoteId;
     protected String mRegion;
     protected String mDistrict;
+
     protected String mStatus;
     protected Long mStatusUpdateTime = null;
+    protected boolean mIsStatusChanged = false;
 
 
     public FoclStruct(
@@ -90,6 +92,18 @@ public class FoclStruct
     public void setStatusUpdateTime(Long statusUpdateTime)
     {
         mStatusUpdateTime = statusUpdateTime;
+    }
+
+
+    public boolean isStatusChanged()
+    {
+        return mIsStatusChanged;
+    }
+
+
+    public void setIsStatusChanged(boolean isStatusChanged)
+    {
+        mIsStatusChanged = isStatusChanged;
     }
 
 
@@ -196,6 +210,7 @@ public class FoclStruct
         rootConfig.put(FoclConstants.JSON_STATUS_KEY, mStatus);
         rootConfig.put(FoclConstants.JSON_REGION_KEY, mRegion);
         rootConfig.put(FoclConstants.JSON_DISTRICT_KEY, mDistrict);
+        rootConfig.put(FoclConstants.JSON_IS_STATUS_CHANGED_KEY, mIsStatusChanged);
 
         if (null != mStatusUpdateTime) {
             rootConfig.put(FoclConstants.JSON_UPDATE_DT_KEY, mStatusUpdateTime);
@@ -214,6 +229,7 @@ public class FoclStruct
         mStatus = jsonObject.getString(FoclConstants.JSON_STATUS_KEY);
         mRegion = jsonObject.getString(FoclConstants.JSON_REGION_KEY);
         mDistrict = jsonObject.getString(FoclConstants.JSON_DISTRICT_KEY);
+        mIsStatusChanged = jsonObject.getBoolean(FoclConstants.JSON_IS_STATUS_CHANGED_KEY);
 
         if (jsonObject.has(FoclConstants.JSON_UPDATE_DT_KEY)) {
             mStatusUpdateTime = jsonObject.getLong(FoclConstants.JSON_UPDATE_DT_KEY);

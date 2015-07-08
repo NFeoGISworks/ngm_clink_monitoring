@@ -37,10 +37,11 @@ public interface FoclConstants
     String FRAGMENT_DISTANCE_EXCEEDED = "DistanceExceeded";
     String FRAGMENT_YES_NO_DIALOG     = "YesNoDialog";
 
-    String JSON_STATUS_KEY    = "status";
-    String JSON_UPDATE_DT_KEY = "update_dt";
-    String JSON_REGION_KEY    = "region";
-    String JSON_DISTRICT_KEY  = "district";
+    String JSON_STATUS_KEY            = "status";
+    String JSON_UPDATE_DT_KEY         = "update_dt";
+    String JSON_IS_STATUS_CHANGED_KEY = "is_status_changed";
+    String JSON_REGION_KEY            = "region";
+    String JSON_DISTRICT_KEY          = "district";
 
     String JSON_OPTICAL_CABLE_VALUE      = "optical_cable";
     String JSON_FOSC_VALUE               = "fosc";
@@ -110,14 +111,14 @@ public interface FoclConstants
     String FOCL_ACCOUNT_NAME = "Compulink Monitoring";
 
     //TODO: remove it
-    //String FOCL_DEFAULT_ACCOUNT_URL = "http://176.9.38.120/cl2";
-    String FOCL_DEFAULT_ACCOUNT_URL = "https://gis.compulink.ru";
+    String FOCL_DEFAULT_ACCOUNT_URL = "http://176.9.38.120/cl2";
+    //    String FOCL_DEFAULT_ACCOUNT_URL = "https://gis.compulink.ru";
     String FOCL_USER_FOCL_LIST_URL  = "/compulink/mobile/user_focl_list";
     String FOCL_ALL_DICTS_URL       = "/compulink/mobile/all_dicts";
     String FOCL_SET_FOCL_STATUS_URL = "/compulink/mobile/set_focl_status";
 
-    String FOCL_NTP_URL = "pool.ntp.org";
-    int FOCL_NTP_TIMEOUT_MILLIS = 10000;
+    String FOCL_NTP_URL            = "pool.ntp.org";
+    int    FOCL_NTP_TIMEOUT_MILLIS = 10000;
 
     // If you change it, change it in aFileDialog/res/values/strings/daidalos_confirm_move_to_folder
     String FOCL_DATA_DIR  = "ngm_clink_monitoring";

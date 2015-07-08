@@ -1253,6 +1253,7 @@ public class CreateObjectFragment
 
             if (mFoclStruct.getStatus().equals(FoclConstants.FIELD_VALUE_STATUS_PROJECT)) {
                 mFoclStruct.setStatus(FoclConstants.FIELD_VALUE_STATUS_IN_PROGRESS);
+                mFoclStruct.setIsStatusChanged(true);
                 mFoclStruct.save();
             }
 
