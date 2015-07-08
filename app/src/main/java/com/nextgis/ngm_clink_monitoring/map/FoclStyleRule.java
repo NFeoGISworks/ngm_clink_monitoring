@@ -62,7 +62,6 @@ public class FoclStyleRule
         switch (foclLayerType) {
 
             case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CABLE:
-            case FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT:
                 SimpleTextLineStyle ocStyle = new SimpleTextLineStyle();
                 ocStyle.setType(SimpleTextLineStyle.LineStyleSolid);
                 ocStyle.setColor(Color.BLACK);
@@ -72,7 +71,6 @@ public class FoclStyleRule
                 return ocStyle;
 
             case FoclConstants.LAYERTYPE_FOCL_FOSC:
-            case FoclConstants.LAYERTYPE_FOCL_REAL_FOSC:
                 SimpleMarkerStyle foscStyle = new SimpleMarkerStyle();
                 foscStyle.setType(SimpleMarkerStyle.MarkerStyleCircle);
                 foscStyle.setColor(Color.WHITE);
@@ -82,7 +80,6 @@ public class FoclStyleRule
                 return foscStyle;
 
             case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CROSS:
-            case FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CROSS:
                 SimpleMarkerStyle crossStyle = new SimpleMarkerStyle();
                 crossStyle.setType(SimpleMarkerStyle.MarkerStyleCrossedBox);
                 crossStyle.setColor(Color.WHITE);
@@ -92,17 +89,15 @@ public class FoclStyleRule
                 return crossStyle;
 
             case FoclConstants.LAYERTYPE_FOCL_ACCESS_POINT:
-            case FoclConstants.LAYERTYPE_FOCL_REAL_ACCESS_POINT:
-                SimpleMarkerStyle apStyle = new SimpleMarkerStyle();
-                apStyle.setType(SimpleMarkerStyle.MarkerStyleCircle);
-                apStyle.setColor(Color.BLACK);
-                apStyle.setOutlineColor(Color.TRANSPARENT);
-                apStyle.setSize(9);
-                apStyle.setWidth(3);
-                return apStyle;
+                SimpleMarkerStyle aPointStyle = new SimpleMarkerStyle();
+                aPointStyle.setType(SimpleMarkerStyle.MarkerStyleCircle);
+                aPointStyle.setColor(Color.BLACK);
+                aPointStyle.setOutlineColor(Color.TRANSPARENT);
+                aPointStyle.setSize(9);
+                aPointStyle.setWidth(3);
+                return aPointStyle;
 
             case FoclConstants.LAYERTYPE_FOCL_SPECIAL_TRANSITION:
-            case FoclConstants.LAYERTYPE_FOCL_REAL_SPECIAL_TRANSITION_POINT:
                 SimpleTextMarkerStyle epStyle = new SimpleTextMarkerStyle();
                 epStyle.setType(SimpleTextMarkerStyle.MarkerStyleTextCircle);
                 epStyle.setColor(Color.WHITE);
@@ -111,6 +106,51 @@ public class FoclStyleRule
                 epStyle.setSize(9);
                 epStyle.setWidth(3);
                 return epStyle;
+
+            case FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT:
+                SimpleMarkerStyle realOcPointStyle = new SimpleMarkerStyle();
+                realOcPointStyle.setType(SimpleMarkerStyle.MarkerStyleCircle);
+                realOcPointStyle.setColor(Color.BLUE);
+                realOcPointStyle.setOutlineColor(Color.GREEN);
+                realOcPointStyle.setSize(9);
+                realOcPointStyle.setWidth(3);
+                return realOcPointStyle;
+
+            case FoclConstants.LAYERTYPE_FOCL_REAL_FOSC:
+                SimpleMarkerStyle realFoscStyle = new SimpleMarkerStyle();
+                realFoscStyle.setType(SimpleMarkerStyle.MarkerStyleCircle);
+                realFoscStyle.setColor(Color.GREEN);
+                realFoscStyle.setOutlineColor(Color.BLACK);
+                realFoscStyle.setSize(9);
+                realFoscStyle.setWidth(3);
+                return realFoscStyle;
+
+            case FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CROSS:
+                SimpleMarkerStyle realCrossStyle = new SimpleMarkerStyle();
+                realCrossStyle.setType(SimpleMarkerStyle.MarkerStyleCrossedBox);
+                realCrossStyle.setColor(Color.GREEN);
+                realCrossStyle.setOutlineColor(Color.BLACK);
+                realCrossStyle.setSize(9);
+                realCrossStyle.setWidth(3);
+                return realCrossStyle;
+
+            case FoclConstants.LAYERTYPE_FOCL_REAL_ACCESS_POINT:
+                SimpleMarkerStyle realApointStyle = new SimpleMarkerStyle();
+                realApointStyle.setType(SimpleMarkerStyle.MarkerStyleCircle);
+                realApointStyle.setColor(Color.BLACK);
+                realApointStyle.setOutlineColor(Color.GREEN);
+                realApointStyle.setSize(9);
+                realApointStyle.setWidth(3);
+                return realApointStyle;
+
+            case FoclConstants.LAYERTYPE_FOCL_REAL_SPECIAL_TRANSITION_POINT:
+                SimpleMarkerStyle realStPointStyle = new SimpleMarkerStyle();
+                realStPointStyle.setType(SimpleMarkerStyle.MarkerStyleCircle);
+                realStPointStyle.setColor(Color.RED);
+                realStPointStyle.setOutlineColor(Color.GREEN);
+                realStPointStyle.setSize(9);
+                realStPointStyle.setWidth(3);
+                return realStPointStyle;
 
             default:
                 throw new Exception("Unknown value of foclLayerType: " + foclLayerType);
@@ -196,7 +236,6 @@ public class FoclStyleRule
 
         switch (mFoclLayerType) {
             case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CABLE:
-            case FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT:
                 SimpleTextLineStyle ocStyle = (SimpleTextLineStyle) style;
 
                 boolean notDefined = false;
@@ -251,7 +290,6 @@ public class FoclStyleRule
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_FOSC:
-            case FoclConstants.LAYERTYPE_FOCL_REAL_FOSC:
                 SimpleMarkerStyle foscStyle = (SimpleMarkerStyle) style;
 
                 switch (status) {
@@ -267,7 +305,6 @@ public class FoclStyleRule
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CROSS:
-            case FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CROSS:
                 SimpleMarkerStyle crossStyle = (SimpleMarkerStyle) style;
 
                 switch (status) {
@@ -283,7 +320,6 @@ public class FoclStyleRule
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_ACCESS_POINT:
-            case FoclConstants.LAYERTYPE_FOCL_REAL_ACCESS_POINT:
                 SimpleMarkerStyle apStyle = (SimpleMarkerStyle) style;
 
                 switch (status) {
@@ -299,7 +335,6 @@ public class FoclStyleRule
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_SPECIAL_TRANSITION:
-            case FoclConstants.LAYERTYPE_FOCL_REAL_SPECIAL_TRANSITION_POINT:
                 SimpleTextMarkerStyle epStyle = (SimpleTextMarkerStyle) style;
 
                 switch (type) {
@@ -310,6 +345,9 @@ public class FoclStyleRule
                 }
 
                 break;
+
+            default:
+                Log.d(TAG, "Unknown value of mFoclLayerType: " + mFoclLayerType);
         }
     }
 }
