@@ -298,8 +298,10 @@ public class MainActivity
 
                     case FoclConstants.FRAGMENT_OBJECT_TYPES:
                     case FoclConstants.FRAGMENT_CREATE_OBJECT:
-                        foclProject.setVisible(false);
-                        app.getSelectedFoclStruct().setVisible(true);
+                        if (null != app.getSelectedFoclStruct()) {
+                            foclProject.setVisible(false);
+                            app.getSelectedFoclStruct().setVisible(true);
+                        }
                         break;
                 }
 
