@@ -72,6 +72,7 @@ import com.nextgis.ngm_clink_monitoring.fragments.LineListFragment;
 import com.nextgis.ngm_clink_monitoring.fragments.MapFragment;
 import com.nextgis.ngm_clink_monitoring.fragments.Perform1stSyncFragment;
 import com.nextgis.ngm_clink_monitoring.fragments.SyncLoginFragment;
+import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 import com.nextgis.ngm_clink_monitoring.util.FoclLocationUtil;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
@@ -276,6 +277,32 @@ public class MainActivity
                 break;
 
             case VIEW_STATE_MAP:
+                String tag = getMainFragmentTag();
+
+                if (TextUtils.isEmpty(tag)) {
+                    tag = "";
+                }
+
+                final FoclProject foclProject = app.getFoclProject();
+
+                switch (tag) {
+                    case FoclConstants.FRAGMENT_SYNC_LOGIN:
+                    case FoclConstants.FRAGMENT_PERFORM_1ST_SYNC:
+                    case FoclConstants.FRAGMENT_LINE_LIST:
+                    case FoclConstants.FRAGMENT_OBJECT_LIST:
+                    case FoclConstants.FRAGMENT_OBJECT_STATUS:
+                    case FoclConstants.FRAGMENT_MAP:
+                    default:
+                        foclProject.setVisible(true);
+                        break;
+
+                    case FoclConstants.FRAGMENT_OBJECT_TYPES:
+                    case FoclConstants.FRAGMENT_CREATE_OBJECT:
+                        foclProject.setVisible(false);
+                        app.getSelectedFoclStruct().setVisible(true);
+                        break;
+                }
+
                 MapFragment mapFragment =
                         (MapFragment) fm.findFragmentByTag(FoclConstants.FRAGMENT_MAP);
 

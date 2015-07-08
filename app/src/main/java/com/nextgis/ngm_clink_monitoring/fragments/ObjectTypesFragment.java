@@ -247,8 +247,8 @@ public class ObjectTypesFragment
                 (Button) view.findViewById(R.id.btn_special_transition_laying_ot);
 
         GISApplication app = (GISApplication) getActivity().getApplication();
-        final FoclProject foclProject = app.getFoclProject();
 
+        final FoclProject foclProject = app.getFoclProject();
         if (null == foclProject) {
             setBlockedView();
             return view;
@@ -259,11 +259,12 @@ public class ObjectTypesFragment
         } catch (Exception e) {
             mFoclStruct = null;
         }
-
+        app.setSelectedFoclStruct(mFoclStruct);
         if (null == mFoclStruct) {
             setBlockedView();
             return view;
         }
+
 
         mLineName.setText(Html.fromHtml(mFoclStruct.getHtmlFormattedName()));
 

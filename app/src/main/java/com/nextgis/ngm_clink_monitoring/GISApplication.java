@@ -56,6 +56,7 @@ import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.ngm_clink_monitoring.activities.FoclSettingsActivity;
 import com.nextgis.ngm_clink_monitoring.map.FoclLayerFactory;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
+import com.nextgis.ngm_clink_monitoring.map.FoclStruct;
 import com.nextgis.ngm_clink_monitoring.util.FileUtil;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
@@ -88,6 +89,8 @@ public class GISApplication
     protected boolean mIsAccountCreated = false;
     protected boolean mIsAccountDeleted = false;
     protected boolean mIsMapReloaded    = false;
+
+    protected FoclStruct  mSelectedFoclStruct;
 
 
     @Override
@@ -253,6 +256,18 @@ public class GISApplication
         }
 
         return null;
+    }
+
+
+    public FoclStruct getSelectedFoclStruct()
+    {
+        return mSelectedFoclStruct;
+    }
+
+
+    public void setSelectedFoclStruct(FoclStruct selectedFoclStruct)
+    {
+        mSelectedFoclStruct = selectedFoclStruct;
     }
 
 
@@ -578,8 +593,7 @@ public class GISApplication
     {
         mGpsTimeOffset = gpsTimeOffset;
 
-        SharedPreferences sharedPreferences =
-                PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         sharedPreferences.edit()
                 .putLong(FoclSettingsConstantsUI.KEY_PREF_GPS_TIME_OFFSET, mGpsTimeOffset)
                 .commit();

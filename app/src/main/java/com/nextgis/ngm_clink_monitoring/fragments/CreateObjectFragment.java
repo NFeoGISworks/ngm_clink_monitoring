@@ -712,7 +712,7 @@ public class CreateObjectFragment
         } catch (Exception e) {
             mFoclStruct = null;
         }
-
+        app.setSelectedFoclStruct(mFoclStruct);
         if (null == mFoclStruct) {
             return false;
         }
