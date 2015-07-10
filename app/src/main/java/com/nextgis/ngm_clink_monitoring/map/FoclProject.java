@@ -35,6 +35,7 @@ import com.nextgis.maplib.map.LayerFactory;
 import com.nextgis.maplib.map.LayerGroup;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.NetworkUtil;
+import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -512,5 +513,14 @@ public class FoclProject
             e.printStackTrace();
             return getContext().getString(com.nextgis.maplib.R.string.error_download_data);
         }
+    }
+
+
+    @Override
+    protected void onLayerAdded(ILayer layer)
+    {
+        GISApplication app = (GISApplication) mContext.getApplicationContext();
+        layer.setId(app.getMap().getNewId());
+        super.onLayerAdded(layer);
     }
 }
