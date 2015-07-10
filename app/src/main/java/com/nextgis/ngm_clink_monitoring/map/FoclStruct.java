@@ -28,6 +28,7 @@ import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.map.LayerFactory;
 import com.nextgis.maplib.map.LayerGroup;
 import com.nextgis.maplib.util.Constants;
+import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 import org.json.JSONException;
@@ -234,5 +235,14 @@ public class FoclStruct
         if (jsonObject.has(FoclConstants.JSON_UPDATE_DT_KEY)) {
             mStatusUpdateTime = jsonObject.getLong(FoclConstants.JSON_UPDATE_DT_KEY);
         }
+    }
+
+
+    @Override
+    protected void onLayerAdded(ILayer layer)
+    {
+        GISApplication app = (GISApplication) mContext.getApplicationContext();
+        layer.setId(app.getMap().getNewId());
+        super.onLayerAdded(layer);
     }
 }
