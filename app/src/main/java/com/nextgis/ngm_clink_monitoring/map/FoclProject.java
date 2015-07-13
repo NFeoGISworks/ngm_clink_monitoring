@@ -315,7 +315,6 @@ public class FoclProject
             foclStruct.setName(structName);
             foclStruct.setRegion(structRegion);
             foclStruct.setDistrict(structDistrict);
-            foclStruct.setVisible(true);
 
             addLayer(foclStruct);
         }
@@ -364,7 +363,6 @@ public class FoclProject
             foclVectorLayer.setName(layerName);
             foclVectorLayer.setFoclLayerType(foclLayerType);
             foclVectorLayer.setAccountName(mAccountName);
-            foclVectorLayer.setVisible(true);
             foclVectorLayer.setSyncType(Constants.SYNC_ALL);
             foclStruct.addLayer(foclVectorLayer);
 

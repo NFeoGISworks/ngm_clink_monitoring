@@ -229,7 +229,6 @@ public class GISApplication
 
         foclProject.setName(FoclConstants.FOCL_PROJECT);
         foclProject.setAccountName(account.name);
-        foclProject.setVisible(true);
 
         mMap.addLayer(foclProject);
         mMap.save();

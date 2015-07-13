@@ -304,7 +304,10 @@ public class MapFragment
             int id,
             float percent)
     {
-        //TODO: invalidate map or listen event in map?
+        if (percent >= 1.0f) {
+            mMapView.buffer();
+            mMapView.invalidate();
+        }
     }
 
 
@@ -449,6 +452,8 @@ public class MapFragment
                 setCurrentCenter(mGpsEventSource.getLastKnownLocation());
                 locateCurrentPositionAndZoom();
             }
+
+            mMapView.drawMapDrawable();
         }
     }
 
