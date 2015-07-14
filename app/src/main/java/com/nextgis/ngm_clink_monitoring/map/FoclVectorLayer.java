@@ -167,7 +167,7 @@ public class FoclVectorLayer
         GISApplication app = (GISApplication) mContext.getApplicationContext();
 
         // 1. get remote changes
-        if (app.hasFullSync() && !getChangesFromServer(authority, syncResult)) {
+        if (app.isFullSync() && !getChangesFromServer(authority, syncResult)) {
             Log.d(TAG, "Get remote changes failed");
             return;
         }

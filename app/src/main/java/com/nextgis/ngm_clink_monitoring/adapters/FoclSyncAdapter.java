@@ -36,9 +36,11 @@ import android.util.Log;
 import com.nextgis.maplib.datasource.ngw.SyncAdapter;
 import com.nextgis.maplib.map.LayerGroup;
 import com.nextgis.maplib.util.Constants;
+import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.activities.MainActivity;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
+import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 
 
 public class FoclSyncAdapter
@@ -82,25 +84,26 @@ public class FoclSyncAdapter
         // For service debug
 //        android.os.Debug.waitForDebugger();
 
-        Context context = getContext();
-        sendNotification(context, NOTIFICATION_START, null);
+        GISApplication app = (GISApplication) getContext().getApplicationContext();
+        sendNotification(app, NOTIFICATION_START, null);
+        app.setFullSync(bundle.getBoolean(FoclConstants.KEY_IS_FULL_SYNC, false));
 
         super.onPerformSync(account, bundle, authority, contentProviderClient, syncResult);
 
         if (isCanceled()) {
             sendNotification(
-                    context, FoclSyncAdapter.NOTIFICATION_CANCELED,
-                    context.getString(R.string.sync_canceled));
+                    app, FoclSyncAdapter.NOTIFICATION_CANCELED,
+                    app.getString(R.string.sync_canceled));
             Log.d(Constants.TAG, "FoclSyncAdapter - NOTIFICATION_CANCELED is sent");
             return;
         }
 
         if (null != mError && mError.length() > 0) {
-            sendNotification(context, NOTIFICATION_ERROR, mError);
+            sendNotification(app, NOTIFICATION_ERROR, mError);
             return;
         }
 
-        sendNotification(context, NOTIFICATION_FINISH, null);
+        sendNotification(app, NOTIFICATION_FINISH, null);
     }
 
 

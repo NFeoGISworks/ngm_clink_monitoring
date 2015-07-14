@@ -111,8 +111,8 @@ public interface FoclConstants
     String FOCL_ACCOUNT_NAME = "Compulink Monitoring";
 
     //TODO: remove it
-    String FOCL_DEFAULT_ACCOUNT_URL = "http://176.9.38.120/cl2";
-    //    String FOCL_DEFAULT_ACCOUNT_URL = "https://gis.compulink.ru";
+    // String FOCL_DEFAULT_ACCOUNT_URL = "http://176.9.38.120/cl2";
+    String FOCL_DEFAULT_ACCOUNT_URL = "https://gis.compulink.ru";
     String FOCL_USER_FOCL_LIST_URL  = "/compulink/mobile/user_focl_list";
     String FOCL_ALL_DICTS_URL       = "/compulink/mobile/all_dicts";
     String FOCL_SET_FOCL_STATUS_URL = "/compulink/mobile/set_focl_status";
@@ -139,4 +139,6 @@ public interface FoclConstants
     String ACCURACY_CIRCULAR_ERROR_STR     = "CE50";
 
     String TEMP_PHOTO_FILE_PREFIX = "temp-photo-";
+
+    String KEY_IS_FULL_SYNC = "is_full_sync";
 }

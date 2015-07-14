@@ -92,6 +92,8 @@ public class GISApplication
 
     protected FoclStruct mSelectedFoclStruct;
 
+    protected boolean mIsFullSync;
+
 
     @Override
     public void onCreate()
@@ -504,29 +506,22 @@ public class GISApplication
         Bundle settingsBundle = new Bundle();
         settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
         settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-
-        if (isFullSync) { // minimize record count
-            setFullSync(true);
-        }
+        settingsBundle.putBoolean(FoclConstants.KEY_IS_FULL_SYNC, isFullSync);
 
         ContentResolver.requestSync(account, FoclSettingsConstantsUI.AUTHORITY, settingsBundle);
         return true;
     }
 
 
-    protected void setFullSync(boolean isFullSync)
+    public void setFullSync(boolean isFullSync)
     {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        sharedPreferences.edit()
-                .putBoolean(FoclSettingsConstantsUI.KEY_PREF_IS_FULL_SYNC, isFullSync)
-                .commit();
+        mIsFullSync = isFullSync;
     }
 
 
-    public boolean hasFullSync()
+    public boolean isFullSync()
     {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        return sharedPreferences.getBoolean(FoclSettingsConstantsUI.KEY_PREF_IS_FULL_SYNC, false);
+        return mIsFullSync;
     }
 
 
@@ -735,10 +730,6 @@ public class GISApplication
                 Context context,
                 Intent intent)
         {
-            if (hasFullSync()) {
-                setFullSync(false);
-            }
-
             if (isRanAsService()) {
                 return;
             }
@@ -759,6 +750,7 @@ public class GISApplication
                     break;
 
                 case SyncAdapter.SYNC_CHANGES:
+                default:
                     break;
             }
         }
