@@ -608,12 +608,13 @@ public class CreateObjectFragment
                         } else {
                             mAccurateLocation = null;
 
+// fix for #158
 //                            if (1 == mTakingLoopCount) {
-                                if (CreateObjectFragment.this.isResumed()) {
-                                    showChangeLocationDialog();
-                                } else {
-                                    mShowChangeLocationDialog = true;
-                                }
+                            if (CreateObjectFragment.this.isResumed()) {
+                                showChangeLocationDialog();
+                            } else {
+                                mShowChangeLocationDialog = true;
+                            }
 //                            }
 
                             startLocationTaking();
@@ -952,8 +953,6 @@ public class CreateObjectFragment
     {
         GISApplication app = (GISApplication) getActivity().getApplication();
 
-        BitmapUtil.writeLocationToExif(tempPhotoFile, mAccurateLocation, app.getGpsTimeOffset());
-
         ContentResolver contentResolver = app.getContentResolver();
         String photoFileName = getPhotoFileName(tempPhotoFile);
 
@@ -1000,6 +999,8 @@ public class CreateObjectFragment
 
             // write EXIF to new file
             BitmapUtil.copyExifData(tempPhotoFile, tempAttachFile);
+            BitmapUtil.writeLocationToExif(
+                    tempAttachFile, mAccurateLocation, app.getGpsTimeOffset());
 
             ExifInterface attachExif = new ExifInterface(tempAttachFile.getCanonicalPath());
 
@@ -1021,12 +1022,16 @@ public class CreateObjectFragment
         }
 
         if (app.isOriginalPhotoSaving()) {
+            BitmapUtil.writeLocationToExif(
+                    tempPhotoFile, mAccurateLocation, app.getGpsTimeOffset());
             File origPhotoFile = new File(getDailyPhotoFolder(), photoFileName);
+
             if (!com.nextgis.maplib.util.FileUtil.move(tempPhotoFile, origPhotoFile)) {
                 throw new IOException(
                         "Save original photo failed, tempPhotoFile: " +
                                 tempPhotoFile.getAbsolutePath());
             }
+
         } else {
             tempPhotoFile.delete();
         }
