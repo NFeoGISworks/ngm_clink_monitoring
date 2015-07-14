@@ -155,7 +155,7 @@ public class FoclStruct
         }
 
         if (!isEmptyRegion && !isEmptyDistrict) {
-            lineName += ", ";
+            lineName += "<br>";
         }
 
         if (!isEmptyDistrict) {
