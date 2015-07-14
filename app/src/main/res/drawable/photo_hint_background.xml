@@ -36,8 +36,8 @@
     -->
 
     <stroke
+        android:width="2dp"
         android:color="@color/photo_hint_stroke_color"
-        android:width="4dp"
         />
 
 </shape>

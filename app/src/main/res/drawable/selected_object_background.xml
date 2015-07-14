@@ -34,8 +34,8 @@
         />
 
     <stroke
+        android:width="2dp"
         android:color="@color/selected_object_stroke_color"
-        android:width="4dp"
         />
 
 </shape>
