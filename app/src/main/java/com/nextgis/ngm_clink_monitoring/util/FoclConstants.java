@@ -24,18 +24,19 @@ package com.nextgis.ngm_clink_monitoring.util;
 
 public interface FoclConstants
 {
-    String FRAGMENT_SYNC_LOGIN        = "NGWLogin";
-    String FRAGMENT_PERFORM_1ST_SYNC  = "Perform1stSync";
-    String FRAGMENT_STATUS_BAR        = "StatusBar";
-    String FRAGMENT_OBJECT_TYPES      = "ObjectTypes";
-    String FRAGMENT_LINE_LIST         = "LineList";
-    String FRAGMENT_OBJECT_LIST       = "ObjectList";
-    String FRAGMENT_OBJECT_STATUS     = "ObjectStatus";
-    String FRAGMENT_CREATE_OBJECT     = "CreateObject";
-    String FRAGMENT_MAP               = "Map";
-    String FRAGMENT_ATTRIBUTES        = "Attributes";
-    String FRAGMENT_DISTANCE_EXCEEDED = "DistanceExceeded";
-    String FRAGMENT_YES_NO_DIALOG     = "YesNoDialog";
+    String FRAGMENT_SYNC_LOGIN             = "NGWLogin";
+    String FRAGMENT_PERFORM_1ST_SYNC       = "Perform1stSync";
+    String FRAGMENT_STATUS_BAR             = "StatusBar";
+    String FRAGMENT_OBJECT_TYPES           = "ObjectTypes";
+    String FRAGMENT_LINE_LIST              = "LineList";
+    String FRAGMENT_OBJECT_LIST            = "ObjectList";
+    String FRAGMENT_OBJECT_STATUS          = "ObjectStatus";
+    String FRAGMENT_CREATE_OBJECT          = "CreateObject";
+    String FRAGMENT_MAP                    = "Map";
+    String FRAGMENT_ATTRIBUTES             = "Attributes";
+    String FRAGMENT_DISTANCE_EXCEEDED      = "DistanceExceeded";
+    String FRAGMENT_YES_NO_DIALOG          = "YesNoDialog";
+    String FRAGMENT_SET_LINE_STATUS_DIALOG = "SetLineStatusDialog";
 
     String JSON_STATUS_KEY            = "status";
     String JSON_UPDATE_DT_KEY         = "update_dt";
@@ -111,8 +112,8 @@ public interface FoclConstants
     String FOCL_ACCOUNT_NAME = "Compulink Monitoring";
 
     //TODO: remove it
-    // String FOCL_DEFAULT_ACCOUNT_URL = "http://176.9.38.120/cl2";
-    String FOCL_DEFAULT_ACCOUNT_URL = "https://gis.compulink.ru";
+     String FOCL_DEFAULT_ACCOUNT_URL = "http://176.9.38.120/cl2";
+//    String FOCL_DEFAULT_ACCOUNT_URL = "https://gis.compulink.ru";
     String FOCL_USER_FOCL_LIST_URL  = "/compulink/mobile/user_focl_list";
     String FOCL_ALL_DICTS_URL       = "/compulink/mobile/all_dicts";
     String FOCL_SET_FOCL_STATUS_URL = "/compulink/mobile/set_focl_status";

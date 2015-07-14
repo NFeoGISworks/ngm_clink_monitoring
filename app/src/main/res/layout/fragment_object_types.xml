@@ -62,17 +62,6 @@
                     />
 
                 <TextView
-                    android:text="@string/line_status_colon"
-                    style="@style/comboboxSmallCaptionStyle"
-                    />
-
-                <com.nextgis.ngm_clink_monitoring.fragments.StatusComboboxControl
-                    android:id="@+id/line_status_ot"
-                    android:prompt="@string/line_status_hint"
-                    style="@style/comboboxStyle"
-                    />
-
-                <TextView
                     android:id="@+id/work_type_caption_ot"
                     android:layout_marginBottom="10dp"
                     android:text="@string/select_work_type"

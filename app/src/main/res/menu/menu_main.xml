@@ -71,6 +71,14 @@
         />
 
     <item
+        android:id="@+id/menu_line_status"
+        android:title="@string/action_line_status"
+        android:orderInCategory="20"
+        app:showAsAction="never"
+        android:visible="false"
+        />
+
+    <item
         android:id="@+id/menu_settings"
         android:title="@string/action_settings"
         android:orderInCategory="30"

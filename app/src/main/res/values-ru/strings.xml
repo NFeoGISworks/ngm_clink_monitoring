@@ -31,6 +31,7 @@
     <string name="action_refresh">Обновить</string>
     <string name="action_full_sync">Полная синхронизация</string>
     <string name="action_sync">Синхронизация</string>
+    <string name="action_line_status">Статус линии</string>
     <string name="action_settings">Настройки</string>
     <string name="action_sync_settings">Настройки синхронизации</string>
     <string name="action_about">О программе</string>
@@ -209,5 +210,7 @@
     <string name="change_line_status_confirmation">Вы действительно хотите изменить статус линии?</string>
 
     <string name="empty_field_warning">Поле \"%1$s\" должно быть заполнено.</string>
+
+    <string name="status_setting">Установка статуса</string>
 
 </resources>

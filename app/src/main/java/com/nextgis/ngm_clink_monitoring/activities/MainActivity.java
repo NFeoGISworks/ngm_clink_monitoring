@@ -67,6 +67,7 @@ import com.nextgis.maplib.util.AccountUtil;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
+import com.nextgis.ngm_clink_monitoring.dialogs.SetLineStatusDialog;
 import com.nextgis.ngm_clink_monitoring.dialogs.YesNoDialog;
 import com.nextgis.ngm_clink_monitoring.fragments.LineListFragment;
 import com.nextgis.ngm_clink_monitoring.fragments.MapFragment;
@@ -362,6 +363,8 @@ public class MainActivity
 
     public void setBarsView(String toolbarTitle)
     {
+        switchMenuView();
+
         // TODO: remove commented
         if (null == mToolbar /*|| null == mStatusBarFragment*/) {
             return;
@@ -595,11 +598,14 @@ public class MainActivity
                     case FoclConstants.FRAGMENT_SYNC_LOGIN:
                     case FoclConstants.FRAGMENT_PERFORM_1ST_SYNC:
                     case FoclConstants.FRAGMENT_LINE_LIST:
-                    case FoclConstants.FRAGMENT_OBJECT_TYPES:
                     case FoclConstants.FRAGMENT_OBJECT_LIST:
                     case FoclConstants.FRAGMENT_OBJECT_STATUS:
                     case FoclConstants.FRAGMENT_MAP:
                     default:
+                        break;
+
+                    case FoclConstants.FRAGMENT_OBJECT_TYPES:
+                        menu.findItem(R.id.menu_line_status).setVisible(true);
                         break;
 
                     case FoclConstants.FRAGMENT_CREATE_OBJECT:
@@ -658,6 +664,10 @@ public class MainActivity
 
             case R.id.menu_sync:
                 onMenuSyncClick(false);
+                return true;
+
+            case R.id.menu_line_status:
+                onMenuLineStatusClick();
                 return true;
 
             case R.id.menu_settings:
@@ -786,6 +796,14 @@ public class MainActivity
         }
 
         app.runSyncManually(isFullSync);
+    }
+
+
+    public void onMenuLineStatusClick()
+    {
+        SetLineStatusDialog lineStatusDialog = new SetLineStatusDialog();
+        lineStatusDialog.setKeepInstance(true)
+                .show(getSupportFragmentManager(), FoclConstants.FRAGMENT_SET_LINE_STATUS_DIALOG);
     }
 
 

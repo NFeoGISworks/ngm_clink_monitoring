@@ -77,10 +77,8 @@
 
     -->
 
-    <!--Brown color palettes--><!--http://www.google.co.uk/design/spec/style/color.html#color-color-palette -->
-    <color name="color_2nd_500">#795548</color>
-
     <!--Teal color palettes--><!--http://www.google.co.uk/design/spec/style/color.html#color-color-palette -->
+    <color name="color_2nd_500">#009688</color>
 
 <!--
     <color name="color_2nd_500">#009688</color>

@@ -129,6 +129,8 @@ public class FoclSyncAdapter
             // Second, we update FoclProject, can delete some or all layers
             FoclProject foclProject = (FoclProject) layerGroup;
             mError = foclProject.sync();
+
+            Log.d(Constants.TAG, "FoclSyncAdapter - downloading is finished");
         }
     }
 

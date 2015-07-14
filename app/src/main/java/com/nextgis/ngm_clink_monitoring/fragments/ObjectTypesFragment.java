@@ -22,7 +22,6 @@
 
 package com.nextgis.ngm_clink_monitoring.fragments;
 
-import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -31,15 +30,11 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.TextView;
-import com.nextgis.maplib.location.GpsEventSource;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.activities.MainActivity;
-import com.nextgis.ngm_clink_monitoring.dialogs.YesNoDialog;
-import com.nextgis.ngm_clink_monitoring.map.FoclDictItem;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 import com.nextgis.ngm_clink_monitoring.map.FoclStruct;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
@@ -52,24 +47,11 @@ public class ObjectTypesFragment
 
     protected TextView mLineName;
 
-    protected StatusComboboxControl mLineStatus;
-    protected int                   mOldStatusSelection;
-    protected int                   mNewStatusSelection;
-    protected long                  mComboboxRestartTime;
-    protected boolean mIsOnInitStatus   = false;
-    protected boolean mIsOnYesStatus    = false;
-    protected boolean mIsOnNoStatus     = false;
-    protected boolean mIsOnCancelStatus = false;
-
-    protected AdapterView.OnItemSelectedListener mOnStatusItemSelectedListener;
-
     protected Button mBtnCableLaying;
     protected Button mBtnFoscMounting;
     protected Button mBtnCrossMounting;
     protected Button mBtnAccessPointMounting;
     protected Button mBtnSpecialTransitionLaying;
-
-    protected FoclStruct mFoclStruct;
 
 
     public void setParams(Integer lineId)
@@ -83,168 +65,6 @@ public class ObjectTypesFragment
     {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-
-        mComboboxRestartTime = System.currentTimeMillis();
-        mOnStatusItemSelectedListener = new AdapterView.OnItemSelectedListener()
-        {
-            @Override
-            public void onItemSelected(
-                    AdapterView<?> parent,
-                    View view,
-                    final int position,
-                    long id)
-            {
-                // TODO: begin -- bug #155, remove it
-                mFoclStruct.setStatus(mLineStatus.getValue());
-                mFoclStruct.setIsStatusChanged(true);
-
-                GISApplication app = (GISApplication) getActivity().getApplication();
-                GpsEventSource gps = app.getGpsEventSource();
-                Location lastLoc = gps.getLastKnownLocation();
-
-                long time;
-                if (null != lastLoc) {
-                    time = lastLoc.getTime();
-                } else {
-                    time = System.currentTimeMillis();
-                }
-
-                mFoclStruct.setStatusUpdateTime(time);
-                mFoclStruct.save();
-
-                if (true) {
-                    return;
-                }
-                // TODO: end -- bug #155, remove it
-
-
-                if (mIsOnInitStatus) {
-                    mIsOnInitStatus = false;
-                    return;
-                }
-
-                if (mIsOnYesStatus) {
-                    mIsOnYesStatus = false;
-                    return;
-                }
-
-                if (mIsOnNoStatus) {
-                    mIsOnNoStatus = false;
-                    return;
-                }
-
-                if (mIsOnCancelStatus) {
-                    mIsOnCancelStatus = false;
-                    return;
-                }
-
-                // http://stackoverflow.com/a/7922086/4727406
-                if (System.currentTimeMillis() - mComboboxRestartTime < 200) {
-                    // System generated event e.g. orientation change, activity startup. So ignore
-                    return;
-                }
-
-
-                mNewStatusSelection = mLineStatus.getSelectedItemPosition();
-
-                YesNoDialog yesNoDialog = new YesNoDialog();
-                yesNoDialog.setKeepInstance(true)
-                        .setIcon(R.drawable.ic_action_warning)
-                        .setTitle(R.string.confirmation)
-                        .setMessage(R.string.change_line_status_confirmation)
-                        .setPositiveText(R.string.yes)
-                        .setNegativeText(R.string.no)
-                        .setOnPositiveClickedListener(
-                                new YesNoDialog.OnPositiveClickedListener()
-                                {
-                                    @Override
-                                    public void onPositiveClicked()
-                                    {
-                                        mIsOnYesStatus = true;
-                                        mFoclStruct.setStatus(mLineStatus.getValue());
-                                        mFoclStruct.setIsStatusChanged(true);
-
-                                        GISApplication app =
-                                                (GISApplication) getActivity().getApplication();
-                                        GpsEventSource gps = app.getGpsEventSource();
-                                        Location lastLoc = gps.getLastKnownLocation();
-
-                                        long time;
-                                        if (null != lastLoc) {
-                                            time = lastLoc.getTime();
-                                        } else {
-                                            time = System.currentTimeMillis();
-                                        }
-
-                                        mFoclStruct.setStatusUpdateTime(time);
-                                        mFoclStruct.save();
-                                    }
-                                })
-                        .setOnNegativeClickedListener(
-                                new YesNoDialog.OnNegativeClickedListener()
-                                {
-                                    @Override
-                                    public void onNegativeClicked()
-                                    {
-                                        mIsOnNoStatus = true;
-                                    }
-                                })
-                        .setOnCancelListener(
-                                new YesNoDialog.OnCancelListener()
-                                {
-                                    @Override
-                                    public void onCancel()
-                                    {
-                                        mIsOnCancelStatus = true;
-                                    }
-                                })
-                        .setOnDismissListener(
-                                new YesNoDialog.OnDismissListener()
-                                {
-                                    @Override
-                                    public void onDismiss()
-                                    {
-                                        int currPos = mLineStatus.getSelectedItemPosition();
-
-                                        if (mIsOnYesStatus) {
-                                            mOldStatusSelection = mNewStatusSelection;
-
-                                            if (currPos == mNewStatusSelection) {
-                                                mIsOnYesStatus = false;
-                                            } else {
-                                                mLineStatus.setSelection(mNewStatusSelection);
-                                            }
-                                        }
-
-                                        if (mIsOnNoStatus) {
-                                            if (currPos == mOldStatusSelection) {
-                                                mIsOnNoStatus = false;
-                                            } else {
-                                                mLineStatus.setSelection(mOldStatusSelection);
-                                            }
-                                        }
-
-                                        if (mIsOnCancelStatus) {
-                                            if (currPos == mOldStatusSelection) {
-                                                mIsOnCancelStatus = false;
-                                            } else {
-                                                mLineStatus.setSelection(mOldStatusSelection);
-                                            }
-                                        }
-                                    }
-                                });
-
-                yesNoDialog.show(
-                        getActivity().getSupportFragmentManager(),
-                        FoclConstants.FRAGMENT_YES_NO_DIALOG + "NewStatusSelected");
-            }
-
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent)
-            {
-            }
-        };
     }
 
 
@@ -254,16 +74,12 @@ public class ObjectTypesFragment
             ViewGroup container,
             Bundle savedInstanceState)
     {
-        mComboboxRestartTime = System.currentTimeMillis();
-
         final MainActivity activity = (MainActivity) getActivity();
         activity.setBarsView(null);
 
         final View view = inflater.inflate(R.layout.fragment_object_types, null);
 
         mLineName = (TextView) view.findViewById(R.id.line_name_ot);
-        mLineStatus = (StatusComboboxControl) view.findViewById(R.id.line_status_ot);
-
         mBtnCableLaying = (Button) view.findViewById(R.id.btn_cable_laying_ot);
         mBtnFoscMounting = (Button) view.findViewById(R.id.btn_fosc_mounting_ot);
         mBtnCrossMounting = (Button) view.findViewById(R.id.btn_cross_mounting_ot);
@@ -279,35 +95,21 @@ public class ObjectTypesFragment
             return view;
         }
 
+        FoclStruct foclStruct;
         try {
-            mFoclStruct = (FoclStruct) foclProject.getLayer(mLineId);
+            foclStruct = (FoclStruct) foclProject.getLayer(mLineId);
         } catch (Exception e) {
-            mFoclStruct = null;
+            foclStruct = null;
         }
-        app.setSelectedFoclStruct(mFoclStruct);
-        if (null == mFoclStruct) {
+        app.setSelectedFoclStruct(foclStruct);
+        if (null == foclStruct) {
             setBlockedView();
             return view;
         }
 
 
-        mLineName.setText(Html.fromHtml(mFoclStruct.getHtmlFormattedName()));
+        mLineName.setText(Html.fromHtml(foclStruct.getHtmlFormattedName()));
 
-        FoclDictItem dictItem = foclProject.getFoclDitcs().get(FoclConstants.FIELD_PROJ_STATUSES);
-        mLineStatus.setValues(dictItem);
-        mLineStatus.setOnItemSelectedListener(mOnStatusItemSelectedListener);
-        mOldStatusSelection = StatusComboboxControl.getStausId(mFoclStruct.getStatus());
-
-        // workaround, http://stackoverflow.com/a/17370964/4727406
-        mLineStatus.post(
-                new Runnable()
-                {
-                    public void run()
-                    {
-                        mIsOnInitStatus = true;
-                        mLineStatus.setSelection(mOldStatusSelection);
-                    }
-                });
 
         View.OnClickListener buttonOnClickListener = new View.OnClickListener()
         {
@@ -373,7 +175,6 @@ public class ObjectTypesFragment
     protected void setBlockedView()
     {
         mLineName.setText("");
-        mLineStatus.setEnabled(false);
         mBtnCableLaying.setEnabled(false);
         mBtnFoscMounting.setEnabled(false);
         mBtnCrossMounting.setEnabled(false);
