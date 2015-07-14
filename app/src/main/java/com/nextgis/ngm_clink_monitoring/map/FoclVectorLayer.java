@@ -23,18 +23,21 @@
 package com.nextgis.ngm_clink_monitoring.map;
 
 import android.content.Context;
+import android.content.SyncResult;
 import android.database.sqlite.SQLiteException;
 import android.util.Log;
 import com.nextgis.maplib.api.IStyleRule;
 import com.nextgis.maplib.display.RuleFeatureRenderer;
 import com.nextgis.maplib.display.Style;
 import com.nextgis.maplib.map.NGWVectorLayer;
+import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 
+import static com.nextgis.maplib.util.Constants.SYNC_NONE;
 import static com.nextgis.maplib.util.Constants.TAG;
 
 
@@ -149,5 +152,34 @@ public class FoclVectorLayer
     {
         mFoclLayerType = jsonObject.getInt(JSON_FOCL_TYPE_KEY);
         super.fromJSON(jsonObject);
+    }
+
+
+    @Override
+    public void sync(
+            String authority,
+            SyncResult syncResult)
+    {
+        if (0 != (mSyncType & SYNC_NONE) || !mIsInitialized) {
+            return;
+        }
+
+        GISApplication app = (GISApplication) mContext.getApplicationContext();
+
+        // 1. get remote changes
+        if (app.hasFullSync() && !getChangesFromServer(authority, syncResult)) {
+            Log.d(TAG, "Get remote changes failed");
+            return;
+        }
+
+        if(isRemoteReadOnly()) {
+            return;
+        }
+
+        // 2. send current changes
+        if (!sendLocalChanges(syncResult)) {
+            Log.d(TAG, "Set local changes failed");
+            return;
+        }
     }
 }

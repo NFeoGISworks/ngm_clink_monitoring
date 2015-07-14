@@ -90,7 +90,7 @@ public class GISApplication
     protected boolean mIsAccountDeleted = false;
     protected boolean mIsMapReloaded    = false;
 
-    protected FoclStruct  mSelectedFoclStruct;
+    protected FoclStruct mSelectedFoclStruct;
 
 
     @Override
@@ -467,7 +467,7 @@ public class GISApplication
                     @Override
                     public void run()
                     {
-                        runSync();
+                        runSync(false);
                     }
                 }, getSyncPeriodSec() * 1000);
 
@@ -482,14 +482,14 @@ public class GISApplication
     }
 
 
-    public boolean runSyncManually()
+    public boolean runSyncManually(boolean isFullSync)
     {
         refreshSyncQueue();
-        return runSync();
+        return runSync(isFullSync);
     }
 
 
-    protected boolean runSync()
+    protected boolean runSync(boolean isFullSync)
     {
         if (!isNetworkAvailable()) {
             return false;
@@ -505,8 +505,28 @@ public class GISApplication
         settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
         settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
 
+        if (isFullSync) { // minimize record count
+            setFullSync(true);
+        }
+
         ContentResolver.requestSync(account, FoclSettingsConstantsUI.AUTHORITY, settingsBundle);
         return true;
+    }
+
+
+    protected void setFullSync(boolean isFullSync)
+    {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences.edit()
+                .putBoolean(FoclSettingsConstantsUI.KEY_PREF_IS_FULL_SYNC, isFullSync)
+                .commit();
+    }
+
+
+    public boolean hasFullSync()
+    {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        return sharedPreferences.getBoolean(FoclSettingsConstantsUI.KEY_PREF_IS_FULL_SYNC, false);
     }
 
 
@@ -612,7 +632,7 @@ public class GISApplication
             if (isAutoSyncEnabled()) {
                 startPeriodicSync();
             } else {
-                runSyncManually();
+                runSyncManually(false);
             }
 
             if (null != mOnAccountAddedListener) {
@@ -715,6 +735,10 @@ public class GISApplication
                 Context context,
                 Intent intent)
         {
+            if (hasFullSync()) {
+                setFullSync(false);
+            }
+
             if (isRanAsService()) {
                 return;
             }

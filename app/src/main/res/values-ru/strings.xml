@@ -29,7 +29,8 @@
     <string name="action_map">Карта</string>
     <string name="action_locate">Местоположение</string>
     <string name="action_refresh">Обновить</string>
-    <string name="action_sync">Синхронизировать</string>
+    <string name="action_full_sync">Полная синхронизация</string>
+    <string name="action_sync">Синхронизация</string>
     <string name="action_settings">Настройки</string>
     <string name="action_sync_settings">Настройки синхронизации</string>
     <string name="action_about">О программе</string>

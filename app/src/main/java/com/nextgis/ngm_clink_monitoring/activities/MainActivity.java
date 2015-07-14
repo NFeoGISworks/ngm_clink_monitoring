@@ -585,6 +585,7 @@ public class MainActivity
             case VIEW_STATE_1ST_SYNC:
                 menu.findItem(R.id.menu_map).setEnabled(false);
             case VIEW_STATE_LOGIN:
+                menu.findItem(R.id.menu_full_sync).setEnabled(false);
                 menu.findItem(R.id.menu_sync).setEnabled(false);
                 break;
 
@@ -616,6 +617,7 @@ public class MainActivity
         }
 
         if (mIsSyncing) {
+            menu.findItem(R.id.menu_full_sync).setEnabled(false);
             menu.findItem(R.id.menu_sync).setEnabled(false);
         }
 
@@ -650,8 +652,12 @@ public class MainActivity
                 onMenuMapClick();
                 return true;
 
+            case R.id.menu_full_sync:
+                onMenuSyncClick(true);
+                return true;
+
             case R.id.menu_sync:
-                onMenuSyncClick();
+                onMenuSyncClick(false);
                 return true;
 
             case R.id.menu_settings:
@@ -765,7 +771,7 @@ public class MainActivity
     }
 
 
-    public void onMenuSyncClick()
+    public void onMenuSyncClick(boolean isFullSync)
     {
         GISApplication app = (GISApplication) getApplication();
 
@@ -779,7 +785,7 @@ public class MainActivity
             return;
         }
 
-        app.runSyncManually();
+        app.runSyncManually(isFullSync);
     }
 
 

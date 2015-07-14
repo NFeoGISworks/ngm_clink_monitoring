@@ -55,6 +55,15 @@
         />
 
     <item
+        android:id="@+id/menu_full_sync"
+        android:title="@string/action_full_sync"
+        android:orderInCategory="20"
+        app:showAsAction="never"
+        />
+
+<!-- TODO: remove it -->
+
+    <item
         android:id="@+id/menu_sync"
         android:title="@string/action_sync"
         android:orderInCategory="20"
