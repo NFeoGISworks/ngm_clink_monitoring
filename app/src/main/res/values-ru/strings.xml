@@ -199,7 +199,7 @@
     <string name="warning">Предупреждение</string>
     <string name="coordinates_refining_process">Идет процесс определения координат. Дождитесь окончания.</string>
     <string name="coordinates_not_defined_try_again">Координаты не определены. Убедитесь, что имеется хорошая видимость неба, и повторите попытку.</string>
-    <string name="coordinates_not_defined_change_location">Координаты не моугт быть определены. Пожалуйста, измените Ваше местоположение и попробуйте еще раз.</string>
+    <string name="coordinates_not_defined_change_location">Координаты не могут быть определены. Пожалуйста, измените Ваше местоположение и попробуйте еще раз.</string>
     <string name="determine_coordinates">Определить координаты</string>
     <string name="starting_point">Начальная точка</string>
     <string name="distance_from_prev_point_exceeded">Расстояние от предыдущей точки съема координат превышает максимально допустимое - 200 м.\n\nПереместитесь ближе к предыдущей точке съема координат и переснимите координаты или отметьте новую начальную точку прокладки кабеля.</string>
