@@ -532,6 +532,10 @@ public class MapFragment
 
     protected void setCurrentCenter(Location location)
     {
+        if (null == location) {
+            return;
+        }
+
         if (mCurrentCenter == null) {
             mCurrentCenter = new GeoPoint();
         }
