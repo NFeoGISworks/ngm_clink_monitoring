@@ -197,6 +197,11 @@ public class FoclProject
             if (foclStruct.isStatusChanged()) {
                 long id = foclStruct.getRemoteId();
                 String status = foclStruct.getStatus();
+
+                if (null == foclStruct.getStatusUpdateTime()) {
+                    continue;
+                }
+
                 long updateDate = foclStruct.getStatusUpdateTime() / 1000; // must not be null!
 
                 if (sendLineStatusOnServer(id, status, updateDate)) {
