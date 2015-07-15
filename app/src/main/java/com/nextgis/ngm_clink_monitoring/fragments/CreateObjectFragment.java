@@ -281,7 +281,7 @@ public class CreateObjectFragment
         }
 
         setObjectCount();
-        mLineName.setText(Html.fromHtml(mFoclStruct.getHtmlFormattedName()));
+        mLineName.setText(Html.fromHtml(mFoclStruct.getHtmlFormattedName(false)));
         setFieldDicts();
 
 

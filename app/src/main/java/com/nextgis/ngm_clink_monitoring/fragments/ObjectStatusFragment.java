@@ -217,7 +217,7 @@ public class ObjectStatusFragment
         }
 
 
-        mLineName.setText(Html.fromHtml(foclStruct.getHtmlFormattedName()));
+        mLineName.setText(Html.fromHtml(foclStruct.getHtmlFormattedName(false)));
         mObjectLayerName = layer.getPath().getName();
 
         Uri uri = Uri.parse(

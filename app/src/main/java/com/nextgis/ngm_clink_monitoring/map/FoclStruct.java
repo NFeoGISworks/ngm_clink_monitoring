@@ -41,13 +41,13 @@ import java.util.List;
 public class FoclStruct
         extends LayerGroup
 {
-    protected long mRemoteId;
+    protected long   mRemoteId;
     protected String mRegion;
     protected String mDistrict;
 
     protected String mStatus;
-    protected Long mStatusUpdateTime = null;
-    protected boolean mIsStatusChanged = false;
+    protected Long    mStatusUpdateTime = null;
+    protected boolean mIsStatusChanged  = false;
 
 
     public FoclStruct(
@@ -132,7 +132,7 @@ public class FoclStruct
     }
 
 
-    public String getHtmlFormattedName()
+    public String getHtmlFormattedName(boolean isThreeStrings)
     {
         String lineName = getName();
 
@@ -150,16 +150,33 @@ public class FoclStruct
             lineName += "<br><small>";
         }
 
-        if (!isEmptyRegion) {
-            lineName += region;
-        }
+        if (isThreeStrings) {
 
-        if (!isEmptyRegion && !isEmptyDistrict) {
-            lineName += "<br>";
-        }
+            if (!isEmptyRegion) {
+                lineName += region;
+            }
 
-        if (!isEmptyDistrict) {
-            lineName += district;
+            if (!isEmptyRegion && !isEmptyDistrict) {
+                lineName += "<br>";
+            }
+
+            if (!isEmptyDistrict) {
+                lineName += district;
+            }
+
+        } else {
+
+            if (!isEmptyDistrict) {
+                lineName += district;
+            }
+
+            if (!isEmptyRegion && !isEmptyDistrict) {
+                lineName += ", ";
+            }
+
+            if (!isEmptyRegion) {
+                lineName += region;
+            }
         }
 
         if (!isEmptyRegion || !isEmptyDistrict) {

@@ -79,7 +79,7 @@ public class SetLineStatusDialog
         mBtnNegative = (Button) view.findViewById(R.id.btn_negative_sl);
 
 
-        mLineName.setText(Html.fromHtml(foclStruct.getHtmlFormattedName()));
+        mLineName.setText(Html.fromHtml(foclStruct.getHtmlFormattedName(false)));
 
 
         FoclDictItem dictItem = foclProject.getFoclDitcs().get(FoclConstants.FIELD_PROJ_STATUSES);

@@ -51,13 +51,8 @@
                 >
 
                 <TextView
-                    android:text="@string/communication_line_colon"
-                    android:layout_marginTop="2dp"
-                    style="@style/smallCaptionStyle"
-                    />
-
-                <TextView
                     android:id="@+id/line_name_ot"
+                    android:layout_marginTop="2dp"
                     style="@style/selectedLineStyle"
                     />
 
