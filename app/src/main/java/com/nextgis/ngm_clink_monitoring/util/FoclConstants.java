@@ -130,7 +130,7 @@ public interface FoclConstants
     int PHOTO_MAX_SIZE_PX           = 640;
     int PHOTO_JPEG_COMPRESS_QUALITY = 75;
 
-    int MAX_DISTANCE_FROM_PREV_POINT = 300;
+    int MAX_DISTANCE_FROM_PREV_POINT = 300; // R.strings.distance_from_prev_point_exceeded
 
     int    MAX_ACCURACY                    = 10;
     int    MIN_ACCURACY_TAKE_COUNT         = 5;
