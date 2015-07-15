@@ -88,6 +88,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import static com.nextgis.maplib.util.Constants.*;
 import static com.nextgis.maplib.util.GeoConstants.CRS_WEB_MERCATOR;
@@ -905,7 +906,8 @@ public class CreateObjectFragment
         if (null != cameraIntent.resolveActivity(getActivity().getPackageManager())) {
 
             try {
-                String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                String timeStamp =
+                        new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
                 File tempFile = new File(
                         app.getDataDir(),
                         FoclConstants.TEMP_PHOTO_FILE_PREFIX + timeStamp + ".jpg");
@@ -1115,8 +1117,15 @@ public class CreateObjectFragment
                 break;
         }
 
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(
-                BitmapUtil.getExifDate(tempPhotoFile));
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US);
+        Date date = BitmapUtil.getExifDate(tempPhotoFile);
+
+        if (null == date) {
+            date = new Date();
+            date.setTime(System.currentTimeMillis());
+        }
+
+        String timeStamp = sdf.format(date);
 
         return prefix + timeStamp + ".jpg";
     }
@@ -1126,7 +1135,7 @@ public class CreateObjectFragment
             throws IOException
     {
         final GISApplication app = (GISApplication) getActivity().getApplication();
-        String timeStamp = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+        String timeStamp = new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date());
         return FileUtil.getDirWithCreate(app.getPhotoPath() + File.separator + timeStamp);
     }
 

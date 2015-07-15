@@ -75,6 +75,7 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import static com.nextgis.maplib.util.Constants.FIELD_ID;
 import static com.nextgis.maplib.util.Constants.TAG;
@@ -742,7 +743,7 @@ public class ObjectStatusFragment
                 break;
         }
 
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
         return prefix + timeStamp + ".jpg";
     }
 
@@ -751,7 +752,7 @@ public class ObjectStatusFragment
             throws IOException
     {
         final GISApplication app = (GISApplication) getActivity().getApplication();
-        String timeStamp = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+        String timeStamp = new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date());
         return FileUtil.getDirWithCreate(app.getPhotoPath() + File.separator + timeStamp);
     }
 }

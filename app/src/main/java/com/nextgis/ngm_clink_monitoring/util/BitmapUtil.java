@@ -36,6 +36,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 
@@ -335,7 +336,8 @@ public class BitmapUtil
 
         if (imgFileExif.getAttribute(ExifInterface.TAG_DATETIME) != null) {
             String imgDateTime = imgFileExif.getAttribute(ExifInterface.TAG_DATETIME);
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
+            SimpleDateFormat simpleDateFormat =
+                    new SimpleDateFormat("yyyy:MM:dd HH:mm:ss", Locale.US);
 
             try {
                 return simpleDateFormat.parse(imgDateTime);
