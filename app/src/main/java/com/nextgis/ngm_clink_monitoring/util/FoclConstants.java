@@ -112,8 +112,8 @@ public interface FoclConstants
     String FOCL_ACCOUNT_NAME = "Compulink Monitoring";
 
     //TODO: remove it
-     String FOCL_DEFAULT_ACCOUNT_URL = "http://176.9.38.120/cl2";
-//    String FOCL_DEFAULT_ACCOUNT_URL = "https://gis.compulink.ru";
+//     String FOCL_DEFAULT_ACCOUNT_URL = "http://176.9.38.120/cl2";
+    String FOCL_DEFAULT_ACCOUNT_URL = "https://gis.compulink.ru";
     String FOCL_USER_FOCL_LIST_URL  = "/compulink/mobile/user_focl_list";
     String FOCL_ALL_DICTS_URL       = "/compulink/mobile/all_dicts";
     String FOCL_SET_FOCL_STATUS_URL = "/compulink/mobile/set_focl_status";
@@ -130,7 +130,7 @@ public interface FoclConstants
     int PHOTO_MAX_SIZE_PX           = 640;
     int PHOTO_JPEG_COMPRESS_QUALITY = 75;
 
-    int MAX_DISTANCE_FROM_PREV_POINT = 200;
+    int MAX_DISTANCE_FROM_PREV_POINT = 300;
 
     int    MAX_ACCURACY                    = 10;
     int    MIN_ACCURACY_TAKE_COUNT         = 5;
