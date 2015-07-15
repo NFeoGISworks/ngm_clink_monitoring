@@ -353,7 +353,8 @@ public class FoclStyleRule
                 break;
 
             default:
-                Log.d(TAG, "Unknown value of mFoclLayerType: " + mFoclLayerType);
+//                Log.d(TAG, "Unknown value of mFoclLayerType: " + mFoclLayerType);
+                break;
         }
     }
 }
