@@ -873,6 +873,8 @@ public class CreateObjectFragment
         } catch (IOException e) {
             Log.d(TAG, e.getLocalizedMessage());
             mObjectPhotoFileAdapter = null;
+            Toast.makeText(
+                    getActivity(), e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
         }
 
         mPhotoGallery.setAdapter(mObjectPhotoFileAdapter);

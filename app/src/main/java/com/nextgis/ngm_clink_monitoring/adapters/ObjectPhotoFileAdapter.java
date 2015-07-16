@@ -23,6 +23,7 @@
 package com.nextgis.ngm_clink_monitoring.adapters;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
@@ -99,7 +100,13 @@ public class ObjectPhotoFileAdapter
             return null;
         }
 
-        File photoFile = mPhotoFiles[(int) getItemId(position)];
+        long itemId = getItemId(position);
+
+        if (RecyclerView.NO_ID == itemId) {
+            return null;
+        }
+
+        File photoFile = mPhotoFiles[(int) itemId];
         InputStream inputStream;
 
         try {
