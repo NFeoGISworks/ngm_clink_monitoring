@@ -29,6 +29,7 @@
     <string name="action_map">Карта</string>
     <string name="action_locate">Местоположение</string>
     <string name="action_refresh">Обновить</string>
+    <string name="action_refresh_coordinates">Переопределить координаты</string>
     <string name="action_full_sync">Полная синхронизация</string>
     <string name="action_sync">Синхронизация</string>
     <string name="action_line_status">Статус линии</string>

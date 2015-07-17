@@ -112,7 +112,8 @@ public class MainActivity
     protected int     mViewState = VIEW_STATE_LOGIN;
     protected boolean mIsSyncing = false;
 
-    protected Toolbar   mToolbar;
+    protected Toolbar   mMainToolbar;
+    protected Toolbar   mBottomToolbar;
     protected TextView  mCustomToolbarTitle;
     protected TextView  mCustomToolbarButton;
     protected ImageView mCustomToolbarImage;
@@ -160,10 +161,14 @@ public class MainActivity
 
         setContentView(R.layout.activity_main);
 
-        mToolbar = (Toolbar) findViewById(R.id.object_types_toolbar);
-        mToolbar.setTitle(""); // needed for screen rotation
-        mToolbar.getBackground().setAlpha(255);
-        setSupportActionBar(mToolbar);
+        mMainToolbar = (Toolbar) findViewById(R.id.main_toolbar_cl);
+        mMainToolbar.setTitle(""); // needed for screen rotation
+        mMainToolbar.getBackground().setAlpha(255);
+        setSupportActionBar(mMainToolbar);
+
+        mBottomToolbar = (Toolbar) findViewById(R.id.bottom_toolbar_cl);
+        mBottomToolbar.getBackground().setAlpha(255);
+        mBottomToolbar.inflateMenu(R.menu.menu_bottom);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -217,6 +222,12 @@ public class MainActivity
             ft.remove(fr);
             ft.commit();
         }
+    }
+
+
+    public Toolbar getBottomToolbar()
+    {
+        return mBottomToolbar;
     }
 
 
@@ -366,7 +377,7 @@ public class MainActivity
         switchMenuView();
 
         // TODO: remove commented
-        if (null == mToolbar /*|| null == mStatusBarFragment*/) {
+        if (null == mMainToolbar /*|| null == mStatusBarFragment*/) {
             return;
         }
 
@@ -394,7 +405,7 @@ public class MainActivity
                             ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE,
                             ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE |
                                     ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_CUSTOM);
-                    mToolbar.setTitle(toolbarTitle == null ? getTitle() : toolbarTitle);
+                    mMainToolbar.setTitle(toolbarTitle == null ? getTitle() : toolbarTitle);
                 }
                 break;
 
@@ -424,12 +435,12 @@ public class MainActivity
             case FoclConstants.FRAGMENT_CREATE_OBJECT:
             case FoclConstants.FRAGMENT_MAP:
             default:
-                mToolbar.setNavigationIcon(null);
+                mMainToolbar.setNavigationIcon(null);
                 break;
 
             case FoclConstants.FRAGMENT_OBJECT_TYPES:
             case FoclConstants.FRAGMENT_OBJECT_LIST:
-                mToolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+                mMainToolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
                 break;
         }
 

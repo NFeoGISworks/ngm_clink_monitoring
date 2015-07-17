@@ -29,6 +29,7 @@
     <string name="action_map">Map</string>
     <string name="action_locate">Locate</string>
     <string name="action_refresh">Refresh</string>
+    <string name="action_refresh_coordinates">Refresh coordinates</string>
     <string name="action_full_sync">Full synchronization</string>
     <string name="action_sync">Synchronization</string>
     <string name="action_line_status">Line status</string>

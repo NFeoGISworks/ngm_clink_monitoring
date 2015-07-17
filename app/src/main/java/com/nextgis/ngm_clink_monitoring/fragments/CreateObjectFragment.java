@@ -41,6 +41,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
@@ -165,6 +166,8 @@ public class CreateObjectFragment
     protected FoclProject     mFoclProject;
     protected FoclStruct      mFoclStruct;
     protected FoclVectorLayer mFoclVectorLayer;
+
+    protected Toolbar mBottomToolbar;
 
 
     public void setParams(
@@ -353,6 +356,27 @@ public class CreateObjectFragment
             saveMenuItem.setOnClickListener(doneButtonOnClickListener);
         }
 
+        mBottomToolbar = activity.getBottomToolbar();
+        mBottomToolbar.setVisibility(View.VISIBLE);
+        mBottomToolbar.setOnMenuItemClickListener(
+                new Toolbar.OnMenuItemClickListener()
+                {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item)
+                    {
+                        switch (item.getItemId()) {
+
+                            case R.id.menu_refresh_coordinates:
+                                startLocationTaking();
+                                break;
+
+                            case R.id.menu_camera:
+                                showCameraActivity(app);
+                                break;
+                        }
+                        return true;
+                    }
+                });
 
         mMakePhotoButton.setOnClickListener(
                 new View.OnClickListener()
@@ -382,6 +406,8 @@ public class CreateObjectFragment
     {
         mAccurateLocationTaker.setOnProgressUpdateListener(null);
         mAccurateLocationTaker.setOnGetAccurateLocationListener(null);
+        mBottomToolbar.setOnMenuItemClickListener(null);
+        mBottomToolbar.setVisibility(View.GONE);
         super.onDestroyView();
     }
 

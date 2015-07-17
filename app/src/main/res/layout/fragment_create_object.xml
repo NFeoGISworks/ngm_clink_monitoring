@@ -246,6 +246,8 @@
                     style="@style/editDescriptionStyle"
                     />
 
+                <!--TODO: remove btn_make_photo_cr -->
+
                 <Button
                     android:id="@+id/btn_make_photo_cr"
                     android:layout_height="52dp"
@@ -260,11 +262,12 @@
                     android:drawablePadding="8dp"
                     android:text="@string/make_photo"
                     android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:visibility="gone"
                     />
 
                 <TextView
                     android:id="@+id/photo_hint_text_cr"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginTop="10dp"
                     android:paddingTop="5dp"
                     android:paddingBottom="5dp"
                     android:paddingLeft="10dp"
@@ -280,7 +283,7 @@
                     android:id="@+id/photo_gallery_cr"
                     android:layout_height="104dp"
                     android:layout_width="match_parent"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginTop="10dp"
                     android:scrollbars="horizontal"
                     android:visibility="gone"
                     />
