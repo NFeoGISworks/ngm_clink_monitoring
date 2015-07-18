@@ -21,10 +21,12 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_height="wrap_content"
-              android:layout_width="match_parent"
-              android:orientation="vertical"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:background="@color/color_white"
     >
 
     <android.support.v7.widget.Toolbar
@@ -33,6 +35,7 @@
         android:id="@+id/about_toolbar"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
+        android:layout_alignParentTop="true"
         android:minHeight="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
@@ -45,6 +48,8 @@
         android:id="@+id/scrollView"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/about_toolbar"
         >
 
         <LinearLayout
@@ -170,4 +175,4 @@
 
     </ScrollView>
 
-</LinearLayout>
+</RelativeLayout>

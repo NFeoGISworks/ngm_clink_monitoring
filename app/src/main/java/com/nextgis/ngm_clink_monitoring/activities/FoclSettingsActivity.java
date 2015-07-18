@@ -40,7 +40,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 import ar.com.daidalos.afiledialog.FileChooserActivity;
 import com.nextgis.maplib.util.Constants;
@@ -69,14 +69,20 @@ public class FoclSettingsActivity
 
         ViewGroup root = ((ViewGroup) findViewById(android.R.id.content));
         View content = root.getChildAt(0);
-        LinearLayout toolbarContainer =
-                (LinearLayout) View.inflate(this, R.layout.activity_settings, null);
+        RelativeLayout toolbarContainer =
+                (RelativeLayout) View.inflate(this, R.layout.activity_focl_settings, null);
 
         root.removeAllViews();
         toolbarContainer.addView(content);
         root.addView(toolbarContainer);
 
-        Toolbar toolbar = (Toolbar) toolbarContainer.findViewById(R.id.main_toolbar);
+        RelativeLayout.LayoutParams params =
+                (RelativeLayout.LayoutParams) content.getLayoutParams();
+        params.addRule(RelativeLayout.BELOW, R.id.main_toolbar_set);
+        content.setLayoutParams(params);
+
+
+        Toolbar toolbar = (Toolbar) toolbarContainer.findViewById(R.id.main_toolbar_set);
         toolbar.getBackground().setAlpha(255);
         toolbar.setTitle(getTitle());
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);

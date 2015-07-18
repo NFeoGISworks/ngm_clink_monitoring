@@ -24,11 +24,13 @@ package com.nextgis.ngm_clink_monitoring.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextWatcher;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import com.nextgis.maplibui.fragment.NGWLoginFragment;
 import com.nextgis.ngm_clink_monitoring.R;
@@ -52,13 +54,29 @@ public class SyncLoginFragment
             activity.setBarsView(activity.getString(R.string.account_setup));
         }
 
-        View view = super.onCreateView(inflater, container, savedInstanceState);
 
-        TextView loginTitle = (TextView) view.findViewById(R.id.login_title);
-        TextView loginDescription = (TextView) view.findViewById(R.id.login_description);
+        final View view = inflater.inflate(R.layout.fragment_focl_login, container, false);
 
-        loginTitle.setVisibility(View.GONE);
+        mURL = (EditText) view.findViewById(R.id.focl_url);
+        mLogin = (EditText) view.findViewById(R.id.focl_login);
+        mPassword = (EditText) view.findViewById(R.id.focl_password);
+        mSignInButton = (Button) view.findViewById(R.id.focl_sign_in);
 
+        TextWatcher watcher = new LocalTextWatcher();
+        mURL.addTextChangedListener(watcher);
+        mLogin.addTextChangedListener(watcher);
+        mPassword.addTextChangedListener(watcher);
+
+
+        if (!mForNewAccount) {
+            mURL.setText(mUrlText);
+            mLogin.setText(mLoginText);
+            mURL.setEnabled(mChangeAccountUrl);
+            mLogin.setEnabled(mChangeAccountLogin);
+        }
+
+
+        TextView loginDescription = (TextView) view.findViewById(R.id.focl_login_description);
         if (mForNewAccount) {
             loginDescription.setText(R.string.focl_login_description);
             mURL.setText(FoclConstants.FOCL_DEFAULT_ACCOUNT_URL);

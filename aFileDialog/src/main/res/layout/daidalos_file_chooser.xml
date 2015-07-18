@@ -6,6 +6,7 @@
               android:gravity="top"
               android:orientation="vertical"
               android:scrollbars="vertical"
+              android:background="#ffffff"
     >
 
     <android.support.v7.widget.Toolbar

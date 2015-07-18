@@ -23,9 +23,13 @@
 package com.nextgis.ngm_clink_monitoring.activities;
 
 import android.accounts.Account;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.Toolbar;
 import com.nextgis.maplibui.activity.NGWLoginActivity;
 import com.nextgis.maplibui.fragment.NGWLoginFragment;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
+import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.fragments.SyncLoginFragment;
 
 
@@ -48,5 +52,34 @@ public class SyncLoginActivity
         super.onAddAccount(account, token, accountAdded);
         GISApplication app = (GISApplication) getApplication();
         app.onAddAccount(account, token, accountAdded);
+    }
+
+
+    @Override
+    protected void createView()
+    {
+        setContentView(R.layout.activity_sync_login);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.focl_login_toolbar);
+        toolbar.getBackground().setAlpha(255);
+        setSupportActionBar(toolbar);
+
+        FragmentManager fm = getSupportFragmentManager();
+        NGWLoginFragment ngwLoginFragment = (NGWLoginFragment) fm.findFragmentByTag("SyncLogin");
+
+        if (ngwLoginFragment == null) {
+            ngwLoginFragment = getNewLoginFragment();
+            ngwLoginFragment.setForNewAccount(mForNewAccount);
+            ngwLoginFragment.setUrlText(mUrlText);
+            ngwLoginFragment.setLoginText(mLoginText);
+            ngwLoginFragment.setChangeAccountUrl(mChangeAccountUrl);
+            ngwLoginFragment.setChangeAccountLogin(mChangeAccountLogin);
+        }
+
+        ngwLoginFragment.setOnAddAccountListener(this);
+
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.add(R.id.focl_login_frame, ngwLoginFragment, "SyncLogin");
+        ft.commit();
     }
 }

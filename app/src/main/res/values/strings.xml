@@ -214,4 +214,6 @@
 
     <string name="status_setting">Status setting</string>
 
+    <string name="focl_url">Compulink Server URL</string>
+
 </resources>

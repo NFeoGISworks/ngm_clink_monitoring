@@ -33,6 +33,10 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceScreen;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplibui.activity.NGWLoginActivity;
 import com.nextgis.maplibui.activity.NGWSettingsActivity;
@@ -59,6 +63,43 @@ public class SyncSettingsActivity
         }
 
         super.onCreate(savedInstanceState);
+
+        setStrings();
+
+        if (null == mAccountManager) {
+            mAccountManager = AccountManager.get(this.getApplicationContext());
+        }
+
+        ViewGroup root = ((ViewGroup) findViewById(android.R.id.content));
+        if (null != root) {
+            View content = root.getChildAt(0);
+            if (null != content) {
+                RelativeLayout toolbarContainer = (RelativeLayout) View.inflate(
+                        this, R.layout.activity_focl_settings, null);
+
+                root.removeAllViews();
+                toolbarContainer.addView(content);
+                root.addView(toolbarContainer);
+
+
+                Toolbar toolbar = (Toolbar) toolbarContainer.findViewById(R.id.main_toolbar_set);
+                toolbar.getBackground().setAlpha(255);
+                toolbar.setTitle(getTitle());
+                toolbar.setNavigationIcon(
+                        com.nextgis.maplibui.R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+                toolbar.setNavigationOnClickListener(
+                        new View.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(View v)
+                            {
+                                SyncSettingsActivity.this.finish();
+                            }
+                        });
+            }
+        }
+
+        createView();
 
         GISApplication app = (GISApplication) getApplication();
         setOnDeleteAccountListener(app);

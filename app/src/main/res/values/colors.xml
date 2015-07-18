@@ -53,7 +53,7 @@
     <color name="color_900_b0">#b0212121</color>
     <color name="color_999_b0">#b0000000</color>
 
-    <!--Blue Grey color palette--><!--http://www.google.co.uk/design/spec/style/color.html#color-color-palette -->
+    <!-- Blue Grey color palette, http://www.google.co.uk/design/spec/style/color.html#color-color-palette -->
 
     <!--
         <color name="color_50">#eceff1</color>
@@ -77,7 +77,9 @@
 
     -->
 
-    <!--Teal color palettes--><!--http://www.google.co.uk/design/spec/style/color.html#color-color-palette -->
+    <!-- Teal color palettes, http://www.google.co.uk/design/spec/style/color.html#color-color-palette -->
+    <color name="color_2nd_200">#80cbc4</color>
+    <color name="color_2nd_400">#26a69a</color>
     <color name="color_2nd_500">#009688</color>
 
 <!--
@@ -91,9 +93,11 @@
 
     <color name="primary_text_normal_color">@color/color_999</color>
     <color name="primary_text_inverse_color">@color/color_400</color>
-    <color name="primary_text_disabled_color">@color/color_100</color>
+    <color name="primary_text_disabled_color">@color/color_200</color>
 
     <color name="secondary_text_normal_color">@color/color_2nd_500</color>
+    <color name="secondary_text_inverse_color">@color/color_2nd_400</color>
+    <color name="secondary_text_disabled_color">@color/color_2nd_200</color>
 
     <color name="button_normal_text_color">@color/color_999</color>
     <color name="button_normal_color_start">@color/color_000</color>
