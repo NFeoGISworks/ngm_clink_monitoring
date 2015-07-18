@@ -83,9 +83,10 @@ public class FoclSettingsActivity
 
 
         Toolbar toolbar = (Toolbar) toolbarContainer.findViewById(R.id.main_toolbar_set);
+        toolbar.setTitleTextColor(getResources().getColor(com.nextgis.maplibui.R.color.textColorPrimary_Dark));
         toolbar.getBackground().setAlpha(255);
         toolbar.setTitle(getTitle());
-        toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        toolbar.setNavigationIcon(com.nextgis.maplibui.R.drawable.ic_action_home_light);
         toolbar.setNavigationOnClickListener(
                 new View.OnClickListener()
                 {
