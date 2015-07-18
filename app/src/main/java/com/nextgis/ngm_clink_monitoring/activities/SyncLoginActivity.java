@@ -44,6 +44,13 @@ public class SyncLoginActivity
 
 
     @Override
+    protected void setTheme()
+    {
+        // do nothing
+    }
+
+
+    @Override
     public void onAddAccount(
             Account account,
             String token,

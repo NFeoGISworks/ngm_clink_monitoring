@@ -52,6 +52,13 @@ public class SyncSettingsActivity
         extends NGWSettingsActivity
 {
     @Override
+    protected void setTheme()
+    {
+        // do nothing
+    }
+
+
+    @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         // without headers
