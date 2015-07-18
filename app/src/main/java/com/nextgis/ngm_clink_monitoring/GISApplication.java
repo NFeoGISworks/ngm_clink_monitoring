@@ -22,8 +22,12 @@
 
 package com.nextgis.ngm_clink_monitoring;
 
+import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.accounts.AccountManagerFuture;
+import android.accounts.AuthenticatorException;
+import android.accounts.OperationCanceledException;
 import android.app.ActivityManager;
 import android.app.Application;
 import android.content.BroadcastReceiver;
@@ -32,11 +36,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -64,6 +70,9 @@ import com.nextgis.ngm_clink_monitoring.util.UIUpdater;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+
+import static com.nextgis.maplib.util.Constants.NGW_ACCOUNT_TYPE;
 
 
 public class GISApplication
@@ -103,9 +112,11 @@ public class GISApplication
 
         super.onCreate();
 
+        mGpsEventSource = new GpsEventSource(this);
         mNet = new NetworkUtil(this);
 
         getMap();
+
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         if (sharedPreferences.getBoolean(FoclSettingsConstantsUI.KEY_PREF_APP_FIRST_RUN, true)) {
@@ -117,24 +128,6 @@ public class GISApplication
                     .putString(SettingsConstants.KEY_PREF_LOCATION_MIN_DISTANCE, "0")
                     .commit();
         }
-
-        mGpsEventSource = new GpsEventSource(this);
-
-        //turn on sync automatically (every 2 sec. on network exist) - to often?
-        //ContentResolver.setMasterSyncAutomatically(true);
-
-        //turn on periodic sync. Can be set for each layer individually, but this is simpler
-        //this is for get changes from server mainly
-        /*if (sharedPreferences.getBoolean(KEY_PREF_SYNC_PERIODICALLY, true)) {
-            Bundle params = new Bundle();
-            params.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, false);
-            params.putBoolean(ContentResolver.SYNC_EXTRAS_DO_NOT_RETRY, false);
-            params.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, false);
-
-            SyncAdapter.setSyncPeriod(this, params, sharedPreferences.getLong(KEY_PREF_SYNC_PERIOD,
-                                                                              600)); //10 min
-        }
-        */
 
         mSyncReceiver = new SyncReceiver();
         IntentFilter intentFilter = new IntentFilter();
@@ -171,6 +164,7 @@ public class GISApplication
     }
 
 
+    @Override
     public MapDrawable getMap()
     {
         if (null != mMap) {
@@ -204,7 +198,7 @@ public class GISApplication
     {
         //add OpenStreetMap layer on application first run
         String layerName = getString(R.string.osm);
-        String layerURL = getString(R.string.osm_url);
+        String layerURL = SettingsConstantsUI.OSM_URL;
         RemoteTMSLayerUI layer =
                 new RemoteTMSLayerUI(getApplicationContext(), mMap.createLayerStorage());
         layer.setName(layerName);
@@ -280,27 +274,162 @@ public class GISApplication
 
 
     @Override
+    public boolean addAccount(
+            String name,
+            String url,
+            String login,
+            String password,
+            String token)
+    {
+        if(!checkPermission(Manifest.permission.AUTHENTICATE_ACCOUNTS)){
+            return false;
+        }
+
+        final Account account = new Account(name, NGW_ACCOUNT_TYPE);
+
+        Bundle userData = new Bundle();
+        userData.putString("url", url.trim());
+        userData.putString("login", login);
+
+        AccountManager accountManager = AccountManager.get(this);
+
+        boolean accountAdded =
+                accountManager.addAccountExplicitly(account, password, userData);
+
+        if (accountAdded) {
+            accountManager.setAuthToken(account, account.type, token);
+        }
+
+        return accountAdded;
+    }
+
+
+    @Override
+    public void setUserData(
+            String name,
+            String key,
+            String value)
+    {
+        if(!checkPermission(Manifest.permission.AUTHENTICATE_ACCOUNTS)){
+            return;
+        }
+
+        Account account = getAccount(name);
+
+        if (null != account) {
+            AccountManager accountManager = AccountManager.get(this);
+            accountManager.setUserData(account, key, value);
+        }
+    }
+
+
+    @Override
+    public void setPassword(
+            String name,
+            String value)
+    {
+        if(!checkPermission(Manifest.permission.AUTHENTICATE_ACCOUNTS)){
+            return;
+        }
+        Account account = getAccount(name);
+
+        if (null != account) {
+            AccountManager accountManager = AccountManager.get(this);
+            accountManager.setPassword(account, value);
+        }
+    }
+
+
+    @Override
+    public AccountManagerFuture<Boolean> removeAccount(Account account)
+    {
+        AccountManagerFuture<Boolean> accountManagerFuture = new AccountManagerFuture<Boolean>()
+        {
+            @Override
+            public boolean cancel(boolean mayInterruptIfRunning)
+            {
+                return false;
+            }
+
+
+            @Override
+            public boolean isCancelled()
+            {
+                return false;
+            }
+
+
+            @Override
+            public boolean isDone()
+            {
+                return false;
+            }
+
+
+            @Override
+            public Boolean getResult()
+                    throws OperationCanceledException, IOException, AuthenticatorException
+            {
+                return null;
+            }
+
+
+            @Override
+            public Boolean getResult(
+                    long timeout,
+                    TimeUnit unit)
+                    throws OperationCanceledException, IOException, AuthenticatorException
+            {
+                return null;
+            }
+        };
+
+
+        if (!checkPermission(Manifest.permission.MANAGE_ACCOUNTS)) {
+            return accountManagerFuture;
+        }
+
+        AccountManager accountManager = AccountManager.get(this);
+        if (accountManager == null) {
+            return accountManagerFuture;
+        }
+
+        return accountManager.removeAccount(account, null, new Handler());
+    }
+
+
+    @Override
     public Account getAccount(String accountName)
     {
+        if (!checkPermission(Manifest.permission.GET_ACCOUNTS)) {
+            return null;
+        }
+
         AccountManager accountManager = AccountManager.get(this);
+        if (accountManager == null) {
+            return null;
+        }
+
         for (Account account : accountManager.getAccountsByType(Constants.NGW_ACCOUNT_TYPE)) {
+            if (account == null) {
+                continue;
+            }
             if (account.name.equals(accountName)) {
                 return account;
             }
         }
+
         return null;
-    }
-
-
-    public Account getAccount()
-    {
-        return getAccount(FoclConstants.FOCL_ACCOUNT_NAME);
     }
 
 
     @Override
     public String getAccountUrl(Account account)
     {
+        if (!checkPermission(Manifest.permission.AUTHENTICATE_ACCOUNTS)) {
+            return "";
+        }
+
         AccountManager accountManager = AccountManager.get(this);
         return accountManager.getUserData(account, "url");
     }
@@ -309,6 +438,10 @@ public class GISApplication
     @Override
     public String getAccountLogin(Account account)
     {
+        if(!checkPermission(Manifest.permission.AUTHENTICATE_ACCOUNTS)){
+            return "";
+        }
+
         AccountManager accountManager = AccountManager.get(this);
         return accountManager.getUserData(account, "login");
     }
@@ -317,8 +450,29 @@ public class GISApplication
     @Override
     public String getAccountPassword(Account account)
     {
+        if(!checkPermission(Manifest.permission.AUTHENTICATE_ACCOUNTS)){
+            return "";
+        }
+
         AccountManager accountManager = AccountManager.get(this);
         return accountManager.getPassword(account);
+    }
+
+
+    protected boolean checkPermission(String permission)
+    {
+        PackageManager pm = getPackageManager();
+        if (pm == null) {
+            return false;
+        }
+        int hasPerm = pm.checkPermission(permission, getPackageName());
+        return hasPerm == PackageManager.PERMISSION_GRANTED;
+    }
+
+
+    public Account getAccount()
+    {
+        return getAccount(FoclConstants.FOCL_ACCOUNT_NAME);
     }
 
 
@@ -392,6 +546,7 @@ public class GISApplication
     }
 
 
+    @Override
     public GpsEventSource getGpsEventSource()
     {
         return mGpsEventSource;

@@ -180,7 +180,7 @@ public class FoclStyleRule
                         FoclConstants.FIELD_STATUS_BUILT};
 
                 try {
-                    cursor = mVectorLayer.query(uri, select, null, null, null);
+                    cursor = mVectorLayer.query(uri, select, null, null, null, null);
 
                 } catch (Exception e) {
                     Log.d(TAG, e.getLocalizedMessage());
@@ -212,7 +212,7 @@ public class FoclStyleRule
                 select = new String[] {FIELD_ID, FoclConstants.FIELD_STATUS_BUILT};
 
                 try {
-                    cursor = mVectorLayer.query(uri, select, null, null, null);
+                    cursor = mVectorLayer.query(uri, select, null, null, null, null);
 
                 } catch (Exception e) {
                     Log.d(TAG, e.getLocalizedMessage());

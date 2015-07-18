@@ -148,7 +148,7 @@ public class AttributesDialog
         title.setText(mLayer.getName());
 
         String selection = FIELD_ID + " = ?";
-        Cursor attributes = mLayer.query(null, selection, new String[] {mItemId + ""}, null);
+        Cursor attributes = mLayer.query(null, selection, new String[] {mItemId + ""}, null, null);
 
         if (attributes.moveToFirst()) {
             for (int i = 0; i < attributes.getColumnCount(); i++) {

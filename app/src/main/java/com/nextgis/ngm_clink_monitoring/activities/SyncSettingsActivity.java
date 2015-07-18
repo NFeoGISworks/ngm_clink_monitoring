@@ -150,10 +150,10 @@ public class SyncSettingsActivity
         screen.addPreference(syncCategory);
 
         // add auto sync property
-        addAutoSyncProperty(account, application, syncCategory);
+        addAutoSyncProperty(application, account, syncCategory);
 
         // add time for periodic sync
-        addPeriodicSyncTime(account, application, syncCategory);
+        addPeriodicSyncTime(application, account, syncCategory);
 
         // add actions group
         PreferenceCategory actionCategory = new PreferenceCategory(this);
@@ -166,10 +166,10 @@ public class SyncSettingsActivity
 
         } else {
             // add "Edit account" action
-            addEditAccountAction(account, actionCategory);
+            addEditAccountAction(application, account, actionCategory);
 
             // add "Delete account" action
-            addDeleteAccountAction(account, actionCategory);
+            addDeleteAccountAction(application, account, actionCategory);
         }
     }
 
@@ -197,8 +197,8 @@ public class SyncSettingsActivity
 
     @Override
     protected void addPeriodicSyncTime(
-            final Account account,
             final IGISApplication application,
+            final Account account,
             PreferenceCategory syncCategory)
     {
         final GISApplication app = (GISApplication) application;
@@ -275,6 +275,7 @@ public class SyncSettingsActivity
 
     @Override
     protected void addEditAccountAction(
+            final IGISApplication application,
             final Account account,
             PreferenceCategory actionCategory)
     {
@@ -282,9 +283,8 @@ public class SyncSettingsActivity
         preferenceEdit.setTitle(R.string.edit_account);
         preferenceEdit.setSummary(R.string.edit_account_summary);
 
-        AccountManager accountManager = AccountManager.get(getApplicationContext());
-        String url = accountManager.getUserData(account, "url");
-        String login = accountManager.getUserData(account, "login");
+        String url = application.getAccountUrl(account);
+        String login = application.getAccountLogin(account);
 
         Intent intent = new Intent(this, SyncLoginActivity.class);
         intent.putExtra(NGWLoginActivity.FOR_NEW_ACCOUNT, false);
