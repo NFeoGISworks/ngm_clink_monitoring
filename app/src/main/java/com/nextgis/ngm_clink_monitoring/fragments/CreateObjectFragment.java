@@ -828,6 +828,7 @@ public class CreateObjectFragment
                         .setTitle(R.string.delete_photo_ask)
                         .setMessage(R.string.delete_photo_message_2)
                         .setPositiveText(R.string.ok)
+                        .setNegativeText(R.string.cancel)
                         .setOnPositiveClickedListener(
                                 new YesNoDialog.OnPositiveClickedListener()
                                 {
@@ -835,6 +836,15 @@ public class CreateObjectFragment
                                     public void onPositiveClicked()
                                     {
                                         deletePhoto(itemId);
+                                    }
+                                })
+                        .setOnNegativeClickedListener(
+                                new YesNoDialog.OnNegativeClickedListener()
+                                {
+                                    @Override
+                                    public void onNegativeClicked()
+                                    {
+                                        // cancel
                                     }
                                 })
                         .show(
