@@ -91,6 +91,8 @@ public class YesNoDialog
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
+        // Idea from here
+        // http://thanhcs.blogspot.ru/2014/10/android-custom-dialog-fragment.html
         Dialog dialog = new Dialog(getActivity());
 
         Window window = dialog.getWindow();
