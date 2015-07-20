@@ -24,13 +24,18 @@ package com.nextgis.ngm_clink_monitoring.dialogs;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AlertDialog;
-import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TableLayout;
+import android.widget.TextView;
 import com.nextgis.ngm_clink_monitoring.R;
 
 
@@ -49,8 +54,12 @@ public class YesNoDialog
     protected CharSequence mPositiveText;
     protected CharSequence mNegativeText;
 
-    protected Button mBtnPositive;
-    protected Button mBtnNegative;
+    protected ImageView   mIcon;
+    protected TextView    mTitle;
+    protected TextView    mMessage;
+    protected TableLayout mButtons;
+    protected Button      mBtnPositive;
+    protected Button      mBtnNegative;
 
     protected OnPositiveClickedListener mOnPositiveClickedListener;
     protected OnNegativeClickedListener mOnNegativeClickedListener;
@@ -82,35 +91,70 @@ public class YesNoDialog
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.dialog_yes_no, null);
+        Dialog dialog = new Dialog(getActivity());
 
-        mBtnPositive = (Button) view.findViewById(R.id.btn_positive_yn);
-        mBtnNegative = (Button) view.findViewById(R.id.btn_negative_yn);
+        Window window = dialog.getWindow();
+        window.requestFeature(Window.FEATURE_NO_TITLE);
+        window.setFlags(
+                WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        dialog.setContentView(R.layout.dialog_yes_no);
+
+        mIcon = (ImageView) dialog.findViewById(R.id.dialog_icon_yn);
+        mTitle = (TextView) dialog.findViewById(R.id.dialog_title_yn);
+        mMessage = (TextView) dialog.findViewById(R.id.dialog_message_yn);
+        mButtons = (TableLayout) dialog.findViewById(R.id.dialog_buttons_yn);
+        mBtnPositive = (Button) dialog.findViewById(R.id.dialog_btn_positive_yn);
+        mBtnNegative = (Button) dialog.findViewById(R.id.dialog_btn_negative_yn);
+
+        if (null != mIconId) {
+            mIcon.setVisibility(View.VISIBLE);
+            mIcon.setImageResource(mIconId);
+        }
+
+        if (null != mTitleId) {
+            mTitle.setText(mTitleId);
+        }
+        if (null != mTitleText) {
+            mTitle.setText(mTitleText);
+        }
+
+        if (null != mMessageId) {
+            mMessage.setVisibility(View.VISIBLE);
+            mMessage.setText(mMessageId);
+        }
+        if (null != mMessageText) {
+            mMessage.setVisibility(View.VISIBLE);
+            mMessage.setText(mMessageText);
+        }
 
         if (null != mPositiveTextId) {
+            mButtons.setVisibility(View.VISIBLE);
             mBtnPositive.setVisibility(View.VISIBLE);
             mBtnPositive.setText(mPositiveTextId);
         }
-
-        if (null != mNegativeTextId) {
-            mBtnNegative.setVisibility(View.VISIBLE);
-            mBtnNegative.setText(mNegativeTextId);
-        }
-
-
         if (null != mPositiveText) {
+            mButtons.setVisibility(View.VISIBLE);
             mBtnPositive.setVisibility(View.VISIBLE);
             mBtnPositive.setText(mPositiveText);
         }
 
+        if (null != mNegativeTextId) {
+            mButtons.setVisibility(View.VISIBLE);
+            mBtnNegative.setVisibility(View.VISIBLE);
+            mBtnNegative.setText(mNegativeTextId);
+        }
         if (null != mNegativeText) {
+            mButtons.setVisibility(View.VISIBLE);
             mBtnNegative.setVisibility(View.VISIBLE);
             mBtnNegative.setText(mNegativeText);
         }
 
 
         if (null != mOnPositiveClickedListener) {
+            mButtons.setVisibility(View.VISIBLE);
             mBtnPositive.setVisibility(View.VISIBLE);
             mBtnPositive.setOnClickListener(
                     new View.OnClickListener()
@@ -127,6 +171,7 @@ public class YesNoDialog
         }
 
         if (null != mOnNegativeClickedListener) {
+            mButtons.setVisibility(View.VISIBLE);
             mBtnNegative.setVisibility(View.VISIBLE);
             mBtnNegative.setOnClickListener(
                     new View.OnClickListener()
@@ -142,31 +187,7 @@ public class YesNoDialog
                     });
         }
 
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setView(view);
-
-        if (null != mIconId) {
-            builder.setIcon(mIconId);
-        }
-
-        if (null != mTitleId) {
-            builder.setTitle(mTitleId);
-        }
-
-        if (null != mTitleText) {
-            builder.setTitle(mTitleText);
-        }
-
-        if (null != mMessageId) {
-            builder.setMessage(mMessageId);
-        }
-
-        if (null != mMessageText) {
-            builder.setMessage(mMessageText);
-        }
-
-        return builder.create();
+        return dialog;
     }
 
 
@@ -211,30 +232,16 @@ public class YesNoDialog
     }
 
 
-    public YesNoDialog setMessage(int messageId)
-    {
-        mMessageId = messageId;
-        return this;
-    }
-
-
-    public YesNoDialog setPositiveText(int positiveTextId)
-    {
-        mPositiveTextId = positiveTextId;
-        return this;
-    }
-
-
-    public YesNoDialog setNegativeText(int negativeTextId)
-    {
-        mNegativeTextId = negativeTextId;
-        return this;
-    }
-
-
     public YesNoDialog setTitle(CharSequence titleText)
     {
         mTitleText = titleText;
+        return this;
+    }
+
+
+    public YesNoDialog setMessage(int messageId)
+    {
+        mMessageId = messageId;
         return this;
     }
 
@@ -246,9 +253,23 @@ public class YesNoDialog
     }
 
 
+    public YesNoDialog setPositiveText(int positiveTextId)
+    {
+        mPositiveTextId = positiveTextId;
+        return this;
+    }
+
+
     public YesNoDialog setPositiveText(CharSequence positiveText)
     {
         mPositiveText = positiveText;
+        return this;
+    }
+
+
+    public YesNoDialog setNegativeText(int negativeTextId)
+    {
+        mNegativeTextId = negativeTextId;
         return this;
     }
 
