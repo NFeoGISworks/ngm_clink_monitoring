@@ -438,4 +438,11 @@
 
     </style>
 
+    <style name="popupMenuStyle"
+           parent="@style/ThemeOverlay.AppCompat.Light">
+
+        <item name="android:colorBackground">@color/color_white</item>
+
+    </style>
+
 </resources>
