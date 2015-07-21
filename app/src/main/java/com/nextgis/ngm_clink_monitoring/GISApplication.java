@@ -67,12 +67,14 @@ import com.nextgis.ngm_clink_monitoring.util.FileUtil;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
 import com.nextgis.ngm_clink_monitoring.util.UIUpdater;
+import ru.elifantiev.android.roboerrorreporter.RoboErrorReporter;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import static com.nextgis.maplib.util.Constants.NGW_ACCOUNT_TYPE;
+import static com.nextgis.maplib.util.Constants.TAG;
 
 
 public class GISApplication
@@ -112,6 +114,27 @@ public class GISApplication
 
         super.onCreate();
 
+        // Get logcat after crash
+        // http://habrahabr.ru/post/129582/
+        // https://github.com/Olegas/RoboErrorReporter
+        // http://stackoverflow.com/a/19968400/4727406
+
+        // Setup handler for uncaught exceptions.
+        try {
+            RoboErrorReporter.bindReporter(this, getStacktraceDirPath());
+        } catch (IOException e) {
+            Log.d(TAG, e.getLocalizedMessage());
+        }
+
+        // for debug
+//        Integer a = 1;
+//        if (isRanAsService()) {
+//            a = null;
+//        }
+//        int x = 6;
+//        x = x / a;  // Exception here!
+
+
         mGpsEventSource = new GpsEventSource(this);
         mNet = new NetworkUtil(this);
 
@@ -136,6 +159,10 @@ public class GISApplication
         intentFilter.addAction(SyncAdapter.SYNC_CANCELED);
         intentFilter.addAction(SyncAdapter.SYNC_CHANGES);
         registerReceiver(mSyncReceiver, intentFilter);
+
+        if (!isRanAsService()) {
+            ContentResolver.cancelSync(getAccount(), getAuthority());
+        }
 
         if (isAutoSyncEnabled()) {
             if (!isRanAsService()) {
@@ -281,7 +308,7 @@ public class GISApplication
             String password,
             String token)
     {
-        if(!checkPermission(Manifest.permission.AUTHENTICATE_ACCOUNTS)){
+        if (!checkPermission(Manifest.permission.AUTHENTICATE_ACCOUNTS)) {
             return false;
         }
 
@@ -293,8 +320,7 @@ public class GISApplication
 
         AccountManager accountManager = AccountManager.get(this);
 
-        boolean accountAdded =
-                accountManager.addAccountExplicitly(account, password, userData);
+        boolean accountAdded = accountManager.addAccountExplicitly(account, password, userData);
 
         if (accountAdded) {
             accountManager.setAuthToken(account, account.type, token);
@@ -310,7 +336,7 @@ public class GISApplication
             String key,
             String value)
     {
-        if(!checkPermission(Manifest.permission.AUTHENTICATE_ACCOUNTS)){
+        if (!checkPermission(Manifest.permission.AUTHENTICATE_ACCOUNTS)) {
             return;
         }
 
@@ -328,7 +354,7 @@ public class GISApplication
             String name,
             String value)
     {
-        if(!checkPermission(Manifest.permission.AUTHENTICATE_ACCOUNTS)){
+        if (!checkPermission(Manifest.permission.AUTHENTICATE_ACCOUNTS)) {
             return;
         }
         Account account = getAccount(name);
@@ -438,7 +464,7 @@ public class GISApplication
     @Override
     public String getAccountLogin(Account account)
     {
-        if(!checkPermission(Manifest.permission.AUTHENTICATE_ACCOUNTS)){
+        if (!checkPermission(Manifest.permission.AUTHENTICATE_ACCOUNTS)) {
             return "";
         }
 
@@ -450,7 +476,7 @@ public class GISApplication
     @Override
     public String getAccountPassword(Account account)
     {
-        if(!checkPermission(Manifest.permission.AUTHENTICATE_ACCOUNTS)){
+        if (!checkPermission(Manifest.permission.AUTHENTICATE_ACCOUNTS)) {
             return "";
         }
 
@@ -543,6 +569,13 @@ public class GISApplication
             throws IOException
     {
         return FileUtil.getDirWithCreate(getPhotoPath());
+    }
+
+
+    public String getStacktraceDirPath()
+            throws IOException
+    {
+        return getDataPath() + File.separator + FoclConstants.FOCL_STACKTRACE_DIR;
     }
 
 
@@ -849,7 +882,7 @@ public class GISApplication
 
     public interface OnAccountAddedListener
     {
-        public void onAccountAdded();
+        void onAccountAdded();
     }
 
 
@@ -861,7 +894,7 @@ public class GISApplication
 
     public interface OnAccountDeletedListener
     {
-        public void onAccountDeleted();
+        void onAccountDeleted();
     }
 
 
@@ -873,7 +906,7 @@ public class GISApplication
 
     public interface OnReloadMapListener
     {
-        public void onReloadMap();
+        void onReloadMap();
     }
 
 

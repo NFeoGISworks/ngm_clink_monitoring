@@ -1,0 +1,65 @@
+/*
+ * Copyright 2011 Oleg Elifantiev
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
+package ru.elifantiev.android.roboerrorreporter;
+
+
+import com.nextgis.ngm_clink_monitoring.GISApplication;
+
+
+// http://habrahabr.ru/post/129582/
+// https://github.com/Olegas/RoboErrorReporter
+
+
+/**
+ * Simple error reporting facility. Saves stacktraces and exception information to external storage
+ * (if mounted and writable) Files are saved to folder Android/data/your.package.name/files/stacktrace-dd-MM-YY.txt
+ * <p/>
+ * To apply error reporting simply do the following RoboErrorReporter.bindReporter(yourContext);
+ */
+public final class RoboErrorReporter
+{
+
+    private RoboErrorReporter()
+    {
+    }
+
+
+    /**
+     * Apply error reporting to a specified application context
+     *
+     * @param application
+     *         context for which errors are reported (used to get package name and others)
+     */
+    public static void bindReporter(
+            GISApplication application,
+            String stacktraceDirPath)
+    {
+        Thread.setDefaultUncaughtExceptionHandler(
+                ExceptionHandler.inContext(application, stacktraceDirPath));
+    }
+
+
+    public static void reportError(
+            GISApplication application,
+            String stacktraceDirPath,
+            Throwable error)
+    {
+        ExceptionHandler.reportOnlyHandler(application, stacktraceDirPath)
+                .uncaughtException(Thread.currentThread(), error);
+    }
+
+}
