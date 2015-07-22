@@ -325,13 +325,16 @@ public class FoclReportService
 
 
         // 2. send POST data
+        JSONObject jsonFileName = new JSONObject();
+        jsonFileName.put("file_name", fileName);
+
         JSONObject postJsonData = new JSONObject();
         postJsonData.put(JSON_DEVICE_UUID_KEY, mDeviceUuid);
         postJsonData.put(JSON_DATE_KEY, System.currentTimeMillis() / 1000);
         postJsonData.put(JSON_SERVER_URL_KEY, mAccountUrl);
         postJsonData.put(JSON_LOGIN_KEY, mAccountLogin);
         postJsonData.put(JSON_REPORT_TYPE_KEY, JSON_WORK_DATA_REPORT_TYPE_VALUE);
-        postJsonData.put(JSON_LOGCAT_KEY, "");
+        postJsonData.put(JSON_LOGCAT_KEY, jsonFileName);
         postJsonData.put(JSON_FILE_UPLOAD_KEY, uploadMetaArray.get(0));
 
         String payload = postJsonData.toString();
