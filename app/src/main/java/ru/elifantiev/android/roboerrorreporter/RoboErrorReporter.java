@@ -44,21 +44,17 @@ public final class RoboErrorReporter
      * @param application
      *         context for which errors are reported (used to get package name and others)
      */
-    public static void bindReporter(
-            GISApplication application,
-            String stacktraceDirPath)
+    public static void bindReporter(GISApplication application)
     {
-        Thread.setDefaultUncaughtExceptionHandler(
-                ExceptionHandler.inContext(application, stacktraceDirPath));
+        Thread.setDefaultUncaughtExceptionHandler(ExceptionHandler.inContext(application));
     }
 
 
     public static void reportError(
             GISApplication application,
-            String stacktraceDirPath,
             Throwable error)
     {
-        ExceptionHandler.reportOnlyHandler(application, stacktraceDirPath)
+        ExceptionHandler.reportOnlyHandler(application)
                 .uncaughtException(Thread.currentThread(), error);
     }
 

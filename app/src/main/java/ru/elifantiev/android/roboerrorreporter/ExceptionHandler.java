@@ -17,8 +17,6 @@
 package ru.elifantiev.android.roboerrorreporter;
 
 import android.accounts.Account;
-import android.app.ActivityManager;
-import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -41,29 +39,22 @@ final class ExceptionHandler
         implements Thread.UncaughtExceptionHandler
 {
     private final GISApplication mApplication;
-    private final DateFormat mFormatter     =
-            new SimpleDateFormat("yyyy.MM.dd HH:mm:ss", Locale.US);
-    private final DateFormat mFileFormatter =
-            new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.US);
+    private final DateFormat mFormatter = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss", Locale.US);
 
-    private String mDeviceModel        = "unknown";
-    private String mVersionName        = "0";
-    private int    mVersionCode        = 0;
-    private String mCurrentProcessName = "";
-
-    private final String mStacktraceDirPath;
+    private String mProcessName = "";
+    private String mDeviceModel = "unknown";
+    private String mVersionName = "0";
+    private int    mVersionCode = 0;
 
     private final Thread.UncaughtExceptionHandler mPreviousHandler;
 
 
     private ExceptionHandler(
             GISApplication application,
-            String stacktraceDirPath,
             boolean chained)
     {
         mApplication = application;
-        mStacktraceDirPath = stacktraceDirPath;
-        mCurrentProcessName = getCurrentProcessName();
+        mProcessName = mApplication.getCurrentProcessName();
 
         PackageManager packageManager = mApplication.getPackageManager();
         PackageInfo packageInfo;
@@ -90,34 +81,15 @@ final class ExceptionHandler
     }
 
 
-    static ExceptionHandler inContext(
-            GISApplication application,
-            String stacktraceDirPath)
+    static ExceptionHandler inContext(GISApplication application)
     {
-        return new ExceptionHandler(application, stacktraceDirPath, true);
+        return new ExceptionHandler(application, true);
     }
 
 
-    static ExceptionHandler reportOnlyHandler(
-            GISApplication application,
-            String stacktraceDirPath)
+    static ExceptionHandler reportOnlyHandler(GISApplication application)
     {
-        return new ExceptionHandler(application, stacktraceDirPath, false);
-    }
-
-
-    public String getCurrentProcessName()
-    {
-        int pid = android.os.Process.myPid();
-        ActivityManager manager = (ActivityManager) mApplication.getSystemService(
-                Context.ACTIVITY_SERVICE);
-
-        for (ActivityManager.RunningAppProcessInfo processInfo : manager.getRunningAppProcesses()) {
-            if (processInfo.pid == pid) {
-                return processInfo.processName;
-            }
-        }
-        return "";
+        return new ExceptionHandler(application, false);
     }
 
 
@@ -147,34 +119,41 @@ final class ExceptionHandler
                             String.format(
                                     "Application version: %s, rev. %d\n\n", mVersionName,
                                     mVersionCode))
-                    .append(String.format("Process name: %s\n\n", mCurrentProcessName))
+                    .append(String.format("Process name: %s\n\n", mProcessName))
                     .append("Thread info:\n")
                     .append(thread.toString())
                     .append("\n");
             processThrowable(exception, reportBuilder);
 
-            File stacktraceFile = new File(
-                    mStacktraceDirPath, String.format(
-                    "stacktrace-%s.txt", mFileFormatter.format(dumpDate)));
-            File dumpDir = stacktraceFile.getParentFile();
-            boolean dirReady = dumpDir.isDirectory() || dumpDir.mkdirs();
+            try {
+                String filePath = mApplication.getErrorLogcatFilePath();
+                File stacktraceFile = new File(filePath);
+                File dumpDir = stacktraceFile.getParentFile();
+                boolean dirReady = dumpDir.isDirectory() || dumpDir.mkdirs();
 
-            if (dirReady) {
-                FileWriter writer = null;
-                try {
-                    writer = new FileWriter(stacktraceFile, true);
-                    writer.write(reportBuilder.toString());
-                } catch (IOException e) {
-                    // ignore
-                } finally {
+                if (dirReady) {
+                    FileWriter writer = null;
                     try {
-                        if (writer != null) {
-                            writer.close();
-                        }
+                        writer = new FileWriter(stacktraceFile, true);
+                        writer.write(reportBuilder.toString());
                     } catch (IOException e) {
                         // ignore
+                    } finally {
+                        try {
+                            if (writer != null) {
+                                writer.close();
+                                File readyLog = new File(filePath + ".log");
+                                stacktraceFile.renameTo(readyLog);
+
+                            }
+                        } catch (IOException e) {
+                            // ignore
+                        }
                     }
                 }
+
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
 

@@ -122,9 +122,13 @@ public interface FoclConstants
     int    FOCL_NTP_TIMEOUT_MILLIS = 10000;
 
     // If you change it, change it in aFileDialog/res/values/strings/daidalos_confirm_move_to_folder
-    String FOCL_DATA_DIR       = "ngm_clink_monitoring";
-    String FOCL_PHOTO_DIR      = "photo";
-    String FOCL_STACKTRACE_DIR = "reports";
+    String FOCL_DATA_DIR  = "ngm_clink_monitoring";
+    String FOCL_PHOTO_DIR = "photo";
+
+    String FOCL_REPORTS_DIR           = "reports";
+    String FOCL_ERROR_FILE_NAME       = "error-logcat";
+    String FOCL_MAIN_LOGCAT_FILE_NAME = "main-logcat";
+    String FOCL_SYNC_LOGCAT_FILE_NAME = "sync-logcat";
 
     long DEFAULT_SYNC_PERIOD_SEC_LONG = 300;
 

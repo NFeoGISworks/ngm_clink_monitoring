@@ -41,6 +41,9 @@ import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.activities.MainActivity;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
+import com.nextgis.ngm_clink_monitoring.util.LogcatWriter;
+
+import java.io.IOException;
 
 
 public class FoclSyncAdapter
@@ -85,6 +88,15 @@ public class FoclSyncAdapter
 //        android.os.Debug.waitForDebugger();
 
         GISApplication app = (GISApplication) getContext().getApplicationContext();
+
+        LogcatWriter logcatWriter = new LogcatWriter(app);
+        try {
+            logcatWriter.startLogcat();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
         sendNotification(app, NOTIFICATION_START, null);
         app.setFullSync(bundle.getBoolean(FoclConstants.KEY_IS_FULL_SYNC, false));
 
@@ -104,6 +116,14 @@ public class FoclSyncAdapter
         }
 
         sendNotification(app, NOTIFICATION_FINISH, null);
+
+
+        try {
+            logcatWriter.writeLogcat(app.getSyncLogcatFilePath());
+            logcatWriter.stopLogcat();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 

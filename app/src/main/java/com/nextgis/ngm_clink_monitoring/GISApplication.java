@@ -71,10 +71,12 @@ import ru.elifantiev.android.roboerrorreporter.RoboErrorReporter;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import static com.nextgis.maplib.util.Constants.NGW_ACCOUNT_TYPE;
-import static com.nextgis.maplib.util.Constants.TAG;
 
 
 public class GISApplication
@@ -120,11 +122,7 @@ public class GISApplication
         // http://stackoverflow.com/a/19968400/4727406
 
         // Setup handler for uncaught exceptions.
-        try {
-            RoboErrorReporter.bindReporter(this, getStacktraceDirPath());
-        } catch (IOException e) {
-            Log.d(TAG, e.getLocalizedMessage());
-        }
+        RoboErrorReporter.bindReporter(this);
 
         // for debug
 //        Integer a = 1;
@@ -572,10 +570,40 @@ public class GISApplication
     }
 
 
-    public String getStacktraceDirPath()
+    public String getReportsDirPath()
             throws IOException
     {
-        return getDataPath() + File.separator + FoclConstants.FOCL_STACKTRACE_DIR;
+        return getDataPath() + File.separator + FoclConstants.FOCL_REPORTS_DIR;
+    }
+
+
+    public String getMainLogcatFilePath()
+            throws IOException
+    {
+        String timeStamp =
+                new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.US).format(new Date());
+        return getReportsDirPath() + File.separator + FoclConstants.FOCL_MAIN_LOGCAT_FILE_NAME +
+                "_" + timeStamp;
+    }
+
+
+    public String getSyncLogcatFilePath()
+            throws IOException
+    {
+        String timeStamp =
+                new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.US).format(new Date());
+        return getReportsDirPath() + File.separator + FoclConstants.FOCL_SYNC_LOGCAT_FILE_NAME +
+                "_" + timeStamp;
+    }
+
+
+    public String getErrorLogcatFilePath()
+            throws IOException
+    {
+        String timeStamp =
+                new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.US).format(new Date());
+        return getReportsDirPath() + File.separator + FoclConstants.FOCL_ERROR_FILE_NAME +
+                "_" + timeStamp;
     }
 
 
