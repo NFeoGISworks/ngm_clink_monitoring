@@ -677,6 +677,10 @@ public class MainActivity
                 onMenuSyncClick(false);
                 return true;
 
+            case R.id.menu_reports:
+                onMenuReportsClick();
+                return true;
+
             case R.id.menu_line_status:
                 onMenuLineStatusClick();
                 return true;
@@ -807,6 +811,18 @@ public class MainActivity
         }
 
         app.runSyncManually(isFullSync);
+    }
+
+
+    public void onMenuReportsClick()
+    {
+        GISApplication app = (GISApplication) getApplication();
+        try {
+            app.sendReportsOnServer(true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 
 

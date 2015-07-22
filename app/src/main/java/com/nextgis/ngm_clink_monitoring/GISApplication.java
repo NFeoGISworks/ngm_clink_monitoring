@@ -63,13 +63,15 @@ import com.nextgis.ngm_clink_monitoring.activities.FoclSettingsActivity;
 import com.nextgis.ngm_clink_monitoring.map.FoclLayerFactory;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 import com.nextgis.ngm_clink_monitoring.map.FoclStruct;
-import com.nextgis.ngm_clink_monitoring.util.FileUtil;
+import com.nextgis.ngm_clink_monitoring.services.FoclReportService;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
+import com.nextgis.ngm_clink_monitoring.util.FoclFileUtil;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
 import com.nextgis.ngm_clink_monitoring.util.UIUpdater;
 import ru.elifantiev.android.roboerrorreporter.RoboErrorReporter;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -77,6 +79,9 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import static com.nextgis.maplib.util.Constants.NGW_ACCOUNT_TYPE;
+import static com.nextgis.maplib.util.Constants.TAG;
+import static com.nextgis.ngm_clink_monitoring.util.FoclConstants.FOCL_REPORT_FILE_POSTFIX;
+import static com.nextgis.ngm_clink_monitoring.util.FoclConstants.FOCL_SEND_REPORT_FROM_MAIN;
 
 
 public class GISApplication
@@ -124,9 +129,26 @@ public class GISApplication
         // Setup handler for uncaught exceptions.
         RoboErrorReporter.bindReporter(this);
 
+
+        if (isRanAsReportService()) {
+            return;
+        }
+
+
+        mNet = new NetworkUtil(this);
+
+        if (mNet.isNetworkAvailable()) {
+            try {
+                sendReportsOnServer(true);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+
         // for debug
 //        Integer a = 1;
-//        if (isRanAsService()) {
+//        if (isRanAsSyncService()) {
 //            a = null;
 //        }
 //        int x = 6;
@@ -134,10 +156,7 @@ public class GISApplication
 
 
         mGpsEventSource = new GpsEventSource(this);
-        mNet = new NetworkUtil(this);
-
         getMap();
-
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         if (sharedPreferences.getBoolean(FoclSettingsConstantsUI.KEY_PREF_APP_FIRST_RUN, true)) {
@@ -158,21 +177,59 @@ public class GISApplication
         intentFilter.addAction(SyncAdapter.SYNC_CHANGES);
         registerReceiver(mSyncReceiver, intentFilter);
 
-        if (!isRanAsService()) {
+        if (!isRanAsSyncService()) {
             ContentResolver.cancelSync(getAccount(), getAuthority());
         }
 
         if (isAutoSyncEnabled()) {
-            if (!isRanAsService()) {
+            if (!isRanAsSyncService()) {
                 startPeriodicSync();
             }
         }
     }
 
 
-    public boolean isRanAsService()
+    public boolean isRanAsSyncService()
     {
         return getCurrentProcessName().matches(".*:sync$");
+    }
+
+
+    public boolean isRanAsReportService()
+    {
+        return getCurrentProcessName().matches(".*:report$");
+    }
+
+
+    public void sendReportsOnServer(boolean sendReportFromMain)
+            throws IOException
+    {
+        String reportsDirPath = getReportsDirPath();
+        File reportsDir = new File(reportsDirPath);
+
+        if (reportsDir.isDirectory()) {
+            File[] repFiles = reportsDir.listFiles(
+                    new FilenameFilter()
+                    {
+                        @Override
+                        public boolean accept(
+                                final File dir,
+                                final String name)
+                        {
+                            return name.matches(".*\\" + FOCL_REPORT_FILE_POSTFIX);
+                        }
+                    });
+
+            if (repFiles.length > 0) {
+                Log.d(
+                        TAG, "Report service starting, sendReportFromMain: " + sendReportFromMain);
+                Intent intentReportService = new Intent(this, FoclReportService.class);
+                intentReportService.putExtra(FOCL_SEND_REPORT_FROM_MAIN, sendReportFromMain);
+                startService(intentReportService);
+            } else if (sendReportFromMain) {
+                throw new IOException(getString(R.string.reports_not_found));
+            }
+        }
     }
 
 
@@ -552,7 +609,7 @@ public class GISApplication
     public File getDataDir()
             throws IOException
     {
-        return FileUtil.getDirWithCreate(getDataPath());
+        return FoclFileUtil.getDirWithCreate(getDataPath());
     }
 
 
@@ -566,7 +623,7 @@ public class GISApplication
     public File getPhotoDir()
             throws IOException
     {
-        return FileUtil.getDirWithCreate(getPhotoPath());
+        return FoclFileUtil.getDirWithCreate(getPhotoPath());
     }
 
 
@@ -602,7 +659,7 @@ public class GISApplication
     {
         String timeStamp =
                 new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.US).format(new Date());
-        return getReportsDirPath() + File.separator + FoclConstants.FOCL_ERROR_FILE_NAME +
+        return getReportsDirPath() + File.separator + FoclConstants.FOCL_ERROR_LOGCAT_FILE_NAME +
                 "_" + timeStamp;
     }
 
@@ -668,7 +725,7 @@ public class GISApplication
 
     public void startPeriodicSync()
     {
-        if (isRanAsService()) {
+        if (isRanAsSyncService()) {
             Log.d(Constants.TAG, "!!! trying run auto sync from service, startPeriodicSync() !!!");
             return;
         }
@@ -946,7 +1003,7 @@ public class GISApplication
                 Context context,
                 Intent intent)
         {
-            if (isRanAsService()) {
+            if (isRanAsSyncService()) {
                 return;
             }
 

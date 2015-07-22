@@ -32,6 +32,7 @@
     <string name="action_refresh_coordinates">Переопределить координаты</string>
     <string name="action_full_sync">Полная синхронизация</string>
     <string name="action_sync">Синхронизация</string>
+    <string name="action_reports">Отчет разработчикам</string>
     <string name="action_line_status">Статус линии</string>
     <string name="action_settings">Настройки</string>
     <string name="action_sync_settings">Настройки синхронизации</string>
@@ -163,6 +164,14 @@
     <string name="sync_canceled">Синхронизация отменена</string>
     <string name="sync_error">ОШИБКА синхронизации</string>
     <string name="sync_progress">Синхронизация выполняется</string>
+
+    <string name="report">Отчет</string>
+    <string name="report_started">Отчет начат</string>
+    <string name="report_finished">Отчет завершен</string>
+    <string name="report_canceled">Отчет отменен</string>
+    <string name="report_error">ОШИБКА Отчета</string>
+    <string name="report_progress">Отчет выполняется</string>
+    <string name="reports_not_found">Отчеты не найдены</string>
 
     <string name="compas_N">С</string>
     <string name="compas_NE">СВ</string>

@@ -22,13 +22,20 @@
 
 package com.nextgis.ngm_clink_monitoring.util;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 
 
-public class FileUtil
+public class FoclFileUtil
 {
     public static void copy(
             InputStream inputStream,
@@ -56,4 +63,31 @@ public class FileUtil
 
         return dir;
     }
+
+
+    public static JSONArray readJsonArrayLinesFromFile(File filePath)
+            throws IOException, JSONException
+    {
+        JSONArray jsonArray = new JSONArray();
+
+        FileInputStream inputStream = new FileInputStream(filePath);
+        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+        JSONObject jsonFileName = new JSONObject();
+        jsonFileName.put("file_name", filePath.getName());
+        jsonArray.put(jsonFileName);
+
+        String receiveString;
+        while ((receiveString = bufferedReader.readLine()) != null) {
+            JSONObject jsonLine = new JSONObject();
+            jsonLine.put("line", receiveString);
+            jsonArray.put(jsonLine);
+        }
+
+        inputStream.close();
+
+        return jsonArray;
+    }
+
 }

@@ -22,6 +22,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Environment;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
+import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 import com.nextgis.ngm_clink_monitoring.util.Utils;
 
 import java.io.File;
@@ -142,7 +143,8 @@ final class ExceptionHandler
                         try {
                             if (writer != null) {
                                 writer.close();
-                                File readyLog = new File(filePath + ".log");
+                                File readyLog =
+                                        new File(filePath + FoclConstants.FOCL_REPORT_FILE_POSTFIX);
                                 stacktraceFile.renameTo(readyLog);
 
                             }
@@ -177,7 +179,7 @@ final class ExceptionHandler
                 .append(exception.getMessage())
                 .append("\n\nStacktrace:\n");
         for (StackTraceElement element : stackTraceElements) {
-            builder.append("\t").append(element.toString()).append("\n");
+            builder.append("    ").append(element.toString()).append("\n");
         }
         processThrowable(exception.getCause(), builder);
     }

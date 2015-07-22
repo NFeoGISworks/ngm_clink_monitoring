@@ -44,6 +44,19 @@ public interface FoclConstants
     String JSON_REGION_KEY            = "region";
     String JSON_DISTRICT_KEY          = "district";
 
+    String JSON_DEVICE_UUID_KEY = "device_uuid";
+    String JSON_DATE_KEY        = "date";
+    String JSON_SERVER_URL_KEY  = "server_url";
+    String JSON_LOGIN_KEY       = "login";
+    String JSON_REPORT_TYPE_KEY = "message_type";
+    String JSON_LOGCAT_KEY      = "logcat";
+
+    String JSON_ERROR_REPORT_TYPE_VALUE = "error";
+    String JSON_MAIN_REPORT_TYPE_VALUE  = "main";
+    String JSON_SYNC_REPORT_TYPE_VALUE  = "sync";
+
+    String FOCL_SEND_REPORT_FROM_MAIN = "send_report_from_main";
+
     String JSON_OPTICAL_CABLE_VALUE      = "optical_cable";
     String JSON_FOSC_VALUE               = "fosc";
     String JSON_OPTICAL_CROSS_VALUE      = "optical_cross";
@@ -117,6 +130,7 @@ public interface FoclConstants
     String FOCL_USER_FOCL_LIST_URL  = "/compulink/mobile/user_focl_list";
     String FOCL_ALL_DICTS_URL       = "/compulink/mobile/all_dicts";
     String FOCL_SET_FOCL_STATUS_URL = "/compulink/mobile/set_focl_status";
+    String FOCL_REPORT_URL          = "/mobile_debug/message/append";
 
     String FOCL_NTP_URL            = "pool.ntp.org";
     int    FOCL_NTP_TIMEOUT_MILLIS = 10000;
@@ -125,10 +139,11 @@ public interface FoclConstants
     String FOCL_DATA_DIR  = "ngm_clink_monitoring";
     String FOCL_PHOTO_DIR = "photo";
 
-    String FOCL_REPORTS_DIR           = "reports";
-    String FOCL_ERROR_FILE_NAME       = "error-logcat";
-    String FOCL_MAIN_LOGCAT_FILE_NAME = "main-logcat";
-    String FOCL_SYNC_LOGCAT_FILE_NAME = "sync-logcat";
+    String FOCL_REPORTS_DIR            = "reports";
+    String FOCL_ERROR_LOGCAT_FILE_NAME = "error_logcat";
+    String FOCL_MAIN_LOGCAT_FILE_NAME  = "main_logcat";
+    String FOCL_SYNC_LOGCAT_FILE_NAME  = "sync_logcat";
+    String FOCL_REPORT_FILE_POSTFIX    = ".log";
 
     long DEFAULT_SYNC_PERIOD_SEC_LONG = 300;
 

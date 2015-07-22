@@ -63,8 +63,8 @@ import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 import com.nextgis.ngm_clink_monitoring.map.FoclStruct;
 import com.nextgis.ngm_clink_monitoring.map.FoclVectorLayer;
 import com.nextgis.ngm_clink_monitoring.util.BitmapUtil;
-import com.nextgis.ngm_clink_monitoring.util.FileUtil;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
+import com.nextgis.ngm_clink_monitoring.util.FoclFileUtil;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
 
 import java.io.File;
@@ -673,7 +673,7 @@ public class ObjectStatusFragment
 
                     // attach data from tempAttachFile
                     OutputStream attachOutStream = contentResolver.openOutputStream(attachUri);
-                    FileUtil.copy(new FileInputStream(tempAttachFile), attachOutStream);
+                    FoclFileUtil.copy(new FileInputStream(tempAttachFile), attachOutStream);
                     attachOutStream.close();
 
                     tempAttachFile.delete();
@@ -753,6 +753,6 @@ public class ObjectStatusFragment
     {
         final GISApplication app = (GISApplication) getActivity().getApplication();
         String timeStamp = new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date());
-        return FileUtil.getDirWithCreate(app.getPhotoPath() + File.separator + timeStamp);
+        return FoclFileUtil.getDirWithCreate(app.getPhotoPath() + File.separator + timeStamp);
     }
 }

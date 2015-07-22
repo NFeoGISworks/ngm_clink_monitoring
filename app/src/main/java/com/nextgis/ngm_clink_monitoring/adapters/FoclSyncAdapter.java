@@ -96,6 +96,12 @@ public class FoclSyncAdapter
             e.printStackTrace();
         }
 
+        try {
+            app.sendReportsOnServer(false);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
 
         sendNotification(app, NOTIFICATION_START, null);
         app.setFullSync(bundle.getBoolean(FoclConstants.KEY_IS_FULL_SYNC, false));
@@ -121,6 +127,13 @@ public class FoclSyncAdapter
         try {
             logcatWriter.writeLogcat(app.getSyncLogcatFilePath());
             logcatWriter.stopLogcat();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        try {
+            app.sendReportsOnServer(false);
         } catch (IOException e) {
             e.printStackTrace();
         }

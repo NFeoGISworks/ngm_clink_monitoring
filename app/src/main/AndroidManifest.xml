@@ -134,6 +134,13 @@
                 />
         </service>
 
+        <service
+            android:name="com.nextgis.ngm_clink_monitoring.services.FoclReportService"
+            android:enabled="true"
+            android:exported="false"
+            android:process=":report"
+            />
+
         <provider
             android:name="com.nextgis.maplib.datasource.LayerContentProvider"
             android:authorities="com.nextgis.ngm_clink_monitoring.provider"

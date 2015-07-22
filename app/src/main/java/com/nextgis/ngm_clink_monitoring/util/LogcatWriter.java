@@ -135,7 +135,7 @@ public class LogcatWriter
 
             osw.close();
 
-            File readyLog = new File(logcatFilePath + ".log");
+            File readyLog = new File(logcatFilePath + FoclConstants.FOCL_REPORT_FILE_POSTFIX);
             logcatFile.renameTo(readyLog);
         }
     }
