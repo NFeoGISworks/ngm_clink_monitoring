@@ -22,17 +22,23 @@
 
 package com.nextgis.ngm_clink_monitoring.util;
 
+import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 
 public class FoclFileUtil
@@ -90,4 +96,85 @@ public class FoclFileUtil
         return jsonArray;
     }
 
+
+    /**
+     * Zips a file at a location and places the resulting zip file at the toLocation Example:
+     * zipFileAtPath("downloads/myfolder", "downloads/myFolder.zip");
+     * <p/>
+     * http://stackoverflow.com/a/14868161/4727406
+     */
+    public static void zipFileAtPath(
+            String sourcePath,
+            String toLocation)
+            throws IOException
+    {
+        final int BUFFER = 2048;
+
+        File sourceFile = new File(sourcePath);
+        FileOutputStream fos = new FileOutputStream(toLocation);
+        ZipOutputStream zipOut = new ZipOutputStream(new BufferedOutputStream(fos));
+
+        if (sourceFile.isDirectory()) {
+            zipSubFolder(zipOut, sourceFile, sourceFile.getParent().length() + 1); // ??
+
+        } else {
+            byte data[] = new byte[BUFFER];
+            FileInputStream fis = new FileInputStream(sourcePath);
+            BufferedInputStream bis = new BufferedInputStream(fis, BUFFER);
+
+            String lastPathComponent = sourcePath.substring(sourcePath.lastIndexOf("/"));
+
+            ZipEntry zipEntry = new ZipEntry(lastPathComponent);
+            zipOut.putNextEntry(zipEntry);
+
+            int count;
+            while ((count = bis.read(data, 0, BUFFER)) != -1) {
+                zipOut.write(data, 0, count);
+            }
+        }
+
+        zipOut.close();
+    }
+
+
+    /**
+     * Zips a subfolder
+     */
+    protected static void zipSubFolder(
+            ZipOutputStream zipOut,
+            File srcFolder,
+            int basePathLength)
+            throws IOException
+    {
+        final int BUFFER = 2048;
+
+        File[] fileList = srcFolder.listFiles();
+        BufferedInputStream bis = null;
+
+        for (File file : fileList) {
+
+            if (file.isDirectory()) {
+                zipSubFolder(zipOut, file, basePathLength);
+
+            } else {
+                byte data[] = new byte[BUFFER];
+                String unmodifiedFilePath = file.getPath();
+                String relativePath = unmodifiedFilePath.substring(basePathLength);
+                Log.d("ZIP SUBFOLDER", "Relative Path : " + relativePath);
+
+                FileInputStream fis = new FileInputStream(unmodifiedFilePath);
+                bis = new BufferedInputStream(fis, BUFFER);
+
+                ZipEntry zipEntry = new ZipEntry(relativePath);
+                zipOut.putNextEntry(zipEntry);
+
+                int count;
+                while ((count = bis.read(data, 0, BUFFER)) != -1) {
+                    zipOut.write(data, 0, count);
+                }
+
+                bis.close();
+            }
+        }
+    }
 }

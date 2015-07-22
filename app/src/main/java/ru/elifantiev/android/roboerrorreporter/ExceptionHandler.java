@@ -144,7 +144,7 @@ final class ExceptionHandler
                             if (writer != null) {
                                 writer.close();
                                 File readyLog =
-                                        new File(filePath + FoclConstants.FOCL_REPORT_FILE_POSTFIX);
+                                        new File(filePath + FoclConstants.FOCL_REPORT_FILE_EXT);
                                 stacktraceFile.renameTo(readyLog);
 
                             }

@@ -33,6 +33,7 @@ import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import com.nextgis.maplib.util.Constants;
+import com.nextgis.maplib.util.NGWUtil;
 import com.nextgis.maplib.util.NetworkUtil;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
@@ -63,6 +64,7 @@ public class FoclReportService
     private static final int NOTIFY_ID = 2;
 
     protected boolean mSendReportFromMain = false;
+    protected boolean mSendWorkData       = false;
 
     protected NetworkUtil mNet;
 
@@ -106,6 +108,7 @@ public class FoclReportService
         if (!mIsRunning) {
             mIsRunning = true;
             mSendReportFromMain = intent.getBooleanExtra(FOCL_SEND_REPORT_FROM_MAIN, false);
+            mSendWorkData = intent.getBooleanExtra(FOCL_SEND_WORK_DATA, false);
 
             Log.d(TAG, "Report service started");
             sendNotification(this, NOTIFICATION_START, null);
@@ -145,6 +148,10 @@ public class FoclReportService
                             Log.d(TAG, "Report service, runTask() started");
                             String reportsDirPath = mApplication.getReportsDirPath();
 
+                            if (mSendWorkData) {
+                                sendWorkData();
+                            }
+
                             sendErrorReports(reportsDirPath);
 
                             if (mSendReportFromMain) {
@@ -174,7 +181,7 @@ public class FoclReportService
     protected boolean sendErrorReports(String reportsDirPath)
             throws IOException, JSONException
     {
-        String errorFileMask = FOCL_ERROR_LOGCAT_FILE_NAME + ".*\\" + FOCL_REPORT_FILE_POSTFIX;
+        String errorFileMask = FOCL_ERROR_LOGCAT_FILE_NAME + ".*\\" + FOCL_REPORT_FILE_EXT;
         return sendReports(reportsDirPath, errorFileMask, JSON_ERROR_REPORT_TYPE_VALUE);
     }
 
@@ -182,7 +189,7 @@ public class FoclReportService
     protected boolean sendErrorAllReports(String reportsDirPath)
             throws IOException, JSONException
     {
-        String errorFileMask = ".*";
+        String errorFileMask = "(?!" + FOCL_ZIP_WORK_DATA_FILE_NAME + ".*\\" + FOCL_ZIP_WORK_DATA_FILE_EXT + ")";
         return sendReports(reportsDirPath, errorFileMask, JSON_ERROR_REPORT_TYPE_VALUE);
     }
 
@@ -190,7 +197,7 @@ public class FoclReportService
     protected boolean sendMainReports(String reportsDirPath)
             throws IOException, JSONException
     {
-        String errorFileMask = FOCL_MAIN_LOGCAT_FILE_NAME + ".*\\" + FOCL_REPORT_FILE_POSTFIX;
+        String errorFileMask = FOCL_MAIN_LOGCAT_FILE_NAME + ".*\\" + FOCL_REPORT_FILE_EXT;
         return sendReports(reportsDirPath, errorFileMask, JSON_MAIN_REPORT_TYPE_VALUE);
     }
 
@@ -198,8 +205,146 @@ public class FoclReportService
     protected boolean sendSyncReports(String reportsDirPath)
             throws IOException, JSONException
     {
-        String errorFileMask = FOCL_SYNC_LOGCAT_FILE_NAME + ".*\\" + FOCL_REPORT_FILE_POSTFIX;
+        String errorFileMask = FOCL_SYNC_LOGCAT_FILE_NAME + ".*\\" + FOCL_REPORT_FILE_EXT;
         return sendReports(reportsDirPath, errorFileMask, JSON_SYNC_REPORT_TYPE_VALUE);
+    }
+
+
+    protected boolean sendWorkData()
+            throws IOException, JSONException
+    {
+        getZippedMap();
+
+        final String zipFileMask =
+                FOCL_ZIP_WORK_DATA_FILE_NAME + ".*\\" + FOCL_ZIP_WORK_DATA_FILE_EXT;
+        File reportsDir = new File(mApplication.getReportsDirPath());
+
+        if (!reportsDir.isDirectory()) {
+            throw new IOException("reportsDir is not directory");
+        }
+
+        Log.d(TAG, "Report service, reportsDir: " + reportsDir.getAbsolutePath());
+
+        File[] zipFiles = reportsDir.listFiles(
+                new FilenameFilter()
+                {
+                    @Override
+                    public boolean accept(
+                            final File dir,
+                            final String name)
+                    {
+                        if (name.matches(zipFileMask)) {
+                            Log.d(
+                                    TAG, "Report service, reportsDir: " +
+                                            dir.getAbsolutePath() + ", name: " + name);
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                });
+
+        Log.d(TAG, "Report service, zipFiles.length: " + zipFiles.length);
+
+        for (File zipFile : zipFiles) {
+            Log.d(TAG, "Report service, zipFile: " + zipFile.getAbsolutePath());
+
+            if (sendZipFile(zipFile.getAbsolutePath())) {
+                if (!zipFile.delete()) {
+                    Log.d(
+                            TAG,
+                            "Report service, zipFile do not deleted: " + zipFile.getAbsolutePath());
+                }
+
+            } else {
+                Log.d(
+                        TAG,
+                        "Report service, sending zipFile FAILED: " + zipFile.getAbsolutePath());
+            }
+        }
+
+        return true;
+    }
+
+
+    protected File getZippedMap()
+            throws IOException
+    {
+        String mapPath = mApplication.getMapPath();
+        String zipFilePath = mApplication.getWorkDataZipFilePath();
+
+        FoclFileUtil.zipFileAtPath(mapPath, zipFilePath);
+        File zipFile = new File(zipFilePath);
+
+        File readyZipFile = new File(zipFilePath + FoclConstants.FOCL_ZIP_WORK_DATA_FILE_EXT);
+
+        if (!zipFile.renameTo(readyZipFile)) {
+            throw new IOException(
+                    "can not rename zipFile: " + zipFile.getAbsolutePath() +
+                            " to readyZipFile: " + readyZipFile.getAbsolutePath());
+        }
+
+        return readyZipFile;
+    }
+
+
+    protected boolean sendZipFile(String filePath)
+            throws IOException, JSONException
+    {
+        if (!mNet.isNetworkAvailable()) {
+            return false;
+        }
+
+        // 1. send file
+        File sendFile = new File(filePath);
+        String fileName = sendFile.getName();
+        String fileMime = "application/zip";
+
+        String data = mNet.postFile(
+                NGWUtil.getFileUploadUrl(mAccountUrl), fileName, sendFile, fileMime, mAccountLogin,
+                mAccountPassword);
+        Log.d(Constants.TAG, "send file: " + filePath); // TODO: comment it?
+        Log.d(Constants.TAG, "send file, data: " + data); // TODO: comment it?
+
+        if (null == data) {
+            Log.d(Constants.TAG, "send file FAILED, null == data");
+            return false;
+        }
+
+        JSONObject result = new JSONObject(data);
+        if (!result.has("upload_meta")) {
+            Log.d(Constants.TAG, "send file FAILED, data has not upload_meta");
+            return false;
+        }
+
+        JSONArray uploadMetaArray = result.getJSONArray("upload_meta");
+        if (uploadMetaArray.length() == 0) {
+            Log.d(Constants.TAG, "send file FAILED, uploadMetaArray.length() == 0");
+            return false;
+        }
+
+
+        // 2. send POST data
+        JSONObject postJsonData = new JSONObject();
+        postJsonData.put(JSON_DEVICE_UUID_KEY, mDeviceUuid);
+        postJsonData.put(JSON_DATE_KEY, System.currentTimeMillis() / 1000);
+        postJsonData.put(JSON_SERVER_URL_KEY, mAccountUrl);
+        postJsonData.put(JSON_LOGIN_KEY, mAccountLogin);
+        postJsonData.put(JSON_REPORT_TYPE_KEY, JSON_WORK_DATA_REPORT_TYPE_VALUE);
+        postJsonData.put(JSON_LOGCAT_KEY, "");
+        postJsonData.put(JSON_FILE_UPLOAD_KEY, uploadMetaArray.get(0));
+
+        String payload = postJsonData.toString();
+        Log.d(Constants.TAG, "send report, payload: " + payload); // TODO: comment it
+
+        data = mNet.post(getReportUrl(mAccountUrl), payload, mAccountLogin, mAccountPassword);
+
+        if (null == data) {
+            Log.d(Constants.TAG, "send file FAILED, null == data");
+            return false;
+        } else {
+            return true;
+        }
     }
 
 
@@ -285,7 +430,12 @@ public class FoclReportService
             String data =
                     mNet.post(getReportUrl(mAccountUrl), payload, mAccountLogin, mAccountPassword);
 
-            return null != data;
+            if (null == data) {
+                Log.d(Constants.TAG, "send report FAILED, null == data");
+                return false;
+            } else {
+                return true;
+            }
 
         } catch (JSONException | IOException e) {
             e.printStackTrace();

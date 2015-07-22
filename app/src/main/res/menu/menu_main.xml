@@ -78,6 +78,13 @@
         />
 
     <item
+        android:id="@+id/menu_send_work_data"
+        android:title="@string/action_send_work_data"
+        android:orderInCategory="41"
+        app:showAsAction="never"
+        />
+
+    <item
         android:id="@+id/menu_line_status"
         android:title="@string/action_line_status"
         android:orderInCategory="50"

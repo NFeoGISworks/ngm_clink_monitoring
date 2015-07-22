@@ -681,6 +681,10 @@ public class MainActivity
                 onMenuReportsClick();
                 return true;
 
+            case R.id.menu_send_work_data:
+                onMenuSendWorkDataClick();
+                return true;
+
             case R.id.menu_line_status:
                 onMenuLineStatusClick();
                 return true;
@@ -818,7 +822,19 @@ public class MainActivity
     {
         GISApplication app = (GISApplication) getApplication();
         try {
-            app.sendReportsOnServer(true);
+            app.sendReportsOnServer(true, false);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+
+    public void onMenuSendWorkDataClick()
+    {
+        GISApplication app = (GISApplication) getApplication();
+        try {
+            app.sendReportsOnServer(true, true);
         } catch (IOException e) {
             e.printStackTrace();
             Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();

@@ -50,12 +50,15 @@ public interface FoclConstants
     String JSON_LOGIN_KEY       = "login";
     String JSON_REPORT_TYPE_KEY = "message_type";
     String JSON_LOGCAT_KEY      = "logcat";
+    String JSON_FILE_UPLOAD_KEY = "file_upload";
 
-    String JSON_ERROR_REPORT_TYPE_VALUE = "error";
-    String JSON_MAIN_REPORT_TYPE_VALUE  = "main";
-    String JSON_SYNC_REPORT_TYPE_VALUE  = "sync";
+    String JSON_ERROR_REPORT_TYPE_VALUE     = "error";
+    String JSON_MAIN_REPORT_TYPE_VALUE      = "main";
+    String JSON_SYNC_REPORT_TYPE_VALUE      = "sync";
+    String JSON_WORK_DATA_REPORT_TYPE_VALUE = "work_data";
 
     String FOCL_SEND_REPORT_FROM_MAIN = "send_report_from_main";
+    String FOCL_SEND_WORK_DATA        = "send_work_data";
 
     String JSON_OPTICAL_CABLE_VALUE      = "optical_cable";
     String JSON_FOSC_VALUE               = "fosc";
@@ -143,7 +146,10 @@ public interface FoclConstants
     String FOCL_ERROR_LOGCAT_FILE_NAME = "error_logcat";
     String FOCL_MAIN_LOGCAT_FILE_NAME  = "main_logcat";
     String FOCL_SYNC_LOGCAT_FILE_NAME  = "sync_logcat";
-    String FOCL_REPORT_FILE_POSTFIX    = ".log";
+    String FOCL_REPORT_FILE_EXT        = ".log";
+
+    String FOCL_ZIP_WORK_DATA_FILE_NAME = "work_data";
+    String FOCL_ZIP_WORK_DATA_FILE_EXT  = ".zip";
 
     long DEFAULT_SYNC_PERIOD_SEC_LONG = 300;
 

@@ -97,7 +97,7 @@ public class FoclSyncAdapter
         }
 
         try {
-            app.sendReportsOnServer(false);
+            app.sendReportsOnServer(false, false);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -133,7 +133,7 @@ public class FoclSyncAdapter
 
 
         try {
-            app.sendReportsOnServer(false);
+            app.sendReportsOnServer(false, false);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -80,8 +80,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.nextgis.maplib.util.Constants.NGW_ACCOUNT_TYPE;
 import static com.nextgis.maplib.util.Constants.TAG;
-import static com.nextgis.ngm_clink_monitoring.util.FoclConstants.FOCL_REPORT_FILE_POSTFIX;
-import static com.nextgis.ngm_clink_monitoring.util.FoclConstants.FOCL_SEND_REPORT_FROM_MAIN;
+import static com.nextgis.ngm_clink_monitoring.util.FoclConstants.*;
 
 
 public class GISApplication
@@ -139,7 +138,7 @@ public class GISApplication
 
         if (mNet.isNetworkAvailable()) {
             try {
-                sendReportsOnServer(true);
+                sendReportsOnServer(true, false);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -201,33 +200,45 @@ public class GISApplication
     }
 
 
-    public void sendReportsOnServer(boolean sendReportFromMain)
+    public void sendReportsOnServer(
+            boolean sendReportFromMain,
+            boolean sendWorkData)
             throws IOException
     {
-        String reportsDirPath = getReportsDirPath();
-        File reportsDir = new File(reportsDirPath);
+        if (sendWorkData) {
+            Intent intentReportService = new Intent(this, FoclReportService.class);
+            intentReportService.putExtra(FOCL_SEND_REPORT_FROM_MAIN, sendReportFromMain);
+            intentReportService.putExtra(FOCL_SEND_WORK_DATA, true);
+            startService(intentReportService);
 
-        if (reportsDir.isDirectory()) {
-            File[] repFiles = reportsDir.listFiles(
-                    new FilenameFilter()
-                    {
-                        @Override
-                        public boolean accept(
-                                final File dir,
-                                final String name)
+        } else {
+            String reportsDirPath = getReportsDirPath();
+            File reportsDir = new File(reportsDirPath);
+
+            if (reportsDir.isDirectory()) {
+                File[] repFiles = reportsDir.listFiles(
+                        new FilenameFilter()
                         {
-                            return name.matches(".*\\" + FOCL_REPORT_FILE_POSTFIX);
-                        }
-                    });
+                            @Override
+                            public boolean accept(
+                                    final File dir,
+                                    final String name)
+                            {
+                                return name.matches(".*\\" + FOCL_REPORT_FILE_EXT);
+                            }
+                        });
 
-            if (repFiles.length > 0) {
-                Log.d(
-                        TAG, "Report service starting, sendReportFromMain: " + sendReportFromMain);
-                Intent intentReportService = new Intent(this, FoclReportService.class);
-                intentReportService.putExtra(FOCL_SEND_REPORT_FROM_MAIN, sendReportFromMain);
-                startService(intentReportService);
-            } else if (sendReportFromMain) {
-                throw new IOException(getString(R.string.reports_not_found));
+                if (repFiles.length > 0) {
+                    Log.d(
+                            TAG,
+                            "Report service starting, sendReportFromMain: " + sendReportFromMain);
+                    Intent intentReportService = new Intent(this, FoclReportService.class);
+                    intentReportService.putExtra(FOCL_SEND_REPORT_FROM_MAIN, sendReportFromMain);
+                    intentReportService.putExtra(FOCL_SEND_WORK_DATA, false);
+                    startService(intentReportService);
+                } else if (sendReportFromMain) {
+                    throw new IOException(getString(R.string.reports_not_found));
+                }
             }
         }
     }
@@ -246,6 +257,22 @@ public class GISApplication
     }
 
 
+    public String getMapPath()
+    {
+        File defaultPath = getExternalFilesDir(SettingsConstants.KEY_PREF_MAP);
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String storedPath = sharedPreferences.getString(
+                SettingsConstants.KEY_PREF_MAP_PATH, "");
+
+        if (!TextUtils.isEmpty(storedPath)) {
+            return storedPath;
+        }
+
+        return null == defaultPath ? null : defaultPath.getPath();
+    }
+
+
     @Override
     public MapDrawable getMap()
     {
@@ -253,13 +280,11 @@ public class GISApplication
             return mMap;
         }
 
-        File defaultPath = getExternalFilesDir(SettingsConstants.KEY_PREF_MAP);
+        String mapPath = getMapPath();
 
-        if (defaultPath != null) {
+        if (mapPath != null) {
             SharedPreferences sharedPreferences =
                     PreferenceManager.getDefaultSharedPreferences(this);
-            String mapPath = sharedPreferences.getString(
-                    SettingsConstants.KEY_PREF_MAP_PATH, defaultPath.getPath());
             String mapName = sharedPreferences.getString(
                     FoclSettingsConstantsUI.KEY_PREF_MAP_NAME, "default");
 
@@ -660,6 +685,16 @@ public class GISApplication
         String timeStamp =
                 new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.US).format(new Date());
         return getReportsDirPath() + File.separator + FoclConstants.FOCL_ERROR_LOGCAT_FILE_NAME +
+                "_" + timeStamp;
+    }
+
+
+    public String getWorkDataZipFilePath()
+            throws IOException
+    {
+        String timeStamp =
+                new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.US).format(new Date());
+        return getReportsDirPath() + File.separator + FoclConstants.FOCL_ZIP_WORK_DATA_FILE_NAME +
                 "_" + timeStamp;
     }
 

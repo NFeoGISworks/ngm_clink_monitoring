@@ -135,8 +135,13 @@ public class LogcatWriter
 
             osw.close();
 
-            File readyLog = new File(logcatFilePath + FoclConstants.FOCL_REPORT_FILE_POSTFIX);
-            logcatFile.renameTo(readyLog);
+            File readyLogFile = new File(logcatFilePath + FoclConstants.FOCL_REPORT_FILE_EXT);
+
+            if (!logcatFile.renameTo(readyLogFile)) {
+                throw new IOException(
+                        "can not rename logcatFile: " + logcatFile.getAbsolutePath() +
+                                " to readyLogFile: " + readyLogFile.getAbsolutePath());
+            }
         }
     }
 
