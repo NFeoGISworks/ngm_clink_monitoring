@@ -25,7 +25,6 @@ package com.nextgis.ngm_clink_monitoring.adapters;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import com.nextgis.maplib.util.Constants;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 
 import java.io.File;
@@ -33,6 +32,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.InputStream;
+
+import static com.nextgis.maplib.util.Constants.TAG;
 
 
 public class ObjectPhotoFileAdapter
@@ -61,7 +62,19 @@ public class ObjectPhotoFileAdapter
                                 final File dir,
                                 final String name)
                         {
-                            return name.matches(FoclConstants.TEMP_PHOTO_FILE_PREFIX + ".*\\.jpg");
+                            Log.d(
+                                    TAG, "ObjectPhotoFileAdapter, FilenameFilter, dir: " +
+                                            dir.getAbsolutePath() + ", name: " + name);
+
+                            if (name.matches(FoclConstants.TEMP_PHOTO_FILE_PREFIX + ".*\\.jpg")) {
+                                Log.d(
+                                        TAG,
+                                        "ObjectPhotoFileAdapter, FilenameFilter, name.matches: " +
+                                                true);
+                                return true;
+                            } else {
+                                return false;
+                            }
                         }
                     });
 
@@ -97,12 +110,16 @@ public class ObjectPhotoFileAdapter
     protected InputStream getPhotoInputStream(int position)
     {
         if (null == mPhotoFiles) {
+            Log.d(TAG, "ObjectPhotoFileAdapter, getPhotoInputStream(), mPhotoFiles == null");
             return null;
         }
 
         long itemId = getItemId(position);
 
         if (RecyclerView.NO_ID == itemId) {
+            Log.d(
+                    TAG,
+                    "ObjectPhotoFileAdapter, getPhotoInputStream(), RecyclerView.NO_ID == itemId");
             return null;
         }
 
@@ -113,17 +130,26 @@ public class ObjectPhotoFileAdapter
             inputStream = new FileInputStream(photoFile);
 
         } catch (FileNotFoundException e) {
-            Log.d(Constants.TAG, "position = " + position + ", ERROR: " + e.getLocalizedMessage());
+            Log.d(
+                    TAG, "ObjectPhotoFileAdapter, getPhotoInputStream(), position = " + position +
+                            ", ERROR: " + e.getLocalizedMessage());
             return null;
         }
 
-        Log.d(Constants.TAG, "position = " + position + ", file = " + photoFile.getAbsolutePath());
+        Log.d(
+                TAG, "ObjectPhotoFileAdapter, getPhotoInputStream(), position = " + position +
+                        ", photoFile = " + photoFile.getAbsolutePath());
         return inputStream;
     }
 
 
     public File getItemPhotoFile(int itemId)
     {
-        return null == mPhotoFiles ? null : mPhotoFiles[itemId];
+        if (null == mPhotoFiles) {
+            Log.d(TAG, "ObjectPhotoFileAdapter, getItemPhotoFile(), null == mPhotoFiles");
+            return null;
+        } else {
+            return mPhotoFiles[itemId];
+        }
     }
 }

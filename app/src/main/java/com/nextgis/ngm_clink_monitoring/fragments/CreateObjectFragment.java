@@ -78,6 +78,7 @@ import com.nextgis.ngm_clink_monitoring.util.FileUtil;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 import com.nextgis.ngm_clink_monitoring.util.FoclLocationUtil;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
+import com.nextgis.ngm_clink_monitoring.util.LogcatWriter;
 import com.nextgis.ngm_clink_monitoring.util.ViewUtil;
 
 import java.io.File;
@@ -104,6 +105,8 @@ public class CreateObjectFragment
     protected static final int REQUEST_TAKE_PHOTO = 1;
 
     protected Context mContext;
+
+    protected Toolbar mBottomToolbar;
 
     protected TextView mTypeWorkTitle;
     protected TextView mLineName;
@@ -167,7 +170,7 @@ public class CreateObjectFragment
     protected FoclStruct      mFoclStruct;
     protected FoclVectorLayer mFoclVectorLayer;
 
-    protected Toolbar mBottomToolbar;
+    protected LogcatWriter mLogcatWriter;
 
 
     public void setParams(
@@ -188,6 +191,15 @@ public class CreateObjectFragment
         setRetainInstance(true);
 
         GISApplication app = (GISApplication) getActivity().getApplication();
+
+        mLogcatWriter = new LogcatWriter(app);
+        try {
+            mLogcatWriter.startLogcat();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
         mGpsEventSource = app.getGpsEventSource();
 
         if (FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT == mFoclStructLayerType) {
@@ -955,6 +967,7 @@ public class CreateObjectFragment
                                 tempFile.createNewFile()) {
 
                     mTempPhotoPath = tempFile.getAbsolutePath();
+                    Log.d(TAG, "mTempPhotoPath: " + mTempPhotoPath);
 
                     cameraIntent.putExtra(
                             MediaStore.EXTRA_OUTPUT, Uri.fromFile(tempFile));
@@ -983,7 +996,15 @@ public class CreateObjectFragment
         }
 
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_CANCELED) {
-            tempPhotoFile.delete();
+            if (tempPhotoFile.delete()) {
+                Log.d(
+                        TAG, "tempPhotoFile deleted on Activity.RESULT_CANCELED, path: " +
+                                tempPhotoFile.getAbsolutePath());
+            } else {
+                Log.d(
+                        TAG, "tempPhotoFile delete FAILED on Activity.RESULT_CANCELED, path: " +
+                                tempPhotoFile.getAbsolutePath());
+            }
         }
     }
 
@@ -995,10 +1016,12 @@ public class CreateObjectFragment
 
         ContentResolver contentResolver = app.getContentResolver();
         String photoFileName = getPhotoFileName(tempPhotoFile);
+        Log.d(TAG, "CreateObjectFragment, writePhotoAttach(), photoFileName: " + photoFileName);
 
         Uri allAttachesUri = Uri.parse(
                 "content://" + FoclSettingsConstantsUI.AUTHORITY +
                         "/" + mObjectLayerName + "/" + mObjectId + "/attach");
+        Log.d(TAG, "CreateObjectFragment, writePhotoAttach(), allAttachesUri: " + allAttachesUri);
 
         ContentValues values = new ContentValues();
         values.put(VectorLayer.ATTACH_DISPLAY_NAME, photoFileName);
@@ -1009,9 +1032,11 @@ public class CreateObjectFragment
         String insertAttachError = null;
         try {
             attachUri = contentResolver.insert(allAttachesUri, values);
-            Log.d(TAG, attachUri.toString());
+            Log.d(TAG, "CreateObjectFragment, writePhotoAttach(), insert: " + attachUri.toString());
         } catch (Exception e) {
-            Log.d(TAG, "Insert attach failed: " + e.getLocalizedMessage());
+            Log.d(
+                    TAG, "CreateObjectFragment, writePhotoAttach(), Insert attach failed: " +
+                            e.getLocalizedMessage());
             insertAttachError = "Insert attach failed: " + e.getLocalizedMessage();
         }
 
@@ -1058,7 +1083,12 @@ public class CreateObjectFragment
             FileUtil.copy(new FileInputStream(tempAttachFile), attachOutStream);
             attachOutStream.close();
 
-            tempAttachFile.delete();
+            if (!tempAttachFile.delete()) {
+                Log.d(
+                        TAG,
+                        "CreateObjectFragment, writePhotoAttach(), tempAttachFile.delete() failed, tempAttachFile:" +
+                                tempAttachFile.getAbsolutePath());
+            }
         }
 
         if (app.isOriginalPhotoSaving()) {
@@ -1067,13 +1097,23 @@ public class CreateObjectFragment
             File origPhotoFile = new File(getDailyPhotoFolder(), photoFileName);
 
             if (!com.nextgis.maplib.util.FileUtil.move(tempPhotoFile, origPhotoFile)) {
+                Log.d(
+                        TAG,
+                        "CreateObjectFragment, writePhotoAttach(), move original failed, tempPhotoFile:" +
+                                tempPhotoFile.getAbsolutePath() + ", origPhotoFile: " +
+                                origPhotoFile.getAbsolutePath());
                 throw new IOException(
                         "Save original photo failed, tempPhotoFile: " +
                                 tempPhotoFile.getAbsolutePath());
             }
 
         } else {
-            tempPhotoFile.delete();
+            if (!tempPhotoFile.delete()) {
+                Log.d(
+                        TAG,
+                        "CreateObjectFragment, writePhotoAttach(), tempPhotoFile.delete() failed, tempPhotoFile:" +
+                                tempPhotoFile.getAbsolutePath());
+            }
         }
 
         if (null != insertAttachError) {
@@ -1099,7 +1139,7 @@ public class CreateObjectFragment
 
         } catch (IOException e) {
             String msg = "Write photo attaches failed, " + e.getLocalizedMessage();
-            Log.d(TAG, msg);
+            Log.d(TAG, "CreateObjectFragment, writePhotoAttaches(), " + msg);
             Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
         }
     }
@@ -1238,7 +1278,7 @@ public class CreateObjectFragment
                     .show(
                             getActivity().getSupportFragmentManager(),
                             FoclConstants.FRAGMENT_YES_NO_DIALOG + "FieldsNotNull");
-            return;
+            return; // we do not need logcat here
         }
 
 
@@ -1247,13 +1287,17 @@ public class CreateObjectFragment
         Uri uri = Uri.parse(
                 "content://" + FoclSettingsConstantsUI.AUTHORITY + "/" +
                         mObjectLayerName);
+        Log.d(TAG, "CreateObjectFragment, createObject(), uri: " + uri.toString());
 
         ContentValues values = new ContentValues();
 
-        values.put(
-                FoclConstants.FIELD_BUILT_DATE,
-                mAccurateLocation.getTime() + app.getGpsTimeOffset());
-        values.put(FoclConstants.FIELD_DESCRIPTION, mDescription.getText().toString());
+        long builtDate = mAccurateLocation.getTime() + app.getGpsTimeOffset();
+        values.put(FoclConstants.FIELD_BUILT_DATE, builtDate);
+        Log.d(TAG, "CreateObjectFragment, createObject(), builtDate: " + builtDate);
+
+        String descriptionText = mDescription.getText().toString();
+        values.put(FoclConstants.FIELD_DESCRIPTION, descriptionText);
+        Log.d(TAG, "CreateObjectFragment, createObject(), descriptionText: " + descriptionText);
 
         try {
             GeoPoint pt = new GeoPoint(
@@ -1263,41 +1307,61 @@ public class CreateObjectFragment
             GeoMultiPoint mpt = new GeoMultiPoint();
             mpt.add(pt);
             values.put(FIELD_GEOM, mpt.toBlob());
+            Log.d(TAG, "CreateObjectFragment, createObject(), pt: " + pt.toString());
 
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        String value;
 
         switch (mFoclStructLayerType) {
             case FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT:
                 if (0 == mObjectCount || mNewStartPoint) {
                     values.put(FIELD_START_POINT, true);
                 }
-                values.put(FIELD_LAYING_METHOD, mLayingMethod.getValue());
+                value = mLayingMethod.getValue();
+                values.put(FIELD_LAYING_METHOD, value);
+                Log.d(TAG, "CreateObjectFragment, createObject(), FIELD_LAYING_METHOD: " + value);
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_REAL_FOSC:
-                values.put(FIELD_FOSC_TYPE, mFoscType.getValue());
-                values.put(FIELD_FOSC_PLACEMENT, mFoscPlacement.getValue());
+                value = mFoscType.getValue();
+                values.put(FIELD_FOSC_TYPE, value);
+                Log.d(TAG, "CreateObjectFragment, createObject(), FIELD_FOSC_TYPE: " + value);
+
+                value = mFoscPlacement.getValue();
+                values.put(FIELD_FOSC_PLACEMENT, value);
+                Log.d(TAG, "CreateObjectFragment, createObject(), FIELD_FOSC_PLACEMENT: " + value);
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CROSS:
-//                values.put(FIELD_OPTICAL_CROSS_TYPE, mOpticalCrossType.getValue());
+//                value = mOpticalCrossType.getValue();
+//                values.put(FIELD_OPTICAL_CROSS_TYPE, value);
+//                Log.d(TAG, "CreateObjectFragment, createObject(), FIELD_OPTICAL_CROSS_TYPE: " + value);
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_REAL_ACCESS_POINT:
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_REAL_SPECIAL_TRANSITION_POINT:
-                values.put(FIELD_SPECIAL_LAYING_METHOD, mSpecialLayingMethod.getValue());
-                values.put(FIELD_MARK_TYPE, mMarkType.getValue());
+                value = mSpecialLayingMethod.getValue();
+                values.put(FIELD_SPECIAL_LAYING_METHOD, value);
+                Log.d(
+                        TAG, "CreateObjectFragment, createObject(), FIELD_SPECIAL_LAYING_METHOD: " +
+                                value);
+
+                value = mMarkType.getValue();
+                values.put(FIELD_MARK_TYPE, value);
+                Log.d(TAG, "CreateObjectFragment, createObject(), FIELD_MARK_TYPE: " + value);
                 break;
         }
 
         Uri result = getActivity().getContentResolver().insert(uri, values);
         if (result == null) {
             Log.d(
-                    TAG, "Layer: " + mObjectLayerName + ", insert FAILED");
+                    TAG, "CreateObjectFragment, createObject(), Layer: " + mObjectLayerName +
+                            ", insert FAILED");
             Toast.makeText(
                     getActivity(), R.string.object_creation_error, Toast.LENGTH_LONG).show();
 
@@ -1311,10 +1375,20 @@ public class CreateObjectFragment
 
             mObjectId = Long.parseLong(result.getLastPathSegment());
             Log.d(
-                    TAG, "Layer: " + mObjectLayerName + ", id: " + mObjectId +
+                    TAG,
+                    "CreateObjectFragment, createObject(), Layer: " + mObjectLayerName + ", id: " +
+                            mObjectId +
                             ", insert result: " + result);
             writePhotoAttaches();
             getActivity().getSupportFragmentManager().popBackStackImmediate();
+        }
+
+
+        try {
+            mLogcatWriter.writeLogcat(app.getMainLogcatFilePath());
+            mLogcatWriter.stopLogcat();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

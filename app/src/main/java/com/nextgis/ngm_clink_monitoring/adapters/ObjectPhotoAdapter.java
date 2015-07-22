@@ -132,7 +132,8 @@ public abstract class ObjectPhotoAdapter
                 try {
                     attachInputStream.close();
                 } catch (IOException e) {
-                    Log.d(Constants.TAG, e.getLocalizedMessage());
+                    Log.d(Constants.TAG, "ObjectPhotoAdapter, error: " + e.getLocalizedMessage());
+                    e.printStackTrace();
                 }
 
                 return bitmap;
@@ -179,6 +180,7 @@ public abstract class ObjectPhotoAdapter
             bis.close();
 
         } catch (IOException e) {
+            Log.d(Constants.TAG, "ObjectPhotoAdapter, error: " + e.getLocalizedMessage());
             e.printStackTrace();
         }
 
