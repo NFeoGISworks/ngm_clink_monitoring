@@ -445,6 +445,25 @@ public class MainActivity
         }
 
 
+        switch (tag) {
+            case FoclConstants.FRAGMENT_SYNC_LOGIN:
+            case FoclConstants.FRAGMENT_PERFORM_1ST_SYNC:
+            case FoclConstants.FRAGMENT_LINE_LIST:
+            case FoclConstants.FRAGMENT_OBJECT_TYPES:
+            case FoclConstants.FRAGMENT_OBJECT_LIST:
+            case FoclConstants.FRAGMENT_OBJECT_STATUS:
+            case FoclConstants.FRAGMENT_MAP:
+            default:
+                mBottomToolbar.setVisibility(View.GONE);
+                mBottomToolbar.setOnMenuItemClickListener(null);
+                break;
+
+            case FoclConstants.FRAGMENT_CREATE_OBJECT:
+                mBottomToolbar.setVisibility(View.VISIBLE);
+                break;
+        }
+
+
         // TODO: remove it
 //        FragmentManager fm = getSupportFragmentManager();
 //        FragmentTransaction ft = fm.beginTransaction();

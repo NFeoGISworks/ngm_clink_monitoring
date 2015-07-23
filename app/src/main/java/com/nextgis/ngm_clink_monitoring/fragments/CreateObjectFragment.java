@@ -106,8 +106,6 @@ public class CreateObjectFragment
 
     protected Context mContext;
 
-    protected Toolbar mBottomToolbar;
-
     protected TextView mTypeWorkTitle;
     protected TextView mLineName;
 
@@ -368,9 +366,7 @@ public class CreateObjectFragment
             saveMenuItem.setOnClickListener(doneButtonOnClickListener);
         }
 
-        mBottomToolbar = activity.getBottomToolbar();
-        mBottomToolbar.setVisibility(View.VISIBLE);
-        mBottomToolbar.setOnMenuItemClickListener(
+        activity.getBottomToolbar().setOnMenuItemClickListener(
                 new Toolbar.OnMenuItemClickListener()
                 {
                     @Override
@@ -418,8 +414,6 @@ public class CreateObjectFragment
     {
         mAccurateLocationTaker.setOnProgressUpdateListener(null);
         mAccurateLocationTaker.setOnGetAccurateLocationListener(null);
-        mBottomToolbar.setOnMenuItemClickListener(null);
-        mBottomToolbar.setVisibility(View.GONE);
         super.onDestroyView();
     }
 
