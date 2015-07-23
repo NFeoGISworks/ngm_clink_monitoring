@@ -37,7 +37,7 @@
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
     -->
 
-    <style name="AppBaseTheme"
+    <style name="CompulinkAppBaseTheme"
            parent="Theme.AppCompat.Light.NoActionBar">
 
         <!--
