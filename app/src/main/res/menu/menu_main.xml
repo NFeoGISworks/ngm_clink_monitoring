@@ -70,12 +70,14 @@
         app:showAsAction="never"
         />
 
+<!--
     <item
         android:id="@+id/menu_reports"
         android:title="@string/action_reports"
         android:orderInCategory="40"
         app:showAsAction="never"
         />
+-->
 
     <item
         android:id="@+id/menu_send_work_data"

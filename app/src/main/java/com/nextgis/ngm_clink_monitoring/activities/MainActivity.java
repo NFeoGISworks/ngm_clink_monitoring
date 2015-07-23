@@ -696,9 +696,11 @@ public class MainActivity
                 onMenuSyncClick(false);
                 return true;
 
+/*
             case R.id.menu_reports:
                 onMenuReportsClick();
                 return true;
+*/
 
             case R.id.menu_send_work_data:
                 onMenuSendWorkDataClick();
