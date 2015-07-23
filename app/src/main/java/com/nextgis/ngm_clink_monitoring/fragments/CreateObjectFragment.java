@@ -56,13 +56,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.nextgis.maplib.api.GpsEventListener;
+import com.nextgis.maplib.datasource.GeoGeometry;
+import com.nextgis.maplib.datasource.GeoGeometryFactory;
 import com.nextgis.maplib.datasource.GeoMultiPoint;
 import com.nextgis.maplib.datasource.GeoPoint;
 import com.nextgis.maplib.location.AccurateLocationTaker;
 import com.nextgis.maplib.location.GpsEventSource;
 import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.util.GeoConstants;
-import com.nextgis.maplib.util.VectorCacheItem;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.activities.MainActivity;
@@ -89,7 +90,6 @@ import java.io.OutputStream;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 import static com.nextgis.maplib.util.Constants.*;
@@ -1389,37 +1389,60 @@ public class CreateObjectFragment
 
     protected Float getMinDistanceFromPrevPoints(Location location)
     {
-        List<VectorCacheItem> cache = mFoclVectorLayer.getVectorCache();
         Float minDist = null;
 
-        if (0 < cache.size()) {
+        Uri uri = Uri.parse(
+                "content://" + FoclSettingsConstantsUI.AUTHORITY + "/" + mObjectLayerName);
+        String[] columns = new String[] {FIELD_GEOM};
 
-            int ii = 0;
-            do {
-                VectorCacheItem item = cache.get(ii);
-                GeoMultiPoint mpt = (GeoMultiPoint) item.getGeoGeometry();
+        Cursor cursor;
+        try {
+            cursor = getActivity().getContentResolver().query(uri, columns, null, null, null);
+        } catch (Exception e) {
+            Log.d(TAG, e.getLocalizedMessage());
+            cursor = null;
+        }
 
-                if (0 < mpt.size()) {
+        if (null != cursor) {
+            if (cursor.moveToFirst()) {
+                int columnGeom = cursor.getColumnIndex(FIELD_GEOM);
 
-                    int kk = 0;
-                    do {
-                        GeoPoint pt = new GeoPoint(mpt.get(kk));
-                        pt.setCRS(GeoConstants.CRS_WEB_MERCATOR);
-                        pt.project(GeoConstants.CRS_WGS84);
+                do {
+                    try {
+                        GeoGeometry geometry =
+                                GeoGeometryFactory.fromBlob(cursor.getBlob(columnGeom));
 
-                        Location dstLocation = new Location("");
-                        dstLocation.setLatitude(pt.getY());
-                        dstLocation.setLongitude(pt.getX());
+                        if (null != geometry && geometry instanceof GeoMultiPoint) {
+                            GeoMultiPoint mpt = (GeoMultiPoint) geometry;
 
-                        float dist = location.distanceTo(dstLocation);
-                        minDist = null == minDist ? dist : Math.min(minDist, dist);
+                            if (0 < mpt.size()) {
 
-                        ++kk;
-                    } while (kk < mpt.size());
-                }
+                                int kk = 0;
+                                do {
+                                    GeoPoint pt = new GeoPoint(mpt.get(kk));
+                                    pt.setCRS(GeoConstants.CRS_WEB_MERCATOR);
+                                    pt.project(GeoConstants.CRS_WGS84);
 
-                ++ii;
-            } while (ii < cache.size());
+                                    Location dstLocation = new Location("");
+                                    dstLocation.setLatitude(pt.getY());
+                                    dstLocation.setLongitude(pt.getX());
+
+                                    float dist = location.distanceTo(dstLocation);
+                                    minDist = null == minDist ? dist : Math.min(minDist, dist);
+
+                                    ++kk;
+                                } while (kk < mpt.size());
+                            }
+                        }
+
+                    } catch (IOException | ClassNotFoundException e) {
+                        // e.printStackTrace();
+                    }
+
+                } while (cursor.moveToNext());
+            }
+
+            cursor.close();
         }
 
         return minDist;
