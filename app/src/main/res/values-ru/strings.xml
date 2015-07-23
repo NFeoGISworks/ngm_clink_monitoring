@@ -166,12 +166,12 @@
     <string name="sync_error">ОШИБКА синхронизации</string>
     <string name="sync_progress">Синхронизация выполняется</string>
 
-    <string name="report">Отчет</string>
-    <string name="report_started">Отчет начат</string>
-    <string name="report_finished">Отчет завершен</string>
-    <string name="report_canceled">Отчет отменен</string>
-    <string name="report_error">ОШИБКА Отчета</string>
-    <string name="report_progress">Отчет выполняется</string>
+    <string name="report">Отправка данных</string>
+    <string name="report_started">Отправка начата</string>
+    <string name="report_finished">Отправка завершена</string>
+    <string name="report_canceled">Отправка отменена</string>
+    <string name="report_error">ОШИБКА отправки данных</string>
+    <string name="report_progress">Отправка выполняется</string>
     <string name="reports_not_found">Отчеты не найдены</string>
 
     <string name="compas_N">С</string>

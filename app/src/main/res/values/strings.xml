@@ -166,12 +166,12 @@
     <string name="sync_error">ERROR of synchronization</string>
     <string name="sync_progress">Synchronization in progress</string>
 
-    <string name="report">Report</string>
-    <string name="report_started">Report started</string>
-    <string name="report_finished">Report finished</string>
-    <string name="report_canceled">Report canceled</string>
-    <string name="report_error">ERROR of report</string>
-    <string name="report_progress">Report in progress</string>
+    <string name="report">Data sending</string>
+    <string name="report_started">Sending started</string>
+    <string name="report_finished">Sending finished</string>
+    <string name="report_canceled">Sending canceled</string>
+    <string name="report_error">ERROR of data sending</string>
+    <string name="report_progress">Sending in progress</string>
     <string name="reports_not_found">Reports not found</string>
 
     <string name="compas_N">N</string>
