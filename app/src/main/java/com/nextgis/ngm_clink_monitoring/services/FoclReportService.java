@@ -111,7 +111,9 @@ public class FoclReportService
             mSendWorkData = intent.getBooleanExtra(FOCL_SEND_WORK_DATA, false);
 
             Log.d(TAG, "Report service started");
-            sendNotification(this, NOTIFICATION_START, null);
+            if (mSendWorkData) {
+                sendNotification(this, NOTIFICATION_START, null);
+            }
             runTask();
         }
 
@@ -163,12 +165,16 @@ public class FoclReportService
 
                         } catch (JSONException | IOException e) {
                             e.printStackTrace();
-                            sendNotification(
-                                    FoclReportService.this, NOTIFICATION_ERROR,
-                                    e.getLocalizedMessage());
+                            if (mSendWorkData) {
+                                sendNotification(
+                                        FoclReportService.this, NOTIFICATION_ERROR,
+                                        e.getLocalizedMessage());
+                            }
                         }
 
-                        sendNotification(FoclReportService.this, NOTIFICATION_FINISH, null);
+                        if (mSendWorkData) {
+                            sendNotification(FoclReportService.this, NOTIFICATION_FINISH, null);
+                        }
                         Log.d(TAG, "Report service, runTask() stopped");
                         stopSelf();
                     }
