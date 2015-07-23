@@ -167,8 +167,8 @@ public class MainActivity
         setSupportActionBar(mMainToolbar);
 
         mBottomToolbar = (Toolbar) findViewById(R.id.bottom_toolbar_cl);
+        mBottomToolbar.setContentInsetsAbsolute(0, 0);
         mBottomToolbar.getBackground().setAlpha(255);
-        mBottomToolbar.inflateMenu(R.menu.menu_bottom);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -455,7 +455,6 @@ public class MainActivity
             case FoclConstants.FRAGMENT_MAP:
             default:
                 mBottomToolbar.setVisibility(View.GONE);
-                mBottomToolbar.setOnMenuItemClickListener(null);
                 break;
 
             case FoclConstants.FRAGMENT_CREATE_OBJECT:

@@ -51,6 +51,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -366,23 +367,28 @@ public class CreateObjectFragment
             saveMenuItem.setOnClickListener(doneButtonOnClickListener);
         }
 
-        activity.getBottomToolbar().setOnMenuItemClickListener(
-                new Toolbar.OnMenuItemClickListener()
+        Toolbar bottomToolbar = activity.getBottomToolbar();
+        ImageButton RefreshCoordBtn =
+                (ImageButton) bottomToolbar.findViewById(R.id.btn_refresh_coordinates_cl);
+        ImageButton CameraBtn = (ImageButton) bottomToolbar.findViewById(R.id.btn_camera_cl);
+
+        RefreshCoordBtn.setOnClickListener(
+                new View.OnClickListener()
                 {
                     @Override
-                    public boolean onMenuItemClick(MenuItem item)
+                    public void onClick(View v)
                     {
-                        switch (item.getItemId()) {
+                        startLocationTaking();
+                    }
+                });
 
-                            case R.id.menu_refresh_coordinates:
-                                startLocationTaking();
-                                break;
-
-                            case R.id.menu_camera:
-                                showCameraActivity(app);
-                                break;
-                        }
-                        return true;
+        CameraBtn.setOnClickListener(
+                new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        showCameraActivity(app);
                     }
                 });
 
