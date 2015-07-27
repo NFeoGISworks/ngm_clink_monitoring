@@ -69,18 +69,11 @@
         app:showAsAction="never"
         />
 
-    <item
-        android:id="@+id/menu_settings"
-        android:title="@string/action_settings"
-        android:orderInCategory="40"
-        app:showAsAction="never"
-        />
-
     <!--
         <item
             android:id="@+id/menu_reports"
             android:title="@string/action_reports"
-            android:orderInCategory="50"
+            android:orderInCategory="40"
             app:showAsAction="never"
             />
     -->
@@ -88,7 +81,14 @@
     <item
         android:id="@+id/menu_send_work_data"
         android:title="@string/action_send_work_data"
-        android:orderInCategory="51"
+        android:orderInCategory="41"
+        app:showAsAction="never"
+        />
+
+    <item
+        android:id="@+id/menu_settings"
+        android:title="@string/action_settings"
+        android:orderInCategory="50"
         app:showAsAction="never"
         />
 

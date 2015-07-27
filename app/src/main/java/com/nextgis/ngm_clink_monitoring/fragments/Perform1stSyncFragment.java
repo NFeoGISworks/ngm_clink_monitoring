@@ -27,13 +27,19 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.activities.MainActivity;
 
 
 public class Perform1stSyncFragment
         extends Fragment
+        implements GISApplication.OnSyncLayerCountListener, GISApplication.OnSyncCurrentLayerListener
 {
+    protected ProgressBar mProgressBar;
+
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -49,8 +55,50 @@ public class Perform1stSyncFragment
             Bundle savedInstanceState)
     {
         MainActivity activity = (MainActivity) getActivity();
+        GISApplication app = (GISApplication) activity.getApplication();
+
         activity.setBarsView(null);
 
-        return inflater.inflate(R.layout.fragment_perform_sync, null);
+        View view = inflater.inflate(R.layout.fragment_perform_sync, null);
+        mProgressBar = (ProgressBar) view.findViewById(R.id.sync_progress_ps);
+
+        mProgressBar.setMax(app.getSyncLayerCount());
+        mProgressBar.setProgress(app.getSyncCurrentLayer());
+
+        return view;
+    }
+
+
+    @Override
+    public void onPause()
+    {
+        GISApplication app = (GISApplication) getActivity().getApplication();
+        app.setOnSyncLayerCountListener(null);
+        app.setOnSyncCurrentLayerListener(null);
+        super.onPause();
+    }
+
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        GISApplication app = (GISApplication) getActivity().getApplication();
+        app.setOnSyncLayerCountListener(this);
+        app.setOnSyncCurrentLayerListener(this);
+    }
+
+
+    @Override
+    public void onSyncLayerCount(int layerCount)
+    {
+        mProgressBar.setMax(layerCount);
+    }
+
+
+    @Override
+    public void onSyncCurrentLayer(int currentLayer)
+    {
+        mProgressBar.setProgress(currentLayer);
     }
 }

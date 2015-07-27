@@ -250,6 +250,9 @@ public class MainActivity
 
         switch (mViewState) {
             case VIEW_STATE_LOGIN:
+                app.setSyncLayerCount(0);
+                app.setSyncCurrentLayer(0);
+
                 SyncLoginFragment syncLoginFragment =
                         (SyncLoginFragment) fm.findFragmentByTag(FoclConstants.FRAGMENT_SYNC_LOGIN);
 

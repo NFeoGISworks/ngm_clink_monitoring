@@ -97,9 +97,11 @@ public class GISApplication
 
     protected Long mGpsTimeOffset = null;
 
-    protected OnAccountAddedListener   mOnAccountAddedListener   = null;
-    protected OnAccountDeletedListener mOnAccountDeletedListener = null;
-    protected OnReloadMapListener      mOnReloadMapListener      = null;
+    protected OnAccountAddedListener     mOnAccountAddedListener     = null;
+    protected OnAccountDeletedListener   mOnAccountDeletedListener   = null;
+    protected OnReloadMapListener        mOnReloadMapListener        = null;
+    protected OnSyncLayerCountListener   mOnSyncLayerCountListener   = null;
+    protected OnSyncCurrentLayerListener mOnSyncCurrentLayerListener = null;
 
     protected UIUpdater mSyncPeriodicRunner;
 
@@ -110,6 +112,9 @@ public class GISApplication
     protected FoclStruct mSelectedFoclStruct;
 
     protected boolean mIsFullSync;
+
+    protected int mSyncLayerCount   = 0;
+    protected int mSyncCurrentLayer = 0;
 
 
     @Override
@@ -170,10 +175,15 @@ public class GISApplication
 
         mSyncReceiver = new SyncReceiver();
         IntentFilter intentFilter = new IntentFilter();
+
         intentFilter.addAction(SyncAdapter.SYNC_START);
         intentFilter.addAction(SyncAdapter.SYNC_FINISH);
         intentFilter.addAction(SyncAdapter.SYNC_CANCELED);
         intentFilter.addAction(SyncAdapter.SYNC_CHANGES);
+
+        intentFilter.addAction(FoclProject.SYNC_LAYER_COUNT);
+        intentFilter.addAction(FoclProject.SYNC_CURRENT_LAYER);
+
         registerReceiver(mSyncReceiver, intentFilter);
 
         if (!isRanAsSyncService()) {
@@ -994,6 +1004,30 @@ public class GISApplication
     }
 
 
+    public Integer getSyncLayerCount()
+    {
+        return mSyncLayerCount;
+    }
+
+
+    public void setSyncLayerCount(int syncLayerCount)
+    {
+        mSyncLayerCount = syncLayerCount;
+    }
+
+
+    public Integer getSyncCurrentLayer()
+    {
+        return mSyncCurrentLayer;
+    }
+
+
+    public void setSyncCurrentLayer(int syncCurrentLayer)
+    {
+        mSyncCurrentLayer = syncCurrentLayer;
+    }
+
+
     public void setOnAccountAddedListener(OnAccountAddedListener onAccountAddedListener)
     {
         mOnAccountAddedListener = onAccountAddedListener;
@@ -1030,6 +1064,30 @@ public class GISApplication
     }
 
 
+    public void setOnSyncLayerCountListener(OnSyncLayerCountListener onSyncLayerCountListener)
+    {
+        mOnSyncLayerCountListener = onSyncLayerCountListener;
+    }
+
+
+    public interface OnSyncLayerCountListener
+    {
+        void onSyncLayerCount(int layerCount);
+    }
+
+
+    public void setOnSyncCurrentLayerListener(OnSyncCurrentLayerListener onSyncCurrentLayerListener)
+    {
+        mOnSyncCurrentLayerListener = onSyncCurrentLayerListener;
+    }
+
+
+    public interface OnSyncCurrentLayerListener
+    {
+        void onSyncCurrentLayer(int currentLayer);
+    }
+
+
     protected class SyncReceiver
             extends BroadcastReceiver
     {
@@ -1058,6 +1116,22 @@ public class GISApplication
                     break;
 
                 case SyncAdapter.SYNC_CHANGES:
+                    break;
+
+                case FoclProject.SYNC_LAYER_COUNT:
+                    mSyncLayerCount = intent.getIntExtra(FoclProject.SYNC_LAYER_COUNT, 0);
+                    if (null != mOnSyncLayerCountListener) {
+                        mOnSyncLayerCountListener.onSyncLayerCount(mSyncLayerCount);
+                    }
+                    break;
+
+                case FoclProject.SYNC_CURRENT_LAYER:
+                    mSyncCurrentLayer = intent.getIntExtra(FoclProject.SYNC_CURRENT_LAYER, 0);
+                    if (null != mOnSyncCurrentLayerListener) {
+                        mOnSyncCurrentLayerListener.onSyncCurrentLayer(mSyncCurrentLayer);
+                    }
+                    break;
+
                 default:
                     break;
             }

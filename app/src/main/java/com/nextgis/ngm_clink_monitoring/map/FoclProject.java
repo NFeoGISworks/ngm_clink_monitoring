@@ -24,6 +24,7 @@ package com.nextgis.ngm_clink_monitoring.map;
 
 import android.accounts.Account;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SyncResult;
 import android.database.sqlite.SQLiteException;
 import android.text.TextUtils;
@@ -57,7 +58,12 @@ public class FoclProject
         extends LayerGroup
         implements INGWLayer
 {
-    protected static final String JSON_ACCOUNT_KEY = "account";
+    public static final String SYNC_LAYER_COUNT    =
+            "com.nextgis.ngm_clink_monitoring.sync_layer_count";
+    public static final String SYNC_CURRENT_LAYER  =
+            "com.nextgis.ngm_clink_monitoring.sync_current_layer";
+
+    protected static final String JSON_ACCOUNT_KEY    = "account";
     protected static final String JSON_FOCL_DICTS_KEY = "focl_dicts";
 
     protected NetworkUtil mNet;
@@ -256,6 +262,7 @@ public class FoclProject
         return download();
     }
 
+
     protected boolean sendLineStatusOnServer(
             long foclStructId,
             String lineStatus,
@@ -294,8 +301,8 @@ public class FoclProject
         long structId = jsonStruct.getLong(Constants.JSON_ID_KEY);
 
         String structStatus = jsonStruct.isNull(FoclConstants.JSON_STATUS_KEY)
-                            ? FoclConstants.FIELD_VALUE_STATUS_PROJECT
-                            : jsonStruct.getString(FoclConstants.JSON_STATUS_KEY);
+                              ? FoclConstants.FIELD_VALUE_STATUS_PROJECT
+                              : jsonStruct.getString(FoclConstants.JSON_STATUS_KEY);
 
         String structName = jsonStruct.isNull(Constants.JSON_NAME_KEY)
                             ? ""
@@ -454,7 +461,29 @@ public class FoclProject
                 }
             }
 
-            for (int i = 0; i < jsonArray.length(); ++i) {
+
+            int structCount = jsonArray.length();
+            int layerCount = 0;
+
+            for (int i = 0; i < structCount; ++i) {
+                if (Thread.currentThread().isInterrupted()) {
+                    break;
+                }
+
+                JSONObject jsonStruct = jsonArray.getJSONObject(i);
+                JSONArray jsonLayers = jsonStruct.getJSONArray(Constants.JSON_LAYERS_KEY);
+
+                layerCount += jsonLayers.length();
+            }
+
+            Intent layerCountIntent = new Intent(SYNC_LAYER_COUNT);
+            layerCountIntent.putExtra(SYNC_LAYER_COUNT, layerCount);
+            getContext().sendBroadcast(layerCountIntent);
+
+
+            int currentLayer = 0;
+
+            for (int i = 0; i < structCount; ++i) {
                 if (Thread.currentThread().isInterrupted()) {
                     break;
                 }
@@ -470,6 +499,10 @@ public class FoclProject
                     }
                     JSONObject jsonLayer = jsonLayers.getJSONObject(jj);
                     addOrUpdateFoclVectorLayer(jsonLayer, foclStruct);
+
+                    Intent currentLayerIntent = new Intent(SYNC_CURRENT_LAYER);
+                    currentLayerIntent.putExtra(SYNC_CURRENT_LAYER, currentLayer++);
+                    getContext().sendBroadcast(currentLayerIntent);
                 }
             }
 
@@ -501,8 +534,7 @@ public class FoclProject
         final org.apache.http.StatusLine line = response.getStatusLine();
         if (line.getStatusCode() != 200) {
             Log.d(
-                    Constants.TAG,
-                    "Problem downloading FOCL: " + mCacheUrl + " HTTP response: " +
+                    Constants.TAG, "Problem downloading FOCL: " + mCacheUrl + " HTTP response: " +
                             line);
             return getContext().getString(com.nextgis.maplib.R.string.error_download_data);
         }
