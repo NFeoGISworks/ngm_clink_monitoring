@@ -24,6 +24,7 @@ package com.nextgis.ngm_clink_monitoring.map;
 
 import android.accounts.Account;
 import android.content.Context;
+import android.content.SyncResult;
 import android.database.sqlite.SQLiteException;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -134,6 +135,43 @@ public class FoclProject
             mCacheLogin = app.getAccountLogin(account);
             mCachePassword = app.getAccountPassword(account);
         }
+    }
+
+
+    @Override
+    public void sync(
+            String authority,
+            SyncResult syncResult)
+    {
+
+    }
+
+
+    @Override
+    public int getSyncType()
+    {
+        return 0;
+    }
+
+
+    @Override
+    public void setSyncType(int syncType)
+    {
+
+    }
+
+
+    @Override
+    public long getRemoteId()
+    {
+        return 0;
+    }
+
+
+    @Override
+    public void setRemoteId(long remoteId)
+    {
+
     }
 
 

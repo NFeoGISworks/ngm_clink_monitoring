@@ -26,13 +26,9 @@ import android.app.Dialog;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
 import android.text.Html;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import com.nextgis.maplib.location.GpsEventSource;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
@@ -47,7 +43,6 @@ public class SetLineStatusDialog
         extends YesNoDialog
 {
     protected TextView    mLineName;
-    protected RadioGroup  mRgLineStatus;
     protected RadioButton mRbProject;
     protected RadioButton mRbInProgress;
     protected RadioButton mRbBuilt;
@@ -59,24 +54,17 @@ public class SetLineStatusDialog
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
-        final GISApplication app = (GISApplication) getActivity().getApplication();
-        final FoclProject foclProject = app.getFoclProject();
-        final FoclStruct foclStruct = app.getSelectedFoclStruct();
-        mLineStatus = foclStruct.getStatus();
-
-
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.dialog_set_status_line, null);
-
+        View view = View.inflate(getActivity(), R.layout.dialog_set_status_line, null);
         mLineName = (TextView) view.findViewById(R.id.line_name_sl);
-
-        mRgLineStatus = (RadioGroup) view.findViewById(R.id.radio_line_status_sl);
         mRbProject = (RadioButton) view.findViewById(R.id.status_project_sl);
         mRbInProgress = (RadioButton) view.findViewById(R.id.status_in_progress_sl);
         mRbBuilt = (RadioButton) view.findViewById(R.id.status_built_sl);
 
-        mBtnPositive = (Button) view.findViewById(R.id.btn_positive_sl);
-        mBtnNegative = (Button) view.findViewById(R.id.btn_negative_sl);
+
+        final GISApplication app = (GISApplication) getActivity().getApplication();
+        final FoclProject foclProject = app.getFoclProject();
+        final FoclStruct foclStruct = app.getSelectedFoclStruct();
+        mLineStatus = foclStruct.getStatus();
 
 
         mLineName.setText(Html.fromHtml(foclStruct.getHtmlFormattedName(false)));
@@ -162,15 +150,18 @@ public class SetLineStatusDialog
         mRbBuilt.setOnClickListener(radioListener);
 
 
-        mBtnPositive.setText(R.string.yes);
-        mBtnNegative.setText(R.string.no);
+        setIcon(R.drawable.ic_action_warning);
+        setTitle(R.string.status_setting);
+        setView(view);
 
+        setPositiveText(R.string.ok);
+        setNegativeText(R.string.cancel);
 
-        mBtnPositive.setOnClickListener(
-                new View.OnClickListener()
+        setOnPositiveClickedListener(
+                new YesNoDialog.OnPositiveClickedListener()
                 {
                     @Override
-                    public void onClick(View v)
+                    public void onPositiveClicked()
                     {
                         foclStruct.setStatus(mLineStatus);
                         foclStruct.setIsStatusChanged(true);
@@ -187,30 +178,20 @@ public class SetLineStatusDialog
 
                         foclStruct.setStatusUpdateTime(time);
                         foclStruct.save();
-
-                        dismiss();
                     }
                 });
 
-        mBtnNegative.setOnClickListener(
-                new View.OnClickListener()
+        setOnNegativeClickedListener(
+                new YesNoDialog.OnNegativeClickedListener()
                 {
                     @Override
-                    public void onClick(View v)
+                    public void onNegativeClicked()
                     {
-                        dismiss();
+                        // cancel
                     }
                 });
 
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setView(view);
-        builder.setIcon(R.drawable.ic_action_warning);
-        builder.setTitle(R.string.status_setting);
-
-        setPositiveText(R.string.yes);
-        setNegativeText(R.string.no);
-
-        return builder.create();
+        return super.onCreateDialog(savedInstanceState);
     }
 }

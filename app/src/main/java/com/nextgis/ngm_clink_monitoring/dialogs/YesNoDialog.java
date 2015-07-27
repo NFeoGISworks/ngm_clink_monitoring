@@ -34,6 +34,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import com.nextgis.ngm_clink_monitoring.R;
@@ -54,12 +55,14 @@ public class YesNoDialog
     protected CharSequence mPositiveText;
     protected CharSequence mNegativeText;
 
-    protected ImageView   mIcon;
-    protected TextView    mTitle;
-    protected TextView    mMessage;
-    protected TableLayout mButtons;
-    protected Button      mBtnPositive;
-    protected Button      mBtnNegative;
+    protected ImageView    mIcon;
+    protected TextView     mTitle;
+    protected LinearLayout mDialogLayout;
+    protected TextView     mMessage;
+    protected View         mView;
+    protected TableLayout  mButtons;
+    protected Button       mBtnPositive;
+    protected Button       mBtnNegative;
 
     protected OnPositiveClickedListener mOnPositiveClickedListener;
     protected OnNegativeClickedListener mOnNegativeClickedListener;
@@ -106,7 +109,7 @@ public class YesNoDialog
 
         mIcon = (ImageView) dialog.findViewById(R.id.dialog_icon_yn);
         mTitle = (TextView) dialog.findViewById(R.id.dialog_title_yn);
-        mMessage = (TextView) dialog.findViewById(R.id.dialog_message_yn);
+        mDialogLayout = (LinearLayout) dialog.findViewById(R.id.dialog_layout_yn);
         mButtons = (TableLayout) dialog.findViewById(R.id.dialog_buttons_yn);
         mBtnPositive = (Button) dialog.findViewById(R.id.dialog_btn_positive_yn);
         mBtnNegative = (Button) dialog.findViewById(R.id.dialog_btn_negative_yn);
@@ -124,12 +127,17 @@ public class YesNoDialog
         }
 
         if (null != mMessageId) {
-            mMessage.setVisibility(View.VISIBLE);
+            setMessageView();
             mMessage.setText(mMessageId);
         }
         if (null != mMessageText) {
-            mMessage.setVisibility(View.VISIBLE);
+            setMessageView();
             mMessage.setText(mMessageText);
+        }
+
+        if (null != mView) {
+            mDialogLayout.setVisibility(View.VISIBLE);
+            mDialogLayout.addView(mView);
         }
 
         if (null != mPositiveTextId) {
@@ -190,6 +198,22 @@ public class YesNoDialog
         }
 
         return dialog;
+    }
+
+
+    protected void setMessageView()
+    {
+        LinearLayout layout =
+                (LinearLayout) View.inflate(getActivity(), R.layout.dialog_yes_no_message, null);
+        mMessage = (TextView) layout.findViewById(R.id.dialog_message_yn);
+        mDialogLayout.setVisibility(View.VISIBLE);
+        mDialogLayout.addView(layout);
+    }
+
+
+    public void setView(View view)
+    {
+        mView = view;
     }
 
 

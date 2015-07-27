@@ -37,6 +37,7 @@ public interface FoclConstants
     String FRAGMENT_DISTANCE_EXCEEDED      = "DistanceExceeded";
     String FRAGMENT_YES_NO_DIALOG          = "YesNoDialog";
     String FRAGMENT_SET_LINE_STATUS_DIALOG = "SetLineStatusDialog";
+    String FRAGMENT_SYNC_DIALOG            = "SyncDialog";
 
     String JSON_STATUS_KEY            = "status";
     String JSON_UPDATE_DT_KEY         = "update_dt";

@@ -224,6 +224,9 @@
 
     <string name="status_setting">Установка статуса</string>
 
+    <string name="get_server_data">Получить данные с сервера</string>
+    <string name="send_data_to_server">Отправить данные на сервер</string>
+
     <string name="focl_url">Compulink Server URL</string>
 
 </resources>

@@ -55,13 +55,12 @@
         />
 
     <item
-        android:id="@+id/menu_full_sync"
-        android:title="@string/action_full_sync"
+        android:id="@+id/menu_line_status"
+        android:title="@string/action_line_status"
         android:orderInCategory="20"
         app:showAsAction="never"
+        android:visible="false"
         />
-
-<!-- TODO: remove it -->
 
     <item
         android:id="@+id/menu_sync"
@@ -70,41 +69,33 @@
         app:showAsAction="never"
         />
 
-<!--
     <item
-        android:id="@+id/menu_reports"
-        android:title="@string/action_reports"
+        android:id="@+id/menu_settings"
+        android:title="@string/action_settings"
         android:orderInCategory="40"
         app:showAsAction="never"
         />
--->
+
+    <!--
+        <item
+            android:id="@+id/menu_reports"
+            android:title="@string/action_reports"
+            android:orderInCategory="50"
+            app:showAsAction="never"
+            />
+    -->
 
     <item
         android:id="@+id/menu_send_work_data"
         android:title="@string/action_send_work_data"
-        android:orderInCategory="41"
-        app:showAsAction="never"
-        />
-
-    <item
-        android:id="@+id/menu_line_status"
-        android:title="@string/action_line_status"
-        android:orderInCategory="50"
-        app:showAsAction="never"
-        android:visible="false"
-        />
-
-    <item
-        android:id="@+id/menu_settings"
-        android:title="@string/action_settings"
-        android:orderInCategory="60"
+        android:orderInCategory="51"
         app:showAsAction="never"
         />
 
     <item
         android:id="@+id/menu_about"
         android:title="@string/action_about"
-        android:orderInCategory="70"
+        android:orderInCategory="60"
         app:showAsAction="never"
         />
 

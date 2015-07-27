@@ -223,6 +223,8 @@
     <string name="empty_field_warning">Field \"%1$s\" must be filled.</string>
 
     <string name="status_setting">Status setting</string>
+    <string name="get_server_data">Get server data</string>
+    <string name="send_data_to_server">Send data to server</string>
 
     <string name="focl_url">Compulink Server URL</string>
 
