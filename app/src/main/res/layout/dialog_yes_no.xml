@@ -69,77 +69,84 @@
         <View
             android:layout_height="2dp"
             android:layout_width="match_parent"
-            android:background="@color/color_black"/>
+            android:background="@color/color_black"
+            />
 
-        <LinearLayout
+        <ScrollView
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:layout_marginTop="24dp"
             android:layout_marginLeft="24dp"
             android:layout_marginRight="24dp"
-            android:orientation="vertical"
+            android:layout_marginBottom="24dp"
             >
 
             <LinearLayout
-                android:id="@+id/dialog_layout_yn"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:layout_marginBottom="24dp"
                 android:orientation="vertical"
-                android:visibility="gone"
                 >
+
+                <LinearLayout
+                    android:id="@+id/dialog_layout_yn"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    >
+
+                </LinearLayout>
+
+
+                <TableLayout
+                    android:id="@+id/dialog_buttons_yn"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:stretchColumns="0,1"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    >
+
+                    <TableRow
+                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        >
+
+                        <Button
+                            android:id="@+id/dialog_btn_negative_yn"
+                            android:layout_height="wrap_content"
+                            android:layout_width="1dp"
+                            android:layout_weight="1"
+                            android:layout_marginRight="12dp"
+                            android:paddingTop="5dp"
+                            android:paddingBottom="5dp"
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:visibility="invisible"
+                            />
+
+                        <Button
+                            android:id="@+id/dialog_btn_positive_yn"
+                            android:layout_height="wrap_content"
+                            android:layout_width="1dp"
+                            android:layout_weight="1"
+                            android:layout_marginLeft="12dp"
+                            android:paddingTop="5dp"
+                            android:paddingBottom="5dp"
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:visibility="invisible"
+                            />
+
+                    </TableRow>
+
+                </TableLayout>
 
             </LinearLayout>
 
-
-            <TableLayout
-                android:id="@+id/dialog_buttons_yn"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:layout_marginBottom="24dp"
-                android:stretchColumns="0,1"
-                android:orientation="horizontal"
-                android:visibility="gone"
-                >
-
-                <TableRow
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    >
-
-                    <Button
-                        android:id="@+id/dialog_btn_negative_yn"
-                        android:layout_height="wrap_content"
-                        android:layout_width="1dp"
-                        android:layout_weight="1"
-                        android:layout_marginRight="12dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
-                        android:paddingLeft="5dp"
-                        android:paddingRight="5dp"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:visibility="invisible"
-                        />
-
-                    <Button
-                        android:id="@+id/dialog_btn_positive_yn"
-                        android:layout_height="wrap_content"
-                        android:layout_width="1dp"
-                        android:layout_weight="1"
-                        android:layout_marginLeft="12dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
-                        android:paddingLeft="5dp"
-                        android:paddingRight="5dp"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:visibility="invisible"
-                        />
-
-                </TableRow>
-
-            </TableLayout>
-
-        </LinearLayout>
+        </ScrollView>
 
     </LinearLayout>
 
