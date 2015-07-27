@@ -176,8 +176,8 @@ public class FoclStyleRule
             case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CABLE:
                 select = new String[] {
                         FIELD_ID,
-                        FoclConstants.FIELD_LAYING_METHOD,
-                        FoclConstants.FIELD_STATUS_BUILT};
+                        FoclConstants.FIELD_LAYING_METHOD/*,
+                        FoclConstants.FIELD_STATUS_BUILT*/};
 
                 try {
                     cursor = mVectorLayer.query(uri, select, null, null, null, null);
@@ -192,8 +192,8 @@ public class FoclStyleRule
                         if (cursor.moveToFirst()) {
                             type = cursor.getString(
                                     cursor.getColumnIndex(FoclConstants.FIELD_LAYING_METHOD));
-                            status = cursor.getString(
-                                    cursor.getColumnIndex(FoclConstants.FIELD_STATUS_BUILT));
+//                            status = cursor.getString(
+//                                    cursor.getColumnIndex(FoclConstants.FIELD_STATUS_BUILT));
                         }
                         cursor.close();
                     }
@@ -209,7 +209,7 @@ public class FoclStyleRule
             case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CROSS:
             case FoclConstants.LAYERTYPE_FOCL_ACCESS_POINT:
             case FoclConstants.LAYERTYPE_FOCL_SPECIAL_TRANSITION:
-                select = new String[] {FIELD_ID, FoclConstants.FIELD_STATUS_BUILT};
+                select = new String[] {FIELD_ID/*, FoclConstants.FIELD_STATUS_BUILT*/};
 
                 try {
                     cursor = mVectorLayer.query(uri, select, null, null, null, null);
@@ -221,8 +221,8 @@ public class FoclStyleRule
 
                 if (null != cursor) {
                     if (cursor.moveToFirst()) {
-                        status = cursor.getString(
-                                cursor.getColumnIndex(FoclConstants.FIELD_STATUS_BUILT));
+//                        status = cursor.getString(
+//                                cursor.getColumnIndex(FoclConstants.FIELD_STATUS_BUILT));
                     }
                     cursor.close();
                 }
