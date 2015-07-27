@@ -229,4 +229,7 @@
 
     <string name="focl_url">Compulink Server URL</string>
 
+    <string name="twelve_hours">12 часов</string>
+    <string name="twenty_four_hours">24 часа</string>
+
 </resources>

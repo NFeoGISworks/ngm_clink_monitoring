@@ -43,7 +43,6 @@ import com.nextgis.maplibui.activity.NGWSettingsActivity;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.fragments.SyncSettingsFragment;
-import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 
 import static com.nextgis.maplibui.util.SettingsConstantsUI.KEY_PREF_SYNC_PERIOD;
 
@@ -217,14 +216,11 @@ public class SyncSettingsActivity
                 getString(com.nextgis.maplibui.R.string.fifteen_minutes),
                 getString(com.nextgis.maplibui.R.string.thirty_minutes),
                 getString(com.nextgis.maplibui.R.string.one_hour),
-                getString(com.nextgis.maplibui.R.string.two_hours)};
+                getString(com.nextgis.maplibui.R.string.two_hours),
+                getString(R.string.twelve_hours),
+                getString(R.string.twenty_four_hours)};
         final CharSequence[] values = {
-                "" + FoclConstants.DEFAULT_SYNC_PERIOD_SEC_LONG,
-                "600",
-                "900",
-                "1800",
-                "3600",
-                "7200"};
+                "300", "600", "900", "1800", "3600", "7200", "43200", "86400"};
 
         final ListPreference timeInterval = new ListPreference(this);
         timeInterval.setKey(KEY_PREF_SYNC_PERIOD);

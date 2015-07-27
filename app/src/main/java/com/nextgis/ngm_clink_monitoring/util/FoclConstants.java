@@ -152,7 +152,7 @@ public interface FoclConstants
     String FOCL_ZIP_WORK_DATA_FILE_NAME = "work_data";
     String FOCL_ZIP_WORK_DATA_FILE_EXT  = ".zip";
 
-    long DEFAULT_SYNC_PERIOD_SEC_LONG = 300;
+    long DEFAULT_SYNC_PERIOD_SEC_LONG = 3600;
 
     int PHOTO_MAX_SIZE_PX           = 640;
     int PHOTO_JPEG_COMPRESS_QUALITY = 75;
