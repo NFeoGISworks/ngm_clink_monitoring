@@ -23,15 +23,10 @@
 package com.nextgis.ngm_clink_monitoring.dialogs;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import com.nextgis.ngm_clink_monitoring.R;
@@ -39,7 +34,7 @@ import com.nextgis.ngm_clink_monitoring.fragments.CreateObjectFragment;
 
 
 public class DistanceExceededDialog
-        extends DialogFragment
+        extends YesNoDialog
         implements CreateObjectFragment.OnDistanceChangedListener
 {
     protected CreateObjectFragment mParent;
@@ -52,9 +47,6 @@ public class DistanceExceededDialog
 
     protected OnRepeatClickedListener   mOnRepeatClickedListener;
     protected OnNewPointClickedListener mOnNewPointClickedListener;
-    protected OnCancelListener          mOnCancelListener;
-
-    protected boolean mIsViewCreated = false;
 
 
     public void setParams(CreateObjectFragment parent, Float distance)
@@ -79,19 +71,6 @@ public class DistanceExceededDialog
             getDialog().setOnDismissListener(null);
         }
         super.onDestroyView();
-        mIsViewCreated = false;
-    }
-
-
-    @Nullable
-    @Override
-    public View onCreateView(
-            LayoutInflater inflater,
-            ViewGroup container,
-            Bundle savedInstanceState)
-    {
-        mIsViewCreated = true;
-        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
 
@@ -108,8 +87,6 @@ public class DistanceExceededDialog
 
         mDistanceView.setText(mParent.getDistanceText(mDistance));
         mDistanceView.setTextColor(mParent.getDistanceTextColor(mDistance));
-
-//        mBtnRepeat.setEnabled(false);
 
         mBtnRepeat.setOnClickListener(
                 new View.OnClickListener()
@@ -139,33 +116,36 @@ public class DistanceExceededDialog
                     }
                 });
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(getActivity().getString(R.string.warning))
-                .setIcon(R.drawable.ic_action_warning)
-                .setView(view);
 
-        return builder.create();
+        setIcon(R.drawable.ic_action_warning);
+        setTitle(R.string.warning);
+        setView(view);
+
+        return super.onCreateDialog(savedInstanceState);
     }
 
 
     @Override
-    public void onCancel(DialogInterface dialog)
+    public void onPause()
     {
-        if (null != mOnCancelListener) {
-            mOnCancelListener.onCancel();
-        }
-        super.onCancel(dialog);
+        mParent.setOnOnDistanceChangedListener(null);
+        super.onPause();
+    }
+
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        mParent.setOnOnDistanceChangedListener(this);
     }
 
 
     @Override
     public void onDistanceChanged(float distance)
     {
-        if (mIsViewCreated) {
-            mDistanceView.setText(mParent.getDistanceText(distance));
-            mDistanceView.setTextColor(mParent.getDistanceTextColor(distance));
-//            mBtnRepeat.setEnabled(FoclConstants.MAX_DISTANCE_FROM_PREV_POINT >= distance);
-        }
+        mDistanceView.setText(mParent.getDistanceText(distance));
+        mDistanceView.setTextColor(mParent.getDistanceTextColor(distance));
     }
 
 
@@ -190,17 +170,5 @@ public class DistanceExceededDialog
     public interface OnNewPointClickedListener
     {
         void onNewPointClicked();
-    }
-
-
-    public void setOnCancelListener(OnCancelListener onCancelListener)
-    {
-        mOnCancelListener = onCancelListener;
-    }
-
-
-    public interface OnCancelListener
-    {
-        void onCancel();
     }
 }

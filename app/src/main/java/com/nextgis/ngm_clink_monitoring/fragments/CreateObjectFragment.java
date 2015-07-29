@@ -347,13 +347,6 @@ public class CreateObjectFragment
                                     getActivity().getSupportFragmentManager(),
                                     FoclConstants.FRAGMENT_YES_NO_DIALOG + "CoordinatesTryAgain");
 
-                } else if (0 < mObjectCount &&
-                        FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT ==
-                                mFoclStructLayerType && null != mDistance &&
-                        FoclConstants.MAX_DISTANCE_FROM_PREV_POINT < mDistance) {
-
-                    showDistanceExceededDialog();
-
                 } else {
                     createObject();
                 }
@@ -1282,6 +1275,16 @@ public class CreateObjectFragment
         }
 
 
+        if (!mNewStartPoint && 0 < mObjectCount &&
+                FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT ==
+                        mFoclStructLayerType && null != mDistance &&
+                FoclConstants.MAX_DISTANCE_FROM_PREV_POINT > mDistance) {
+
+            showDistanceExceededDialog();
+            return; // we do not need logcat here
+        }
+
+
         GISApplication app = (GISApplication) getActivity().getApplication();
 
         Uri uri = Uri.parse(
@@ -1480,17 +1483,6 @@ public class CreateObjectFragment
     {
         DistanceExceededDialog distanceExceededDialog = new DistanceExceededDialog();
         distanceExceededDialog.setParams(this, mDistance);
-        setOnOnDistanceChangedListener(distanceExceededDialog);
-
-        distanceExceededDialog.setOnCancelListener(
-                new DistanceExceededDialog.OnCancelListener()
-                {
-                    @Override
-                    public void onCancel()
-                    {
-                        setOnOnDistanceChangedListener(null);
-                    }
-                });
 
         distanceExceededDialog.setOnRepeatClickedListener(
                 new DistanceExceededDialog.OnRepeatClickedListener()
@@ -1498,7 +1490,6 @@ public class CreateObjectFragment
                     @Override
                     public void onRepeatClicked()
                     {
-                        setOnOnDistanceChangedListener(null);
                         startLocationTaking();
                     }
                 });

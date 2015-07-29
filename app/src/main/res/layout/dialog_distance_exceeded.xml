@@ -31,30 +31,28 @@
     <LinearLayout
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:layout_marginTop="24dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginRight="24dp"
-        android:layout_marginBottom="24dp"
         android:orientation="vertical"
         >
 
         <TextView
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="@string/distance_from_prev_point_exceeded"
+            android:id="@+id/distance_from_prev_point_de"
+            android:layout_marginTop="0dp"
+            android:gravity="center_horizontal"
+            style="@style/selectedObjectStyle"
             />
 
         <TextView
-            android:id="@+id/distance_from_prev_point_de"
-            android:gravity="center_horizontal"
-            style="@style/selectedObjectStyle"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_marginTop="16dp"
+            android:textSize="16sp"
+            android:text="@string/distance_from_prev_point_exceeded"
             />
 
         <TableLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="24dp"
             android:stretchColumns="0,1"
             android:orientation="horizontal"
             >
