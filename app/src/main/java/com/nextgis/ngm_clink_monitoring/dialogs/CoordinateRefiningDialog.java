@@ -40,23 +40,14 @@ import static com.nextgis.ngm_clink_monitoring.util.FoclConstants.*;
 public class CoordinateRefiningDialog
         extends DialogFragment
 {
-    protected ProgressBar mProgressBar;
-
-    // TODO: remove it
-//    protected TextView mCountText;
-//    protected TextView mTimeText;
-//    protected TextView mLatText;
-//    protected TextView mLonText;
-//    protected TextView mAltText;
-//    protected TextView mAccText;
-
+    protected ProgressBar           mProgressBar;
     protected AccurateLocationTaker mLocationTaker;
 
     protected int mTakeCount    = 0;
     protected int mTakeCountPct = 0;
     protected int mTakeTimePct  = 0;
 
-    protected OnGetAccurateLocationListener        mOnGetAccurateLocationListener;
+    protected OnGetAccurateLocationListener mOnGetAccurateLocationListener;
 
     protected final static int MAX_PCT = 100;
 
@@ -107,18 +98,13 @@ public class CoordinateRefiningDialog
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         View view = inflater.inflate(R.layout.dialog_coordinate_refining, null);
 
-        // TODO: remove it
-//        mCountText = (TextView) view.findViewById(R.id.count_refined);
-//        mTimeText = (TextView) view.findViewById(R.id.time_refined);
-//        mLatText = (TextView) view.findViewById(R.id.lat_refined);
-//        mLonText = (TextView) view.findViewById(R.id.lon_refined);
-//        mAltText = (TextView) view.findViewById(R.id.alt_refined);
-//        mAccText = (TextView) view.findViewById(R.id.acc_refined);
-
         mProgressBar = (ProgressBar) view.findViewById(R.id.progress_bar_refining);
         mProgressBar.setMax(MAX_PCT);
         mProgressBar.setSecondaryProgress(mTakeCountPct);
         mProgressBar.setProgress(mTakeTimePct);
+
+
+        // TODO: change AlertDialog.Builder to YesNoDialog
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(getActivity().getString(R.string.coordinate_refining))
@@ -137,11 +123,6 @@ public class CoordinateRefiningDialog
 
                         mProgressBar.setSecondaryProgress(mTakeCountPct);
                         mProgressBar.setProgress(mTakeTimePct);
-
-
-                        // TODO: remove it
-//                        mCountText.setText("Кол-во замеров: " + Long.toString(values[0]));
-//                        mTimeText.setText("Время замеров, мс: " + Long.toString(values[1]));
                     }
                 });
 
@@ -153,35 +134,6 @@ public class CoordinateRefiningDialog
                             Location accurateLocation,
                             Long... values)
                     {
-                        // TODO: remove it
-//                        mTakeCount = values[0].intValue();
-//                        mTakeCountPct = mTakeCount * MAX_PCT / MAX_ACCURACY_TAKE_COUNT;
-//                        mTakeTimePct = (int) (values[1] * MAX_PCT / MAX_ACCURACY_TAKE_TIME);
-
-//                        mProgressBar.setSecondaryProgress(mTakeCountPct);
-//                        mProgressBar.setProgress(mTakeTimePct);
-
-
-//                        // TODO: remove it
-//                        mCountText.setText("Кол-во замеров: " + Integer.toString(mTakeCount));
-//                        mTimeText.setText("Время замеров, мс: " + Long.toString(values[1]));
-//                        if (null != accurateLocation) {
-//                            mLatText.setText(
-//                                    "Ш: " + Double.toString(accurateLocation.getLatitude()));
-//                            mLonText.setText(
-//                                    "Д: " + Double.toString(accurateLocation.getLongitude()));
-//                            mAltText.setText(
-//                                    "В: " + Double.toString(accurateLocation.getAltitude()));
-//                            mAccText.setText(
-//                                    "Т: " + Float.toString(accurateLocation.getAccuracy()));
-//                        } else {
-//                            mLatText.setText("Ш: --");
-//                            mLonText.setText("Д: --");
-//                            mAltText.setText("В: --");
-//                            mAccText.setText("Т: --");
-//                        }
-
-
                         if (null != mOnGetAccurateLocationListener) {
                             mOnGetAccurateLocationListener.onGetAccurateLocation(accurateLocation);
                         }
