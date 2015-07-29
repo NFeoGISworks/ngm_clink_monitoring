@@ -1278,7 +1278,7 @@ public class CreateObjectFragment
         if (!mNewStartPoint && 0 < mObjectCount &&
                 FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT ==
                         mFoclStructLayerType && null != mDistance &&
-                FoclConstants.MAX_DISTANCE_FROM_PREV_POINT > mDistance) {
+                FoclConstants.MAX_DISTANCE_FROM_PREV_POINT < mDistance) {
 
             showDistanceExceededDialog();
             return; // we do not need logcat here
