@@ -179,7 +179,7 @@ public class FoclVectorLayer
         // 2. send current changes
         if (!sendLocalChanges(syncResult)) {
             Log.d(TAG, "Set local changes failed");
-            return;
+            //return;
         }
     }
 }

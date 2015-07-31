@@ -127,7 +127,7 @@ final class ExceptionHandler
             processThrowable(exception, reportBuilder);
 
             try {
-                String filePath = mApplication.getErrorLogcatFilePath();
+                String filePath = mApplication.getMainErrorLogcatFilePath();
                 File stacktraceFile = new File(filePath);
                 File dumpDir = stacktraceFile.getParentFile();
                 boolean dirReady = dumpDir.isDirectory() || dumpDir.mkdirs();

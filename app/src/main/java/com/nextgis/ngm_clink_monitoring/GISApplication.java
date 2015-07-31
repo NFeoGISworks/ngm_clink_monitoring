@@ -40,6 +40,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -662,6 +663,16 @@ public class GISApplication
     }
 
 
+    public String getDeviceModelName()
+    {
+        String deviceModelName = Build.MODEL;
+        if (!deviceModelName.startsWith(Build.MANUFACTURER)) {
+            deviceModelName = Build.MANUFACTURER + " " + deviceModelName;
+        }
+        return deviceModelName;
+    }
+
+
     public String getReportsDirPath()
             throws IOException
     {
@@ -679,6 +690,17 @@ public class GISApplication
     }
 
 
+    public String getMainErrorLogcatFilePath()
+            throws IOException
+    {
+        String timeStamp =
+                new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.US).format(new Date());
+        return getReportsDirPath() + File.separator +
+                FoclConstants.FOCL_MAIN_ERROR_LOGCAT_FILE_NAME +
+                "_" + timeStamp;
+    }
+
+
     public String getSyncLogcatFilePath()
             throws IOException
     {
@@ -689,12 +711,13 @@ public class GISApplication
     }
 
 
-    public String getErrorLogcatFilePath()
+    public String getSyncErrorLogcatFilePath()
             throws IOException
     {
         String timeStamp =
                 new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.US).format(new Date());
-        return getReportsDirPath() + File.separator + FoclConstants.FOCL_ERROR_LOGCAT_FILE_NAME +
+        return getReportsDirPath() + File.separator +
+                FoclConstants.FOCL_SYNC_ERROR_LOGCAT_FILE_NAME +
                 "_" + timeStamp;
     }
 

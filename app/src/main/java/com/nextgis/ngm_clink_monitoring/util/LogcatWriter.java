@@ -46,11 +46,11 @@ public class LogcatWriter
     protected Process        mLogcatProcess;
     protected BufferedReader mLogcatReader;
 
-    protected String mProcessName = "";
-    protected String mProcessId   = "";
-    private   String mDeviceModel = "unknown";
-    private   String mVersionName = "0";
-    private   int    mVersionCode = 0;
+    protected String mProcessName     = "";
+    protected String mProcessId       = "";
+    private   String mDeviceModelName = "";
+    private   String mVersionName     = "0";
+    private   int    mVersionCode     = 0;
 
     private final DateFormat mFormatter = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss", Locale.US);
 
@@ -72,10 +72,7 @@ public class LogcatWriter
             // ignore
         }
 
-        mDeviceModel = Build.MODEL;
-        if (!mDeviceModel.startsWith(Build.MANUFACTURER)) {
-            mDeviceModel = Build.MANUFACTURER + " " + mDeviceModel;
-        }
+        mDeviceModelName = mApplication.getDeviceModelName();
     }
 
 
@@ -115,7 +112,7 @@ public class LogcatWriter
                     .append(String.format("Date: %s\n", mFormatter.format(dumpDate)))
                     .append(String.format("Server URL: %s\n", mApplication.getAccountUrl(account)))
                     .append(String.format("Login: %s\n", mApplication.getAccountLogin(account)))
-                    .append(String.format("Device model: %s\n", mDeviceModel))
+                    .append(String.format("Device model: %s\n", mDeviceModelName))
                     .append(String.format("Android version: %s\n", Build.VERSION.SDK_INT))
                     .append(
                             String.format(

@@ -49,10 +49,11 @@ import java.io.IOException;
 public class FoclSyncAdapter
         extends SyncAdapter
 {
-    public static final int NOTIFICATION_START    = 1;
-    public static final int NOTIFICATION_FINISH   = 2;
-    public static final int NOTIFICATION_CANCELED = 3;
-    public static final int NOTIFICATION_ERROR    = 4;
+    public static final int IS_OK       = 0;
+    public static final int IS_STARTED  = 1;
+    public static final int IS_FINISHED = 2;
+    public static final int IS_CANCELED = 3;
+    public static final int IS_ERROR    = 4;
 
     private static final int NOTIFY_ID = 1;
 
@@ -87,6 +88,8 @@ public class FoclSyncAdapter
         // For service debug
 //        android.os.Debug.waitForDebugger();
 
+        int syncStatus = FoclSyncAdapter.IS_OK;
+
         GISApplication app = (GISApplication) getContext().getApplicationContext();
 
         LogcatWriter logcatWriter = new LogcatWriter(app);
@@ -103,29 +106,42 @@ public class FoclSyncAdapter
         }
 
 
-        sendNotification(app, NOTIFICATION_START, null);
+        sendNotification(app, FoclSyncAdapter.IS_STARTED, null);
         app.setFullSync(bundle.getBoolean(FoclConstants.KEY_IS_FULL_SYNC, false));
 
         super.onPerformSync(account, bundle, authority, contentProviderClient, syncResult);
 
         if (isCanceled()) {
+            syncStatus = FoclSyncAdapter.IS_CANCELED;
             sendNotification(
-                    app, FoclSyncAdapter.NOTIFICATION_CANCELED,
-                    app.getString(R.string.sync_canceled));
-            Log.d(Constants.TAG, "FoclSyncAdapter - NOTIFICATION_CANCELED is sent");
-            return;
+                    app, FoclSyncAdapter.IS_CANCELED, app.getString(R.string.sync_canceled));
+            Log.d(Constants.TAG, "FoclSyncAdapter - notification IS_CANCELED is sent");
         }
 
-        if (null != mError && mError.length() > 0) {
-            sendNotification(app, NOTIFICATION_ERROR, mError);
-            return;
+        if (syncResult.hasError() || null != mError && mError.length() > 0) {
+            syncStatus = FoclSyncAdapter.IS_ERROR;
+            sendNotification(app, FoclSyncAdapter.IS_ERROR, mError);
         }
 
-        sendNotification(app, NOTIFICATION_FINISH, null);
-
+        if (FoclSyncAdapter.IS_OK == syncStatus) {
+            sendNotification(app, FoclSyncAdapter.IS_FINISHED, null);
+        }
 
         try {
-            logcatWriter.writeLogcat(app.getSyncLogcatFilePath());
+            String logcatFilePath;
+
+            switch (syncStatus) {
+                case FoclSyncAdapter.IS_OK:
+                    logcatFilePath = app.getSyncLogcatFilePath();
+                    break;
+                case FoclSyncAdapter.IS_ERROR:
+                case FoclSyncAdapter.IS_CANCELED:
+                default:
+                    logcatFilePath = app.getSyncErrorLogcatFilePath();
+                    break;
+            }
+
+            logcatWriter.writeLogcat(logcatFilePath);
             logcatWriter.stopLogcat();
         } catch (IOException e) {
             e.printStackTrace();
@@ -190,7 +206,7 @@ public class FoclSyncAdapter
                 .setOngoing(false);
 
         switch (notificationType) {
-            case NOTIFICATION_START:
+            case FoclSyncAdapter.IS_STARTED:
                 builder.setProgress(0, 0, true)
                         .setSmallIcon(R.drawable.ic_sync_started)
                         .setTicker(context.getString(R.string.sync_started))
@@ -198,7 +214,7 @@ public class FoclSyncAdapter
                         .setContentText(context.getString(R.string.sync_progress));
                 break;
 
-            case NOTIFICATION_FINISH:
+            case FoclSyncAdapter.IS_FINISHED:
                 builder.setProgress(0, 0, false)
                         .setSmallIcon(R.drawable.ic_sync_finished)
                         .setTicker(context.getString(R.string.sync_finished))
@@ -206,7 +222,7 @@ public class FoclSyncAdapter
                         .setContentText(context.getString(R.string.sync_finished));
                 break;
 
-            case NOTIFICATION_CANCELED:
+            case FoclSyncAdapter.IS_CANCELED:
                 builder.setProgress(0, 0, false)
                         .setSmallIcon(R.drawable.ic_sync_error)
                         .setTicker(context.getString(R.string.sync_canceled))
@@ -214,7 +230,7 @@ public class FoclSyncAdapter
                         .setContentText(context.getString(R.string.sync_canceled));
                 break;
 
-            case NOTIFICATION_ERROR:
+            case FoclSyncAdapter.IS_ERROR:
                 builder.setProgress(0, 0, false)
                         .setSmallIcon(R.drawable.ic_sync_error)
                         .setTicker(context.getString(R.string.sync_error))

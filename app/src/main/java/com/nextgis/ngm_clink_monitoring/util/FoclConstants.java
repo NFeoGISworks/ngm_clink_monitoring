@@ -49,14 +49,23 @@ public interface FoclConstants
     String JSON_DATE_KEY        = "date";
     String JSON_SERVER_URL_KEY  = "server_url";
     String JSON_LOGIN_KEY       = "login";
+    String JSON_MODEL_NAME_KEY  = "model_name";
     String JSON_REPORT_TYPE_KEY = "message_type";
     String JSON_LOGCAT_KEY      = "logcat";
     String JSON_FILE_UPLOAD_KEY = "file_upload";
 
-    String JSON_ERROR_REPORT_TYPE_VALUE     = "error";
-    String JSON_MAIN_REPORT_TYPE_VALUE      = "main";
-    String JSON_SYNC_REPORT_TYPE_VALUE      = "sync";
-    String JSON_WORK_DATA_REPORT_TYPE_VALUE = "work_data";
+    String JSON_MAIN_REPORT_TYPE_VALUE       = "main";
+    String JSON_MAIN_ERROR_REPORT_TYPE_VALUE = "main_error";
+    String JSON_SYNC_REPORT_TYPE_VALUE       = "sync";
+    String JSON_SYNC_ERROR_REPORT_TYPE_VALUE = "sync_error";
+    String JSON_WORK_DATA_REPORT_TYPE_VALUE  = "work_data";
+
+    String FOCL_REPORTS_DIR                 = "reports";
+    String FOCL_MAIN_LOGCAT_FILE_NAME       = "main_logcat";
+    String FOCL_MAIN_ERROR_LOGCAT_FILE_NAME = "main_error_logcat";
+    String FOCL_SYNC_LOGCAT_FILE_NAME       = "sync_logcat";
+    String FOCL_SYNC_ERROR_LOGCAT_FILE_NAME = "sync_error_logcat";
+    String FOCL_REPORT_FILE_EXT             = ".log";
 
     String FOCL_SEND_REPORT_FROM_MAIN = "send_report_from_main";
     String FOCL_SEND_WORK_DATA        = "send_work_data";
@@ -142,12 +151,6 @@ public interface FoclConstants
     // If you change it, change it in aFileDialog/res/values/strings/daidalos_confirm_move_to_folder
     String FOCL_DATA_DIR  = "ngm_clink_monitoring";
     String FOCL_PHOTO_DIR = "photo";
-
-    String FOCL_REPORTS_DIR            = "reports";
-    String FOCL_ERROR_LOGCAT_FILE_NAME = "error_logcat";
-    String FOCL_MAIN_LOGCAT_FILE_NAME  = "main_logcat";
-    String FOCL_SYNC_LOGCAT_FILE_NAME  = "sync_logcat";
-    String FOCL_REPORT_FILE_EXT        = ".log";
 
     String FOCL_ZIP_WORK_DATA_FILE_NAME = "work_data";
     String FOCL_ZIP_WORK_DATA_FILE_EXT  = ".zip";
