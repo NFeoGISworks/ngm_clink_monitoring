@@ -90,11 +90,12 @@ public class MapFragment
         setRetainInstance(true);
 
         GISApplication app = (GISApplication) getActivity().getApplication();
-        mMapView = new MapViewOverlays(getActivity(), app.getMap());
-        mMapView.setId(ViewUtil.generateViewId());
 
         mTolerancePX =
-                getActivity().getResources().getDisplayMetrics().density * ConstantsUI.TOLERANCE_DP;
+                app.getResources().getDisplayMetrics().density * ConstantsUI.TOLERANCE_DP;
+
+        mMapView = new MapViewOverlays(getActivity(), app.getMap());
+        mMapView.setId(ViewUtil.generateViewId());
 
         mGpsEventSource = app.getGpsEventSource();
 
@@ -116,9 +117,6 @@ public class MapFragment
         activity.setBarsView("");
         activity.switchMenuView();
 
-        View view = inflater.inflate(R.layout.fragment_map, container, false);
-        mMapRelativeLayout = (RelativeLayout) view.findViewById(R.id.rl_map);
-
         ActionBar actionBar = activity.getSupportActionBar();
         if (actionBar != null) {
             View customActionBarView = actionBar.getCustomView();
@@ -134,16 +132,19 @@ public class MapFragment
                     });
         }
 
+        View view = inflater.inflate(R.layout.fragment_map, container, false);
+        mMapRelativeLayout = (RelativeLayout) view.findViewById(R.id.rl_map);
+
         //search relative view of map, if not found - add it
-        if (mMapView != null) {
-            if (mMapRelativeLayout != null) {
-                mMapRelativeLayout.addView(
-                        mMapView, 0, new RelativeLayout.LayoutParams(
-                                RelativeLayout.LayoutParams.MATCH_PARENT,
-                                RelativeLayout.LayoutParams.MATCH_PARENT));
-            }
-            mMapView.invalidate();
+        if (mMapRelativeLayout != null) {
+            mMapRelativeLayout.addView(
+                    mMapView, 0, new RelativeLayout.LayoutParams(
+                            RelativeLayout.LayoutParams.MATCH_PARENT,
+                            RelativeLayout.LayoutParams.MATCH_PARENT));
         }
+/// TODO: ???
+//        mMapView.invalidate();
+        mMapView.postInvalidate();
 
         return view;
     }
@@ -162,6 +163,289 @@ public class MapFragment
         }
 
         super.onDestroyView();
+    }
+
+
+    @Override
+    public void onPause()
+    {
+        if (null != mGpsEventSource) {
+            mGpsEventSource.removeListener(this);
+        }
+
+        if (null != mCurrentLocationOverlay) {
+            mCurrentLocationOverlay.stopShowingCurrentLocation();
+        }
+
+        final SharedPreferences.Editor edit =
+                PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
+
+        if (null != mMapView) {
+            mMapView.removeListener(this);
+
+            edit.putFloat(FoclSettingsConstantsUI.KEY_PREF_ZOOM_LEVEL, mMapView.getZoomLevel());
+            GeoPoint point = mMapView.getMapCenter();
+            edit.putLong(
+                    FoclSettingsConstantsUI.KEY_PREF_SCROLL_X,
+                    Double.doubleToRawLongBits(point.getX()));
+            edit.putLong(
+                    FoclSettingsConstantsUI.KEY_PREF_SCROLL_Y,
+                    Double.doubleToRawLongBits(point.getY()));
+        }
+
+        edit.commit();
+
+        super.onPause();
+    }
+
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+
+        GISApplication app = (GISApplication) getActivity().getApplication();
+
+        if (null != mGpsEventSource) {
+            mGpsEventSource.addListener(this);
+        }
+
+        mCurrentCenter = null;
+
+        if (null != mMapView) {
+            mMapView.addListener(this);
+
+            final SharedPreferences prefs =
+                    PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+            float mapZoom = prefs.getFloat(
+                    FoclSettingsConstantsUI.KEY_PREF_ZOOM_LEVEL, mMapView.getMinZoom());
+            double mapScrollX = Double.longBitsToDouble(
+                    prefs.getLong(FoclSettingsConstantsUI.KEY_PREF_SCROLL_X, 0));
+            double mapScrollY = Double.longBitsToDouble(
+                    prefs.getLong(FoclSettingsConstantsUI.KEY_PREF_SCROLL_Y, 0));
+            mMapView.setZoomAndCenter(mapZoom, new GeoPoint(mapScrollX, mapScrollY));
+
+            //change zoom controls visibility
+            boolean showControls =
+                    prefs.getBoolean(FoclSettingsConstantsUI.KEY_PREF_SHOW_ZOOM_CONTROLS, false);
+
+            if (showControls) {
+                addMapButtons();
+            } else {
+                removeMapButtons();
+            }
+
+            if (null != mCurrentLocationOverlay) {
+                mCurrentLocationOverlay.updateMode(app.getLocationOverlayMode());
+                mCurrentLocationOverlay.startShowingCurrentLocation();
+                mMapView.addOverlay(mCurrentLocationOverlay);
+            }
+
+            if (null != mGpsEventSource && onMenuMapClicked) {
+                onMenuMapClicked = false;
+                setCurrentCenter(mGpsEventSource.getLastKnownLocation());
+                locateCurrentPositionAndZoom();
+            }
+
+/// TODO: ???
+//             mMapView.drawMapDrawable();
+        }
+    }
+
+
+    @Override
+    public void onLayerAdded(int id)
+    {
+
+    }
+
+
+    @Override
+    public void onLayerDeleted(int id)
+    {
+
+    }
+
+
+    @Override
+    public void onLayerChanged(int id)
+    {
+
+    }
+
+
+    @Override
+    public void onExtentChanged(
+            float zoom,
+            GeoPoint center)
+    {
+        setZoomInEnabled(mMapView.canZoomIn());
+        setZoomOutEnabled(mMapView.canZoomOut());
+    }
+
+
+    @Override
+    public void onLayersReordered()
+    {
+
+    }
+
+
+    @Override
+    public void onLayerDrawStarted()
+    {
+
+    }
+
+
+    @Override
+    public void onLayerDrawFinished(
+            int id,
+            float percent)
+    {
+        if (percent >= 1.0f) {
+            mMapView.buffer();
+            mMapView.invalidate();
+        }
+    }
+
+
+    @Override
+    public void onLongPress(MotionEvent event)
+    {
+        double dMinX = event.getX() - mTolerancePX;
+        double dMaxX = event.getX() + mTolerancePX;
+        double dMinY = event.getY() - mTolerancePX;
+        double dMaxY = event.getY() + mTolerancePX;
+
+        GeoEnvelope mapEnv = mMapView.screenToMap(new GeoEnvelope(dMinX, dMaxX, dMinY, dMaxY));
+        if (null == mapEnv) {
+            return;
+        }
+
+        //show actions dialog
+        List<ILayer> layers = mMapView.getVectorLayersByType(GeoConstants.GTAnyCheck);
+        List<VectorCacheItem> items = null;
+        FoclVectorLayer foclVectorLayer = null;
+        boolean intersects = false;
+        for (ILayer layer : layers) {
+            if (!layer.isValid()) {
+                continue;
+            }
+            ILayerView layerView = (ILayerView) layer;
+            if (!layerView.isVisible()) {
+                continue;
+            }
+
+            foclVectorLayer = (FoclVectorLayer) layer;
+            items = foclVectorLayer.query(mapEnv);
+            if (!items.isEmpty()) {
+                intersects = true;
+                break;
+            }
+        }
+
+        if (intersects) {
+            AttributesDialog attributesDialog = new AttributesDialog();
+            attributesDialog.setKeepInstance(true);
+            attributesDialog.setParams(foclVectorLayer, items.get(0).getId());
+            attributesDialog.show(
+                    getActivity().getSupportFragmentManager(), FoclConstants.FRAGMENT_ATTRIBUTES);
+        }
+    }
+
+
+    @Override
+    public void onSingleTapUp(MotionEvent event)
+    {
+
+    }
+
+
+    @Override
+    public void panStart(MotionEvent e)
+    {
+
+    }
+
+
+    @Override
+    public void panMoveTo(MotionEvent e)
+    {
+
+    }
+
+
+    @Override
+    public void panStop()
+    {
+
+    }
+
+
+    @Override
+    public void onLocationChanged(Location location)
+    {
+        if (location != null) {
+            setCurrentCenter(location);
+        }
+    }
+
+
+    @Override
+    public void onBestLocationChanged(Location location)
+    {
+
+    }
+
+
+    @Override
+    public void onGpsStatusChanged(int event)
+    {
+
+    }
+
+
+    protected void setCurrentCenter(Location location)
+    {
+        if (null == location) {
+            return;
+        }
+
+        if (mCurrentCenter == null) {
+            mCurrentCenter = new GeoPoint();
+        }
+
+        mCurrentCenter.setCoordinates(location.getLongitude(), location.getLatitude());
+        mCurrentCenter.setCRS(GeoConstants.CRS_WGS84);
+
+        if (!mCurrentCenter.project(GeoConstants.CRS_WEB_MERCATOR)) {
+            mCurrentCenter = null;
+        }
+    }
+
+
+    public void locateCurrentPositionAndZoom()
+    {
+        if (mCurrentCenter == null) {
+            Toast.makeText(getActivity(), R.string.error_no_location, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        float zoomLevel = 16f;
+
+        if (mMapView.canZoomIn()) {
+
+            if (mMapView.getMaxZoom() < zoomLevel) {
+                zoomLevel = mMapView.getMaxZoom();
+            }
+
+            mMapView.setZoomAndCenter(zoomLevel, mCurrentCenter);
+
+        } else {
+            mMapView.setZoomAndCenter(mMapView.getZoomLevel(), mCurrentCenter);
+        }
     }
 
 
@@ -254,63 +538,6 @@ public class MapFragment
     }
 
 
-    @Override
-    public void onLayerAdded(int id)
-    {
-
-    }
-
-
-    @Override
-    public void onLayerDeleted(int id)
-    {
-
-    }
-
-
-    @Override
-    public void onLayerChanged(int id)
-    {
-
-    }
-
-
-    @Override
-    public void onExtentChanged(
-            float zoom,
-            GeoPoint center)
-    {
-        setZoomInEnabled(mMapView.canZoomIn());
-        setZoomOutEnabled(mMapView.canZoomOut());
-    }
-
-
-    @Override
-    public void onLayersReordered()
-    {
-
-    }
-
-
-    @Override
-    public void onLayerDrawStarted()
-    {
-
-    }
-
-
-    @Override
-    public void onLayerDrawFinished(
-            int id,
-            float percent)
-    {
-        if (percent >= 1.0f) {
-            mMapView.buffer();
-            mMapView.invalidate();
-        }
-    }
-
-
     protected void setZoomInEnabled(boolean isEnabled)
     {
         setZoomEnabled(mivZoomIn, isEnabled);
@@ -335,241 +562,6 @@ public class MapFragment
         } else {
             ivZoom.getDrawable().setAlpha(50);
         }
-    }
-
-
-    public void locateCurrentPosition()
-    {
-        if (mCurrentCenter != null) {
-            mMapView.panTo(mCurrentCenter);
-        } else {
-            Toast.makeText(getActivity(), R.string.error_no_location, Toast.LENGTH_SHORT).show();
-        }
-    }
-
-
-    public void locateCurrentPositionAndZoom()
-    {
-        if (mCurrentCenter == null) {
-            Toast.makeText(getActivity(), R.string.error_no_location, Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        float zoomLevel = 16f;
-
-        if (mMapView.canZoomIn()) {
-
-            if (mMapView.getMaxZoom() < zoomLevel) {
-                zoomLevel = mMapView.getMaxZoom();
-            }
-
-            mMapView.setZoomAndCenter(zoomLevel, mCurrentCenter);
-
-        } else {
-            mMapView.setZoomAndCenter(mMapView.getZoomLevel(), mCurrentCenter);
-        }
-    }
-
-
-    @Override
-    public void onPause()
-    {
-        if (null != mGpsEventSource) {
-            mGpsEventSource.removeListener(this);
-        }
-
-        if (null != mCurrentLocationOverlay) {
-            mCurrentLocationOverlay.stopShowingCurrentLocation();
-        }
-
-        final SharedPreferences.Editor edit =
-                PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
-
-        if (null != mMapView) {
-            mMapView.removeListener(this);
-
-            edit.putFloat(FoclSettingsConstantsUI.KEY_PREF_ZOOM_LEVEL, mMapView.getZoomLevel());
-            GeoPoint point = mMapView.getMapCenter();
-            edit.putLong(
-                    FoclSettingsConstantsUI.KEY_PREF_SCROLL_X,
-                    Double.doubleToRawLongBits(point.getX()));
-            edit.putLong(
-                    FoclSettingsConstantsUI.KEY_PREF_SCROLL_Y,
-                    Double.doubleToRawLongBits(point.getY()));
-        }
-
-        edit.commit();
-
-        super.onPause();
-    }
-
-
-    @Override
-    public void onResume()
-    {
-        super.onResume();
-
-        GISApplication app = (GISApplication) getActivity().getApplication();
-
-        if (null != mGpsEventSource) {
-            mGpsEventSource.addListener(this);
-        }
-
-        mCurrentCenter = null;
-
-        if (null != mMapView) {
-            mMapView.addListener(this);
-
-            final SharedPreferences prefs =
-                    PreferenceManager.getDefaultSharedPreferences(getActivity());
-
-            float mMapZoom = prefs.getFloat(
-                    FoclSettingsConstantsUI.KEY_PREF_ZOOM_LEVEL, mMapView.getMinZoom());
-            double mMapScrollX = Double.longBitsToDouble(
-                    prefs.getLong(FoclSettingsConstantsUI.KEY_PREF_SCROLL_X, 0));
-            double mMapScrollY = Double.longBitsToDouble(
-                    prefs.getLong(FoclSettingsConstantsUI.KEY_PREF_SCROLL_Y, 0));
-            mMapView.setZoomAndCenter(mMapZoom, new GeoPoint(mMapScrollX, mMapScrollY));
-
-            //change zoom controls visibility
-            boolean showControls =
-                    prefs.getBoolean(FoclSettingsConstantsUI.KEY_PREF_SHOW_ZOOM_CONTROLS, false);
-
-            if (showControls) {
-                addMapButtons();
-            } else {
-                removeMapButtons();
-            }
-
-            if (null != mCurrentLocationOverlay) {
-                mCurrentLocationOverlay.updateMode(app.getLocationOverlayMode());
-                mCurrentLocationOverlay.startShowingCurrentLocation();
-                mMapView.addOverlay(mCurrentLocationOverlay);
-            }
-
-            if (null != mGpsEventSource && onMenuMapClicked) {
-                onMenuMapClicked = false;
-                setCurrentCenter(mGpsEventSource.getLastKnownLocation());
-                locateCurrentPositionAndZoom();
-            }
-
-            mMapView.drawMapDrawable();
-        }
-    }
-
-
-    @Override
-    public void onLongPress(MotionEvent event)
-    {
-        double dMinX = event.getX() - mTolerancePX;
-        double dMaxX = event.getX() + mTolerancePX;
-        double dMinY = event.getY() - mTolerancePX;
-        double dMaxY = event.getY() + mTolerancePX;
-
-        GeoEnvelope mapEnv = mMapView.screenToMap(new GeoEnvelope(dMinX, dMaxX, dMinY, dMaxY));
-        if (null == mapEnv) {
-            return;
-        }
-
-        //show actions dialog
-        List<ILayer> layers = mMapView.getVectorLayersByType(GeoConstants.GTAnyCheck);
-        List<VectorCacheItem> items = null;
-        FoclVectorLayer foclVectorLayer = null;
-        boolean intersects = false;
-        for (ILayer layer : layers) {
-            if (!layer.isValid()) {
-                continue;
-            }
-            ILayerView layerView = (ILayerView) layer;
-            if (!layerView.isVisible()) {
-                continue;
-            }
-
-            foclVectorLayer = (FoclVectorLayer) layer;
-            items = foclVectorLayer.query(mapEnv);
-            if (!items.isEmpty()) {
-                intersects = true;
-                break;
-            }
-        }
-
-        if (intersects) {
-            AttributesDialog attributesDialog = new AttributesDialog();
-            attributesDialog.setKeepInstance(true);
-            attributesDialog.setParams(foclVectorLayer, items.get(0).getId());
-            attributesDialog.show(
-                    getActivity().getSupportFragmentManager(), FoclConstants.FRAGMENT_ATTRIBUTES);
-        }
-    }
-
-
-    @Override
-    public void onSingleTapUp(MotionEvent event)
-    {
-
-    }
-
-
-    @Override
-    public void panStart(MotionEvent e)
-    {
-
-    }
-
-
-    @Override
-    public void panMoveTo(MotionEvent e)
-    {
-
-    }
-
-
-    @Override
-    public void panStop()
-    {
-
-    }
-
-
-    protected void setCurrentCenter(Location location)
-    {
-        if (null == location) {
-            return;
-        }
-
-        if (mCurrentCenter == null) {
-            mCurrentCenter = new GeoPoint();
-        }
-
-        mCurrentCenter.setCoordinates(location.getLongitude(), location.getLatitude());
-        mCurrentCenter.setCRS(GeoConstants.CRS_WGS84);
-
-        if (!mCurrentCenter.project(GeoConstants.CRS_WEB_MERCATOR)) {
-            mCurrentCenter = null;
-        }
-    }
-
-
-    @Override
-    public void onLocationChanged(Location location)
-    {
-        if (location != null) {
-            setCurrentCenter(location);
-        }
-    }
-
-
-    @Override
-    public void onBestLocationChanged(Location location)
-    {
-
-    }
-
-
-    @Override
-    public void onGpsStatusChanged(int event)
-    {
-
     }
 
 
