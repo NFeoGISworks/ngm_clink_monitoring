@@ -154,7 +154,7 @@ public class ObjectListFragment
             return view;
         }
 
-        mLineName.setText(Html.fromHtml(foclStruct.getHtmlFormattedName(false)));
+        mLineName.setText(Html.fromHtml(foclStruct.getHtmlFormattedNameTwoStringsSmall()));
         mObjectLayerName = layer.getPath().getName();
 
         Uri uri = Uri.parse(

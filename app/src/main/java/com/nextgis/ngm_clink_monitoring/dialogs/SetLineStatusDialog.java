@@ -67,7 +67,7 @@ public class SetLineStatusDialog
         mLineStatus = foclStruct.getStatus();
 
 
-        mLineName.setText(Html.fromHtml(foclStruct.getHtmlFormattedName(false)));
+        mLineName.setText(Html.fromHtml(foclStruct.getHtmlFormattedNameTwoStringsSmall()));
 
 
         FoclDictItem dictItem = foclProject.getFoclDitcs().get(FoclConstants.FIELD_PROJ_STATUSES);

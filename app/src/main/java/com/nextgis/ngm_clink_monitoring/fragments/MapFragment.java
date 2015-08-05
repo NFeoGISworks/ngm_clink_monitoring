@@ -43,7 +43,6 @@ import com.nextgis.maplib.api.ILayerView;
 import com.nextgis.maplib.datasource.GeoEnvelope;
 import com.nextgis.maplib.datasource.GeoPoint;
 import com.nextgis.maplib.location.GpsEventSource;
-import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.util.GeoConstants;
 import com.nextgis.maplib.util.VectorCacheItem;
 import com.nextgis.maplibui.api.MapViewEventListener;
@@ -54,6 +53,7 @@ import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.activities.MainActivity;
 import com.nextgis.ngm_clink_monitoring.dialogs.AttributesDialog;
+import com.nextgis.ngm_clink_monitoring.map.FoclVectorLayer;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
 import com.nextgis.ngm_clink_monitoring.util.ViewUtil;
@@ -474,7 +474,7 @@ public class MapFragment
         //show actions dialog
         List<ILayer> layers = mMapView.getVectorLayersByType(GeoConstants.GTAnyCheck);
         List<VectorCacheItem> items = null;
-        VectorLayer vectorLayer = null;
+        FoclVectorLayer foclVectorLayer = null;
         boolean intersects = false;
         for (ILayer layer : layers) {
             if (!layer.isValid()) {
@@ -485,8 +485,8 @@ public class MapFragment
                 continue;
             }
 
-            vectorLayer = (VectorLayer) layer;
-            items = vectorLayer.query(mapEnv);
+            foclVectorLayer = (FoclVectorLayer) layer;
+            items = foclVectorLayer.query(mapEnv);
             if (!items.isEmpty()) {
                 intersects = true;
                 break;
@@ -495,9 +495,10 @@ public class MapFragment
 
         if (intersects) {
             AttributesDialog attributesDialog = new AttributesDialog();
+            attributesDialog.setKeepInstance(true);
+            attributesDialog.setParams(foclVectorLayer, items.get(0).getId());
             attributesDialog.show(
                     getActivity().getSupportFragmentManager(), FoclConstants.FRAGMENT_ATTRIBUTES);
-            attributesDialog.setSelectedFeature(vectorLayer, items.get(0).getId());
         }
     }
 

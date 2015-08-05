@@ -88,7 +88,7 @@ public class LineNameAdapter
         CheckedTextView tvFoclStructName =
                 (CheckedTextView) convertView.findViewById(R.id.focl_struct_name);
 
-        tvFoclStructName.setText(Html.fromHtml(foclStruct.getHtmlFormattedName(true)));
+        tvFoclStructName.setText(Html.fromHtml(foclStruct.getHtmlFormattedNameThreeStringsSmall()));
         tvFoclStructName.setChecked(
                 foclStruct.getStatus().equals(FoclConstants.FIELD_VALUE_STATUS_BUILT));
 

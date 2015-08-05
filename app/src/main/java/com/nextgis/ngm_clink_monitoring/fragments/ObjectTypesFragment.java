@@ -108,7 +108,7 @@ public class ObjectTypesFragment
         }
 
 
-        mLineName.setText(Html.fromHtml(foclStruct.getHtmlFormattedName(false)));
+        mLineName.setText(Html.fromHtml(foclStruct.getHtmlFormattedNameTwoStringsSmall()));
 
 
         View.OnClickListener buttonOnClickListener = new View.OnClickListener()

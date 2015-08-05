@@ -22,52 +22,40 @@
 
 package com.nextgis.ngm_clink_monitoring.dialogs;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.ngm_clink_monitoring.R;
+import com.nextgis.ngm_clink_monitoring.map.FoclStruct;
+import com.nextgis.ngm_clink_monitoring.map.FoclVectorLayer;
 
 import static com.nextgis.maplib.util.Constants.FIELD_GEOM;
 import static com.nextgis.maplib.util.Constants.FIELD_ID;
 
 
 public class AttributesDialog
-        extends DialogFragment
+        extends YesNoDialog
 {
-    protected static final String KEY_ITEM_ID = "item_id";
-
-    protected VectorLayer mLayer;
-    protected long        mItemId;
+    protected FoclVectorLayer mFoclVectorLayer;
+    protected long            mObjectId;
 
     protected LinearLayout mAttributesLayout;
 
 
-    @Override
-    public void onCreate(Bundle savedInstanceState)
+    public YesNoDialog setParams(
+            FoclVectorLayer selectedLayer,
+            long selectedObjectId)
     {
-        super.onCreate(savedInstanceState);
-        setRetainInstance(true);
-    }
-
-
-    @Override
-    public void onDestroyView()
-    {
-        if (getDialog() != null && getRetainInstance()) {
-            getDialog().setOnDismissListener(null);
-        }
-        super.onDestroyView();
+        mFoclVectorLayer = selectedLayer;
+        mObjectId = selectedObjectId;
+        return this;
     }
 
 
@@ -81,74 +69,49 @@ public class AttributesDialog
         mAttributesLayout = (LinearLayout) view.findViewById(R.id.ll_attributes);
         setAttributes();
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(getActivity().getString(R.string.object_attributes))
-                .setView(view)
-                .setPositiveButton(
-                        getActivity().getString(R.string.ok), new DialogInterface.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(
-                                    DialogInterface dialog,
-                                    int which)
-                            {
-                                dismiss();
-                            }
-                        });
+        setTitle(getActivity().getString(R.string.object_attributes));
+        setView(view);
+        setPositiveText(getActivity().getString(R.string.ok));
+        setOnPositiveClickedListener(
+                new OnPositiveClickedListener()
+                {
+                    @Override
+                    public void onPositiveClicked()
+                    {
+                        // do nothing
+                    }
+                });
 
-        return builder.create();
-    }
-
-
-    @Override
-    public void onSaveInstanceState(Bundle outState)
-    {
-        super.onSaveInstanceState(outState);
-        outState.putLong(KEY_ITEM_ID, mItemId);
-    }
-
-
-    @Override
-    public void onViewStateRestored(
-            @Nullable
-            Bundle savedInstanceState)
-    {
-        super.onViewStateRestored(savedInstanceState);
-
-        if (savedInstanceState != null) {
-            mItemId = savedInstanceState.getLong(KEY_ITEM_ID);
-        }
-
-        setAttributes();
-    }
-
-
-    public void setSelectedFeature(
-            VectorLayer selectedLayer,
-            long selectedItemId)
-    {
-        mItemId = selectedItemId;
-        mLayer = selectedLayer;
-
-        if (mLayer == null) {
-            getActivity().getSupportFragmentManager().popBackStack();
-        }
-
-        setAttributes();
+        return super.onCreateDialog(savedInstanceState);
     }
 
 
     private void setAttributes()
     {
-        if (mAttributesLayout == null) {
-            return;
-        }
+        FoclStruct struct = (FoclStruct) mFoclVectorLayer.getParent();
+
 
         TextView title = (TextView) mAttributesLayout.findViewById(R.id.title);
-        title.setText(mLayer.getName());
+        title.setText(mFoclVectorLayer.getName());
 
+
+        // set line name
+        LayoutInflater lineNameInflater = LayoutInflater.from(getActivity());
+        LinearLayout lineNameRow =
+                (LinearLayout) lineNameInflater.inflate(R.layout.item_attribute_row, null);
+
+        TextView lineNameCaption = (TextView) lineNameRow.findViewById(R.id.column_name);
+        lineNameCaption.setText(R.string.communication_line_colon);
+
+        TextView lineName = (TextView) lineNameRow.findViewById(R.id.column_data);
+        lineName.setText(Html.fromHtml(struct.getHtmlFormattedNameThreeStringsNormal()));
+
+        mAttributesLayout.addView(lineNameRow);
+
+
+        // set attributes
         String selection = FIELD_ID + " = ?";
-        Cursor attributes = mLayer.query(null, selection, new String[] {mItemId + ""}, null, null);
+        Cursor attributes = mFoclVectorLayer.query(null, selection, new String[] {mObjectId + ""}, null, null);
 
         if (attributes.moveToFirst()) {
             for (int i = 0; i < attributes.getColumnCount(); i++) {
@@ -163,7 +126,7 @@ public class AttributesDialog
                 try {
                     dataText = attributes.getString(i);
                 } catch (Exception ignored) {
-
+                    // do nothing
                 }
 
                 if (TextUtils.isEmpty(dataText)) {

@@ -132,7 +132,35 @@ public class FoclStruct
     }
 
 
-    public String getHtmlFormattedName(boolean isThreeStrings)
+    public String getHtmlFormattedNameThreeStringsNormal()
+    {
+        String lineName = getName();
+
+        if (TextUtils.isEmpty(lineName) || TextUtils.isEmpty(lineName.trim())) {
+            lineName = mContext.getString(R.string.no_name);
+        }
+
+        String region = getRegion();
+        String district = getDistrict();
+
+        boolean isEmptyRegion = TextUtils.isEmpty(region) || TextUtils.isEmpty(region.trim());
+        boolean isEmptyDistrict = TextUtils.isEmpty(district) || TextUtils.isEmpty(district.trim());
+
+        if (!isEmptyRegion) {
+            lineName += "<br>";
+            lineName += region;
+        }
+
+        if (!isEmptyDistrict) {
+            lineName += "<br>";
+            lineName += district;
+        }
+
+        return lineName;
+    }
+
+
+    public String getHtmlFormattedNameThreeStringsSmall()
     {
         String lineName = getName();
 
@@ -150,33 +178,55 @@ public class FoclStruct
             lineName += "<br><small>";
         }
 
-        if (isThreeStrings) {
+        if (!isEmptyRegion) {
+            lineName += region;
+        }
 
-            if (!isEmptyRegion) {
-                lineName += region;
-            }
+        if (!isEmptyRegion && !isEmptyDistrict) {
+            lineName += "<br>";
+        }
 
-            if (!isEmptyRegion && !isEmptyDistrict) {
-                lineName += "<br>";
-            }
+        if (!isEmptyDistrict) {
+            lineName += district;
+        }
 
-            if (!isEmptyDistrict) {
-                lineName += district;
-            }
 
-        } else {
+        if (!isEmptyRegion || !isEmptyDistrict) {
+            lineName += "</small>";
+        }
 
-            if (!isEmptyDistrict) {
-                lineName += district;
-            }
+        return lineName;
+    }
 
-            if (!isEmptyRegion && !isEmptyDistrict) {
-                lineName += ", ";
-            }
 
-            if (!isEmptyRegion) {
-                lineName += region;
-            }
+    public String getHtmlFormattedNameTwoStringsSmall()
+    {
+        String lineName = getName();
+
+        if (TextUtils.isEmpty(lineName) || TextUtils.isEmpty(lineName.trim())) {
+            lineName = mContext.getString(R.string.no_name);
+        }
+
+        String region = getRegion();
+        String district = getDistrict();
+
+        boolean isEmptyRegion = TextUtils.isEmpty(region) || TextUtils.isEmpty(region.trim());
+        boolean isEmptyDistrict = TextUtils.isEmpty(district) || TextUtils.isEmpty(district.trim());
+
+        if (!isEmptyRegion || !isEmptyDistrict) {
+            lineName += "<br><small>";
+        }
+
+        if (!isEmptyDistrict) {
+            lineName += district;
+        }
+
+        if (!isEmptyRegion && !isEmptyDistrict) {
+            lineName += ", ";
+        }
+
+        if (!isEmptyRegion) {
+            lineName += region;
         }
 
         if (!isEmptyRegion || !isEmptyDistrict) {
