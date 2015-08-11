@@ -34,7 +34,7 @@
     <string name="action_sync">Synchronization</string>
     <string name="action_reports">Report to developers</string>
     <string name="action_send_work_data">Data to developers</string>
-    <string name="action_line_status">Line status</string>
+    <string name="action_line_status">Change line status</string>
     <string name="action_settings">Settings</string>
     <string name="action_sync_settings">Sync Settings</string>
     <string name="action_about">About</string>
