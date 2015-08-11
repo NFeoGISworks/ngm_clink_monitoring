@@ -25,6 +25,7 @@ package com.nextgis.ngm_clink_monitoring.adapters;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import com.nextgis.maplib.util.Constants;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 
 import java.io.File;
@@ -79,6 +80,7 @@ public class ObjectPhotoFileAdapter
                     });
 
         } else {
+            Log.d(Constants.TAG, "ObjectPhotoFileAdapter(), null == photoDirectory");
             mPhotoFiles = null;
         }
     }
@@ -88,6 +90,7 @@ public class ObjectPhotoFileAdapter
     public long getItemId(int position)
     {
         if (null == mPhotoFiles) {
+            Log.d(Constants.TAG, "getItemId(), null == mPhotoFiles");
             return super.getItemId(position);
         }
 
@@ -99,6 +102,7 @@ public class ObjectPhotoFileAdapter
     public int getItemCount()
     {
         if (null == mPhotoFiles) {
+            Log.d(Constants.TAG, "getItemCount(), null == mPhotoFiles");
             return 0;
         }
 

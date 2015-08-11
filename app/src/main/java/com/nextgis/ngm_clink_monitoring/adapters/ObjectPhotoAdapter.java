@@ -124,6 +124,7 @@ public abstract class ObjectPhotoAdapter
                 InputStream attachInputStream = getPhotoInputStream(position);
 
                 if (null == attachInputStream) {
+                    Log.d(Constants.TAG, "onBindViewHolder(), null == attachInputStream");
                     return null;
                 }
 
@@ -132,7 +133,7 @@ public abstract class ObjectPhotoAdapter
                 try {
                     attachInputStream.close();
                 } catch (IOException e) {
-                    Log.d(Constants.TAG, "ObjectPhotoAdapter, error: " + e.getLocalizedMessage());
+                    Log.d(Constants.TAG, "onBindViewHolder(), error: " + e.getLocalizedMessage());
                     e.printStackTrace();
                 }
 
@@ -146,6 +147,8 @@ public abstract class ObjectPhotoAdapter
                 super.onPostExecute(result);
                 if (viewHolder.mPosition == position) {
                     viewHolder.mImageView.setImageBitmap(result);
+                } else {
+                    Log.d(Constants.TAG, "onBindViewHolder(), viewHolder.mPosition != position");
                 }
             }
         }.execute();
@@ -182,6 +185,10 @@ public abstract class ObjectPhotoAdapter
         } catch (IOException e) {
             Log.d(Constants.TAG, "ObjectPhotoAdapter, error: " + e.getLocalizedMessage());
             e.printStackTrace();
+        }
+
+        if (null == bitmap) {
+            Log.d(Constants.TAG, "ObjectPhotoAdapter, null == bitmap");
         }
 
         return bitmap;
