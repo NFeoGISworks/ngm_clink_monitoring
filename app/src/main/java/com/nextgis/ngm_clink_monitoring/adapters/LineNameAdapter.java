@@ -24,6 +24,7 @@ package com.nextgis.ngm_clink_monitoring.adapters;
 
 import android.content.Context;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,12 +35,19 @@ import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 import com.nextgis.ngm_clink_monitoring.map.FoclStruct;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 
 public class LineNameAdapter
         extends BaseAdapter
 {
     protected Context     mContext;
     protected FoclProject mFoclProject;
+
+    protected List<FoclStruct> mFoclStructList;
 
 
     public LineNameAdapter(
@@ -48,20 +56,55 @@ public class LineNameAdapter
     {
         mContext = context;
         mFoclProject = foclProject;
+
+        int layerCount = mFoclProject.getLayerCount();
+        mFoclStructList = new ArrayList<>(layerCount);
+
+        for (int i = 0; i < layerCount; ++i) {
+            FoclStruct struct = (FoclStruct) mFoclProject.getLayer(i);
+            mFoclStructList.add(struct);
+        }
+
+        Collections.sort(
+                mFoclStructList, new Comparator<FoclStruct>()
+                {
+                    @Override
+                    public int compare(
+                            FoclStruct lhs,
+                            FoclStruct rhs)
+                    {
+                        String lhsName = lhs.getName();
+                        String rhsName = rhs.getName();
+
+                        if (TextUtils.isEmpty(lhsName) && TextUtils.isEmpty(rhsName)) {
+                            return 0;
+                        }
+
+                        if (TextUtils.isEmpty(lhsName)) {
+                            return -1;
+                        }
+
+                        if (TextUtils.isEmpty(rhsName)) {
+                            return 1;
+                        }
+
+                        return lhsName.compareTo(rhsName);
+                    }
+                });
     }
 
 
     @Override
     public int getCount()
     {
-        return mFoclProject.getLayerCount();
+        return mFoclStructList.size();
     }
 
 
     @Override
     public Object getItem(int position)
     {
-        return mFoclProject.getLayer(position);
+        return mFoclStructList.get(position);
     }
 
 
