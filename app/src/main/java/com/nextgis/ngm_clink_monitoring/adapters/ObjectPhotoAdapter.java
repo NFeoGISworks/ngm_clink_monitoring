@@ -179,6 +179,8 @@ public abstract class ObjectPhotoAdapter
             bmOptions.inPurgeable = true;
 
             bis.reset();
+            // TODO: warning from docs: Prior to KITKAT, if is.markSupported() returns true,
+            // TODO: is.mark(1024) would be called. As of KITKAT, this is no longer the case.
             bitmap = BitmapFactory.decodeStream(bis, null, bmOptions);
             bis.close();
 
