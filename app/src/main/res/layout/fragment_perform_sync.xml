@@ -35,23 +35,22 @@
         android:orientation="vertical"
         >
 
-        <ProgressBar
-            android:id="@+id/sync_progress_ps"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:layout_marginTop="10dp"
-            style="@style/refiningProgressBarStyle"
-            />
-
         <TextView
             android:gravity="center"
             android:id="@+id/type_work"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:layout_marginTop="20dp"
             android:text="@string/perform_sync"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textStyle="bold"
+            />
+
+        <ProgressBar
+            android:id="@+id/sync_progress_ps"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_marginTop="20dp"
+            style="@style/refiningProgressBarStyle"
             />
 
     </LinearLayout>
