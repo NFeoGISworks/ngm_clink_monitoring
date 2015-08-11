@@ -699,9 +699,11 @@ public class MainActivity
                 return true;
 */
 
+/*
             case R.id.menu_send_work_data:
                 onMenuSendWorkDataClick();
                 return true;
+*/
 
             case R.id.menu_line_status:
                 onMenuLineStatusClick();

@@ -57,6 +57,13 @@
                 android:text="@string/get_server_data"
                 />
 
+            <RadioButton
+                android:id="@+id/send_work_data_sy"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:text="@string/send_work_data"
+                />
+
         </RadioGroup>
 
     </LinearLayout>

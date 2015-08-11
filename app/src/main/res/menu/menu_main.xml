@@ -78,12 +78,14 @@
             />
     -->
 
-    <item
-        android:id="@+id/menu_send_work_data"
-        android:title="@string/action_send_work_data"
-        android:orderInCategory="41"
-        app:showAsAction="never"
-        />
+    <!--
+        <item
+            android:id="@+id/menu_send_work_data"
+            android:title="@string/action_send_work_data"
+            android:orderInCategory="41"
+            app:showAsAction="never"
+            />
+    -->
 
     <item
         android:id="@+id/menu_settings"

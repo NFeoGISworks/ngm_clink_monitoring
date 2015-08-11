@@ -29,15 +29,21 @@ import android.view.View;
 import android.widget.RadioButton;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
+import com.nextgis.ngm_clink_monitoring.activities.MainActivity;
 
 
 public class SyncDialog
         extends YesNoDialog
 {
+    protected static final int SYNC = 0;
+    protected static final int FULL_SYNC = 1;
+    protected static final int SEND_WORK_DATA = 2;
+
+    protected int mSelectedStatus = SYNC;
+
     protected RadioButton mSync;
     protected RadioButton mFullSync;
-
-    protected boolean mIsFullSync = false;
+    protected RadioButton mSendWorkData;
 
 
     @NonNull
@@ -47,9 +53,12 @@ public class SyncDialog
         View view = View.inflate(getActivity(), R.layout.dialog_sync, null);
         mSync = (RadioButton) view.findViewById(R.id.sync_sy);
         mFullSync = (RadioButton) view.findViewById(R.id.full_sync_sy);
+        mSendWorkData = (RadioButton) view.findViewById(R.id.send_work_data_sy);
 
 
-        final GISApplication app = (GISApplication) getActivity().getApplication();
+        final MainActivity activity = (MainActivity) getActivity();
+        final GISApplication app = (GISApplication) activity.getApplication();
+
 
         View.OnClickListener radioListener = new View.OnClickListener()
         {
@@ -61,11 +70,15 @@ public class SyncDialog
                 switch (rb.getId()) {
                     case R.id.sync_sy:
                     default:
-                        mIsFullSync = false;
+                        mSelectedStatus = SYNC;
                         break;
 
                     case R.id.full_sync_sy:
-                        mIsFullSync = true;
+                        mSelectedStatus = FULL_SYNC;
+                        break;
+
+                    case R.id.send_work_data_sy:
+                        mSelectedStatus = SEND_WORK_DATA;
                         break;
                 }
             }
@@ -73,6 +86,7 @@ public class SyncDialog
 
         mSync.setOnClickListener(radioListener);
         mFullSync.setOnClickListener(radioListener);
+        mSendWorkData.setOnClickListener(radioListener);
 
 
         setIcon(R.drawable.ic_action_refresh);
@@ -89,7 +103,20 @@ public class SyncDialog
                     @Override
                     public void onPositiveClicked()
                     {
-                        app.runSyncManually(mIsFullSync);
+                        switch (mSelectedStatus) {
+                            case SYNC:
+                            default:
+                                app.runSyncManually(false);
+                                break;
+
+                            case FULL_SYNC:
+                                app.runSyncManually(true);
+                                break;
+
+                            case SEND_WORK_DATA:
+                                activity.onMenuSendWorkDataClick();
+                                break;
+                        }
                     }
                 });
 
