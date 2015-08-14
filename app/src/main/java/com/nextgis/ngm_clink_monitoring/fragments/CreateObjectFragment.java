@@ -150,7 +150,7 @@ public class CreateObjectFragment
 
     protected Integer mFoclStructLayerType = FoclConstants.LAYERTYPE_FOCL_UNKNOWN;
 
-    protected Integer mLineId;
+    protected Long mLineId;
     protected String  mObjectLayerName;
     protected Long    mObjectId;
 
@@ -174,7 +174,7 @@ public class CreateObjectFragment
 
     public void setParams(
             Context context,
-            Integer lineId,
+            Long lineId,
             Integer foclStructLayerType)
     {
         mContext = context;
@@ -741,7 +741,7 @@ public class CreateObjectFragment
         }
 
         try {
-            mFoclStruct = (FoclStruct) mFoclProject.getLayer(mLineId);
+            mFoclStruct = (FoclStruct) mFoclProject.getLayerById(mLineId);
         } catch (Exception e) {
             mFoclStruct = null;
         }

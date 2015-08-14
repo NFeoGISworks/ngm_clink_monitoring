@@ -43,7 +43,7 @@ import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 public class ObjectTypesFragment
         extends Fragment
 {
-    protected Integer mLineId;
+    protected Long mLineId;
 
     protected TextView mLineName;
 
@@ -54,7 +54,7 @@ public class ObjectTypesFragment
     protected Button mBtnSpecialTransitionLaying;
 
 
-    public void setParams(Integer lineId)
+    public void setParams(Long lineId)
     {
         mLineId = lineId;
     }
@@ -97,7 +97,7 @@ public class ObjectTypesFragment
 
         FoclStruct foclStruct;
         try {
-            foclStruct = (FoclStruct) foclProject.getLayer(mLineId);
+            foclStruct = (FoclStruct) foclProject.getLayerById(mLineId);
         } catch (Exception e) {
             foclStruct = null;
         }

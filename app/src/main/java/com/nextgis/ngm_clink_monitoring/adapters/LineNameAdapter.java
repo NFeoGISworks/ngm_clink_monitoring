@@ -111,7 +111,7 @@ public class LineNameAdapter
     @Override
     public long getItemId(int position)
     {
-        return position;
+        return mFoclStructList.get(position).getId();
     }
 
 

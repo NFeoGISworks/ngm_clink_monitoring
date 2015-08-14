@@ -88,7 +88,7 @@ public class LineListFragment
                             int position,
                             long id)
                     {
-                        onLineClick((int) id);
+                        onLineClick(id);
                     }
                 });
 
@@ -96,7 +96,7 @@ public class LineListFragment
     }
 
 
-    public void onLineClick(int lineId)
+    public void onLineClick(long lineId)
     {
         final FragmentManager fm = getActivity().getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
