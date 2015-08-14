@@ -1213,6 +1213,9 @@ public class CreateObjectFragment
 
     protected void createObject()
     {
+        long time = System.currentTimeMillis();
+        long newTime = time;
+
         String fieldName = null;
 
         switch (mFoclStructLayerType) {
@@ -1308,6 +1311,10 @@ public class CreateObjectFragment
         }
 
 
+        newTime = System.currentTimeMillis() - time;
+        Log.d(TAG, "createObject(), 01 time: " + newTime);
+        time = System.currentTimeMillis();
+
         GISApplication app = (GISApplication) getActivity().getApplication();
 
         Uri uri = Uri.parse(
@@ -1383,7 +1390,16 @@ public class CreateObjectFragment
                 break;
         }
 
+        newTime = System.currentTimeMillis() - time;
+        Log.d(TAG, "createObject(), 02 time: " + newTime);
+        time = System.currentTimeMillis();
+
         Uri result = getActivity().getContentResolver().insert(uri, values);
+
+        newTime = System.currentTimeMillis() - time;
+        Log.d(TAG, "createObject(), 03 time: " + newTime);
+        time = System.currentTimeMillis();
+
         if (result == null) {
             Log.d(
                     TAG, "CreateObjectFragment, createObject(), Layer: " + mObjectLayerName +
@@ -1397,6 +1413,10 @@ public class CreateObjectFragment
                 mFoclStruct.setStatus(FoclConstants.FIELD_VALUE_STATUS_IN_PROGRESS);
                 mFoclStruct.setIsStatusChanged(true);
                 mFoclStruct.save();
+
+                newTime = System.currentTimeMillis() - time;
+                Log.d(TAG, "createObject(), 04 time: " + newTime);
+                time = System.currentTimeMillis();
             }
 
             mObjectId = Long.parseLong(result.getLastPathSegment());
@@ -1406,6 +1426,11 @@ public class CreateObjectFragment
                             mObjectId +
                             ", insert result: " + result);
             writePhotoAttaches();
+
+            newTime = System.currentTimeMillis() - time;
+            Log.d(TAG, "createObject(), 05 time: " + newTime);
+            time = System.currentTimeMillis();
+
             getActivity().getSupportFragmentManager().popBackStackImmediate();
         }
 
@@ -1413,6 +1438,9 @@ public class CreateObjectFragment
         try {
             mLogcatWriter.writeLogcat(app.getMainLogcatFilePath());
             mLogcatWriter.stopLogcat();
+
+            newTime = System.currentTimeMillis() - time;
+            Log.d(TAG, "createObject(), 06 time: " + newTime);
         } catch (IOException e) {
             e.printStackTrace();
         }
