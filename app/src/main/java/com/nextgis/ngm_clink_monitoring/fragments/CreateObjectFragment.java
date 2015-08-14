@@ -1276,11 +1276,34 @@ public class CreateObjectFragment
 
 
         if (!mNewStartPoint && 0 < mObjectCount &&
-                FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT ==
-                        mFoclStructLayerType && null != mDistance &&
+                FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT == mFoclStructLayerType &&
+                null != mDistance &&
                 FoclConstants.MAX_DISTANCE_FROM_PREV_POINT < mDistance) {
 
             showDistanceExceededDialog();
+            return; // we do not need logcat here
+        }
+
+
+        if (null == mObjectPhotoFileAdapter || mObjectPhotoFileAdapter.getItemCount() == 0) {
+            YesNoDialog dialog = new YesNoDialog();
+            dialog.setKeepInstance(true)
+                    .setIcon(R.drawable.ic_action_warning)
+                    .setTitle(R.string.warning)
+                    .setMessage(getString(R.string.take_photos_to_confirm))
+                    .setPositiveText(R.string.ok)
+                    .setOnPositiveClickedListener(
+                            new YesNoDialog.OnPositiveClickedListener()
+                            {
+                                @Override
+                                public void onPositiveClicked()
+                                {
+                                    // cancel
+                                }
+                            })
+                    .show(
+                            getActivity().getSupportFragmentManager(),
+                            FoclConstants.FRAGMENT_YES_NO_DIALOG + "TakePhotos");
             return; // we do not need logcat here
         }
 
