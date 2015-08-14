@@ -1431,7 +1431,7 @@ public class CreateObjectFragment
             Log.d(TAG, "createObject(), 05 time: " + newTime);
             time = System.currentTimeMillis();
 
-            getActivity().getSupportFragmentManager().popBackStackImmediate();
+            getActivity().getSupportFragmentManager().popBackStack();
         }
 
 
