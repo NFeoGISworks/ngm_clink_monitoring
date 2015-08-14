@@ -43,7 +43,7 @@ import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 public class ObjectTypesFragment
         extends Fragment
 {
-    protected Long mLineId;
+    protected Long mLineRemoteId;
 
     protected TextView mLineName;
 
@@ -54,9 +54,9 @@ public class ObjectTypesFragment
     protected Button mBtnSpecialTransitionLaying;
 
 
-    public void setParams(Long lineId)
+    public void setParams(Long lineRemoteId)
     {
-        mLineId = lineId;
+        mLineRemoteId = lineRemoteId;
     }
 
 
@@ -97,7 +97,7 @@ public class ObjectTypesFragment
 
         FoclStruct foclStruct;
         try {
-            foclStruct = (FoclStruct) foclProject.getLayerById(mLineId);
+            foclStruct = foclProject.getFoclStructByRemoteId(mLineRemoteId);
         } catch (Exception e) {
             foclStruct = null;
         }
@@ -195,7 +195,7 @@ public class ObjectTypesFragment
             createObjectFragment = new CreateObjectFragment();
         }
 
-        createObjectFragment.setParams(getActivity(), mLineId, foclStructLayerType);
+        createObjectFragment.setParams(getActivity(), mLineRemoteId, foclStructLayerType);
 
         ft.replace(R.id.main_fragment, createObjectFragment, FoclConstants.FRAGMENT_CREATE_OBJECT);
         ft.addToBackStack(null);
@@ -213,7 +213,7 @@ public class ObjectTypesFragment
 //            objectListFragment = new ObjectListFragment();
 //        }
 //
-//        objectListFragment.setParams(mLineId, foclStructLayerType);
+//        objectListFragment.setParams(mLineRemoteId, foclStructLayerType);
 //
 //        ft.replace(R.id.main_fragment, objectListFragment, FoclConstants.FRAGMENT_OBJECT_LIST);
 //        ft.addToBackStack(null);

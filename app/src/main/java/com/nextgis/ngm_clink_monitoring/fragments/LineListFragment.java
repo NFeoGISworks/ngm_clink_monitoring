@@ -86,9 +86,9 @@ public class LineListFragment
                             AdapterView<?> parent,
                             View view,
                             int position,
-                            long id)
+                            long lineRemoteId)
                     {
-                        onLineClick(id);
+                        onLineClick(lineRemoteId);
                     }
                 });
 
@@ -96,7 +96,7 @@ public class LineListFragment
     }
 
 
-    public void onLineClick(long lineId)
+    public void onLineClick(long lineRemoteId)
     {
         final FragmentManager fm = getActivity().getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
@@ -108,7 +108,7 @@ public class LineListFragment
             objectTypesFragment = new ObjectTypesFragment();
         }
 
-        objectTypesFragment.setParams(lineId);
+        objectTypesFragment.setParams(lineRemoteId);
 
         ft.replace(R.id.main_fragment, objectTypesFragment, FoclConstants.FRAGMENT_OBJECT_TYPES);
         ft.addToBackStack(null);
