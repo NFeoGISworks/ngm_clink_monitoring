@@ -232,4 +232,6 @@
     <string name="twelve_hours">12 часов</string>
     <string name="twenty_four_hours">24 часа</string>
 
+    <string name="please_wait">Пожалуйста, подождите…</string>
+
 </resources>

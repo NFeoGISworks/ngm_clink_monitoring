@@ -31,47 +31,28 @@
     <LinearLayout
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:layout_marginBottom="24dp"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         >
 
         <TextView
-            android:layout_marginTop="0dp"
-            android:text="@string/communication_line_colon"
-            style="@style/smallCaptionStyle"
-            />
-
-        <TextView
-            android:id="@+id/line_name_sl"
-            style="@style/selectedLineStyle"
-            />
-
-        <RadioGroup
             android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:layout_marginTop="24dp"
-            android:orientation="vertical"
-            >
+            android:layout_width="wrap_content"
+            android:layout_marginTop="0dp"
+            android:layout_marginRight="24dp"
+            android:layout_gravity="center_vertical"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="bold"
+            android:text="@string/please_wait"
+            />
 
-            <RadioButton
-                android:id="@+id/status_project_sl"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                />
-
-            <RadioButton
-                android:id="@+id/status_in_progress_sl"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                />
-
-            <RadioButton
-                android:id="@+id/status_built_sl"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                />
-
-        </RadioGroup>
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:indeterminate="true"
+            android:indeterminateOnly="true"
+            style="@android:style/Widget.ProgressBar"
+            />
 
     </LinearLayout>
 

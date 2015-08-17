@@ -35,6 +35,8 @@ import android.location.Location;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
@@ -92,6 +94,9 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.RunnableFuture;
 
 import static com.nextgis.maplib.util.Constants.*;
 import static com.nextgis.maplib.util.GeoConstants.CRS_WEB_MERCATOR;
@@ -104,6 +109,10 @@ public class CreateObjectFragment
         implements GpsEventListener
 {
     protected static final int REQUEST_TAKE_PHOTO = 1;
+
+    protected final static int CREATE_OBJECT_DONE   = 0;
+    protected final static int CREATE_OBJECT_OK     = 1;
+    protected final static int CREATE_OBJECT_FAILED = 2;
 
     protected Context mContext;
 
@@ -1213,9 +1222,6 @@ public class CreateObjectFragment
 
     protected void createObject()
     {
-        long time = System.currentTimeMillis();
-        long newTime = time;
-
         String fieldName = null;
 
         switch (mFoclStructLayerType) {
@@ -1311,10 +1317,83 @@ public class CreateObjectFragment
         }
 
 
-        newTime = System.currentTimeMillis() - time;
-        Log.d(TAG, "createObject(), 01 time: " + newTime);
-        time = System.currentTimeMillis();
+        LayoutInflater inflater = LayoutInflater.from(getActivity());
+        View view = inflater.inflate(R.layout.dialog_waiting, null);
 
+        final YesNoDialog waitProgressDialog = new YesNoDialog();
+        waitProgressDialog.setKeepInstance(true)
+                .setIcon(R.drawable.ic_action_data_usage)
+                .setTitle(R.string.waiting)
+                .setView(view);
+
+        waitProgressDialog.setCancelable(false);
+        waitProgressDialog.show(
+                getActivity().getSupportFragmentManager(),
+                FoclConstants.FRAGMENT_YES_NO_DIALOG + "WaitProgress");
+
+
+        final Handler handler = new Handler()
+        {
+            public void handleMessage(Message msg)
+            {
+                switch (msg.what) {
+                    case CREATE_OBJECT_DONE:
+                        waitProgressDialog.dismiss();
+                        break;
+                    case CREATE_OBJECT_OK:
+                        getActivity().getSupportFragmentManager().popBackStack();
+                        break;
+                    case CREATE_OBJECT_FAILED:
+                        Toast.makeText(getActivity(), (String) msg.obj, Toast.LENGTH_LONG).show();
+                        break;
+                }
+            }
+        };
+
+        RunnableFuture<Void> future = new FutureTask<Void>(
+                new Callable<Void>()
+                {
+                    @Override
+                    public Void call()
+                            throws Exception
+                    {
+                        createObjectTask();
+                        return null;
+                    }
+                })
+        {
+            @Override
+            protected void done()
+            {
+                super.done();
+                handler.sendEmptyMessage(CREATE_OBJECT_DONE);
+            }
+
+
+            @Override
+            protected void set(Void aVoid)
+            {
+                super.set(aVoid);
+                handler.sendEmptyMessage(CREATE_OBJECT_OK);
+            }
+
+
+            @Override
+            protected void setException(Throwable t)
+            {
+                super.setException(t);
+                Message msg = handler.obtainMessage(CREATE_OBJECT_FAILED, t.getLocalizedMessage());
+                handler.sendMessage(msg);
+            }
+        };
+
+        new Thread(future).start();
+    }
+
+
+    protected void createObjectTask()
+            throws IOException
+    {
         GISApplication app = (GISApplication) getActivity().getApplication();
 
         Uri uri = Uri.parse(
@@ -1390,22 +1469,13 @@ public class CreateObjectFragment
                 break;
         }
 
-        newTime = System.currentTimeMillis() - time;
-        Log.d(TAG, "createObject(), 02 time: " + newTime);
-        time = System.currentTimeMillis();
-
         Uri result = getActivity().getContentResolver().insert(uri, values);
-
-        newTime = System.currentTimeMillis() - time;
-        Log.d(TAG, "createObject(), 03 time: " + newTime);
-        time = System.currentTimeMillis();
 
         if (result == null) {
             Log.d(
                     TAG, "CreateObjectFragment, createObject(), Layer: " + mObjectLayerName +
                             ", insert FAILED");
-            Toast.makeText(
-                    getActivity(), R.string.object_creation_error, Toast.LENGTH_LONG).show();
+            throw new IOException(getString(R.string.object_creation_error));
 
         } else {
 
@@ -1413,10 +1483,6 @@ public class CreateObjectFragment
                 mFoclStruct.setStatus(FoclConstants.FIELD_VALUE_STATUS_IN_PROGRESS);
                 mFoclStruct.setIsStatusChanged(true);
                 mFoclStruct.save();
-
-                newTime = System.currentTimeMillis() - time;
-                Log.d(TAG, "createObject(), 04 time: " + newTime);
-                time = System.currentTimeMillis();
             }
 
             mObjectId = Long.parseLong(result.getLastPathSegment());
@@ -1426,12 +1492,6 @@ public class CreateObjectFragment
                             mObjectId +
                             ", insert result: " + result);
             writePhotoAttaches();
-
-            newTime = System.currentTimeMillis() - time;
-            Log.d(TAG, "createObject(), 05 time: " + newTime);
-            time = System.currentTimeMillis();
-
-            getActivity().getSupportFragmentManager().popBackStack();
         }
 
 
@@ -1439,8 +1499,6 @@ public class CreateObjectFragment
             mLogcatWriter.writeLogcat(app.getMainLogcatFilePath());
             mLogcatWriter.stopLogcat();
 
-            newTime = System.currentTimeMillis() - time;
-            Log.d(TAG, "createObject(), 06 time: " + newTime);
         } catch (IOException e) {
             e.printStackTrace();
         }

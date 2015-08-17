@@ -86,6 +86,9 @@ public class YesNoDialog
         if (getDialog() != null && getRetainInstance()) {
             getDialog().setOnDismissListener(null);
         }
+
+        mDialogLayout.removeAllViews();
+
         super.onDestroyView();
     }
 
