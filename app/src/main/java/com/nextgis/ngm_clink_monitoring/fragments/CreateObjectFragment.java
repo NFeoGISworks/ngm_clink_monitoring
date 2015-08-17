@@ -1383,7 +1383,7 @@ public class CreateObjectFragment
             {
                 super.setException(t);
                 Message msg = handler.obtainMessage(CREATE_OBJECT_FAILED, t.getLocalizedMessage());
-                handler.sendMessage(msg);
+                msg.sendToTarget();
             }
         };
 
