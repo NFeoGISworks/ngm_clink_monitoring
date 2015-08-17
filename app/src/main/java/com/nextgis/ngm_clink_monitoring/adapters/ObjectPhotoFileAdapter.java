@@ -32,6 +32,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.io.InputStream;
 
 import static com.nextgis.maplib.util.Constants.TAG;
@@ -112,19 +113,21 @@ public class ObjectPhotoFileAdapter
 
     @Override
     protected InputStream getPhotoInputStream(int position)
+            throws IOException
     {
         if (null == mPhotoFiles) {
-            Log.d(TAG, "ObjectPhotoFileAdapter, getPhotoInputStream(), mPhotoFiles == null");
-            return null;
+            String error = "ObjectPhotoFileAdapter, getPhotoInputStream(), mPhotoFiles == null";
+            Log.d(Constants.TAG, error);
+            throw new IOException(error);
         }
 
         long itemId = getItemId(position);
 
         if (RecyclerView.NO_ID == itemId) {
-            Log.d(
-                    TAG,
-                    "ObjectPhotoFileAdapter, getPhotoInputStream(), RecyclerView.NO_ID == itemId");
-            return null;
+            String error =
+                    "ObjectPhotoFileAdapter, getPhotoInputStream(), RecyclerView.NO_ID == itemId";
+            Log.d(Constants.TAG, error);
+            throw new IOException(error);
         }
 
         File photoFile = mPhotoFiles[(int) itemId];
@@ -134,10 +137,10 @@ public class ObjectPhotoFileAdapter
             inputStream = new FileInputStream(photoFile);
 
         } catch (FileNotFoundException e) {
-            Log.d(
-                    TAG, "ObjectPhotoFileAdapter, getPhotoInputStream(), position = " + position +
-                            ", ERROR: " + e.getLocalizedMessage());
-            return null;
+            String error = "ObjectPhotoFileAdapter, getPhotoInputStream(), position = " + position +
+                    ", ERROR: " + e.getLocalizedMessage();
+            Log.d(Constants.TAG, error);
+            throw new IOException(error);
         }
 
         Log.d(
