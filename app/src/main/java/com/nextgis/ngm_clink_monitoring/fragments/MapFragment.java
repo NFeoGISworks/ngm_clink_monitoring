@@ -255,21 +255,21 @@ public class MapFragment
 
 
     @Override
-    public void onLayerAdded(long id)
+    public void onLayerAdded(int id)
     {
 
     }
 
 
     @Override
-    public void onLayerDeleted(long id)
+    public void onLayerDeleted(int id)
     {
 
     }
 
 
     @Override
-    public void onLayerChanged(long id)
+    public void onLayerChanged(int id)
     {
 
     }
@@ -301,7 +301,7 @@ public class MapFragment
 
     @Override
     public void onLayerDrawFinished(
-            long id,
+            int id,
             float percent)
     {
 
