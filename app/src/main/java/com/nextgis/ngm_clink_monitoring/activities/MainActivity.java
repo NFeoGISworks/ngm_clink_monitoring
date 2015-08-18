@@ -340,8 +340,8 @@ public class MainActivity
 
     protected String getMainFragmentTag()
     {
-        FragmentManager fm = getSupportFragmentManager();
-        return fm.findFragmentById(R.id.main_fragment).getTag();
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_fragment);
+        return null != fragment ? fragment.getTag() : null;
     }
 
 
@@ -626,6 +626,11 @@ public class MainActivity
 
             case VIEW_STATE_OBJECTS:
                 String tag = getMainFragmentTag();
+
+                if (TextUtils.isEmpty(tag)) {
+                    tag = "";
+                }
+
                 switch (tag) {
                     case FoclConstants.FRAGMENT_SYNC_LOGIN:
                     case FoclConstants.FRAGMENT_PERFORM_1ST_SYNC:
