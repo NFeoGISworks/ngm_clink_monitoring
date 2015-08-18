@@ -226,7 +226,7 @@ public abstract class ObjectPhotoAdapter
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-            byte buffer[] = new byte[1024];
+            byte buffer[] = new byte[10240];
             int len;
             while ((len = bis.read(buffer, 0, buffer.length)) > 0) {
                 baos.write(buffer, 0, len);
