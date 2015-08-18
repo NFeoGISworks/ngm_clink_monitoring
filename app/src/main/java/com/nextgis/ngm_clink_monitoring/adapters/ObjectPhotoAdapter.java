@@ -41,6 +41,7 @@ import com.nextgis.maplib.util.Constants;
 import com.nextgis.ngm_clink_monitoring.R;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.Callable;
@@ -126,6 +127,7 @@ public abstract class ObjectPhotoAdapter
                     }
                 });
 
+
         final Handler handler = new Handler()
         {
             public void handleMessage(Message msg)
@@ -138,7 +140,8 @@ public abstract class ObjectPhotoAdapter
                         if (viewHolder.mPosition == position) {
                             viewHolder.mImageView.setImageBitmap((Bitmap) msg.obj);
                         } else {
-                            String error = "onBindViewHolder() ERROR: viewHolder.mPosition != position";
+                            String error =
+                                    "onBindViewHolder() ERROR: viewHolder.mPosition != position";
                             Log.d(Constants.TAG, error);
                             Toast.makeText(mContext, error, Toast.LENGTH_LONG).show();
                         }
@@ -146,8 +149,8 @@ public abstract class ObjectPhotoAdapter
 
                     case CREATE_PREVIEW_FAILED:
                         Toast.makeText(
-                                mContext, "onBindViewHolder() ERROR: " + msg.obj,
-                                Toast.LENGTH_LONG).show();
+                                mContext, "onBindViewHolder() ERROR: " + msg.obj, Toast.LENGTH_LONG)
+                                .show();
                         break;
                 }
             }
@@ -210,47 +213,6 @@ public abstract class ObjectPhotoAdapter
         };
 
         new Thread(future).start();
-
-
-// TODO: remove it
-/*
-        new AsyncTask<Void, Void, Bitmap>()
-        {
-            @Override
-            protected Bitmap doInBackground(Void... params)
-            {
-                InputStream attachInputStream = getPhotoInputStream(position);
-
-                if (null == attachInputStream) {
-                    Log.d(Constants.TAG, "onBindViewHolder(), null == attachInputStream");
-                    return null;
-                }
-
-                Bitmap bitmap = createImagePreview(attachInputStream);
-
-                try {
-                    attachInputStream.close();
-                } catch (IOException e) {
-                    Log.d(Constants.TAG, "onBindViewHolder(), error: " + e.getLocalizedMessage());
-                    e.printStackTrace();
-                }
-
-                return bitmap;
-            }
-
-
-            @Override
-            protected void onPostExecute(Bitmap result)
-            {
-                super.onPostExecute(result);
-                if (viewHolder.mPosition == position) {
-                    viewHolder.mImageView.setImageBitmap(result);
-                } else {
-                    Log.d(Constants.TAG, "onBindViewHolder(), viewHolder.mPosition != position");
-                }
-            }
-        }.execute();
-*/
     }
 
 
@@ -262,13 +224,23 @@ public abstract class ObjectPhotoAdapter
         Bitmap bitmap = null;
 
         try {
-            bis.mark(bis.available());
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+            byte buffer[] = new byte[1024];
+            int len;
+            while ((len = bis.read(buffer, 0, buffer.length)) > 0) {
+                baos.write(buffer, 0, len);
+            }
+            bis.close();
+
+            byte[] imageData = baos.toByteArray();
+            baos.close();
 
             int targetW = IMAGE_SIZE_PX;
             int targetH = IMAGE_SIZE_PX;
 
             bmOptions.inJustDecodeBounds = true;
-            BitmapFactory.decodeStream(bis, null, bmOptions);
+            BitmapFactory.decodeByteArray(imageData, 0, imageData.length, bmOptions);
             int photoW = bmOptions.outWidth;
             int photoH = bmOptions.outHeight;
 
@@ -278,9 +250,7 @@ public abstract class ObjectPhotoAdapter
             bmOptions.inSampleSize = scaleFactor;
             bmOptions.inPurgeable = true;
 
-            bis.reset();
-            bitmap = BitmapFactory.decodeStream(bis, null, bmOptions);
-            bis.close();
+            bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.length, bmOptions);
 
         } catch (IOException e) {
             String error = "ObjectPhotoAdapter ERROR: " + e.getLocalizedMessage();
