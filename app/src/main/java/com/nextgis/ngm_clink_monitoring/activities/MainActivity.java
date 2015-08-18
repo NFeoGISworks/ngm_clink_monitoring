@@ -709,6 +709,10 @@ public class MainActivity
                 onMenuLineStatusClick();
                 return true;
 
+            case R.id.menu_check_app_update:
+                onMenuCheckAppUpdateClick();
+                return true;
+
             case R.id.menu_settings:
                 onMenuSettingsClick();
                 return true;
@@ -869,6 +873,13 @@ public class MainActivity
         SetLineStatusDialog lineStatusDialog = new SetLineStatusDialog();
         lineStatusDialog.setKeepInstance(true)
                 .show(getSupportFragmentManager(), FoclConstants.FRAGMENT_SET_LINE_STATUS_DIALOG);
+    }
+
+
+    public void onMenuCheckAppUpdateClick()
+    {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(FoclConstants.FOCL_UPDATE_URL));
+        startActivity(intent);
     }
 
 

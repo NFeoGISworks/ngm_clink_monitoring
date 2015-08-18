@@ -145,6 +145,9 @@ public interface FoclConstants
     String FOCL_SET_FOCL_STATUS_URL = "/compulink/mobile/set_focl_status";
     String FOCL_REPORT_URL          = "/mobile_debug/message/append";
 
+    String FOCL_UPDATE_URL =
+            "https://play.google.com/store/apps/details?id=com.nextgis.ngm_clink_monitoring";
+
     String FOCL_NTP_URL            = "pool.ntp.org";
     int    FOCL_NTP_TIMEOUT_MILLIS = 10000;
 
