@@ -89,7 +89,7 @@ public class SyncDialog
         mSendWorkData.setOnClickListener(radioListener);
 
 
-        setIcon(R.drawable.ic_action_refresh);
+        setIcon(R.drawable.ic_action_refresh_light);
         setTitle(R.string.synchronization);
         setView(view);
 

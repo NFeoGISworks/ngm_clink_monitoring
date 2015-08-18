@@ -42,7 +42,7 @@ public class FoclVectorLayerUI
 
 
     @Override
-    public Drawable getIcon()
+    public Drawable getIcon(Context context)
     {
         return mContext.getResources().getDrawable(com.nextgis.maplibui.R.drawable.ic_ngw_vector);
     }
