@@ -121,6 +121,17 @@
                 />
 
             <TextView
+                android:id="@+id/update_link"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_margin="10dp"
+                android:text="@string/update_link"
+                android:textStyle="bold"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:linksClickable="true"
+                />
+
+            <TextView
                 android:id="@+id/creditsInto"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
@@ -142,13 +153,25 @@
                 />
 
             <TextView
-                android:id="@+id/based_on"
+                android:id="@+id/consumer_site"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_marginTop="30dp"
                 android:layout_marginBottom="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/consumer_site"
+                android:textStyle="bold"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:linksClickable="true"
+                />
+
+            <TextView
+                android:id="@+id/based_on"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_margin="10dp"
                 android:layout_gravity="center_horizontal"
                 android:text="@string/based_on"
                 android:textStyle="bold"
@@ -160,10 +183,7 @@
                 android:id="@+id/copyright"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_margin="10dp"
                 android:layout_gravity="center_horizontal"
                 android:text="@string/copyright"
                 android:textStyle="bold"

@@ -87,12 +87,14 @@
             />
     -->
 
+<!--
     <item
         android:id="@+id/menu_check_app_update"
         android:title="@string/action_check_app_update"
         android:orderInCategory="49"
         app:showAsAction="never"
         />
+-->
 
     <item
         android:id="@+id/menu_settings"

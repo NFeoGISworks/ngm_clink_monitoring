@@ -714,9 +714,11 @@ public class MainActivity
                 onMenuLineStatusClick();
                 return true;
 
+/*
             case R.id.menu_check_app_update:
                 onMenuCheckAppUpdateClick();
                 return true;
+*/
 
             case R.id.menu_settings:
                 onMenuSettingsClick();

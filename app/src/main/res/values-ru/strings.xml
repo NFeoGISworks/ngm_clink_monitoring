@@ -192,9 +192,12 @@
 
     <string name="app_description">Мобильное приложение для ввода данных о ходе строительства ВОЛС.</string>
 
+    <string name="update_link"><![CDATA[<a href=\"https://play.google.com/store/apps/details?id=com.nextgis.ngm_clink_monitoring&hl=ru\">Проверить наличие обновлений</a>]]></string>
+
     <string name="credits_intro"><b>Лицензии:</b></string>
     <string name="credits"><![CDATA[Some icons used in the application are from:<br>- <a href=\"http://icons8.com/android-icons\">Icons8.com</a>, licensed under a <a href=\"http://creativecommons.org/licenses/by-nd/3.0/\">CC BY-ND 3.0 license</a><br>- <a href=\"http://romannurik.github.io/AndroidAssetStudio/icons-launcher.html\">romannurik.github.io</a>, licensed under a <a href=\"http://creativecommons.org/licenses/by/3.0/\">CC BY 3.0 license</a>]]></string>
 
+    <string name="consumer_site"><![CDATA[Группа компаний <a href=\"http://www.compulink.ru/\">«Компьюлинк»</a>]]></string>
     <string name="based_on"><![CDATA[Основано на <a href=\"http://nextgis.ru/nextgis-mobile\">NextGIS Mobile</a>]]></string>
     <string name="copyright"><![CDATA[Copyright © <a href=\"http://nextgis.com\">NextGIS</a>, 2012–2015]]></string>
 

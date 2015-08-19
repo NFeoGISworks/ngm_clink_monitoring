@@ -67,6 +67,14 @@ public class AboutActivity
             txtVersion.setText("");
         }
 
+        TextView txtConsumerSiteText = (TextView) findViewById(R.id.consumer_site);
+        txtConsumerSiteText.setText(Html.fromHtml(getString(R.string.consumer_site)));
+        txtConsumerSiteText.setMovementMethod(LinkMovementMethod.getInstance());
+
+        TextView txtUpdateLink = (TextView) findViewById(R.id.update_link);
+        txtUpdateLink.setText(Html.fromHtml(getString(R.string.update_link)));
+        txtUpdateLink.setMovementMethod(LinkMovementMethod.getInstance());
+
         TextView txtCreditsText = (TextView) findViewById(R.id.credits);
         txtCreditsText.setText(Html.fromHtml(getString(R.string.credits)));
         txtCreditsText.setMovementMethod(LinkMovementMethod.getInstance());
