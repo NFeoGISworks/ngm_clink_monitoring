@@ -26,7 +26,6 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.text.TextUtils;
-import android.util.Log;
 import com.nextgis.maplib.api.IStyleRule;
 import com.nextgis.maplib.display.SimpleMarkerStyle;
 import com.nextgis.maplib.display.SimpleTextLineStyle;
@@ -37,7 +36,6 @@ import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
 
 import static com.nextgis.maplib.util.Constants.FIELD_ID;
-import static com.nextgis.maplib.util.Constants.TAG;
 
 
 public class FoclStyleRule
@@ -175,58 +173,60 @@ public class FoclStyleRule
 
             case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CABLE:
                 select = new String[] {
-                        FIELD_ID,
-                        FoclConstants.FIELD_LAYING_METHOD/*,
+                        FIELD_ID, FoclConstants.FIELD_LAYING_METHOD/*,
                         FoclConstants.FIELD_STATUS_BUILT*/};
 
                 try {
                     cursor = mVectorLayer.query(uri, select, null, null, null, null);
 
                 } catch (Exception e) {
-                    Log.d(TAG, e.getLocalizedMessage());
+                    //Log.d(TAG, e.getLocalizedMessage());
                     cursor = null;
                 }
 
-                try {
-                    if (null != cursor) {
+                if (null != cursor) {
+                    try {
                         if (cursor.moveToFirst()) {
                             type = cursor.getString(
                                     cursor.getColumnIndex(FoclConstants.FIELD_LAYING_METHOD));
 //                            status = cursor.getString(
 //                                    cursor.getColumnIndex(FoclConstants.FIELD_STATUS_BUILT));
                         }
+                    } catch (Exception e) {
+                        //Log.d(TAG, e.getLocalizedMessage());
+                    } finally {
                         cursor.close();
                     }
-
-                } catch (Exception e) {
-                    cursor.close();
-                    Log.d(TAG, e.getLocalizedMessage());
                 }
-
                 break;
 
             case FoclConstants.LAYERTYPE_FOCL_FOSC:
             case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CROSS:
             case FoclConstants.LAYERTYPE_FOCL_ACCESS_POINT:
             case FoclConstants.LAYERTYPE_FOCL_SPECIAL_TRANSITION:
-                select = new String[] {FIELD_ID/*, FoclConstants.FIELD_STATUS_BUILT*/};
-
-                try {
-                    cursor = mVectorLayer.query(uri, select, null, null, null, null);
-
-                } catch (Exception e) {
-                    Log.d(TAG, e.getLocalizedMessage());
-                    cursor = null;
-                }
-
-                if (null != cursor) {
-                    if (cursor.moveToFirst()) {
-//                        status = cursor.getString(
-//                                cursor.getColumnIndex(FoclConstants.FIELD_STATUS_BUILT));
-                    }
-                    cursor.close();
-                }
-
+//                select = new String[] {FIELD_ID/*, FoclConstants.FIELD_STATUS_BUILT*/};
+//
+//                try {
+//                    cursor = mVectorLayer.query(uri, select, null, null, null, null);
+//
+//                } catch (Exception e) {
+//                    //Log.d(TAG, e.getLocalizedMessage());
+//                    cursor = null;
+//                }
+//
+//                if (null != cursor) {
+//                    try {
+//                        if (cursor.moveToFirst()) {
+////                            status = cursor.getString(
+////                                    cursor.getColumnIndex(FoclConstants.FIELD_STATUS_BUILT));
+//                        }
+//                        cursor.close();
+//                    } catch (Exception e) {
+//                        //Log.d(TAG, e.getLocalizedMessage());
+//                    } finally {
+//                        cursor.close();
+//                    }
+//                }
                 break;
         }
 

@@ -30,6 +30,7 @@ import com.nextgis.maplib.api.IStyleRule;
 import com.nextgis.maplib.display.RuleFeatureRenderer;
 import com.nextgis.maplib.display.Style;
 import com.nextgis.maplib.map.NGWVectorLayer;
+import com.nextgis.maplib.util.FeatureChanges;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 import org.json.JSONException;
@@ -172,7 +173,7 @@ public class FoclVectorLayer
             return;
         }
 
-        if(isRemoteReadOnly()) {
+        if (isRemoteReadOnly()) {
             return;
         }
 
@@ -181,5 +182,35 @@ public class FoclVectorLayer
             Log.d(TAG, "Set local changes failed");
             //return;
         }
+
+        // for debug
+//        switch (getPath().getName()) {
+//            case "layer_2015081018082514":
+//            case "layer_2015081018082857":
+//            case "layer_2015081018083084":
+//            case "layer_20150810180823055":
+//            case "layer_20150810180826243":
+//            case "layer_20150810180827365":
+//            case "layer_20150810180827495":
+//            case "layer_20150810180828663":
+//            case "layer_20150810180829798":
+//            case "layer_20150810180830981":
+//                Log.d(TAG, "SEND, path name:" + getPath().getName());
+//                if (!sendLocalChanges(syncResult)) {
+//                    Log.d(TAG, "Set local changes failed");
+//                    //return;
+//                }
+//                break;
+//
+//            default:
+//                Log.d(TAG, "NOT SEND, path name:" + getPath().getName());
+//                break;
+//        }
+    }
+
+
+    public boolean isChanges()
+    {
+        return FeatureChanges.isChanges(mChangeTableName);
     }
 }

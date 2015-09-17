@@ -1523,45 +1523,49 @@ public class CreateObjectFragment
         }
 
         if (null != cursor) {
-            if (cursor.moveToFirst()) {
-                int columnGeom = cursor.getColumnIndex(FIELD_GEOM);
+            try {
+                if (cursor.moveToFirst()) {
+                    int columnGeom = cursor.getColumnIndex(FIELD_GEOM);
 
-                do {
-                    try {
-                        GeoGeometry geometry =
-                                GeoGeometryFactory.fromBlob(cursor.getBlob(columnGeom));
+                    do {
+                        try {
+                            GeoGeometry geometry =
+                                    GeoGeometryFactory.fromBlob(cursor.getBlob(columnGeom));
 
-                        if (null != geometry && geometry instanceof GeoMultiPoint) {
-                            GeoMultiPoint mpt = (GeoMultiPoint) geometry;
+                            if (null != geometry && geometry instanceof GeoMultiPoint) {
+                                GeoMultiPoint mpt = (GeoMultiPoint) geometry;
 
-                            if (0 < mpt.size()) {
+                                if (0 < mpt.size()) {
 
-                                int kk = 0;
-                                do {
-                                    GeoPoint pt = new GeoPoint(mpt.get(kk));
-                                    pt.setCRS(GeoConstants.CRS_WEB_MERCATOR);
-                                    pt.project(GeoConstants.CRS_WGS84);
+                                    int kk = 0;
+                                    do {
+                                        GeoPoint pt = new GeoPoint(mpt.get(kk));
+                                        pt.setCRS(GeoConstants.CRS_WEB_MERCATOR);
+                                        pt.project(GeoConstants.CRS_WGS84);
 
-                                    Location dstLocation = new Location("");
-                                    dstLocation.setLatitude(pt.getY());
-                                    dstLocation.setLongitude(pt.getX());
+                                        Location dstLocation = new Location("");
+                                        dstLocation.setLatitude(pt.getY());
+                                        dstLocation.setLongitude(pt.getX());
 
-                                    float dist = location.distanceTo(dstLocation);
-                                    minDist = null == minDist ? dist : Math.min(minDist, dist);
+                                        float dist = location.distanceTo(dstLocation);
+                                        minDist = null == minDist ? dist : Math.min(minDist, dist);
 
-                                    ++kk;
-                                } while (kk < mpt.size());
+                                        ++kk;
+                                    } while (kk < mpt.size());
+                                }
                             }
+
+                        } catch (IOException | ClassNotFoundException e) {
+                            // e.printStackTrace();
                         }
 
-                    } catch (IOException | ClassNotFoundException e) {
-                        // e.printStackTrace();
-                    }
-
-                } while (cursor.moveToNext());
+                    } while (cursor.moveToNext());
+                }
+            } catch (Exception e) {
+                //Log.d(TAG, e.getLocalizedMessage());
+            } finally {
+                cursor.close();
             }
-
-            cursor.close();
         }
 
         return minDist;

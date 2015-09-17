@@ -238,22 +238,40 @@ public class ObjectStatusFragment
             objectCursor = null;
         }
 
-        if (null != objectCursor && objectCursor.getCount() == 1 &&
-                objectCursor.moveToFirst()) {
+        boolean blockView = false;
 
-            String objectNameText = ObjectCursorAdapter.getObjectName(mContext, objectCursor);
-            mObjectStatus = objectCursor.getString(
-                    objectCursor.getColumnIndex(FoclConstants.FIELD_STATUS_BUILT));
-            objectCursor.close();
+        if (null != objectCursor) {
+            try {
+                if (objectCursor.getCount() == 1 && objectCursor.moveToFirst()) {
 
-            if (TextUtils.isEmpty(mObjectStatus)) {
-                mObjectStatus = FoclConstants.FIELD_VALUE_UNKNOWN;
+                    String objectNameText =
+                            ObjectCursorAdapter.getObjectName(mContext, objectCursor);
+                    mObjectStatus = objectCursor.getString(
+                            objectCursor.getColumnIndex(FoclConstants.FIELD_STATUS_BUILT));
+
+                    if (TextUtils.isEmpty(mObjectStatus)) {
+                        mObjectStatus = FoclConstants.FIELD_VALUE_UNKNOWN;
+                    }
+
+                    mObjectName.setText(objectNameText);
+                    setStatusButtonView(true);
+
+                } else {
+                    blockView = true;
+                }
+
+            } catch (Exception e) {
+                blockView = true;
+                //Log.d(TAG, e.getLocalizedMessage());
+            } finally {
+                objectCursor.close();
             }
 
-            mObjectName.setText(objectNameText);
-            setStatusButtonView(true);
-
         } else {
+            blockView = true;
+        }
+
+        if (blockView) {
             setBlockedView();
             return view;
         }

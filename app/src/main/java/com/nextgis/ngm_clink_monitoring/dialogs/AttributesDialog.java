@@ -111,39 +111,48 @@ public class AttributesDialog
 
         // set attributes
         String selection = FIELD_ID + " = ?";
-        Cursor attributes = mFoclVectorLayer.query(null, selection, new String[] {mObjectId + ""}, null, null);
+        Cursor attributes =
+                mFoclVectorLayer.query(null, selection, new String[] {mObjectId + ""}, null, null);
 
-        if (attributes.moveToFirst()) {
-            for (int i = 0; i < attributes.getColumnCount(); i++) {
-                String column = attributes.getColumnName(i);
+        if (null != attributes) {
+            try {
+                if (attributes.moveToFirst()) {
+                    for (int i = 0; i < attributes.getColumnCount(); i++) {
+                        String column = attributes.getColumnName(i);
 
-                if (column.equals(FIELD_GEOM)) {
-                    continue;
+                        if (column.equals(FIELD_GEOM)) {
+                            continue;
+                        }
+
+                        String dataText = null;
+
+                        try {
+                            dataText = attributes.getString(i);
+                        } catch (Exception ignored) {
+                            // do nothing
+                        }
+
+                        if (TextUtils.isEmpty(dataText)) {
+                            continue;
+                        }
+
+                        LayoutInflater inflater = LayoutInflater.from(getActivity());
+                        LinearLayout row =
+                                (LinearLayout) inflater.inflate(R.layout.item_attribute_row, null);
+
+                        TextView columnName = (TextView) row.findViewById(R.id.column_name);
+                        columnName.setText(column);
+
+                        TextView columnData = (TextView) row.findViewById(R.id.column_data);
+                        columnData.setText(dataText);
+
+                        mAttributesLayout.addView(row);
+                    }
                 }
-
-                String dataText = null;
-
-                try {
-                    dataText = attributes.getString(i);
-                } catch (Exception ignored) {
-                    // do nothing
-                }
-
-                if (TextUtils.isEmpty(dataText)) {
-                    continue;
-                }
-
-                LayoutInflater inflater = LayoutInflater.from(getActivity());
-                LinearLayout row =
-                        (LinearLayout) inflater.inflate(R.layout.item_attribute_row, null);
-
-                TextView columnName = (TextView) row.findViewById(R.id.column_name);
-                columnName.setText(column);
-
-                TextView columnData = (TextView) row.findViewById(R.id.column_data);
-                columnData.setText(dataText);
-
-                mAttributesLayout.addView(row);
+            } catch (Exception e) {
+                //Log.d(TAG, e.getLocalizedMessage());
+            } finally {
+                attributes.close();
             }
         }
     }
