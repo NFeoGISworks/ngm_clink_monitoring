@@ -1345,6 +1345,7 @@ public class CreateObjectFragment
                         break;
                     case CREATE_OBJECT_FAILED:
                         Toast.makeText(getActivity(), (String) msg.obj, Toast.LENGTH_LONG).show();
+                        waitProgressDialog.dismiss();
                         break;
                 }
             }

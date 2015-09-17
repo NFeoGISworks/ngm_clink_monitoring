@@ -139,11 +139,6 @@ public abstract class ObjectPhotoAdapter
                     case CREATE_PREVIEW_OK:
                         if (viewHolder.mPosition == position) {
                             viewHolder.mImageView.setImageBitmap((Bitmap) msg.obj);
-                        } else {
-                            String error =
-                                    "onBindViewHolder() ERROR: viewHolder.mPosition != position";
-                            Log.d(Constants.TAG, error);
-                            Toast.makeText(mContext, error, Toast.LENGTH_LONG).show();
                         }
                         break;
 
