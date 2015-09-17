@@ -23,13 +23,16 @@
 package com.nextgis.ngm_clink_monitoring.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.text.Html;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckedTextView;
+import com.nextgis.maplib.util.Constants;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 import com.nextgis.ngm_clink_monitoring.map.FoclStruct;
@@ -47,7 +50,7 @@ public class LineNameAdapter
     protected Context     mContext;
     protected FoclProject mFoclProject;
 
-    protected List<FoclStruct> mFoclStructList;
+    protected List<FoclStructItem> mFoclStructList;
 
 
     public LineNameAdapter(
@@ -61,20 +64,31 @@ public class LineNameAdapter
         mFoclStructList = new ArrayList<>(layerCount);
 
         for (int i = 0; i < layerCount; ++i) {
-            FoclStruct struct = (FoclStruct) mFoclProject.getLayer(i);
-            mFoclStructList.add(struct);
+            FoclStruct foclStruct = (FoclStruct) mFoclProject.getLayer(i);
+
+            boolean isChanges = foclStruct.isChanges();
+            mFoclStructList.add(new FoclStructItem(foclStruct, isChanges));
+
+            // for debug
+            if (isChanges) {
+                Log.d(Constants.TAG, "is changes, line: " + foclStruct.getNameOneString());
+            }
+            boolean isBuilt = foclStruct.getStatus().equals(FoclConstants.FIELD_VALUE_STATUS_BUILT);
+            if (isBuilt) {
+                Log.d(Constants.TAG, "built line: " + foclStruct.getNameOneString());
+            }
         }
 
         Collections.sort(
-                mFoclStructList, new Comparator<FoclStruct>()
+                mFoclStructList, new Comparator<FoclStructItem>()
                 {
                     @Override
                     public int compare(
-                            FoclStruct lhs,
-                            FoclStruct rhs)
+                            FoclStructItem lhs,
+                            FoclStructItem rhs)
                     {
-                        String lhsName = lhs.getName();
-                        String rhsName = rhs.getName();
+                        String lhsName = lhs.getFoclStruct().getName();
+                        String rhsName = rhs.getFoclStruct().getName();
 
                         if (TextUtils.isEmpty(lhsName) && TextUtils.isEmpty(rhsName)) {
                             return 0;
@@ -111,7 +125,7 @@ public class LineNameAdapter
     @Override
     public long getItemId(int position)
     {
-        return mFoclStructList.get(position).getRemoteId();
+        return mFoclStructList.get(position).getFoclStruct().getRemoteId();
     }
 
 
@@ -126,7 +140,8 @@ public class LineNameAdapter
             convertView = inflater.inflate(R.layout.item_line_name, null);
         }
 
-        FoclStruct foclStruct = (FoclStruct) getItem(position);
+        FoclStructItem item = (FoclStructItem) getItem(position);
+        FoclStruct foclStruct = item.getFoclStruct();
 
         CheckedTextView tvFoclStructName =
                 (CheckedTextView) convertView.findViewById(R.id.focl_struct_name);
@@ -134,6 +149,13 @@ public class LineNameAdapter
         tvFoclStructName.setText(Html.fromHtml(foclStruct.getHtmlFormattedNameThreeStringsSmall()));
         tvFoclStructName.setChecked(
                 foclStruct.getStatus().equals(FoclConstants.FIELD_VALUE_STATUS_BUILT));
+
+        if (item.isChanges()) {
+            tvFoclStructName.setTextColor(Color.RED);
+        } else {
+            tvFoclStructName.setTextColor(
+                    mContext.getResources().getColor(R.color.button_text_color));
+        }
 
         return convertView;
     }

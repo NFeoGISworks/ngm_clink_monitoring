@@ -237,6 +237,34 @@ public class FoclStruct
     }
 
 
+    public String getNameOneString()
+    {
+        String lineName = getName();
+
+        if (TextUtils.isEmpty(lineName) || TextUtils.isEmpty(lineName.trim())) {
+            lineName = mContext.getString(R.string.no_name);
+        }
+
+        String region = getRegion();
+        String district = getDistrict();
+
+        boolean isEmptyRegion = TextUtils.isEmpty(region) || TextUtils.isEmpty(region.trim());
+        boolean isEmptyDistrict = TextUtils.isEmpty(district) || TextUtils.isEmpty(district.trim());
+
+        if (!isEmptyDistrict) {
+            lineName += ", ";
+            lineName += district;
+        }
+
+        if (!isEmptyRegion) {
+            lineName += ", ";
+            lineName += region;
+        }
+
+        return lineName;
+    }
+
+
     public List<ILayer> getLayers()
     {
         return mLayers;
@@ -311,5 +339,17 @@ public class FoclStruct
         GISApplication app = (GISApplication) mContext.getApplicationContext();
         layer.setId(app.getMap().getNewId());
         super.onLayerAdded(layer);
+    }
+
+
+    public boolean isChanges()
+    {
+        for (ILayer layer : mLayers) {
+            FoclVectorLayer vectorLayer = (FoclVectorLayer) layer;
+            if (vectorLayer.isChanges()) {
+                return true;
+            }
+        }
+        return false;
     }
 }
