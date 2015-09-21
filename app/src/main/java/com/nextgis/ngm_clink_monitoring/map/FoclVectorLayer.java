@@ -133,7 +133,7 @@ public class FoclVectorLayer
 
     protected IStyleRule getStyleRule()
     {
-        return new FoclStyleRule(this, mFoclLayerType);
+        return new FoclStyleRule(mContext, getPath().getName(), mFoclLayerType);
     }
 
 
@@ -211,6 +211,6 @@ public class FoclVectorLayer
 
     public boolean isChanges()
     {
-        return FeatureChanges.isChanges(mChangeTableName);
+        return FeatureChanges.isChanges(getChangeTableName());
     }
 }

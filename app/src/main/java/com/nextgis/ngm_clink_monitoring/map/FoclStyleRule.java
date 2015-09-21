@@ -22,6 +22,7 @@
 
 package com.nextgis.ngm_clink_monitoring.map;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
@@ -31,7 +32,6 @@ import com.nextgis.maplib.display.SimpleMarkerStyle;
 import com.nextgis.maplib.display.SimpleTextLineStyle;
 import com.nextgis.maplib.display.SimpleTextMarkerStyle;
 import com.nextgis.maplib.display.Style;
-import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
 
@@ -41,15 +41,18 @@ import static com.nextgis.maplib.util.Constants.FIELD_ID;
 public class FoclStyleRule
         implements IStyleRule
 {
-    protected VectorLayer mVectorLayer;
-    protected int         mFoclLayerType;
+    protected Context mContext;
+    protected String  mLayerPathName;
+    protected int     mFoclLayerType;
 
 
     public FoclStyleRule(
-            VectorLayer vectorLayer,
+            Context context,
+            String layerPathName,
             int foclLayerType)
     {
-        mVectorLayer = vectorLayer;
+        mContext = context;
+        mLayerPathName = layerPathName;
         mFoclLayerType = foclLayerType;
     }
 
@@ -164,8 +167,8 @@ public class FoclStyleRule
         Cursor cursor;
         String[] select;
         Uri uri = Uri.parse(
-                "content://" + FoclSettingsConstantsUI.AUTHORITY + "/" +
-                        mVectorLayer.getPath().getName() + "/" + objectId);
+                "content://" + FoclSettingsConstantsUI.AUTHORITY + "/" + mLayerPathName + "/" +
+                        objectId);
         String type = null;
         String status = null;
 
@@ -177,7 +180,7 @@ public class FoclStyleRule
                         FoclConstants.FIELD_STATUS_BUILT*/};
 
                 try {
-                    cursor = mVectorLayer.query(uri, select, null, null, null, null);
+                    cursor = mContext.getContentResolver().query(uri, select, null, null, null);
 
                 } catch (Exception e) {
                     //Log.d(TAG, e.getLocalizedMessage());
