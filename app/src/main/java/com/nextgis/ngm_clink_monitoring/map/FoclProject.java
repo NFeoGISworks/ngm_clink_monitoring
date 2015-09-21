@@ -251,6 +251,11 @@ public class FoclProject
                 if (sendLineStatusOnServer(id, status, updateDate)) {
                     foclStruct.setIsStatusChanged(false);
                     foclStruct.save();
+                    Log.d(
+                            Constants.TAG,
+                            "status SENT, path name: " + getPath().getName() + " - line name: " +
+                                    getName());
+
                 } else {
                     String error = "Set status line failed";
                     Log.d(Constants.TAG, error);

@@ -195,7 +195,11 @@ public class FoclVectorLayer
 //            case "layer_20150810180828663":
 //            case "layer_20150810180829798":
 //            case "layer_20150810180830981":
-//                Log.d(TAG, "SEND, path name:" + getPath().getName());
+//                Log.d(
+//                        TAG, "SEND, path name: " + getPath().getName() + " - line name: " +
+//                                (null == mParent ? "null" : mParent.getName()) + " - layer name: " +
+//                                getName());
+//
 //                if (!sendLocalChanges(syncResult)) {
 //                    Log.d(TAG, "Set local changes failed");
 //                    //return;
@@ -203,7 +207,10 @@ public class FoclVectorLayer
 //                break;
 //
 //            default:
-//                Log.d(TAG, "NOT SEND, path name:" + getPath().getName());
+//                Log.d(
+//                        TAG, "NOT SEND, path name: " + getPath().getName() + " - line name: " +
+//                                (null == mParent ? "null" : mParent.getName()) + " - layer name: " +
+//                                getName());
 //                break;
 //        }
     }
