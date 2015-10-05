@@ -23,7 +23,6 @@
 package com.nextgis.ngm_clink_monitoring.adapters;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
@@ -150,12 +149,13 @@ public class LineNameAdapter
         tvFoclStructName.setChecked(
                 foclStruct.getStatus().equals(FoclConstants.FIELD_VALUE_STATUS_BUILT));
 
-        if (item.isChanges()) {
-            tvFoclStructName.setTextColor(Color.RED);
-        } else {
-            tvFoclStructName.setTextColor(
-                    mContext.getResources().getColor(R.color.button_text_color));
-        }
+        // for debug
+//        if (item.isChanges()) {
+//            tvFoclStructName.setTextColor(Color.RED);
+//        } else {
+//            tvFoclStructName.setTextColor(
+//                    mContext.getResources().getColor(R.color.button_text_color));
+//        }
 
         return convertView;
     }
