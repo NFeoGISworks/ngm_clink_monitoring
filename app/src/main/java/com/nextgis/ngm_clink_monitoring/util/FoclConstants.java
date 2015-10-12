@@ -164,6 +164,7 @@ public interface FoclConstants
     int PHOTO_JPEG_COMPRESS_QUALITY = 75;
 
     int MAX_DISTANCE_FROM_PREV_POINT = 300; // R.strings.distance_from_prev_point_exceeded
+    int MAX_DISTANCE_FROM_OBJECT_TO_PHOTO = 100; // R.strings.photo_not_saved_distance_exceed
 
     int    MAX_ACCURACY                    = 10;
     int    MIN_ACCURACY_TAKE_COUNT         = 5;

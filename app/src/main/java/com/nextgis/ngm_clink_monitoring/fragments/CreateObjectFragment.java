@@ -51,7 +51,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
@@ -154,7 +153,6 @@ public class CreateObjectFragment
 
     protected EditText     mDescription;
     protected TextView     mPhotoHintText;
-    protected Button       mMakePhotoButton;
     protected RecyclerView mPhotoGallery;
 
     protected Integer mFoclStructLayerType = FoclConstants.LAYERTYPE_FOCL_UNKNOWN;
@@ -285,7 +283,6 @@ public class CreateObjectFragment
         // Common
         mDescription = (EditText) view.findViewById(R.id.description_cr);
         mPhotoHintText = (TextView) view.findViewById(R.id.photo_hint_text_cr);
-        mMakePhotoButton = (Button) view.findViewById(R.id.btn_make_photo_cr);
         mPhotoGallery = (RecyclerView) view.findViewById(R.id.photo_gallery_cr);
 
         MainActivity activity = (MainActivity) getActivity();
@@ -390,17 +387,29 @@ public class CreateObjectFragment
                     @Override
                     public void onClick(View v)
                     {
-                        showCameraActivity(app);
-                    }
-                });
-
-        mMakePhotoButton.setOnClickListener(
-                new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View v)
-                    {
-                        showCameraActivity(app);
+                        if (mAccurateLocationTaker.isTaking() || null == mAccurateLocation) {
+                            YesNoDialog dialog = new YesNoDialog();
+                            dialog.setKeepInstance(true)
+                                    .setIcon(R.drawable.ic_action_warning)
+                                    .setTitle(R.string.warning)
+                                    .setMessage(R.string.coordinates_refining_process)
+                                    .setPositiveText(R.string.ok)
+                                    .setOnPositiveClickedListener(
+                                            new YesNoDialog.OnPositiveClickedListener()
+                                            {
+                                                @Override
+                                                public void onPositiveClicked()
+                                                {
+                                                    // cancel
+                                                }
+                                            })
+                                    .show(
+                                            getActivity().getSupportFragmentManager(),
+                                            FoclConstants.FRAGMENT_YES_NO_DIALOG +
+                                                    "CoordRefiningProcess");
+                        } else {
+                            showCameraActivity(app);
+                        }
                     }
                 });
 
@@ -504,8 +513,6 @@ public class CreateObjectFragment
 
         mDescription.setText("");
         mDescription.setEnabled(false);
-        mMakePhotoButton.setEnabled(false);
-        mMakePhotoButton.setOnClickListener(null);
         mPhotoGallery.setEnabled(false);
         mPhotoGallery.setAdapter(null);
         setPhotoGalleryVisibility(false);
@@ -993,8 +1000,48 @@ public class CreateObjectFragment
         File tempPhotoFile = new File(mTempPhotoPath);
 
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
-            setPhotoGalleryAdapter();
-            setPhotoGalleryVisibility(true);
+
+            Location currLocation = mGpsEventSource.getLastKnownLocation();
+            float dist = mAccurateLocation.distanceTo(currLocation);
+
+            if (dist < FoclConstants.MAX_DISTANCE_FROM_OBJECT_TO_PHOTO) {
+
+                 if (tempPhotoFile.delete()) {
+                    Log.d(
+                            TAG,
+                            "tempPhotoFile deleted on Activity.RESULT_OK and bad coordinates, path: " +
+                                    tempPhotoFile.getAbsolutePath());
+
+                    YesNoDialog dialog = new YesNoDialog();
+                    dialog.setKeepInstance(true)
+                            .setIcon(R.drawable.ic_action_warning)
+                            .setTitle(R.string.photo_not_saved)
+                            .setMessage(R.string.photo_not_saved_distance_exceed)
+                            .setPositiveText(R.string.ok)
+                            .setOnPositiveClickedListener(
+                                    new YesNoDialog.OnPositiveClickedListener()
+                                    {
+                                        @Override
+                                        public void onPositiveClicked()
+                                        {
+                                            // cancel
+                                        }
+                                    })
+                            .show(
+                                    getActivity().getSupportFragmentManager(),
+                                    FoclConstants.FRAGMENT_YES_NO_DIALOG + "PhotoNotSaved");
+
+                } else {
+                    Log.d(
+                            TAG,
+                            "tempPhotoFile delete FAILED on Activity.RESULT_OK and bad coordinates, path: " +
+                                    tempPhotoFile.getAbsolutePath());
+                }
+
+            } else {
+                setPhotoGalleryAdapter();
+                setPhotoGalleryVisibility(true);
+            }
         }
 
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_CANCELED) {
