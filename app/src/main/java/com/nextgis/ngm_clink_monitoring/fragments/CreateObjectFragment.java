@@ -1004,7 +1004,7 @@ public class CreateObjectFragment
             Location currLocation = mGpsEventSource.getLastKnownLocation();
             float dist = mAccurateLocation.distanceTo(currLocation);
 
-            if (dist < FoclConstants.MAX_DISTANCE_FROM_OBJECT_TO_PHOTO) {
+            if (dist > FoclConstants.MAX_DISTANCE_FROM_OBJECT_TO_PHOTO) {
 
                  if (tempPhotoFile.delete()) {
                     Log.d(
