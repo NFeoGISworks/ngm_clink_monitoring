@@ -171,7 +171,7 @@ public class SetLineStatusDialog
 
                         long time;
                         if (null != lastLoc) {
-                            time = lastLoc.getTime();
+                            time = lastLoc.getTime() + app.getGpsTimeOffset();
                         } else {
                             time = System.currentTimeMillis();
                         }
