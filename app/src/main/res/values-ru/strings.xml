@@ -223,7 +223,7 @@
     <string name="Or_new_start_point">Или отметьте новую начальную точку.</string>
     <string name="change_line_status_confirmation">Вы действительно хотите изменить статус линии?</string>
     <string name="photo_not_saved">Фото не сохранено!</string>
-    <string name="photo_not_saved_distance_exceed">Фотография не сохранена, так как расстояние до объекта в момент фотографирования превышает 100 м.</string>
+    <string name="photo_not_saved_distance_exceed">Фотография не сохранена, так как расстояние от точки съема координат превышает 100 м.</string>
 
     <string name="empty_field_warning">Поле \"%1$s\" должно быть заполнено.</string>
 

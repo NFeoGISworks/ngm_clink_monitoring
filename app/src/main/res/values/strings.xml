@@ -223,7 +223,7 @@
     <string name="Or_new_start_point">Or mark a new starting point.</string>
     <string name="change_line_status_confirmation">Do you really want to change the line status?</string>
     <string name="photo_not_saved">Photo is not saved!</string>
-    <string name="photo_not_saved_distance_exceed">Photography is not stored as the distance to the object at the time of photographing is more than 100 m.</string>
+    <string name="photo_not_saved_distance_exceed">Photography is not stored as the distance from the point of determining the coordinates is more than 100 m.</string>
 
     <string name="empty_field_warning">Field \"%1$s\" must be filled.</string>
 
