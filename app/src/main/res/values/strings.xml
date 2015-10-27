@@ -240,4 +240,7 @@
 
     <string name="please_wait">Please wait…</string>
 
+    <string name="no_sdcard">No SD-Card</string>
+    <string name="no_sdcard_exit_app">No SD-Card.\nApplication will be terminated.</string>
+
 </resources>

@@ -176,4 +176,6 @@ public interface FoclConstants
     String TEMP_PHOTO_FILE_PREFIX = "temp-photo-";
 
     String KEY_IS_FULL_SYNC = "is_full_sync";
+
+    String NO_SDCARD = "no_sdcard";
 }

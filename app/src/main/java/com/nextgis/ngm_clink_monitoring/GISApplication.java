@@ -61,6 +61,7 @@ import com.nextgis.maplibui.fragment.NGWLoginFragment;
 import com.nextgis.maplibui.mapui.RemoteTMSLayerUI;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.ngm_clink_monitoring.activities.FoclSettingsActivity;
+import com.nextgis.ngm_clink_monitoring.activities.MainActivity;
 import com.nextgis.ngm_clink_monitoring.map.FoclLayerFactory;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 import com.nextgis.ngm_clink_monitoring.map.FoclStruct;
@@ -161,40 +162,47 @@ public class GISApplication
 
 
         mGpsEventSource = new GpsEventSource(this);
-        getMap();
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        if (sharedPreferences.getBoolean(FoclSettingsConstantsUI.KEY_PREF_APP_FIRST_RUN, true)) {
-            onFirstRun();
-            sharedPreferences.edit()
-                    .putBoolean(FoclSettingsConstantsUI.KEY_PREF_APP_FIRST_RUN, false)
-                    .putInt(SettingsConstants.KEY_PREF_LOCATION_SOURCE, GpsEventSource.GPS_PROVIDER)
-                    .putString(SettingsConstants.KEY_PREF_LOCATION_MIN_TIME, "0")
-                    .putString(SettingsConstants.KEY_PREF_LOCATION_MIN_DISTANCE, "0")
-                    .commit();
-        }
+        if (null != getMap()) {
 
-        mSyncReceiver = new SyncReceiver();
-        IntentFilter intentFilter = new IntentFilter();
-
-        intentFilter.addAction(SyncAdapter.SYNC_START);
-        intentFilter.addAction(SyncAdapter.SYNC_FINISH);
-        intentFilter.addAction(SyncAdapter.SYNC_CANCELED);
-        intentFilter.addAction(SyncAdapter.SYNC_CHANGES);
-
-        intentFilter.addAction(FoclProject.SYNC_LAYER_COUNT);
-        intentFilter.addAction(FoclProject.SYNC_CURRENT_LAYER);
-
-        registerReceiver(mSyncReceiver, intentFilter);
-
-        if (!isRanAsSyncService()) {
-            ContentResolver.cancelSync(getAccount(), getAuthority());
-        }
-
-        if (isAutoSyncEnabled()) {
-            if (!isRanAsSyncService()) {
-                startPeriodicSync();
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            if (sharedPreferences.getBoolean(FoclSettingsConstantsUI.KEY_PREF_APP_FIRST_RUN, true)) {
+                onFirstRun();
+                sharedPreferences.edit()
+                        .putInt(SettingsConstants.KEY_PREF_LOCATION_SOURCE, GpsEventSource.GPS_PROVIDER)
+                        .putString(SettingsConstants.KEY_PREF_LOCATION_MIN_TIME, "0")
+                        .putString(SettingsConstants.KEY_PREF_LOCATION_MIN_DISTANCE, "0")
+                        .commit();
             }
+
+            mSyncReceiver = new SyncReceiver();
+            IntentFilter intentFilter = new IntentFilter();
+
+            intentFilter.addAction(SyncAdapter.SYNC_START);
+            intentFilter.addAction(SyncAdapter.SYNC_FINISH);
+            intentFilter.addAction(SyncAdapter.SYNC_CANCELED);
+            intentFilter.addAction(SyncAdapter.SYNC_CHANGES);
+
+            intentFilter.addAction(FoclProject.SYNC_LAYER_COUNT);
+            intentFilter.addAction(FoclProject.SYNC_CURRENT_LAYER);
+
+            registerReceiver(mSyncReceiver, intentFilter);
+
+            if (!isRanAsSyncService()) {
+                ContentResolver.cancelSync(getAccount(), getAuthority());
+            }
+
+            if (isAutoSyncEnabled()) {
+                if (!isRanAsSyncService()) {
+                    startPeriodicSync();
+                }
+            }
+
+        } else {
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra(FoclConstants.NO_SDCARD, true);
+            startActivity(intent);
         }
     }
 
@@ -269,6 +277,7 @@ public class GISApplication
 
 
     public String getMapPath()
+            throws IOException
     {
         File defaultPath = getExternalFilesDir(SettingsConstants.KEY_PREF_MAP);
 
@@ -280,7 +289,11 @@ public class GISApplication
             return storedPath;
         }
 
-        return null == defaultPath ? null : defaultPath.getPath();
+        if (null == defaultPath) {
+            throw new IOException(getString(R.string.no_sdcard));
+        }
+
+        return defaultPath.getPath();
     }
 
 
@@ -291,21 +304,26 @@ public class GISApplication
             return mMap;
         }
 
-        String mapPath = getMapPath();
+        try {
+            String mapPath = getMapPath();
 
-        if (mapPath != null) {
-            SharedPreferences sharedPreferences =
-                    PreferenceManager.getDefaultSharedPreferences(this);
-            String mapName = sharedPreferences.getString(
-                    FoclSettingsConstantsUI.KEY_PREF_MAP_NAME, "default");
+            if (mapPath != null) {
+                SharedPreferences sharedPreferences =
+                        PreferenceManager.getDefaultSharedPreferences(this);
+                String mapName = sharedPreferences.getString(
+                        FoclSettingsConstantsUI.KEY_PREF_MAP_NAME, "default");
 
-            File mapFullPath = new File(mapPath, mapName + Constants.MAP_EXT);
+                File mapFullPath = new File(mapPath, mapName + Constants.MAP_EXT);
 
-            final Bitmap bkBitmap = BitmapFactory.decodeResource(
-                    getResources(), com.nextgis.maplibui.R.drawable.bk_tile);
-            mMap = new MapDrawable(bkBitmap, this, mapFullPath, new FoclLayerFactory());
-            mMap.setName(mapName);
-            mMap.load();
+                final Bitmap bkBitmap = BitmapFactory.decodeResource(
+                        getResources(), com.nextgis.maplibui.R.drawable.bk_tile);
+                mMap = new MapDrawable(bkBitmap, this, mapFullPath, new FoclLayerFactory());
+                mMap.setName(mapName);
+                mMap.load();
+            }
+
+        } catch (final IOException ignored) {
+            return null;
         }
 
         return mMap;
@@ -317,15 +335,24 @@ public class GISApplication
         //add OpenStreetMap layer on application first run
         String layerName = getString(R.string.osm);
         String layerURL = SettingsConstantsUI.OSM_URL;
-        RemoteTMSLayerUI layer =
-                new RemoteTMSLayerUI(getApplicationContext(), mMap.createLayerStorage());
-        layer.setName(layerName);
-        layer.setURL(layerURL);
-        layer.setTMSType(GeoConstants.TMSTYPE_OSM);
-        layer.setVisible(true);
 
-        mMap.addLayer(layer);
-        mMap.save();
+        if (null != mMap) {
+            RemoteTMSLayerUI layer =
+                    new RemoteTMSLayerUI(getApplicationContext(), mMap.createLayerStorage());
+            layer.setName(layerName);
+            layer.setURL(layerURL);
+            layer.setTMSType(GeoConstants.TMSTYPE_OSM);
+            layer.setVisible(true);
+
+            mMap.addLayer(layer);
+            mMap.save();
+
+            SharedPreferences sharedPreferences =
+                    PreferenceManager.getDefaultSharedPreferences(this);
+            sharedPreferences.edit()
+                    .putBoolean(FoclSettingsConstantsUI.KEY_PREF_APP_FIRST_RUN, false)
+                    .commit();
+        }
     }
 
 

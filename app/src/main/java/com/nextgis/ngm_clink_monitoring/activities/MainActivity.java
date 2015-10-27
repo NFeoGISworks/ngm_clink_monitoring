@@ -127,6 +127,36 @@ public class MainActivity
     {
         super.onCreate(savedInstanceState);
 
+        if (getIntent().getBooleanExtra(FoclConstants.NO_SDCARD, false)) {
+
+            YesNoDialog dialog = new YesNoDialog();
+            dialog.setCancelable(false);
+            dialog.setKeepInstance(true)
+                    .setIcon(R.drawable.ic_action_warning)
+                    .setTitle(R.string.warning)
+                    .setMessage(getString(R.string.no_sdcard_exit_app))
+                    .setPositiveText(R.string.ok)
+                    .setOnPositiveClickedListener(
+                            new YesNoDialog.OnPositiveClickedListener()
+                            {
+                                @Override
+                                public void onPositiveClicked()
+                                {
+                                    // show Home screen
+                                    Intent intent = new Intent(Intent.ACTION_MAIN);
+                                    intent.addCategory(Intent.CATEGORY_HOME);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    startActivity(intent);
+
+                                    System.exit(0);
+                                }
+                            })
+                    .show(
+                            getSupportFragmentManager(),
+                            FoclConstants.FRAGMENT_YES_NO_DIALOG + "NoSdCard");
+            return;
+        }
+
         final GISApplication app = (GISApplication) getApplication();
 
         mGpsEventSource = app.getGpsEventSource();
@@ -534,6 +564,10 @@ public class MainActivity
     {
         super.onResume();
 
+        if (getIntent().getBooleanExtra(FoclConstants.NO_SDCARD, false)) {
+            return;
+        }
+
         if (!FoclLocationUtil.isOnlyGpsLocationModeEnabled(this)) {
             FoclLocationUtil.showSettingsLocationAlert(this);
         }
@@ -570,15 +604,18 @@ public class MainActivity
     @Override
     protected void onPause()
     {
-        GISApplication app = (GISApplication) getApplication();
-        app.setOnAccountAddedListener(null);
-        app.setOnAccountDeletedListener(null);
-        app.setOnReloadMapListener(null);
+        if (!getIntent().getBooleanExtra(FoclConstants.NO_SDCARD, false)) {
 
-        // Remove our synchronization listener if registered
-        if (mSyncHandle != null) {
-            ContentResolver.removeStatusChangeListener(mSyncHandle);
-            mSyncHandle = null;
+            GISApplication app = (GISApplication) getApplication();
+            app.setOnAccountAddedListener(null);
+            app.setOnAccountDeletedListener(null);
+            app.setOnReloadMapListener(null);
+
+            // Remove our synchronization listener if registered
+            if (mSyncHandle != null) {
+                ContentResolver.removeStatusChangeListener(mSyncHandle);
+                mSyncHandle = null;
+            }
         }
 
         super.onPause();

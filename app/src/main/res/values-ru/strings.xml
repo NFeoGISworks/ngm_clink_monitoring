@@ -240,4 +240,7 @@
 
     <string name="please_wait">Пожалуйста, подождите…</string>
 
+    <string name="no_sdcard">Отсутствует SD-карта</string>
+    <string name="no_sdcard_exit_app">Отсутствует SD-карта.\nПриложение будет остановлено.</string>
+
 </resources>
