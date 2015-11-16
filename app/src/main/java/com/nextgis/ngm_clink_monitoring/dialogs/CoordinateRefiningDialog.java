@@ -59,7 +59,7 @@ public class CoordinateRefiningDialog
         setRetainInstance(true);
 
         mLocationTaker = new AccurateLocationTaker(
-                getActivity(), MAX_ACCURACY_TAKE_COUNT, MAX_ACCURACY_TAKE_TIME,
+                getActivity(), MAX_TAKEN_ACCURACY, MAX_ACCURACY_TAKE_COUNT, MAX_ACCURACY_TAKE_TIME,
                 ACCURACY_PUBLISH_PROGRESS_DELAY, ACCURACY_CIRCULAR_ERROR_STR);
 
         mLocationTaker.setOnGetCurrentAccurateLocationListener(
@@ -70,6 +70,10 @@ public class CoordinateRefiningDialog
                     {
                         if (MIN_ACCURACY_TAKE_COUNT <= mTakeCount &&
                                 null != currentAccurateLocation &&
+                                // Form getAccuracy() docs:
+                                // "If this location does not have an accuracy, then 0.0 is returned."
+                                // We must check for 0.
+                                0 < currentAccurateLocation.getAccuracy() &&
                                 MAX_ACCURACY > currentAccurateLocation.getAccuracy()) {
 
                             mLocationTaker.stopTaking();

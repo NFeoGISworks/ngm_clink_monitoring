@@ -163,15 +163,16 @@ public interface FoclConstants
     int PHOTO_MAX_SIZE_PX           = 640;
     int PHOTO_JPEG_COMPRESS_QUALITY = 75;
 
-    int MAX_DISTANCE_FROM_PREV_POINT = 300; // R.strings.distance_from_prev_point_exceeded
+    int MAX_DISTANCE_FROM_PREV_POINT      = 300; // R.strings.distance_from_prev_point_exceeded
     int MAX_DISTANCE_FROM_OBJECT_TO_PHOTO = 100; // R.strings.photo_not_saved_distance_exceed
 
+    float  MAX_TAKEN_ACCURACY              = 100;
     int    MAX_ACCURACY                    = 10;
-    int    MIN_ACCURACY_TAKE_COUNT         = 5;
-    int    MAX_ACCURACY_TAKE_COUNT         = 10;
+    int    MIN_ACCURACY_TAKE_COUNT         = 30;
+    int    MAX_ACCURACY_TAKE_COUNT         = 60;
     long   MAX_ACCURACY_TAKE_TIME          = 60000;
     long   ACCURACY_PUBLISH_PROGRESS_DELAY = 500;
-    String ACCURACY_CIRCULAR_ERROR_STR     = "CE50";
+    String ACCURACY_CIRCULAR_ERROR_STR     = "CE95";
 
     String TEMP_PHOTO_FILE_PREFIX = "temp-photo-";
 
