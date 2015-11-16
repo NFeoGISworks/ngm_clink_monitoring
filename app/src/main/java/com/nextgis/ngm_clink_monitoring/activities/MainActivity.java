@@ -107,6 +107,7 @@ public class MainActivity
     protected Object             mSyncHandle;
     protected GpsEventSource     mGpsEventSource;
 
+    protected Long mGpsCount      = null;
     protected Long mClockOffset   = null;
     protected Long mGpsTimeOffset = null;
 
@@ -944,6 +945,13 @@ public class MainActivity
     @Override
     public void onLocationChanged(Location location)
     {
+        if (null == mGpsCount || 0l == mGpsCount) {
+            Log.d(Constants.TAG, "GPS is started");
+            mGpsCount = 1l;
+        } else {
+            ++mGpsCount;
+        }
+
         if (null == mClockOffset) {
             new GetNtpAsyncTask().execute();
         }
