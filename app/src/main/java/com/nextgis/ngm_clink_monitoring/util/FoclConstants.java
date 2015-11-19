@@ -168,8 +168,8 @@ public interface FoclConstants
 
     float  MAX_TAKEN_ACCURACY              = 100;
     int    MAX_ACCURACY                    = 10;
-    int    MIN_ACCURACY_TAKE_COUNT         = 30;
-    int    MAX_ACCURACY_TAKE_COUNT         = 60;
+    int    MIN_ACCURACY_TAKE_COUNT         = 8;
+    int    MAX_ACCURACY_TAKE_COUNT         = 12;
     long   MAX_ACCURACY_TAKE_TIME          = 60000;
     long   ACCURACY_PUBLISH_PROGRESS_DELAY = 500;
     String ACCURACY_CIRCULAR_ERROR_STR     = "CE95";
