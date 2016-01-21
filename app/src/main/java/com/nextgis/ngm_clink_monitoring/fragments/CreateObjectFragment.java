@@ -1133,8 +1133,15 @@ public class CreateObjectFragment
 
             // attach data from tempAttachFile
             OutputStream attachOutStream = contentResolver.openOutputStream(attachUri);
-            FoclFileUtil.copy(new FileInputStream(tempAttachFile), attachOutStream);
-            attachOutStream.close();
+            if (attachOutStream != null) {
+                FoclFileUtil.copy(new FileInputStream(tempAttachFile), attachOutStream);
+                attachOutStream.close();
+            } else {
+                Log.d(
+                        TAG,
+                        "CreateObjectFragment, writePhotoAttach(), attachOutStream == null, attachUri" +
+                                attachUri.toString());
+            }
 
             if (!tempAttachFile.delete()) {
                 Log.d(
