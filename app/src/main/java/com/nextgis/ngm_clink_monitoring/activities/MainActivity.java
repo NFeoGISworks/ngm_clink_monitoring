@@ -846,7 +846,7 @@ public class MainActivity
         Fragment fragment = fm.findFragmentByTag(FoclConstants.FRAGMENT_MAP);
 
         if (null != fragment) {
-            ((MapFragment) fragment).locateCurrentPositionAndZoom();
+            ((MapFragment) fragment).locateCurrentPositionAndZoom(true, null);
         }
     }
 

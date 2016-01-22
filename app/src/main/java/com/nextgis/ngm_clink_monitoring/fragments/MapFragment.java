@@ -60,6 +60,9 @@ import com.nextgis.ngm_clink_monitoring.util.ViewUtil;
 
 import java.util.List;
 
+import static com.nextgis.maplib.util.GeoConstants.CRS_WEB_MERCATOR;
+import static com.nextgis.maplib.util.GeoConstants.CRS_WGS84;
+
 
 public class MapFragment
         extends Fragment
@@ -244,8 +247,9 @@ public class MapFragment
 
             if (null != mGpsEventSource && onMenuMapClicked) {
                 onMenuMapClicked = false;
-                setCurrentCenter(mGpsEventSource.getLastKnownLocation());
-                locateCurrentPositionAndZoom();
+                Location lastLocation = mGpsEventSource.getLastKnownLocation();
+                setCurrentCenter(lastLocation);
+                locateCurrentPositionAndZoom(false, lastLocation);
             }
 
 /// TODO: ???
@@ -423,11 +427,28 @@ public class MapFragment
     }
 
 
-    public void locateCurrentPositionAndZoom()
+    public void locateCurrentPositionAndZoom(
+            boolean forMenuLocation,
+            Location lastLocation)
     {
-        if (mCurrentCenter == null) {
+        GeoPoint center;
+
+        if (forMenuLocation && mCurrentCenter == null) {
             Toast.makeText(getActivity(), R.string.error_no_location, Toast.LENGTH_SHORT).show();
             return;
+
+        } else if (mCurrentCenter != null) {
+            center = mCurrentCenter;
+
+        } else if (lastLocation != null) {
+            center = new GeoPoint(lastLocation.getLongitude(), lastLocation.getLatitude());
+            center.setCRS(CRS_WGS84);
+            center.project(CRS_WEB_MERCATOR);
+
+        } else {
+            center = new GeoPoint(37.6155600, 55.7522200); // Moscow
+            center.setCRS(CRS_WGS84);
+            center.project(CRS_WEB_MERCATOR);
         }
 
         float zoomLevel = 16f;
@@ -438,10 +459,10 @@ public class MapFragment
                 zoomLevel = mMapView.getMaxZoom();
             }
 
-            mMapView.setZoomAndCenter(zoomLevel, mCurrentCenter);
+            mMapView.setZoomAndCenter(zoomLevel, center);
 
         } else {
-            mMapView.setZoomAndCenter(mMapView.getZoomLevel(), mCurrentCenter);
+            mMapView.setZoomAndCenter(mMapView.getZoomLevel(), center);
         }
     }
 
