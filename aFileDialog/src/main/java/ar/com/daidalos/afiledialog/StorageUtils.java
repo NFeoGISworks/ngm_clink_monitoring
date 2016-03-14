@@ -40,8 +40,8 @@ import java.util.List;
 import java.util.Set;
 
 
-// based on from http://stackoverflow.com/a/19982338/4727406, author Vitaliy Polchuk
-// additions from http://stackoverflow.com/a/13648873/4727406, author Gnathonic
+// based on from http://stackoverflow.com/a/19982338, author Vitaliy Polchuk
+// additions from http://stackoverflow.com/a/13648873, author Gnathonic
 public class StorageUtils
 {
     private static final String TAG = "StorageUtils";

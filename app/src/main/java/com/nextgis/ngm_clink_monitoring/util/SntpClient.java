@@ -61,7 +61,7 @@ import java.net.InetAddress;
  * }
  * </pre>
  * http://grepcode.com/file/repository.grepcode.com/java/ext/com.google.android/android/4.1.1_r1/android/net/SntpClient.java/
- * http://stackoverflow.com/a/16810903/4727406
+ * http://stackoverflow.com/a/16810903
  */
 public class SntpClient
 {

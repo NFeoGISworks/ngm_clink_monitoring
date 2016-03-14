@@ -34,9 +34,9 @@ public class Utils
     /**
      * Return pseudo unique ID
      * <p/>
-     * http://stackoverflow.com/a/17625641/4727406
+     * http://stackoverflow.com/a/17625641
      * <p/>
-     * http://stackoverflow.com/a/2853253/4727406
+     * http://stackoverflow.com/a/2853253
      *
      * @return ID
      */

@@ -50,7 +50,7 @@ import java.util.Map;
  * <p/>
  * Limitations: does not display prompt if the entry list is empty.
  * <p/>
- * see http://stackoverflow.com/a/3427058/4727406
+ * see http://stackoverflow.com/a/3427058
  * <p/>
  * Warning! This has been tested on Android 1.5 through 4.2, but buyer beware! Because this solution relies
  * on reflection to call the private AdapterView.setNextSelectedPositionInt() and

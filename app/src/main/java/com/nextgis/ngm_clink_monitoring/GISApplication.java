@@ -130,7 +130,7 @@ public class GISApplication
         // Get logcat after crash
         // http://habrahabr.ru/post/129582/
         // https://github.com/Olegas/RoboErrorReporter
-        // http://stackoverflow.com/a/19968400/4727406
+        // http://stackoverflow.com/a/19968400
 
         // Setup handler for uncaught exceptions.
         RoboErrorReporter.bindReporter(this);

@@ -101,7 +101,7 @@ public class FoclFileUtil
      * Zips a file at a location and places the resulting zip file at the toLocation Example:
      * zipFileAtPath("downloads/myfolder", "downloads/myFolder.zip");
      * <p/>
-     * http://stackoverflow.com/a/14868161/4727406
+     * http://stackoverflow.com/a/14868161
      */
     public static void zipFileAtPath(
             String sourcePath,
