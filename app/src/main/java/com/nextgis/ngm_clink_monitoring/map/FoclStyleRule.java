@@ -103,7 +103,7 @@ public class FoclStyleRule
                 epStyle.setType(SimpleTextMarkerStyle.MarkerStyleTextCircle);
                 epStyle.setColor(Color.WHITE);
                 epStyle.setOutlineColor(Color.BLUE);
-                epStyle.setMarkerText("?");
+                epStyle.setText("?");
                 epStyle.setSize(9);
                 epStyle.setWidth(3);
                 return epStyle;
@@ -349,7 +349,7 @@ public class FoclStyleRule
                 switch (type) {
                     default:
                         epStyle.setOutlineColor(Color.BLUE);
-                        epStyle.setMarkerText("?");
+                        epStyle.setText("?");
                         break;
                 }
 

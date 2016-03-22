@@ -931,7 +931,7 @@ public class MainActivity
     public void onMenuSettingsClick()
     {
         final IGISApplication app = (IGISApplication) getApplication();
-        app.showSettings();
+        app.showSettings(null);
     }
 
 

@@ -30,6 +30,7 @@ import com.nextgis.maplib.api.IStyleRule;
 import com.nextgis.maplib.display.RuleFeatureRenderer;
 import com.nextgis.maplib.display.Style;
 import com.nextgis.maplib.map.NGWVectorLayer;
+import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.FeatureChanges;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
@@ -38,7 +39,6 @@ import org.json.JSONObject;
 
 import java.io.File;
 
-import static com.nextgis.maplib.util.Constants.SYNC_NONE;
 import static com.nextgis.maplib.util.Constants.TAG;
 
 
@@ -161,7 +161,14 @@ public class FoclVectorLayer
             String authority,
             SyncResult syncResult)
     {
-        if (0 != (mSyncType & SYNC_NONE) || !mIsInitialized) {
+        syncResult.clear();
+
+        if (0 != (mSyncType & Constants.SYNC_NONE) || mFields == null || mFields.isEmpty()) {
+//            if (Constants.DEBUG_MODE) {
+                Log.d(
+                        Constants.TAG,
+                        "Layer " + getName() + " is not checked to sync or not inited");
+//            }
             return;
         }
 
@@ -169,7 +176,9 @@ public class FoclVectorLayer
 
         // 1. get remote changes
         if (app.isFullSync() && !getChangesFromServer(authority, syncResult)) {
-            Log.d(TAG, "Get remote changes failed");
+//            if (Constants.DEBUG_MODE) {
+                Log.d(Constants.TAG, "Get remote changes failed");
+//            }
             return;
         }
 
@@ -179,7 +188,9 @@ public class FoclVectorLayer
 
         // 2. send current changes
         if (!sendLocalChanges(syncResult)) {
-            Log.d(TAG, "Set local changes failed");
+//            if (Constants.DEBUG_MODE) {
+                Log.d(Constants.TAG, "Set local changes failed");
+//            }
             //return;
         }
 

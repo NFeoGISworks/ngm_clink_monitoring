@@ -220,7 +220,8 @@ public class CreateObjectFragment
                 getActivity(), MAX_TAKEN_ACCURACY, MAX_ACCURACY_TAKE_COUNT, MAX_ACCURACY_TAKE_TIME,
                 ACCURACY_PUBLISH_PROGRESS_DELAY, ACCURACY_CIRCULAR_ERROR_STR);
 
-        mAccurateLocationTaker.setTakeOnBestLocation(true);
+        // TODO: setTakeOnBestLocation(true)
+//        mAccurateLocationTaker.setTakeOnBestLocation(true);
 
         mAccurateLocationTaker.setOnGetCurrentAccurateLocationListener(
                 new AccurateLocationTaker.OnGetCurrentAccurateLocationListener()

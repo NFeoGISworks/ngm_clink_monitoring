@@ -44,7 +44,6 @@ import com.nextgis.maplib.datasource.GeoEnvelope;
 import com.nextgis.maplib.datasource.GeoPoint;
 import com.nextgis.maplib.location.GpsEventSource;
 import com.nextgis.maplib.util.GeoConstants;
-import com.nextgis.maplib.util.VectorCacheItem;
 import com.nextgis.maplibui.api.MapViewEventListener;
 import com.nextgis.maplibui.mapui.MapViewOverlays;
 import com.nextgis.maplibui.overlay.CurrentLocationOverlay;
@@ -327,7 +326,7 @@ public class MapFragment
 
         //show actions dialog
         List<ILayer> layers = mMapView.getVectorLayersByType(GeoConstants.GTAnyCheck);
-        List<VectorCacheItem> items = null;
+        List<Long> items = null;
         FoclVectorLayer foclVectorLayer = null;
         boolean intersects = false;
         for (ILayer layer : layers) {
@@ -350,7 +349,7 @@ public class MapFragment
         if (intersects) {
             AttributesDialog attributesDialog = new AttributesDialog();
             attributesDialog.setKeepInstance(true);
-            attributesDialog.setParams(foclVectorLayer, items.get(0).getId());
+            attributesDialog.setParams(foclVectorLayer, items.get(0));
             attributesDialog.show(
                     getActivity().getSupportFragmentManager(), FoclConstants.FRAGMENT_ATTRIBUTES);
         }

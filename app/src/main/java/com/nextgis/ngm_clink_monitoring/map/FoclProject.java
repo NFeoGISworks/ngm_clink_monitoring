@@ -28,7 +28,6 @@ import android.content.Intent;
 import android.content.SyncResult;
 import android.database.sqlite.SQLiteException;
 import android.text.TextUtils;
-import android.util.Base64;
 import android.util.Log;
 import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.api.ILayer;
@@ -36,14 +35,10 @@ import com.nextgis.maplib.api.INGWLayer;
 import com.nextgis.maplib.map.LayerFactory;
 import com.nextgis.maplib.map.LayerGroup;
 import com.nextgis.maplib.util.Constants;
+import com.nextgis.maplib.util.NGException;
 import com.nextgis.maplib.util.NetworkUtil;
 import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -429,10 +424,10 @@ public class FoclProject
                 foclStruct.moveLayer(1, foclVectorLayer);
             }
 
-            String error = foclVectorLayer.download();
-
-            if (null != error && error.length() > 0) {
-                Log.d(Constants.TAG, error);
+            try {
+                foclVectorLayer.createFromNGW(null);
+            } catch (NGException | IOException e) {
+                Log.d(Constants.TAG, e.getLocalizedMessage());
             }
         }
     }
@@ -523,34 +518,14 @@ public class FoclProject
     protected String downloadData(String url)
             throws IOException
     {
-        final HttpGet get = new HttpGet(url); //get as GeoJSON
-        //basic auth
-        if (!TextUtils.isEmpty(mCacheLogin) && !TextUtils.isEmpty(mCachePassword)) {
-            get.setHeader("Accept", "*/*");
-            final String basicAuth = "Basic " + Base64.encodeToString(
-                    (mCacheLogin + ":" + mCachePassword).getBytes(), Base64.NO_WRAP);
-            get.setHeader("Authorization", basicAuth);
-        }
+        String data = NetworkUtil.get(url, mCacheLogin, mCachePassword);
 
-        final DefaultHttpClient HTTPClient = mNet.getHttpClient();
-        final HttpResponse response = HTTPClient.execute(get);
-
-        // Check to see if we got success
-        final org.apache.http.StatusLine line = response.getStatusLine();
-        if (line.getStatusCode() != 200) {
-            Log.d(
-                    Constants.TAG, "Problem downloading FOCL: " + mCacheUrl + " HTTP response: " +
-                            line);
+        if (null == data) {
+            Log.d(Constants.TAG, "No content downloading FOCL: " + url);
             return getContext().getString(com.nextgis.maplib.R.string.error_download_data);
         }
 
-        final HttpEntity entity = response.getEntity();
-        if (entity == null) {
-            Log.d(Constants.TAG, "No content downloading FOCL: " + mCacheUrl);
-            return getContext().getString(com.nextgis.maplib.R.string.error_download_data);
-        }
-
-        return EntityUtils.toString(entity);
+        return data;
     }
 
 

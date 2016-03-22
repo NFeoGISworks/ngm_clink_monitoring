@@ -55,10 +55,12 @@ import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.GeoConstants;
 import com.nextgis.maplib.util.NetworkUtil;
+import com.nextgis.maplib.util.PermissionUtil;
 import com.nextgis.maplib.util.SettingsConstants;
 import com.nextgis.maplibui.activity.NGWSettingsActivity;
 import com.nextgis.maplibui.fragment.NGWLoginFragment;
 import com.nextgis.maplibui.mapui.RemoteTMSLayerUI;
+import com.nextgis.maplibui.util.ConstantsUI;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.ngm_clink_monitoring.activities.FoclSettingsActivity;
 import com.nextgis.ngm_clink_monitoring.activities.MainActivity;
@@ -87,7 +89,8 @@ import static com.nextgis.ngm_clink_monitoring.util.FoclConstants.*;
 
 public class GISApplication
         extends Application
-        implements IGISApplication, NGWLoginFragment.OnAddAccountListener,
+        implements IGISApplication,
+                   NGWLoginFragment.OnAddAccountListener,
                    NGWSettingsActivity.OnDeleteAccountListener
 {
     protected MapDrawable    mMap;
@@ -165,11 +168,15 @@ public class GISApplication
 
         if (null != getMap()) {
 
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-            if (sharedPreferences.getBoolean(FoclSettingsConstantsUI.KEY_PREF_APP_FIRST_RUN, true)) {
+            SharedPreferences sharedPreferences =
+                    PreferenceManager.getDefaultSharedPreferences(this);
+            if (sharedPreferences.getBoolean(
+                    FoclSettingsConstantsUI.KEY_PREF_APP_FIRST_RUN, true)) {
                 onFirstRun();
                 sharedPreferences.edit()
-                        .putInt(SettingsConstants.KEY_PREF_LOCATION_SOURCE, GpsEventSource.GPS_PROVIDER)
+                        .putInt(
+                                SettingsConstants.KEY_PREF_LOCATION_SOURCE,
+                                GpsEventSource.GPS_PROVIDER)
                         .putString(SettingsConstants.KEY_PREF_LOCATION_MIN_TIME, "0")
                         .putString(SettingsConstants.KEY_PREF_LOCATION_MIN_DISTANCE, "0")
                         .commit();
@@ -426,7 +433,7 @@ public class GISApplication
             String password,
             String token)
     {
-        if (!checkPermission(Manifest.permission.AUTHENTICATE_ACCOUNTS)) {
+        if (!PermissionUtil.hasPermission(this, ConstantsUI.PERMISSION_AUTHENTICATE_ACCOUNTS)) {
             return false;
         }
 
@@ -454,7 +461,7 @@ public class GISApplication
             String key,
             String value)
     {
-        if (!checkPermission(Manifest.permission.AUTHENTICATE_ACCOUNTS)) {
+        if (!PermissionUtil.hasPermission(this, ConstantsUI.PERMISSION_AUTHENTICATE_ACCOUNTS)) {
             return;
         }
 
@@ -472,7 +479,7 @@ public class GISApplication
             String name,
             String value)
     {
-        if (!checkPermission(Manifest.permission.AUTHENTICATE_ACCOUNTS)) {
+        if (!PermissionUtil.hasPermission(this, ConstantsUI.PERMISSION_AUTHENTICATE_ACCOUNTS)) {
             return;
         }
         Account account = getAccount(name);
@@ -529,7 +536,7 @@ public class GISApplication
         };
 
 
-        if (!checkPermission(Manifest.permission.MANAGE_ACCOUNTS)) {
+        if (!PermissionUtil.hasPermission(this, ConstantsUI.PERMISSION_AUTHENTICATE_ACCOUNTS)) {
             return accountManagerFuture;
         }
 
@@ -570,7 +577,7 @@ public class GISApplication
     @Override
     public String getAccountUrl(Account account)
     {
-        if (!checkPermission(Manifest.permission.AUTHENTICATE_ACCOUNTS)) {
+        if (!PermissionUtil.hasPermission(this, ConstantsUI.PERMISSION_AUTHENTICATE_ACCOUNTS)) {
             return "";
         }
 
@@ -580,9 +587,23 @@ public class GISApplication
 
 
     @Override
+    public String getAccountUserData(
+            Account account,
+            String key)
+    {
+        if (!PermissionUtil.hasPermission(this, ConstantsUI.PERMISSION_AUTHENTICATE_ACCOUNTS)) {
+            return "";
+        }
+
+        AccountManager accountManager = AccountManager.get(this);
+        return accountManager.getUserData(account, key);
+    }
+
+
+    @Override
     public String getAccountLogin(Account account)
     {
-        if (!checkPermission(Manifest.permission.AUTHENTICATE_ACCOUNTS)) {
+        if (!PermissionUtil.hasPermission(this, ConstantsUI.PERMISSION_AUTHENTICATE_ACCOUNTS)) {
             return "";
         }
 
@@ -594,7 +615,7 @@ public class GISApplication
     @Override
     public String getAccountPassword(Account account)
     {
-        if (!checkPermission(Manifest.permission.AUTHENTICATE_ACCOUNTS)) {
+        if (!PermissionUtil.hasPermission(this, ConstantsUI.PERMISSION_AUTHENTICATE_ACCOUNTS)) {
             return "";
         }
 
@@ -924,7 +945,7 @@ public class GISApplication
 
 
     @Override
-    public void showSettings()
+    public void showSettings(String setting)
     {
         Intent intentSet = new Intent(this, FoclSettingsActivity.class);
         intentSet.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);//Intent.FLAG_ACTIVITY_CLEAR_TOP |
