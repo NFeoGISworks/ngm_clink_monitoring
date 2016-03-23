@@ -456,7 +456,7 @@ public class MainActivity
                 if (actionBar != null) {
                     mCustomToolbarTitle.setText(toolbarTitle == null ? getTitle() : toolbarTitle);
                     setCustomToolbarButtonView(
-                            actionBar, R.string.menu_back, R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+                            actionBar, R.string.menu_back, R.drawable.ic_action_back);
                 }
                 break;
         }
@@ -475,7 +475,7 @@ public class MainActivity
 
             case FoclConstants.FRAGMENT_OBJECT_TYPES:
             case FoclConstants.FRAGMENT_OBJECT_LIST:
-                mMainToolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+                mMainToolbar.setNavigationIcon(R.drawable.ic_action_back);
                 break;
         }
 
