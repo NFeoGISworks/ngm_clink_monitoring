@@ -174,9 +174,9 @@ public class GISApplication
                     FoclSettingsConstantsUI.KEY_PREF_APP_FIRST_RUN, true)) {
                 onFirstRun();
                 sharedPreferences.edit()
-                        .putInt(
+                        .putString(
                                 SettingsConstants.KEY_PREF_LOCATION_SOURCE,
-                                GpsEventSource.GPS_PROVIDER)
+                                "" + GpsEventSource.GPS_PROVIDER)
                         .putString(SettingsConstants.KEY_PREF_LOCATION_MIN_TIME, "0")
                         .putString(SettingsConstants.KEY_PREF_LOCATION_MIN_DISTANCE, "0")
                         .commit();
