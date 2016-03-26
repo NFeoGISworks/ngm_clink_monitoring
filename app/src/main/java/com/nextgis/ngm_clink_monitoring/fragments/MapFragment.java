@@ -58,7 +58,9 @@ import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
 import com.nextgis.ngm_clink_monitoring.util.ViewUtil;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
 import static com.nextgis.maplib.util.GeoConstants.CRS_WEB_MERCATOR;
 import static com.nextgis.maplib.util.GeoConstants.CRS_WGS84;
@@ -94,8 +96,7 @@ public class MapFragment
 
         GISApplication app = (GISApplication) getActivity().getApplication();
 
-        mTolerancePX =
-                app.getResources().getDisplayMetrics().density * ConstantsUI.TOLERANCE_DP;
+        mTolerancePX = app.getResources().getDisplayMetrics().density * ConstantsUI.TOLERANCE_DP;
 
         mMapView = new MapViewOverlays(getActivity(), app.getMap());
         mMapView.setId(ViewUtil.generateViewId());
@@ -334,9 +335,10 @@ public class MapFragment
 
         //show actions dialog
         List<ILayer> layers = mMapView.getVectorLayersByType(GeoConstants.GTAnyCheck);
-        List<VectorCacheItem> items = null;
-        FoclVectorLayer foclVectorLayer = null;
-        boolean intersects = false;
+
+        TreeMap<Integer, Integer> priorityMap = new TreeMap<>();
+        List<FoclVectorLayer> foclVectorLayers = new ArrayList<>();
+
         for (ILayer layer : layers) {
             if (!layer.isValid()) {
                 continue;
@@ -346,20 +348,87 @@ public class MapFragment
                 continue;
             }
 
-            foclVectorLayer = (FoclVectorLayer) layer;
-            items = foclVectorLayer.query(mapEnv);
+            FoclVectorLayer foclVectorLayer = (FoclVectorLayer) layer;
+            List<VectorCacheItem> items = foclVectorLayer.query(mapEnv);
             if (!items.isEmpty()) {
-                intersects = true;
-                break;
+                foclVectorLayers.add(foclVectorLayer);
+
+                int type = foclVectorLayer.getFoclLayerType();
+                int priority;
+
+                switch (type) {
+                    case FoclConstants.LAYERTYPE_FOCL_UNKNOWN:
+                    default:
+                        priority = 0;
+                        break;
+
+                    case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CABLE:
+                        priority = 1;
+                        break;
+
+                    case FoclConstants.LAYERTYPE_FOCL_FOSC:
+                        priority = 2;
+                        break;
+
+                    case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CROSS:
+                        priority = 3;
+                        break;
+
+                    case FoclConstants.LAYERTYPE_FOCL_ACCESS_POINT:
+                        priority = 4;
+                        break;
+
+                    case FoclConstants.LAYERTYPE_FOCL_SPECIAL_TRANSITION:
+                        priority = 5;
+                        break;
+
+                    case FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT:
+                        priority = 6;
+                        break;
+
+                    case FoclConstants.LAYERTYPE_FOCL_REAL_FOSC:
+                        priority = 7;
+                        break;
+
+                    case FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CROSS:
+                        priority = 8;
+                        break;
+
+                    case FoclConstants.LAYERTYPE_FOCL_REAL_ACCESS_POINT:
+                        priority = 9;
+                        break;
+
+                    case FoclConstants.LAYERTYPE_FOCL_REAL_SPECIAL_TRANSITION_POINT:
+                        priority = 10;
+                        break;
+                }
+
+                if (!priorityMap.containsKey(priority)) {
+                    priorityMap.put(priority, type);
+                }
             }
         }
 
-        if (intersects) {
-            AttributesDialog attributesDialog = new AttributesDialog();
-            attributesDialog.setKeepInstance(true);
-            attributesDialog.setParams(foclVectorLayer, items.get(0).getId());
-            attributesDialog.show(
-                    getActivity().getSupportFragmentManager(), FoclConstants.FRAGMENT_ATTRIBUTES);
+        Integer type = null;
+        if (!priorityMap.isEmpty()) {
+            Integer key = priorityMap.lastKey();
+            type = priorityMap.get(key);
+        }
+
+        if (null != type) {
+            for (FoclVectorLayer layer : foclVectorLayers) {
+                if (type == layer.getFoclLayerType()) {
+                    List<VectorCacheItem> items = layer.query(mapEnv);
+
+                    AttributesDialog attributesDialog = new AttributesDialog();
+                    attributesDialog.setKeepInstance(true);
+                    attributesDialog.setParams(layer, items.get(0).getId());
+                    attributesDialog.show(
+                            getActivity().getSupportFragmentManager(), FoclConstants.FRAGMENT_ATTRIBUTES);
+
+                    break;
+                }
+            }
         }
     }
 
