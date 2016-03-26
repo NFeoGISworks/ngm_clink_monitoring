@@ -91,7 +91,7 @@ public class SyncDialog
 
         setIcon(R.drawable.ic_action_refresh_light);
         setTitle(R.string.synchronization);
-        setView(view);
+        setView(view, true);
 
         setPositiveText(R.string.ok);
         setNegativeText(R.string.cancel);
