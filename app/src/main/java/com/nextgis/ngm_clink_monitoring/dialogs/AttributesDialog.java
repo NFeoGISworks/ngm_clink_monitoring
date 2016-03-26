@@ -32,9 +32,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import com.nextgis.maplib.datasource.Field;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.map.FoclStruct;
 import com.nextgis.ngm_clink_monitoring.map.FoclVectorLayer;
+
+import java.util.List;
 
 import static com.nextgis.maplib.util.Constants.FIELD_GEOM;
 import static com.nextgis.maplib.util.Constants.FIELD_ID;
@@ -108,6 +111,7 @@ public class AttributesDialog
 
         mAttributesLayout.addView(lineNameRow);
 
+        List<Field> fields = mFoclVectorLayer.getFields();
 
         // set attributes
         String selection = FIELD_ID + " = ?";
@@ -122,6 +126,14 @@ public class AttributesDialog
 
                         if (column.equals(FIELD_GEOM)) {
                             continue;
+                        }
+
+                        String alias = null;
+                        for (Field field : fields) {
+                            if (field.getName().equals(column)) {
+                                alias = field.getAlias();
+                                break;
+                            }
                         }
 
                         String dataText = null;
@@ -141,7 +153,7 @@ public class AttributesDialog
                                 (LinearLayout) inflater.inflate(R.layout.item_attribute_row, null);
 
                         TextView columnName = (TextView) row.findViewById(R.id.column_name);
-                        columnName.setText(column);
+                        columnName.setText(alias);
 
                         TextView columnData = (TextView) row.findViewById(R.id.column_data);
                         columnData.setText(dataText);
