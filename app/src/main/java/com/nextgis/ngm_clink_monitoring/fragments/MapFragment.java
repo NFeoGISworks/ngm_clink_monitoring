@@ -366,19 +366,19 @@ public class MapFragment
                         priority = 1;
                         break;
 
-                    case FoclConstants.LAYERTYPE_FOCL_FOSC:
+                    case FoclConstants.LAYERTYPE_FOCL_SPECIAL_TRANSITION:
                         priority = 2;
                         break;
 
-                    case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CROSS:
+                    case FoclConstants.LAYERTYPE_FOCL_FOSC:
                         priority = 3;
                         break;
 
-                    case FoclConstants.LAYERTYPE_FOCL_ACCESS_POINT:
+                    case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CROSS:
                         priority = 4;
                         break;
 
-                    case FoclConstants.LAYERTYPE_FOCL_SPECIAL_TRANSITION:
+                    case FoclConstants.LAYERTYPE_FOCL_ACCESS_POINT:
                         priority = 5;
                         break;
 
