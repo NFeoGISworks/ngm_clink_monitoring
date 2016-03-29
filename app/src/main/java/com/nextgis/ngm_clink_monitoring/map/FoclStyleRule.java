@@ -266,7 +266,7 @@ public class FoclStyleRule
                         case FoclConstants.FIELD_VALUE_GROUND:
                             ocStyle.setColor(0xFF9C7900);
                             break;
-                        case FoclConstants.FIELD_VALUE_AIR_LINK:
+                        case FoclConstants.FIELD_VALUE_OVERPASS:
                             ocStyle.setColor(0xFF63DFD6);
                             break;
                         case FoclConstants.FIELD_VALUE_TRANSMISSION_TOWERS:
@@ -275,7 +275,7 @@ public class FoclStyleRule
                         case FoclConstants.FIELD_VALUE_CANALIZATION:
                             ocStyle.setColor(0xFFFF8A00);
                             break;
-                        case FoclConstants.FIELD_VALUE_SEWER:
+                        case FoclConstants.FIELD_VALUE_OTHER:
                             ocStyle.setColor(Color.MAGENTA);
                             break;
                         case FoclConstants.FIELD_VALUE_BUILDING:
