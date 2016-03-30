@@ -1383,7 +1383,7 @@ public class CreateObjectFragment
         waitProgressDialog.setKeepInstance(true)
                 .setIcon(R.drawable.ic_action_data_usage)
                 .setTitle(R.string.waiting)
-                .setView(view);
+                .setView(view, true);
 
         waitProgressDialog.setCancelable(false);
         waitProgressDialog.show(

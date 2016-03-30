@@ -152,7 +152,7 @@ public class SetLineStatusDialog
 
         setIcon(R.drawable.ic_action_warning);
         setTitle(R.string.status_setting);
-        setView(view);
+        setView(view, true);
 
         setPositiveText(R.string.ok);
         setNegativeText(R.string.cancel);

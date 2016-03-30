@@ -119,7 +119,7 @@ public class DistanceExceededDialog
 
         setIcon(R.drawable.ic_action_warning);
         setTitle(R.string.warning);
-        setView(view);
+        setView(view, true);
 
         return super.onCreateDialog(savedInstanceState);
     }

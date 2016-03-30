@@ -64,13 +64,13 @@ public class AttributesDialog
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
         LayoutInflater inflater = LayoutInflater.from(getActivity());
-        View view = inflater.inflate(R.layout.fragment_attributes, null);
+        View view = inflater.inflate(R.layout.dialog_attributes, null);
 
         mAttributesLayout = (LinearLayout) view.findViewById(R.id.ll_attributes);
         setAttributes();
 
         setTitle(getActivity().getString(R.string.object_attributes));
-        setView(view);
+        setView(view, true);
         setPositiveText(getActivity().getString(R.string.ok));
         setOnPositiveClickedListener(
                 new OnPositiveClickedListener()

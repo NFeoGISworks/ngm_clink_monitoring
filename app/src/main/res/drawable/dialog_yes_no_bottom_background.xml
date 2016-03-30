@@ -5,7 +5,7 @@
   * Authors:  Dmitry Baryshnikov (aka Bishop), polimax@mail.ru
   *           NikitaFeodonit, nfeodonit@yandex.com
   * *****************************************************************************
-  * Copyright (C) 2014-2015 NextGIS
+  * Copyright (C) 2014-2016 NextGIS
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,8 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
 
     <corners
-        android:radius="4dp"
+        android:bottomLeftRadius="4dp"
+        android:bottomRightRadius="4dp"
         />
 
     <solid

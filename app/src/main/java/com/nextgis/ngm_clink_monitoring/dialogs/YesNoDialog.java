@@ -35,6 +35,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import com.nextgis.ngm_clink_monitoring.R;
@@ -57,12 +58,16 @@ public class YesNoDialog
 
     protected ImageView    mIcon;
     protected TextView     mTitle;
-    protected LinearLayout mDialogLayout;
+    protected ScrollView   mDialogBodyScroll;
+    protected LinearLayout mDialogBodyLayoutScrolled;
+    protected LinearLayout mDialogBodyLayout;
     protected TextView     mMessage;
     protected View         mView;
     protected TableLayout  mButtons;
     protected Button       mBtnPositive;
     protected Button       mBtnNegative;
+
+    protected boolean mAddScrollForView = false;
 
     protected OnPositiveClickedListener mOnPositiveClickedListener;
     protected OnNegativeClickedListener mOnNegativeClickedListener;
@@ -87,7 +92,8 @@ public class YesNoDialog
             getDialog().setOnDismissListener(null);
         }
 
-        mDialogLayout.removeAllViews();
+        mDialogBodyLayout.removeAllViews();
+        mDialogBodyLayoutScrolled.removeAllViews();
 
         super.onDestroyView();
     }
@@ -110,9 +116,13 @@ public class YesNoDialog
 
         dialog.setContentView(R.layout.dialog_yes_no);
 
-        mIcon = (ImageView) dialog.findViewById(R.id.dialog_icon_yn);
-        mTitle = (TextView) dialog.findViewById(R.id.dialog_title_yn);
-        mDialogLayout = (LinearLayout) dialog.findViewById(R.id.dialog_layout_yn);
+        mIcon = (ImageView) dialog.findViewById(R.id.title_icon);
+        mTitle = (TextView) dialog.findViewById(R.id.title_text);
+
+        mDialogBodyScroll = (ScrollView) dialog.findViewById(R.id.dialog_body_scroll);
+        mDialogBodyLayoutScrolled = (LinearLayout) dialog.findViewById(R.id.dialog_body_scrolled);
+        mDialogBodyLayout = (LinearLayout) dialog.findViewById(R.id.dialog_body);
+
         mButtons = (TableLayout) dialog.findViewById(R.id.dialog_buttons_yn);
         mBtnPositive = (Button) dialog.findViewById(R.id.dialog_btn_positive_yn);
         mBtnNegative = (Button) dialog.findViewById(R.id.dialog_btn_negative_yn);
@@ -139,8 +149,13 @@ public class YesNoDialog
         }
 
         if (null != mView) {
-            mDialogLayout.setVisibility(View.VISIBLE);
-            mDialogLayout.addView(mView);
+            if (mAddScrollForView) {
+                mDialogBodyScroll.setVisibility(View.VISIBLE);
+                mDialogBodyLayoutScrolled.addView(mView);
+            } else {
+                mDialogBodyLayout.setVisibility(View.VISIBLE);
+                mDialogBodyLayout.addView(mView);
+            }
         }
 
         if (null != mPositiveTextId) {
@@ -209,14 +224,18 @@ public class YesNoDialog
         LinearLayout layout =
                 (LinearLayout) View.inflate(getActivity(), R.layout.dialog_yes_no_message, null);
         mMessage = (TextView) layout.findViewById(R.id.dialog_message_yn);
-        mDialogLayout.setVisibility(View.VISIBLE);
-        mDialogLayout.addView(layout);
+
+        mDialogBodyScroll.setVisibility(View.VISIBLE);
+        mDialogBodyLayoutScrolled.addView(layout);
     }
 
 
-    public void setView(View view)
+    public void setView(
+            View view,
+            boolean addScrollForView)
     {
         mView = view;
+        mAddScrollForView = addScrollForView;
     }
 
 
