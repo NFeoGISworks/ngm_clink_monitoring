@@ -314,6 +314,13 @@ public class MapFragment
     @Override
     public void onLongPress(MotionEvent event)
     {
+
+    }
+
+
+    @Override
+    public void onSingleTapUp(MotionEvent event)
+    {
         double dMinX = event.getX() - mTolerancePX;
         double dMaxX = event.getX() + mTolerancePX;
         double dMinY = event.getY() - mTolerancePX;
@@ -353,13 +360,6 @@ public class MapFragment
             attributesDialog.show(
                     getActivity().getSupportFragmentManager(), FoclConstants.FRAGMENT_ATTRIBUTES);
         }
-    }
-
-
-    @Override
-    public void onSingleTapUp(MotionEvent event)
-    {
-
     }
 
 
