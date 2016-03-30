@@ -128,6 +128,8 @@ public class GISApplication
         // For service debug
 //        android.os.Debug.waitForDebugger();
 
+        updateFromOldVersion();
+
         super.onCreate();
 
         // Get logcat after crash
@@ -223,6 +225,43 @@ public class GISApplication
     public boolean isRanAsReportService()
     {
         return getCurrentProcessName().matches(".*:report$");
+    }
+
+
+    protected void updateFromOldVersion()
+    {
+        try {
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+            int currentVersionCode =
+                    getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
+            int savedVersionCode = prefs.getInt(FoclSettingsConstantsUI.KEY_PREF_APP_VERSION, 0);
+
+            switch (savedVersionCode) {
+                case 0:
+                    if (prefs.contains(SettingsConstants.KEY_PREF_LOCATION_SOURCE)) {
+                        int source = prefs.getInt(SettingsConstants.KEY_PREF_LOCATION_SOURCE, GpsEventSource.GPS_PROVIDER);
+                        prefs.edit()
+                                .remove(SettingsConstants.KEY_PREF_LOCATION_SOURCE)
+                                .remove(SettingsConstants.KEY_PREF_LOCATION_SOURCE + "_str")
+                                .putString(SettingsConstants.KEY_PREF_LOCATION_SOURCE, source + "")
+                                .commit();
+                    }
+
+                case 26:
+                    break;
+
+                default:
+                    break;
+            }
+
+            if (savedVersionCode < currentVersionCode) {
+                prefs.edit()
+                        .putInt(FoclSettingsConstantsUI.KEY_PREF_APP_VERSION, currentVersionCode)
+                        .commit();
+            }
+
+        } catch (PackageManager.NameNotFoundException ignored) {
+        }
     }
 
 
