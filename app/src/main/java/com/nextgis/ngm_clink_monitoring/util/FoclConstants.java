@@ -179,4 +179,7 @@ public interface FoclConstants
     String KEY_IS_FULL_SYNC = "is_full_sync";
 
     String NO_SDCARD = "no_sdcard";
+
+    String FOCL_STRUCT_REMOTE_ID  = "focl_struct_remote_id";
+    String FOCL_STRUCT_LAYER_TYPE = "focl_struct_layer_type";
 }

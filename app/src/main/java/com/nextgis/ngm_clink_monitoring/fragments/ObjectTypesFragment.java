@@ -61,10 +61,25 @@ public class ObjectTypesFragment
 
 
     @Override
+    public void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+
+        if (null != mLineRemoteId) {
+            outState.putLong(FoclConstants.FOCL_STRUCT_REMOTE_ID, mLineRemoteId);
+        }
+    }
+
+
+    @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+
+        if (null != savedInstanceState) {
+            mLineRemoteId = savedInstanceState.getLong(FoclConstants.FOCL_STRUCT_REMOTE_ID);
+        }
     }
 
 
@@ -195,7 +210,7 @@ public class ObjectTypesFragment
             createObjectFragment = new CreateObjectFragment();
         }
 
-        createObjectFragment.setParams(getActivity(), mLineRemoteId, foclStructLayerType);
+        createObjectFragment.setParams(mLineRemoteId, foclStructLayerType);
 
         ft.replace(R.id.main_fragment, createObjectFragment, FoclConstants.FRAGMENT_CREATE_OBJECT);
         ft.addToBackStack(null);

@@ -25,7 +25,6 @@ package com.nextgis.ngm_clink_monitoring.fragments;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -113,8 +112,6 @@ public class CreateObjectFragment
     protected final static int CREATE_OBJECT_OK     = 1;
     protected final static int CREATE_OBJECT_FAILED = 2;
 
-    protected Context mContext;
-
     protected TextView mTypeWorkTitle;
     protected TextView mLineName;
 
@@ -180,13 +177,24 @@ public class CreateObjectFragment
 
 
     public void setParams(
-            Context context,
             Long lineRemoteId,
             Integer foclStructLayerType)
     {
-        mContext = context;
         mLineRemoteId = lineRemoteId;
         mFoclStructLayerType = foclStructLayerType;
+    }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+
+        if (null != mLineRemoteId) {
+            outState.putLong(FoclConstants.FOCL_STRUCT_REMOTE_ID, mLineRemoteId);
+        }
+
+        outState.putInt(FoclConstants.FOCL_STRUCT_LAYER_TYPE, mFoclStructLayerType);
     }
 
 
@@ -195,6 +203,12 @@ public class CreateObjectFragment
     {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+
+        if (null != savedInstanceState) {
+            mLineRemoteId = savedInstanceState.getLong(FoclConstants.FOCL_STRUCT_REMOTE_ID);
+            mFoclStructLayerType = savedInstanceState.getInt(FoclConstants.FOCL_STRUCT_LAYER_TYPE);
+        }
+
 
         GISApplication app = (GISApplication) getActivity().getApplication();
 
@@ -920,7 +934,7 @@ public class CreateObjectFragment
         GISApplication app = (GISApplication) getActivity().getApplication();
 
         try {
-            mObjectPhotoFileAdapter = new ObjectPhotoFileAdapter(mContext, app.getDataDir());
+            mObjectPhotoFileAdapter = new ObjectPhotoFileAdapter(getActivity(), app.getDataDir());
 
             mObjectPhotoFileAdapter.setOnPhotoClickListener(
                     new ObjectPhotoFileAdapter.OnPhotoClickListener()
