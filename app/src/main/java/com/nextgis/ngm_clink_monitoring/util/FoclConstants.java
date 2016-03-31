@@ -182,4 +182,6 @@ public interface FoclConstants
 
     String FOCL_STRUCT_REMOTE_ID  = "focl_struct_remote_id";
     String FOCL_STRUCT_LAYER_TYPE = "focl_struct_layer_type";
+    String TEMP_PHOTO_PATH        = "temp_photo_path";
+    String ACCURATE_LOCATION      = "accurate_location";
 }

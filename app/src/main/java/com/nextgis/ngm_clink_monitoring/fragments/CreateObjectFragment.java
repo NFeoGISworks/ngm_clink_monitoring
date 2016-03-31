@@ -195,6 +195,14 @@ public class CreateObjectFragment
         }
 
         outState.putInt(FoclConstants.FOCL_STRUCT_LAYER_TYPE, mFoclStructLayerType);
+
+        if (null != mTempPhotoPath) {
+            outState.putString(FoclConstants.TEMP_PHOTO_PATH, mTempPhotoPath);
+        }
+
+        if (null != mAccurateLocation) {
+            outState.putParcelable(FoclConstants.ACCURATE_LOCATION, mAccurateLocation);
+        }
     }
 
 
@@ -205,8 +213,17 @@ public class CreateObjectFragment
         setRetainInstance(true);
 
         if (null != savedInstanceState) {
-            mLineRemoteId = savedInstanceState.getLong(FoclConstants.FOCL_STRUCT_REMOTE_ID);
-            mFoclStructLayerType = savedInstanceState.getInt(FoclConstants.FOCL_STRUCT_LAYER_TYPE);
+
+            if (savedInstanceState.containsKey(FoclConstants.FOCL_STRUCT_REMOTE_ID)) {
+                mLineRemoteId = savedInstanceState.getLong(FoclConstants.FOCL_STRUCT_REMOTE_ID);
+            }
+
+            if (savedInstanceState.containsKey(FoclConstants.FOCL_STRUCT_LAYER_TYPE)) {
+                mFoclStructLayerType = savedInstanceState.getInt(FoclConstants.FOCL_STRUCT_LAYER_TYPE);
+            }
+
+            mTempPhotoPath = savedInstanceState.getString(FoclConstants.TEMP_PHOTO_PATH);
+            mAccurateLocation = savedInstanceState.getParcelable(FoclConstants.ACCURATE_LOCATION);
         }
 
 
