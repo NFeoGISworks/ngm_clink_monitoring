@@ -203,6 +203,11 @@ public class CreateObjectFragment
         if (null != mAccurateLocation) {
             outState.putParcelable(FoclConstants.ACCURATE_LOCATION, mAccurateLocation);
         }
+
+        if (null != mAccurateLocationTaker) {
+            outState.putBoolean(
+                    FoclConstants.IS_ACCURATE_TAKING, mAccurateLocationTaker.isTaking());
+        }
     }
 
 
@@ -211,6 +216,8 @@ public class CreateObjectFragment
     {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+
+        Boolean isAccurateTaking = null;
 
         if (null != savedInstanceState) {
 
@@ -224,6 +231,10 @@ public class CreateObjectFragment
 
             mTempPhotoPath = savedInstanceState.getString(FoclConstants.TEMP_PHOTO_PATH);
             mAccurateLocation = savedInstanceState.getParcelable(FoclConstants.ACCURATE_LOCATION);
+
+            if (savedInstanceState.containsKey(FoclConstants.IS_ACCURATE_TAKING)) {
+                isAccurateTaking = savedInstanceState.getBoolean(FoclConstants.IS_ACCURATE_TAKING);
+            }
         }
 
 
@@ -273,7 +284,9 @@ public class CreateObjectFragment
                     }
                 });
 
-        mAccurateLocationTaker.startTaking();
+        if (null == isAccurateTaking || isAccurateTaking) {
+            mAccurateLocationTaker.startTaking();
+        }
     }
 
 

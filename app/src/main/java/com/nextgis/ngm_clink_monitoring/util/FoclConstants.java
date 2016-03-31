@@ -185,4 +185,5 @@ public interface FoclConstants
     String TEMP_PHOTO_PATH        = "temp_photo_path";
     String ACCURATE_LOCATION      = "accurate_location";
     String VIEW_STATE             = "view_state";
+    String IS_ACCURATE_TAKING     = "is_accurate_taking";
 }
