@@ -186,4 +186,6 @@ public interface FoclConstants
     String ACCURATE_LOCATION      = "accurate_location";
     String VIEW_STATE             = "view_state";
     String IS_ACCURATE_TAKING     = "is_accurate_taking";
+    String OBJECT_LAYER_NAME      = "object_layer_name";
+    String DISTANCE               = "distance";
 }
