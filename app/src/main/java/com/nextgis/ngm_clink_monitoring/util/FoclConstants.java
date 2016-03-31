@@ -128,10 +128,10 @@ public interface FoclConstants
     String FIELD_VALUE_BUILT   = "built";
 
     String FIELD_VALUE_GROUND              = "ground";
-    String FIELD_VALUE_AIR_LINK            = "air_link";
+    String FIELD_VALUE_OVERPASS            = "overpass";
     String FIELD_VALUE_TRANSMISSION_TOWERS = "transmission_towers";
     String FIELD_VALUE_CANALIZATION        = "canalization";
-    String FIELD_VALUE_SEWER               = "sewer";
+    String FIELD_VALUE_OTHER               = "other";
     String FIELD_VALUE_BUILDING            = "building";
 
     String FOCL_PROJECT      = "FOCL_project";
