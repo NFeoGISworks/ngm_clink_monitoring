@@ -34,6 +34,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.nextgis.maplib.datasource.Field;
 import com.nextgis.ngm_clink_monitoring.R;
+import com.nextgis.ngm_clink_monitoring.map.FoclDictItem;
+import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 import com.nextgis.ngm_clink_monitoring.map.FoclStruct;
 import com.nextgis.ngm_clink_monitoring.map.FoclVectorLayer;
 
@@ -92,7 +94,7 @@ public class AttributesDialog
     private void setAttributes()
     {
         FoclStruct struct = (FoclStruct) mFoclVectorLayer.getParent();
-
+        FoclProject project = (FoclProject) struct.getParent();
 
         TextView title = (TextView) mAttributesLayout.findViewById(R.id.title);
         title.setText(mFoclVectorLayer.getName());
@@ -148,6 +150,17 @@ public class AttributesDialog
                             continue;
                         }
 
+
+                        String dataAlias = null;
+                        FoclDictItem dictItem = project.getFoclDitcs().get(column);
+
+                        if (null != dictItem) {
+                            dataAlias = dictItem.get(dataText);
+                        }
+                        if (TextUtils.isEmpty(dataAlias)) {
+                            dataAlias = dataText;
+                        }
+
                         LayoutInflater inflater = LayoutInflater.from(getActivity());
                         LinearLayout row =
                                 (LinearLayout) inflater.inflate(R.layout.item_attribute_row, null);
@@ -156,7 +169,7 @@ public class AttributesDialog
                         columnName.setText(alias);
 
                         TextView columnData = (TextView) row.findViewById(R.id.column_data);
-                        columnData.setText(dataText);
+                        columnData.setText(dataAlias);
 
                         mAttributesLayout.addView(row);
                     }
