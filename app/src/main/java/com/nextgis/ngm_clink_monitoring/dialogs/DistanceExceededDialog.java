@@ -23,22 +23,29 @@
 package com.nextgis.ngm_clink_monitoring.dialogs;
 
 import android.app.Dialog;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import com.nextgis.maplib.api.GpsEventListener;
+import com.nextgis.maplib.location.GpsEventSource;
+import com.nextgis.ngm_clink_monitoring.GISApplication;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.fragments.CreateObjectFragment;
+import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
 
 
 public class DistanceExceededDialog
         extends YesNoDialog
-        implements CreateObjectFragment.OnDistanceChangedListener
+        implements GpsEventListener
 {
-    protected CreateObjectFragment mParent;
+    protected GpsEventSource mGpsEventSource;
 
+    protected String   mObjectLayerName;
     protected Float    mDistance;
     protected TextView mDistanceView;
 
@@ -49,10 +56,27 @@ public class DistanceExceededDialog
     protected OnNewPointClickedListener mOnNewPointClickedListener;
 
 
-    public void setParams(CreateObjectFragment parent, Float distance)
+    public void setParams(
+            String objectLayerName,
+            Float distance)
     {
-        mParent = parent;
+        mObjectLayerName = objectLayerName;
         mDistance = distance;
+    }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+
+        if (null != mObjectLayerName) {
+            outState.putString(FoclConstants.OBJECT_LAYER_NAME, mObjectLayerName);
+        }
+
+        if (null != mDistance) {
+            outState.putFloat(FoclConstants.DISTANCE, mDistance);
+        }
     }
 
 
@@ -61,6 +85,26 @@ public class DistanceExceededDialog
     {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+
+        if (null != savedInstanceState) {
+            mObjectLayerName = savedInstanceState.getString(FoclConstants.OBJECT_LAYER_NAME);
+            mDistance = savedInstanceState.getFloat(FoclConstants.DISTANCE);
+        }
+
+        GISApplication app = (GISApplication) getActivity().getApplication();
+        mGpsEventSource = app.getGpsEventSource();
+
+        if (null != mGpsEventSource) {
+            mGpsEventSource.addListener(this);
+        }
+
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        CreateObjectFragment createObjectFragment =
+                (CreateObjectFragment) fm.findFragmentByTag(FoclConstants.FRAGMENT_CREATE_OBJECT);
+        if (null != createObjectFragment) {
+            mOnRepeatClickedListener = createObjectFragment;
+            mOnNewPointClickedListener = createObjectFragment;
+        }
     }
 
 
@@ -71,6 +115,17 @@ public class DistanceExceededDialog
             getDialog().setOnDismissListener(null);
         }
         super.onDestroyView();
+    }
+
+
+    @Override
+    public void onDestroy()
+    {
+        if (null != mGpsEventSource) {
+            mGpsEventSource.removeListener(this);
+        }
+
+        super.onDestroy();
     }
 
 
@@ -85,8 +140,8 @@ public class DistanceExceededDialog
         mBtnRepeat = (Button) view.findViewById(R.id.btn_repeat_de);
         mBtnNewStartPoint = (Button) view.findViewById(R.id.btn_new_start_point_de);
 
-        mDistanceView.setText(mParent.getDistanceText(mDistance));
-        mDistanceView.setTextColor(mParent.getDistanceTextColor(mDistance));
+        mDistanceView.setText(CreateObjectFragment.getDistanceText(getActivity(), mDistance));
+        mDistanceView.setTextColor(CreateObjectFragment.getDistanceTextColor(mDistance));
 
         mBtnRepeat.setOnClickListener(
                 new View.OnClickListener()
@@ -125,50 +180,37 @@ public class DistanceExceededDialog
     }
 
 
-    @Override
-    public void onPause()
-    {
-        mParent.setOnOnDistanceChangedListener(null);
-        super.onPause();
-    }
-
-
-    @Override
-    public void onResume()
-    {
-        super.onResume();
-        mParent.setOnOnDistanceChangedListener(this);
-    }
-
-
-    @Override
-    public void onDistanceChanged(float distance)
-    {
-        mDistanceView.setText(mParent.getDistanceText(distance));
-        mDistanceView.setTextColor(mParent.getDistanceTextColor(distance));
-    }
-
-
-    public void setOnRepeatClickedListener(OnRepeatClickedListener onRepeatClickedListener)
-    {
-        mOnRepeatClickedListener = onRepeatClickedListener;
-    }
-
-
     public interface OnRepeatClickedListener
     {
         void onRepeatClicked();
     }
 
 
-    public void setOnNewPointClickedListener(OnNewPointClickedListener onNewPointClickedListener)
-    {
-        mOnNewPointClickedListener = onNewPointClickedListener;
-    }
-
-
     public interface OnNewPointClickedListener
     {
         void onNewPointClicked();
+    }
+
+
+    @Override
+    public void onLocationChanged(Location location)
+    {
+    }
+
+
+    @Override
+    public void onBestLocationChanged(Location location)
+    {
+        float distance = CreateObjectFragment.getMinDistanceFromPrevPoints(
+                getActivity(), mObjectLayerName, location);
+
+        mDistanceView.setText(CreateObjectFragment.getDistanceText(getActivity(), distance));
+        mDistanceView.setTextColor(CreateObjectFragment.getDistanceTextColor(distance));
+    }
+
+
+    @Override
+    public void onGpsStatusChanged(int event)
+    {
     }
 }

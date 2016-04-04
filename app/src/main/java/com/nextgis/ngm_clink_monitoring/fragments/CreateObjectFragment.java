@@ -40,6 +40,7 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -57,7 +58,6 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.nextgis.maplib.api.GpsEventListener;
 import com.nextgis.maplib.datasource.GeoGeometry;
 import com.nextgis.maplib.datasource.GeoGeometryFactory;
 import com.nextgis.maplib.datasource.GeoMultiPoint;
@@ -105,15 +105,14 @@ import static com.nextgis.ngm_clink_monitoring.util.FoclConstants.*;
 
 public class CreateObjectFragment
         extends Fragment
-        implements GpsEventListener
+        implements DistanceExceededDialog.OnNewPointClickedListener,
+                   DistanceExceededDialog.OnRepeatClickedListener
 {
     protected static final int REQUEST_TAKE_PHOTO = 1;
 
     protected final static int CREATE_OBJECT_DONE   = 0;
     protected final static int CREATE_OBJECT_OK     = 1;
     protected final static int CREATE_OBJECT_FAILED = 2;
-
-    protected Context mContext;
 
     protected TextView mTypeWorkTitle;
     protected TextView mLineName;
@@ -167,8 +166,7 @@ public class CreateObjectFragment
 
     protected String mTempPhotoPath = null;
 
-    protected GpsEventSource            mGpsEventSource;
-    protected OnDistanceChangedListener mOnDistanceChangedListener;
+    protected GpsEventSource mGpsEventSource;
 
     protected int mObjectCount;
 
@@ -180,13 +178,37 @@ public class CreateObjectFragment
 
 
     public void setParams(
-            Context context,
             Long lineRemoteId,
             Integer foclStructLayerType)
     {
-        mContext = context;
         mLineRemoteId = lineRemoteId;
         mFoclStructLayerType = foclStructLayerType;
+    }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+
+        if (null != mLineRemoteId) {
+            outState.putLong(FoclConstants.FOCL_STRUCT_REMOTE_ID, mLineRemoteId);
+        }
+
+        outState.putInt(FoclConstants.FOCL_STRUCT_LAYER_TYPE, mFoclStructLayerType);
+
+        if (null != mTempPhotoPath) {
+            outState.putString(FoclConstants.TEMP_PHOTO_PATH, mTempPhotoPath);
+        }
+
+        if (null != mAccurateLocation) {
+            outState.putParcelable(FoclConstants.ACCURATE_LOCATION, mAccurateLocation);
+        }
+
+        if (null != mAccurateLocationTaker) {
+            outState.putBoolean(
+                    FoclConstants.IS_ACCURATE_TAKING, mAccurateLocationTaker.isTaking());
+        }
     }
 
 
@@ -195,6 +217,28 @@ public class CreateObjectFragment
     {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+
+        Boolean isAccurateTaking = null;
+
+        if (null != savedInstanceState) {
+
+            if (savedInstanceState.containsKey(FoclConstants.FOCL_STRUCT_REMOTE_ID)) {
+                mLineRemoteId = savedInstanceState.getLong(FoclConstants.FOCL_STRUCT_REMOTE_ID);
+            }
+
+            if (savedInstanceState.containsKey(FoclConstants.FOCL_STRUCT_LAYER_TYPE)) {
+                mFoclStructLayerType =
+                        savedInstanceState.getInt(FoclConstants.FOCL_STRUCT_LAYER_TYPE);
+            }
+
+            mTempPhotoPath = savedInstanceState.getString(FoclConstants.TEMP_PHOTO_PATH);
+            mAccurateLocation = savedInstanceState.getParcelable(FoclConstants.ACCURATE_LOCATION);
+
+            if (savedInstanceState.containsKey(FoclConstants.IS_ACCURATE_TAKING)) {
+                isAccurateTaking = savedInstanceState.getBoolean(FoclConstants.IS_ACCURATE_TAKING);
+            }
+        }
+
 
         GISApplication app = (GISApplication) getActivity().getApplication();
 
@@ -209,10 +253,6 @@ public class CreateObjectFragment
         mGpsEventSource = app.getGpsEventSource();
 
         if (FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT == mFoclStructLayerType) {
-            if (null != mGpsEventSource) {
-                mGpsEventSource.addListener(this);
-            }
-
             setObjectCount();
         }
 
@@ -241,7 +281,9 @@ public class CreateObjectFragment
                     }
                 });
 
-        mAccurateLocationTaker.startTaking();
+        if (null == isAccurateTaking || isAccurateTaking) {
+            mAccurateLocationTaker.startTaking();
+        }
     }
 
 
@@ -409,8 +451,8 @@ public class CreateObjectFragment
                                             })
                                     .show(
                                             getActivity().getSupportFragmentManager(),
-                                            FoclConstants.FRAGMENT_YES_NO_DIALOG +
-                                                    "CoordRefiningProcess");
+                                            FoclConstants.FRAGMENT_YES_NO_DIALOG
+                                                    + "CoordRefiningProcess");
                         } else {
                             showCameraActivity(app);
                         }
@@ -443,14 +485,8 @@ public class CreateObjectFragment
     public void onDestroy()
     {
         mAccurateLocationTaker.stopTaking();
-
-        if (FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT == mFoclStructLayerType) {
-            if (null != mGpsEventSource) {
-                mGpsEventSource.removeListener(this);
-            }
-        }
-
         deleteTempFiles();
+
         super.onDestroy();
     }
 
@@ -724,8 +760,9 @@ public class CreateObjectFragment
             mCoordinates.setText(latText + ",  " + longText);
 
             if (FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT == mFoclStructLayerType) {
-                mDistance = getMinDistanceFromPrevPoints(mAccurateLocation);
-                mDistanceFromPrevPoint.setText(getDistanceText(mDistance));
+                mDistance = getMinDistanceFromPrevPoints(
+                        getActivity(), mObjectLayerName, mAccurateLocation);
+                mDistanceFromPrevPoint.setText(getDistanceText(getActivity(), mDistance));
                 mDistanceFromPrevPoint.setTextColor(getDistanceTextColor(mDistance));
             }
 
@@ -919,7 +956,7 @@ public class CreateObjectFragment
         GISApplication app = (GISApplication) getActivity().getApplication();
 
         try {
-            mObjectPhotoFileAdapter = new ObjectPhotoFileAdapter(mContext, app.getDataDir());
+            mObjectPhotoFileAdapter = new ObjectPhotoFileAdapter(getActivity(), app.getDataDir());
 
             mObjectPhotoFileAdapter.setOnPhotoClickListener(
                     new ObjectPhotoFileAdapter.OnPhotoClickListener()
@@ -975,9 +1012,9 @@ public class CreateObjectFragment
                         app.getDataDir(),
                         FoclConstants.TEMP_PHOTO_FILE_PREFIX + timeStamp + ".jpg");
 
-                if (!tempFile.exists() && tempFile.createNewFile() ||
-                        tempFile.exists() && tempFile.delete() &&
-                                tempFile.createNewFile()) {
+                if (!tempFile.exists() && tempFile.createNewFile()
+                        || tempFile.exists() && tempFile.delete() &&
+                        tempFile.createNewFile()) {
 
                     mTempPhotoPath = tempFile.getAbsolutePath();
                     Log.d(TAG, "mTempPhotoPath: " + mTempPhotoPath);
@@ -1013,8 +1050,8 @@ public class CreateObjectFragment
                 if (tempPhotoFile.delete()) {
                     Log.d(
                             TAG,
-                            "tempPhotoFile deleted on Activity.RESULT_OK and bad coordinates, path: " +
-                                    tempPhotoFile.getAbsolutePath());
+                            "tempPhotoFile deleted on Activity.RESULT_OK and bad coordinates, path: "
+                                    + tempPhotoFile.getAbsolutePath());
 
                     YesNoDialog dialog = new YesNoDialog();
                     dialog.setKeepInstance(true)
@@ -1038,8 +1075,8 @@ public class CreateObjectFragment
                 } else {
                     Log.d(
                             TAG,
-                            "tempPhotoFile delete FAILED on Activity.RESULT_OK and bad coordinates, path: " +
-                                    tempPhotoFile.getAbsolutePath());
+                            "tempPhotoFile delete FAILED on Activity.RESULT_OK and bad coordinates, path: "
+                                    + tempPhotoFile.getAbsolutePath());
                 }
 
             } else {
@@ -1051,12 +1088,12 @@ public class CreateObjectFragment
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_CANCELED) {
             if (tempPhotoFile.delete()) {
                 Log.d(
-                        TAG, "tempPhotoFile deleted on Activity.RESULT_CANCELED, path: " +
-                                tempPhotoFile.getAbsolutePath());
+                        TAG, "tempPhotoFile deleted on Activity.RESULT_CANCELED, path: "
+                                + tempPhotoFile.getAbsolutePath());
             } else {
                 Log.d(
-                        TAG, "tempPhotoFile delete FAILED on Activity.RESULT_CANCELED, path: " +
-                                tempPhotoFile.getAbsolutePath());
+                        TAG, "tempPhotoFile delete FAILED on Activity.RESULT_CANCELED, path: "
+                                + tempPhotoFile.getAbsolutePath());
             }
         }
     }
@@ -1088,8 +1125,8 @@ public class CreateObjectFragment
             Log.d(TAG, "CreateObjectFragment, writePhotoAttach(), insert: " + attachUri.toString());
         } catch (Exception e) {
             Log.d(
-                    TAG, "CreateObjectFragment, writePhotoAttach(), Insert attach failed: " +
-                            e.getLocalizedMessage());
+                    TAG, "CreateObjectFragment, writePhotoAttach(), Insert attach failed: "
+                            + e.getLocalizedMessage());
             insertAttachError = "Insert attach failed: " + e.getLocalizedMessage();
         }
 
@@ -1139,15 +1176,15 @@ public class CreateObjectFragment
             } else {
                 Log.d(
                         TAG,
-                        "CreateObjectFragment, writePhotoAttach(), attachOutStream == null, attachUri" +
-                                attachUri.toString());
+                        "CreateObjectFragment, writePhotoAttach(), attachOutStream == null, attachUri"
+                                + attachUri.toString());
             }
 
             if (!tempAttachFile.delete()) {
                 Log.d(
                         TAG,
-                        "CreateObjectFragment, writePhotoAttach(), tempAttachFile.delete() failed, tempAttachFile:" +
-                                tempAttachFile.getAbsolutePath());
+                        "CreateObjectFragment, writePhotoAttach(), tempAttachFile.delete() failed, tempAttachFile:"
+                                + tempAttachFile.getAbsolutePath());
             }
         }
 
@@ -1159,20 +1196,21 @@ public class CreateObjectFragment
             if (!com.nextgis.maplib.util.FileUtil.move(tempPhotoFile, origPhotoFile)) {
                 Log.d(
                         TAG,
-                        "CreateObjectFragment, writePhotoAttach(), move original failed, tempPhotoFile:" +
+                        "CreateObjectFragment, writePhotoAttach(), move original failed, tempPhotoFile:"
+                                +
                                 tempPhotoFile.getAbsolutePath() + ", origPhotoFile: " +
                                 origPhotoFile.getAbsolutePath());
                 throw new IOException(
-                        "Save original photo failed, tempPhotoFile: " +
-                                tempPhotoFile.getAbsolutePath());
+                        "Save original photo failed, tempPhotoFile: "
+                                + tempPhotoFile.getAbsolutePath());
             }
 
         } else {
             if (!tempPhotoFile.delete()) {
                 Log.d(
                         TAG,
-                        "CreateObjectFragment, writePhotoAttach(), tempPhotoFile.delete() failed, tempPhotoFile:" +
-                                tempPhotoFile.getAbsolutePath());
+                        "CreateObjectFragment, writePhotoAttach(), tempPhotoFile.delete() failed, tempPhotoFile:"
+                                + tempPhotoFile.getAbsolutePath());
             }
         }
 
@@ -1519,8 +1557,8 @@ public class CreateObjectFragment
                 value = mSpecialLayingMethod.getValue();
                 values.put(FIELD_SPECIAL_LAYING_METHOD, value);
                 Log.d(
-                        TAG, "CreateObjectFragment, createObject(), FIELD_SPECIAL_LAYING_METHOD: " +
-                                value);
+                        TAG, "CreateObjectFragment, createObject(), FIELD_SPECIAL_LAYING_METHOD: "
+                                + value);
 
                 value = mMarkType.getValue();
                 values.put(FIELD_MARK_TYPE, value);
@@ -1565,17 +1603,20 @@ public class CreateObjectFragment
     }
 
 
-    protected Float getMinDistanceFromPrevPoints(Location location)
+    public static Float getMinDistanceFromPrevPoints(
+            FragmentActivity activity,
+            String objectLayerName,
+            Location location)
     {
         Float minDist = null;
 
         Uri uri = Uri.parse(
-                "content://" + FoclSettingsConstantsUI.AUTHORITY + "/" + mObjectLayerName);
+                "content://" + FoclSettingsConstantsUI.AUTHORITY + "/" + objectLayerName);
         String[] columns = new String[] {FIELD_GEOM};
 
         Cursor cursor;
         try {
-            cursor = getActivity().getContentResolver().query(uri, columns, null, null, null);
+            cursor = activity.getContentResolver().query(uri, columns, null, null, null);
         } catch (Exception e) {
             Log.d(TAG, e.getLocalizedMessage());
             cursor = null;
@@ -1631,18 +1672,20 @@ public class CreateObjectFragment
     }
 
 
-    public String getDistanceText(Float distance)
+    public static String getDistanceText(
+            Context context,
+            Float distance)
     {
         if (null == distance) {
             return "--";
         }
 
         DecimalFormat df = new DecimalFormat("0");
-        return df.format(distance) + " " + getString(R.string.distance_unit);
+        return df.format(distance) + " " + context.getString(R.string.distance_unit);
     }
 
 
-    public int getDistanceTextColor(Float distance)
+    public static int getDistanceTextColor(Float distance)
     {
         if (null == distance) {
             return 0xFF000000;
@@ -1655,59 +1698,7 @@ public class CreateObjectFragment
     protected void showDistanceExceededDialog()
     {
         DistanceExceededDialog distanceExceededDialog = new DistanceExceededDialog();
-        distanceExceededDialog.setParams(this, mDistance);
-
-        distanceExceededDialog.setOnRepeatClickedListener(
-                new DistanceExceededDialog.OnRepeatClickedListener()
-                {
-                    @Override
-                    public void onRepeatClicked()
-                    {
-                        startLocationTaking();
-                    }
-                });
-
-        distanceExceededDialog.setOnNewPointClickedListener(
-                new DistanceExceededDialog.OnNewPointClickedListener()
-                {
-                    @Override
-                    public void onNewPointClicked()
-                    {
-                        setOnOnDistanceChangedListener(null);
-
-                        YesNoDialog newPointDialog = new YesNoDialog();
-                        newPointDialog.setKeepInstance(true)
-                                .setIcon(R.drawable.ic_action_warning)
-                                .setTitle(R.string.confirmation)
-                                .setMessage(R.string.confirm_new_start_point_creating)
-                                .setPositiveText(R.string.yes)
-                                .setNegativeText(R.string.no)
-                                .setOnPositiveClickedListener(
-                                        new YesNoDialog.OnPositiveClickedListener()
-                                        {
-                                            @Override
-                                            public void onPositiveClicked()
-                                            {
-                                                mNewStartPoint = true;
-                                                createObject();
-                                            }
-                                        })
-                                .setOnNegativeClickedListener(
-                                        new YesNoDialog.OnNegativeClickedListener()
-                                        {
-                                            @Override
-                                            public void onNegativeClicked()
-                                            {
-                                                // cancel
-                                            }
-                                        });
-
-                        newPointDialog.show(
-                                getActivity().getSupportFragmentManager(),
-                                FoclConstants.FRAGMENT_YES_NO_DIALOG + "NewPointDialog");
-                    }
-                });
-
+        distanceExceededDialog.setParams(mObjectLayerName, mDistance);
         distanceExceededDialog.show(
                 getActivity().getSupportFragmentManager(),
                 FoclConstants.FRAGMENT_DISTANCE_EXCEEDED);
@@ -1715,34 +1706,44 @@ public class CreateObjectFragment
 
 
     @Override
-    public void onLocationChanged(Location location)
+    public void onNewPointClicked()
     {
+        YesNoDialog newPointDialog = new YesNoDialog();
+        newPointDialog.setKeepInstance(true)
+                .setIcon(R.drawable.ic_action_warning)
+                .setTitle(R.string.confirmation)
+                .setMessage(R.string.confirm_new_start_point_creating)
+                .setPositiveText(R.string.yes)
+                .setNegativeText(R.string.no)
+                .setOnPositiveClickedListener(
+                        new YesNoDialog.OnPositiveClickedListener()
+                        {
+                            @Override
+                            public void onPositiveClicked()
+                            {
+                                mNewStartPoint = true;
+                                createObject();
+                            }
+                        })
+                .setOnNegativeClickedListener(
+                        new YesNoDialog.OnNegativeClickedListener()
+                        {
+                            @Override
+                            public void onNegativeClicked()
+                            {
+                                // cancel
+                            }
+                        });
+
+        newPointDialog.show(
+                getActivity().getSupportFragmentManager(),
+                FoclConstants.FRAGMENT_YES_NO_DIALOG + "NewPointDialog");
     }
 
 
     @Override
-    public void onBestLocationChanged(Location location)
+    public void onRepeatClicked()
     {
-        if (null != mOnDistanceChangedListener) {
-            mOnDistanceChangedListener.onDistanceChanged(getMinDistanceFromPrevPoints(location));
-        }
-    }
-
-
-    @Override
-    public void onGpsStatusChanged(int event)
-    {
-    }
-
-
-    public void setOnOnDistanceChangedListener(OnDistanceChangedListener onOnDistanceChangedListener)
-    {
-        mOnDistanceChangedListener = onOnDistanceChangedListener;
-    }
-
-
-    public interface OnDistanceChangedListener
-    {
-        void onDistanceChanged(float distance);
+        startLocationTaking();
     }
 }

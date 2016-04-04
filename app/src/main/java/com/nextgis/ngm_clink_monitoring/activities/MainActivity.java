@@ -124,6 +124,15 @@ public class MainActivity
 
 
     @Override
+    protected void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+
+        outState.putInt(FoclConstants.VIEW_STATE, mViewState);
+    }
+
+
+    @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -235,12 +244,18 @@ public class MainActivity
 //            ft.commit();
 //        }
 
-        if (!app.hasAccount()) {
-            mViewState = VIEW_STATE_LOGIN;
-        } else if (null == app.getFoclProject()) {
-            mViewState = VIEW_STATE_1ST_SYNC;
+        if (null == savedInstanceState) {
+            if (!app.hasAccount()) {
+                mViewState = VIEW_STATE_LOGIN;
+            } else if (null == app.getFoclProject()) {
+                mViewState = VIEW_STATE_1ST_SYNC;
+            } else {
+                mViewState = VIEW_STATE_OBJECTS;
+            }
         } else {
-            mViewState = VIEW_STATE_OBJECTS;
+            if (savedInstanceState.containsKey(FoclConstants.VIEW_STATE)) {
+                mViewState = savedInstanceState.getInt(FoclConstants.VIEW_STATE);
+            }
         }
 
         setActivityView();
