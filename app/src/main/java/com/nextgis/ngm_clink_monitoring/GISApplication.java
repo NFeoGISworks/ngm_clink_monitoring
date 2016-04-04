@@ -703,7 +703,13 @@ public class GISApplication
     public String getReportsDirPath()
             throws IOException
     {
-        return getDataPath() + File.separator + FoclConstants.FOCL_REPORTS_DIR;
+        File defaultPath = getExternalFilesDir(FoclConstants.FOCL_REPORTS_DIR);
+
+        if (null == defaultPath) {
+            throw new IOException(getString(R.string.no_sdcard));
+        }
+
+        return defaultPath.getPath();
     }
 
 

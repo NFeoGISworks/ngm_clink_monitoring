@@ -98,7 +98,9 @@ public class FoclFileUtil
 
 
     /**
-     * Zips a file at a location and places the resulting zip file at the toLocation Example:
+     * Zips a file at a location and places the resulting zip file at the toLocation.
+     * <p/>
+     * Example:
      * zipFileAtPath("downloads/myfolder", "downloads/myFolder.zip");
      * <p/>
      * http://stackoverflow.com/a/14868161
