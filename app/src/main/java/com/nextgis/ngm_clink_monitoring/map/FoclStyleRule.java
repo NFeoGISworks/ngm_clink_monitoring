@@ -251,41 +251,42 @@ public class FoclStyleRule
 
                 switch (status) {
                     case FoclConstants.FIELD_VALUE_PROJECT:
+                    default:
                         ocStyle.setType(SimpleTextLineStyle.LineStyleDash);
                         break;
                     case FoclConstants.FIELD_VALUE_BUILT:
                         ocStyle.setType(SimpleTextLineStyle.LineStyleEdgingSolid);
                         break;
+//                    default:
+//                        notDefined = true;
+//                        break;
+                }
+
+//                if (!notDefined) {
+                switch (type) {
+                    case FoclConstants.FIELD_VALUE_GROUND:
+                        ocStyle.setColor(0xFF9C7900);
+                        break;
+                    case FoclConstants.FIELD_VALUE_OVERPASS:
+                        ocStyle.setColor(0xFF63DFD6);
+                        break;
+                    case FoclConstants.FIELD_VALUE_TRANSMISSION_TOWERS:
+                        ocStyle.setColor(Color.BLACK);
+                        break;
+                    case FoclConstants.FIELD_VALUE_CANALIZATION:
+                        ocStyle.setColor(0xFFFF8A00);
+                        break;
+                    case FoclConstants.FIELD_VALUE_OTHER:
+                        ocStyle.setColor(Color.MAGENTA);
+                        break;
+                    case FoclConstants.FIELD_VALUE_BUILDING:
+                        ocStyle.setColor(Color.BLUE);
+                        break;
                     default:
                         notDefined = true;
                         break;
                 }
-
-                if (!notDefined) {
-                    switch (type) {
-                        case FoclConstants.FIELD_VALUE_GROUND:
-                            ocStyle.setColor(0xFF9C7900);
-                            break;
-                        case FoclConstants.FIELD_VALUE_OVERPASS:
-                            ocStyle.setColor(0xFF63DFD6);
-                            break;
-                        case FoclConstants.FIELD_VALUE_TRANSMISSION_TOWERS:
-                            ocStyle.setColor(Color.BLACK);
-                            break;
-                        case FoclConstants.FIELD_VALUE_CANALIZATION:
-                            ocStyle.setColor(0xFFFF8A00);
-                            break;
-                        case FoclConstants.FIELD_VALUE_OTHER:
-                            ocStyle.setColor(Color.MAGENTA);
-                            break;
-                        case FoclConstants.FIELD_VALUE_BUILDING:
-                            ocStyle.setColor(Color.BLUE);
-                            break;
-                        default:
-                            notDefined = true;
-                            break;
-                    }
-                }
+//                }
 
                 if (!notDefined) {
                     ocStyle.setOutColor(Color.GREEN);
