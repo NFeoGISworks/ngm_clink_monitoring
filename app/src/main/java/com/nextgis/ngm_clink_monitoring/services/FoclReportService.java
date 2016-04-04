@@ -23,6 +23,7 @@
 package com.nextgis.ngm_clink_monitoring.services;
 
 import android.accounts.Account;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -109,17 +110,20 @@ public class FoclReportService
     {
         if (!mIsRunning) {
             mIsRunning = true;
-            mSendReportFromMain = intent.getBooleanExtra(FOCL_SEND_REPORT_FROM_MAIN, false);
-            mSendWorkData = intent.getBooleanExtra(FOCL_SEND_WORK_DATA, false);
+
+            if (null != intent) {
+                mSendReportFromMain = intent.getBooleanExtra(FOCL_SEND_REPORT_FROM_MAIN, false);
+                mSendWorkData = intent.getBooleanExtra(FOCL_SEND_WORK_DATA, false);
+            }
 
             Log.d(TAG, "Report service started");
             if (mSendWorkData) {
-                sendNotification(this, NOTIFICATION_START, null);
+                startForeground(NOTIFY_ID, getNotification(this, NOTIFICATION_START, null));
             }
             runTask();
         }
 
-        return super.onStartCommand(intent, flags, startId);
+        return START_STICKY;
     }
 
 
@@ -477,16 +481,15 @@ public class FoclReportService
     }
 
 
-    protected static void sendNotification(
+    protected static Notification getNotification(
             Context context,
             int notificationType,
             String errorMsg)
     {
-        Intent notificationIntent = new Intent(context, MainActivity.class);
-        notificationIntent.setFlags(
-                Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent contentIntent = PendingIntent.getActivity(
-                context, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
 
@@ -532,8 +535,17 @@ public class FoclReportService
                 break;
         }
 
+        return builder.build();
+    }
+
+
+    protected static void sendNotification(
+            Context context,
+            int notificationType,
+            String errorMsg)
+    {
         NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(NOTIFY_ID, builder.build());
+        notificationManager.notify(NOTIFY_ID, getNotification(context, notificationType, errorMsg));
     }
 }
