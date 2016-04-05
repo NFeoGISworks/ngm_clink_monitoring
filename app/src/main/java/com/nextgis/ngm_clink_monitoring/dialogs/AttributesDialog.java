@@ -33,12 +33,17 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.nextgis.maplib.datasource.Field;
+import com.nextgis.maplib.util.Constants;
+import com.nextgis.maplib.util.GeoConstants;
 import com.nextgis.ngm_clink_monitoring.R;
 import com.nextgis.ngm_clink_monitoring.map.FoclDictItem;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 import com.nextgis.ngm_clink_monitoring.map.FoclStruct;
 import com.nextgis.ngm_clink_monitoring.map.FoclVectorLayer;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 import static com.nextgis.maplib.util.Constants.FIELD_GEOM;
@@ -123,53 +128,109 @@ public class AttributesDialog
         if (null != attributes) {
             try {
                 if (attributes.moveToFirst()) {
-                    for (int i = 0; i < attributes.getColumnCount(); i++) {
-                        String column = attributes.getColumnName(i);
+                    for (int i = 0; i < attributes.getColumnCount(); ++i) {
 
-                        if (column.equals(FIELD_GEOM)) {
+                        if (attributes.isNull(i)) {
                             continue;
                         }
 
-                        String alias = null;
+                        String fieldName = attributes.getColumnName(i);
+                        if (fieldName.equals(FIELD_GEOM)) {
+                            continue;
+                        }
+
+                        String fieldAlias = null;
+                        int fieldType = Constants.NOT_FOUND;
                         for (Field field : fields) {
-                            if (field.getName().equals(column)) {
-                                alias = field.getAlias();
+                            if (field.getName().equals(fieldName)) {
+                                fieldAlias = field.getAlias();
+                                fieldType = field.getType();
                                 break;
                             }
                         }
 
-                        String dataText = null;
-
-                        try {
-                            dataText = attributes.getString(i);
-                        } catch (Exception ignored) {
-                            // do nothing
+                        if (TextUtils.isEmpty(fieldAlias)) {
+                            fieldAlias = fieldName;
                         }
 
-                        if (TextUtils.isEmpty(dataText)) {
+
+                        String valueText = null;
+                        Long timestamp = null;
+
+                        try {
+                            switch (fieldType) {
+                                case GeoConstants.FTInteger:
+                                case GeoConstants.FTReal:
+                                case GeoConstants.FTString:
+                                    valueText = attributes.getString(i);
+                                    break;
+
+                                case GeoConstants.FTDateTime:
+                                case GeoConstants.FTDate:
+                                case GeoConstants.FTTime:
+                                    timestamp = attributes.getLong(i);
+                                    break;
+
+                                default:
+                                    continue;
+                            }
+                        } catch (Exception ignored) {
+                            continue;
+                        }
+
+                        if (TextUtils.isEmpty(valueText) && null == timestamp) {
                             continue;
                         }
 
 
-                        String dataAlias = null;
-                        FoclDictItem dictItem = project.getFoclDitcs().get(column);
+                        SimpleDateFormat sdf = null;
 
-                        if (null != dictItem) {
-                            dataAlias = dictItem.get(dataText);
+                        switch (fieldType) {
+                            case GeoConstants.FTString:
+                                String valueAlias = null;
+                                FoclDictItem dictItem = project.getFoclDitcs().get(fieldName);
+
+                                if (null != dictItem) {
+                                    valueAlias = dictItem.get(valueText);
+                                }
+                                if (!TextUtils.isEmpty(valueAlias)) {
+                                    valueText = valueAlias;
+                                }
+                                break;
+
+                            case GeoConstants.FTDateTime:
+                                sdf = (SimpleDateFormat) DateFormat.getDateTimeInstance();
+                                break;
+
+                            case GeoConstants.FTDate:
+                                sdf = (SimpleDateFormat) DateFormat.getDateInstance();
+                                break;
+
+                            case GeoConstants.FTTime:
+                                sdf = (SimpleDateFormat) DateFormat.getTimeInstance();
+                                break;
                         }
-                        if (TextUtils.isEmpty(dataAlias)) {
-                            dataAlias = dataText;
+
+                        switch (fieldType) {
+                            case GeoConstants.FTDateTime:
+                            case GeoConstants.FTDate:
+                            case GeoConstants.FTTime:
+                                Calendar calendar = Calendar.getInstance();
+                                calendar.setTimeInMillis(timestamp);
+                                valueText = sdf.format(calendar.getTime());
+                                break;
                         }
+
 
                         LayoutInflater inflater = LayoutInflater.from(getActivity());
                         LinearLayout row =
                                 (LinearLayout) inflater.inflate(R.layout.item_attribute_row, null);
 
                         TextView columnName = (TextView) row.findViewById(R.id.column_name);
-                        columnName.setText(alias);
+                        columnName.setText(fieldAlias);
 
                         TextView columnData = (TextView) row.findViewById(R.id.column_data);
-                        columnData.setText(dataAlias);
+                        columnData.setText(valueText);
 
                         mAttributesLayout.addView(row);
                     }
