@@ -421,14 +421,6 @@ public class FoclProject
             foclVectorLayer.setSyncType(Constants.SYNC_ALL);
             foclStruct.addLayer(foclVectorLayer);
 
-            if (FoclConstants.LAYERTYPE_FOCL_OPTICAL_CABLE == foclLayerType) {
-                foclStruct.moveLayer(0, foclVectorLayer);
-            }
-
-            if (FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT == foclLayerType) {
-                foclStruct.moveLayer(1, foclVectorLayer);
-            }
-
             String error = foclVectorLayer.download();
 
             if (null != error && error.length() > 0) {
@@ -488,6 +480,19 @@ public class FoclProject
 
             int currentLayer = 0;
 
+            Integer[] layersOrders = new Integer[] {
+                    FoclConstants.LAYERTYPE_FOCL_OPTICAL_CABLE,
+                    FoclConstants.LAYERTYPE_FOCL_SPECIAL_TRANSITION,
+                    FoclConstants.LAYERTYPE_FOCL_FOSC,
+                    FoclConstants.LAYERTYPE_FOCL_OPTICAL_CROSS,
+                    FoclConstants.LAYERTYPE_FOCL_ACCESS_POINT,
+                    FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT,
+                    FoclConstants.LAYERTYPE_FOCL_REAL_FOSC,
+                    FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CROSS,
+                    FoclConstants.LAYERTYPE_FOCL_REAL_ACCESS_POINT,
+                    FoclConstants.LAYERTYPE_FOCL_REAL_SPECIAL_TRANSITION_POINT
+            };
+
             for (int i = 0; i < structCount; ++i) {
                 if (Thread.currentThread().isInterrupted()) {
                     break;
@@ -508,6 +513,16 @@ public class FoclProject
                     Intent currentLayerIntent = new Intent(SYNC_CURRENT_LAYER);
                     currentLayerIntent.putExtra(SYNC_CURRENT_LAYER, currentLayer++);
                     getContext().sendBroadcast(currentLayerIntent);
+                }
+
+                List<ILayer> layers = new ArrayList<>(foclStruct.getLayers().size());
+
+                for (int k = 0; k < layersOrders.length; ++k) {
+                    layers.add(foclStruct.getLayerByFoclType(layersOrders[k]));
+                }
+
+                for (int k = layers.size() - 1; k >= 0 ; --k) {
+                    foclStruct.moveLayer(0, layers.get(k));
                 }
             }
 
