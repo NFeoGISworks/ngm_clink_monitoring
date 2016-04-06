@@ -64,7 +64,7 @@ public class FoclStyleRule
 
             case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CABLE:
                 SimpleTextLineStyle ocStyle = new SimpleTextLineStyle();
-                ocStyle.setType(SimpleTextLineStyle.LineStyleSolid);
+                ocStyle.setType(SimpleTextLineStyle.LineStyleDash);
                 ocStyle.setColor(Color.BLACK);
                 ocStyle.setOutColor(Color.GREEN);
                 ocStyle.setLineText("?");
@@ -74,7 +74,7 @@ public class FoclStyleRule
             case FoclConstants.LAYERTYPE_FOCL_FOSC:
                 SimpleMarkerStyle foscStyle = new SimpleMarkerStyle();
                 foscStyle.setType(SimpleMarkerStyle.MarkerStyleCircle);
-                foscStyle.setColor(Color.WHITE);
+                foscStyle.setColor(0xFFBCBCBC);
                 foscStyle.setOutlineColor(Color.BLACK);
                 foscStyle.setSize(9);
                 foscStyle.setWidth(3);
@@ -111,16 +111,16 @@ public class FoclStyleRule
             case FoclConstants.LAYERTYPE_FOCL_REAL_OPTICAL_CABLE_POINT:
                 SimpleMarkerStyle realOcPointStyle = new SimpleMarkerStyle();
                 realOcPointStyle.setType(SimpleMarkerStyle.MarkerStyleCircle);
-                realOcPointStyle.setColor(Color.BLUE);
-                realOcPointStyle.setOutlineColor(Color.GREEN);
-                realOcPointStyle.setSize(9);
+                realOcPointStyle.setColor(Color.BLACK);
+                realOcPointStyle.setOutlineColor(Color.BLACK);
+                realOcPointStyle.setSize(6);
                 realOcPointStyle.setWidth(3);
                 return realOcPointStyle;
 
             case FoclConstants.LAYERTYPE_FOCL_REAL_FOSC:
                 SimpleMarkerStyle realFoscStyle = new SimpleMarkerStyle();
                 realFoscStyle.setType(SimpleMarkerStyle.MarkerStyleCircle);
-                realFoscStyle.setColor(Color.GREEN);
+                realFoscStyle.setColor(Color.WHITE);
                 realFoscStyle.setOutlineColor(Color.BLACK);
                 realFoscStyle.setSize(9);
                 realFoscStyle.setWidth(3);
@@ -147,8 +147,8 @@ public class FoclStyleRule
             case FoclConstants.LAYERTYPE_FOCL_REAL_SPECIAL_TRANSITION_POINT:
                 SimpleMarkerStyle realStPointStyle = new SimpleMarkerStyle();
                 realStPointStyle.setType(SimpleMarkerStyle.MarkerStyleCircle);
-                realStPointStyle.setColor(Color.RED);
-                realStPointStyle.setOutlineColor(Color.GREEN);
+                realStPointStyle.setColor(0xFFDF56DF);
+                realStPointStyle.setOutlineColor(Color.BLACK);
                 realStPointStyle.setSize(9);
                 realStPointStyle.setWidth(3);
                 return realStPointStyle;
@@ -170,18 +170,13 @@ public class FoclStyleRule
                 "content://" + FoclSettingsConstantsUI.AUTHORITY + "/" + mLayerPathName + "/" +
                         objectId);
         String type = null;
-        String status = null;
 
         switch (mFoclLayerType) {
-
             case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CABLE:
-                select = new String[] {
-                        FIELD_ID, FoclConstants.FIELD_LAYING_METHOD/*,
-                        FoclConstants.FIELD_STATUS_BUILT*/};
+                select = new String[] {FIELD_ID, FoclConstants.FIELD_LAYING_METHOD};
 
                 try {
                     cursor = mContext.getContentResolver().query(uri, select, null, null, null);
-
                 } catch (Exception e) {
                     //Log.d(TAG, e.getLocalizedMessage());
                     cursor = null;
@@ -192,8 +187,6 @@ public class FoclStyleRule
                         if (cursor.moveToFirst()) {
                             type = cursor.getString(
                                     cursor.getColumnIndex(FoclConstants.FIELD_LAYING_METHOD));
-//                            status = cursor.getString(
-//                                    cursor.getColumnIndex(FoclConstants.FIELD_STATUS_BUILT));
                         }
                     } catch (Exception e) {
                         //Log.d(TAG, e.getLocalizedMessage());
@@ -202,35 +195,6 @@ public class FoclStyleRule
                     }
                 }
                 break;
-
-            case FoclConstants.LAYERTYPE_FOCL_FOSC:
-            case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CROSS:
-            case FoclConstants.LAYERTYPE_FOCL_ACCESS_POINT:
-            case FoclConstants.LAYERTYPE_FOCL_SPECIAL_TRANSITION:
-//                select = new String[] {FIELD_ID/*, FoclConstants.FIELD_STATUS_BUILT*/};
-//
-//                try {
-//                    cursor = mVectorLayer.query(uri, select, null, null, null, null);
-//
-//                } catch (Exception e) {
-//                    //Log.d(TAG, e.getLocalizedMessage());
-//                    cursor = null;
-//                }
-//
-//                if (null != cursor) {
-//                    try {
-//                        if (cursor.moveToFirst()) {
-////                            status = cursor.getString(
-////                                    cursor.getColumnIndex(FoclConstants.FIELD_STATUS_BUILT));
-//                        }
-//                        cursor.close();
-//                    } catch (Exception e) {
-//                        //Log.d(TAG, e.getLocalizedMessage());
-//                    } finally {
-//                        cursor.close();
-//                    }
-//                }
-                break;
         }
 
 
@@ -238,31 +202,10 @@ public class FoclStyleRule
             type = "";
         }
 
-        if (TextUtils.isEmpty(status)) {
-            status = "";
-        }
-
-
         switch (mFoclLayerType) {
             case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CABLE:
                 SimpleTextLineStyle ocStyle = (SimpleTextLineStyle) style;
 
-                boolean notDefined = false;
-
-                switch (status) {
-                    case FoclConstants.FIELD_VALUE_PROJECT:
-                    default:
-                        ocStyle.setType(SimpleTextLineStyle.LineStyleDash);
-                        break;
-                    case FoclConstants.FIELD_VALUE_BUILT:
-                        ocStyle.setType(SimpleTextLineStyle.LineStyleEdgingSolid);
-                        break;
-//                    default:
-//                        notDefined = true;
-//                        break;
-                }
-
-//                if (!notDefined) {
                 switch (type) {
                     case FoclConstants.FIELD_VALUE_GROUND:
                         ocStyle.setColor(0xFF9C7900);
@@ -283,81 +226,11 @@ public class FoclStyleRule
                         ocStyle.setColor(Color.BLUE);
                         break;
                     default:
-                        notDefined = true;
+                        ocStyle.setColor(Color.BLACK);
+                        ocStyle.setOutColor(Color.RED);
+                        ocStyle.setType(SimpleTextLineStyle.LineStyleTextSolid);
                         break;
                 }
-//                }
-
-                if (!notDefined) {
-                    ocStyle.setOutColor(Color.GREEN);
-
-                } else {
-                    ocStyle.setColor(Color.BLACK);
-                    ocStyle.setOutColor(Color.RED);
-                    ocStyle.setType(SimpleTextLineStyle.LineStyleTextSolid);
-                }
-
-                break;
-
-            case FoclConstants.LAYERTYPE_FOCL_FOSC:
-                SimpleMarkerStyle foscStyle = (SimpleMarkerStyle) style;
-
-                switch (status) {
-                    case FoclConstants.FIELD_VALUE_PROJECT:
-                    default:
-                        foscStyle.setColor(Color.WHITE);
-                        break;
-                    case FoclConstants.FIELD_VALUE_BUILT:
-                        foscStyle.setColor(Color.GREEN);
-                        break;
-                }
-
-                break;
-
-            case FoclConstants.LAYERTYPE_FOCL_OPTICAL_CROSS:
-                SimpleMarkerStyle crossStyle = (SimpleMarkerStyle) style;
-
-                switch (status) {
-                    case FoclConstants.FIELD_VALUE_PROJECT:
-                    default:
-                        crossStyle.setColor(Color.WHITE);
-                        break;
-                    case FoclConstants.FIELD_VALUE_BUILT:
-                        crossStyle.setColor(Color.GREEN);
-                        break;
-                }
-
-                break;
-
-            case FoclConstants.LAYERTYPE_FOCL_ACCESS_POINT:
-                SimpleMarkerStyle apStyle = (SimpleMarkerStyle) style;
-
-                switch (status) {
-                    case FoclConstants.FIELD_VALUE_PROJECT:
-                    default:
-                        apStyle.setOutlineColor(Color.TRANSPARENT);
-                        break;
-                    case FoclConstants.FIELD_VALUE_BUILT:
-                        apStyle.setOutlineColor(Color.GREEN);
-                        break;
-                }
-
-                break;
-
-            case FoclConstants.LAYERTYPE_FOCL_SPECIAL_TRANSITION:
-                SimpleTextMarkerStyle epStyle = (SimpleTextMarkerStyle) style;
-
-                switch (type) {
-                    default:
-                        epStyle.setOutlineColor(Color.BLUE);
-                        epStyle.setMarkerText("?");
-                        break;
-                }
-
-                break;
-
-            default:
-//                Log.d(TAG, "Unknown value of mFoclLayerType: " + mFoclLayerType);
                 break;
         }
     }
