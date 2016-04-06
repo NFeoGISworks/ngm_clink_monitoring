@@ -351,7 +351,7 @@ public class ObjectStatusFragment
                                 cameraIntent.resolveActivity(getActivity().getPackageManager())) {
 
                             try {
-                                File tempFile = new File(app.getDataDir(), "temp-photo.jpg");
+                                File tempFile = new File(app.getTempPhotoDir(), "temp-photo.jpg");
 
                                 if (!tempFile.exists() && tempFile.createNewFile() ||
                                         tempFile.exists() && tempFile.delete() &&

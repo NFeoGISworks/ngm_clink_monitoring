@@ -87,7 +87,8 @@ import static com.nextgis.ngm_clink_monitoring.util.FoclConstants.*;
 
 public class GISApplication
         extends Application
-        implements IGISApplication, NGWLoginFragment.OnAddAccountListener,
+        implements IGISApplication,
+                   NGWLoginFragment.OnAddAccountListener,
                    NGWSettingsActivity.OnDeleteAccountListener
 {
     protected MapDrawable    mMap;
@@ -165,11 +166,15 @@ public class GISApplication
 
         if (null != getMap()) {
 
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-            if (sharedPreferences.getBoolean(FoclSettingsConstantsUI.KEY_PREF_APP_FIRST_RUN, true)) {
+            SharedPreferences sharedPreferences =
+                    PreferenceManager.getDefaultSharedPreferences(this);
+            if (sharedPreferences.getBoolean(
+                    FoclSettingsConstantsUI.KEY_PREF_APP_FIRST_RUN, true)) {
                 onFirstRun();
                 sharedPreferences.edit()
-                        .putInt(SettingsConstants.KEY_PREF_LOCATION_SOURCE, GpsEventSource.GPS_PROVIDER)
+                        .putInt(
+                                SettingsConstants.KEY_PREF_LOCATION_SOURCE,
+                                GpsEventSource.GPS_PROVIDER)
                         .putString(SettingsConstants.KEY_PREF_LOCATION_MIN_TIME, "0")
                         .putString(SettingsConstants.KEY_PREF_LOCATION_MIN_DISTANCE, "0")
                         .commit();
@@ -669,13 +674,6 @@ public class GISApplication
     }
 
 
-    public File getDataDir()
-            throws IOException
-    {
-        return FoclFileUtil.getDirWithCreate(getDataPath());
-    }
-
-
     public String getPhotoPath()
             throws IOException
     {
@@ -683,10 +681,14 @@ public class GISApplication
     }
 
 
-    public File getPhotoDir()
+    public File getTempPhotoDir()
             throws IOException
     {
-        return FoclFileUtil.getDirWithCreate(getPhotoPath());
+        File photoPath = getExternalFilesDir(FoclConstants.FOCL_TEMP_PHOTO_DIR);
+        if (null == photoPath) {
+            throw new IOException(getString(R.string.no_sdcard));
+        }
+        return FoclFileUtil.getDirWithCreate(photoPath);
     }
 
 
@@ -703,13 +705,13 @@ public class GISApplication
     public String getReportsDirPath()
             throws IOException
     {
-        File defaultPath = getExternalFilesDir(FoclConstants.FOCL_REPORTS_DIR);
+        File reportsPath = getExternalFilesDir(FoclConstants.FOCL_REPORTS_DIR);
 
-        if (null == defaultPath) {
+        if (null == reportsPath) {
             throw new IOException(getString(R.string.no_sdcard));
         }
 
-        return defaultPath.getPath();
+        return reportsPath.getPath();
     }
 
 

@@ -24,6 +24,8 @@ package com.nextgis.ngm_clink_monitoring.util;
 
 public interface FoclConstants
 {
+    String FOCL_FILE_PROVIDER = "com.nextgis.ngm_clink_monitoring.fileprovider";
+
     String FRAGMENT_SYNC_LOGIN             = "NGWLogin";
     String FRAGMENT_PERFORM_1ST_SYNC       = "Perform1stSync";
     String FRAGMENT_STATUS_BAR             = "StatusBar";
@@ -61,6 +63,7 @@ public interface FoclConstants
     String JSON_WORK_DATA_REPORT_TYPE_VALUE  = "work_data";
 
     String FOCL_REPORTS_DIR                 = "reports";
+    String FOCL_TEMP_PHOTO_DIR              = "temp_photo";
     String FOCL_MAIN_LOGCAT_FILE_NAME       = "main_logcat";
     String FOCL_MAIN_ERROR_LOGCAT_FILE_NAME = "main_error_logcat";
     String FOCL_SYNC_LOGCAT_FILE_NAME       = "sync_logcat";

@@ -60,10 +60,16 @@ public class FoclFileUtil
             throws IOException
     {
         File dir = new File(path);
+        return getDirWithCreate(dir);
+    }
 
+
+    public static File getDirWithCreate(File dir)
+            throws IOException
+    {
         if (!dir.exists()) {
             if (!dir.mkdirs()) {
-                throw new IOException("Can not create directory " + path);
+                throw new IOException("Can not create directory " + dir.getPath());
             }
         }
 

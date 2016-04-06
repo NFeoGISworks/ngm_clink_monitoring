@@ -28,6 +28,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -78,6 +80,7 @@ import com.nextgis.ngm_clink_monitoring.map.FoclStruct;
 import com.nextgis.ngm_clink_monitoring.map.FoclVectorLayer;
 import com.nextgis.ngm_clink_monitoring.util.BitmapUtil;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
+import com.nextgis.ngm_clink_monitoring.util.FoclFileProvider;
 import com.nextgis.ngm_clink_monitoring.util.FoclFileUtil;
 import com.nextgis.ngm_clink_monitoring.util.FoclLocationUtil;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
@@ -92,6 +95,7 @@ import java.io.OutputStream;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
@@ -956,7 +960,8 @@ public class CreateObjectFragment
         GISApplication app = (GISApplication) getActivity().getApplication();
 
         try {
-            mObjectPhotoFileAdapter = new ObjectPhotoFileAdapter(getActivity(), app.getDataDir());
+            mObjectPhotoFileAdapter =
+                    new ObjectPhotoFileAdapter(getActivity(), app.getTempPhotoDir());
 
             mObjectPhotoFileAdapter.setOnPhotoClickListener(
                     new ObjectPhotoFileAdapter.OnPhotoClickListener()
@@ -1000,16 +1005,17 @@ public class CreateObjectFragment
 
     protected void showCameraActivity(GISApplication app)
     {
-        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        Context context = getActivity();
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         // Ensure that there's a camera activity to handle the intent
-        if (null != cameraIntent.resolveActivity(getActivity().getPackageManager())) {
+        if (null != intent.resolveActivity(context.getPackageManager())) {
 
             try {
                 String timeStamp =
                         new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
                 File tempFile = new File(
-                        app.getDataDir(),
+                        app.getTempPhotoDir(),
                         FoclConstants.TEMP_PHOTO_FILE_PREFIX + timeStamp + ".jpg");
 
                 if (!tempFile.exists() && tempFile.createNewFile()
@@ -1019,16 +1025,47 @@ public class CreateObjectFragment
                     mTempPhotoPath = tempFile.getAbsolutePath();
                     Log.d(TAG, "mTempPhotoPath: " + mTempPhotoPath);
 
-                    cameraIntent.putExtra(
-                            MediaStore.EXTRA_OUTPUT, Uri.fromFile(tempFile));
-                    startActivityForResult(cameraIntent, REQUEST_TAKE_PHOTO);
+                    // http://stackoverflow.com/a/32950381
+                    Uri uri = FoclFileProvider.getUriForFile(
+                            context, FoclConstants.FOCL_FILE_PROVIDER, tempFile);
+
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+                    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
+                    // grantUriPermission need also for KITKAT
+                    List<ResolveInfo> resInfoList =
+                            context.getPackageManager().queryIntentActivities(
+                                    intent, PackageManager.MATCH_DEFAULT_ONLY);
+
+                    for (ResolveInfo resolveInfo : resInfoList) {
+                        String packageName = resolveInfo.activityInfo.packageName;
+                        context.grantUriPermission(
+                                packageName, uri, Intent.FLAG_GRANT_READ_URI_PERMISSION
+                                        | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                    }
+
+                    startActivityForResult(intent, REQUEST_TAKE_PHOTO);
+
+                } else {
+                    throw new IOException("Can't create temp photo file: " + tempFile.getPath());
                 }
 
             } catch (IOException e) {
-                Toast.makeText(
-                        getActivity(), e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(context, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
             }
         }
+    }
+
+
+    public void revokeTempFilePermission()
+    {
+        File file = new File(mTempPhotoPath);
+        Context context = getActivity();
+        Uri uri = FoclFileProvider.getUriForFile(context, FoclConstants.FOCL_FILE_PROVIDER, file);
+        context.revokeUriPermission(
+                uri,
+                Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
     }
 
 
@@ -1038,6 +1075,7 @@ public class CreateObjectFragment
             int resultCode,
             Intent data)
     {
+        revokeTempFilePermission();
         File tempPhotoFile = new File(mTempPhotoPath);
 
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
@@ -1225,9 +1263,9 @@ public class CreateObjectFragment
         GISApplication app = (GISApplication) getActivity().getApplication();
 
         try {
-            File dataDir = app.getDataDir();
+            File tempPhotoDir = app.getTempPhotoDir();
 
-            for (File tempPhotoFile : dataDir.listFiles()) {
+            for (File tempPhotoFile : tempPhotoDir.listFiles()) {
                 if (tempPhotoFile.getName().matches(
                         FoclConstants.TEMP_PHOTO_FILE_PREFIX + ".*\\.jpg")) {
 
@@ -1248,9 +1286,9 @@ public class CreateObjectFragment
         GISApplication app = (GISApplication) getActivity().getApplication();
 
         try {
-            File dataDir = app.getDataDir();
+            File tempPhotoDir = app.getTempPhotoDir();
 
-            for (File tempPhotoFile : dataDir.listFiles()) {
+            for (File tempPhotoFile : tempPhotoDir.listFiles()) {
                 if (tempPhotoFile.getName().matches(
                         FoclConstants.TEMP_PHOTO_FILE_PREFIX + ".*\\.jpg")) {
 

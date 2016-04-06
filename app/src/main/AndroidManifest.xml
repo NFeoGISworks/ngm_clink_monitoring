@@ -148,6 +148,16 @@
             android:syncable="true"
             />
 
+        <provider
+            android:name="com.nextgis.ngm_clink_monitoring.util.FoclFileProvider"
+            android:authorities="com.nextgis.ngm_clink_monitoring.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="com.nextgis.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
     </application>
 
 </manifest>
