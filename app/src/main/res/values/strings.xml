@@ -242,5 +242,6 @@
 
     <string name="no_sdcard">No SD-Card</string>
     <string name="no_sdcard_exit_app">No SD-Card.\nApplication will be terminated.</string>
+    <string name="can_not_create_photo_dir">Unable to create a folder for recording of the photos.\nIn settings specify a different folder for recording of the photos.</string>
 
 </resources>

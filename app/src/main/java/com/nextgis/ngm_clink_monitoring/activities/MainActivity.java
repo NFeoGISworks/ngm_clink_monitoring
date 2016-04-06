@@ -76,6 +76,7 @@ import com.nextgis.ngm_clink_monitoring.fragments.Perform1stSyncFragment;
 import com.nextgis.ngm_clink_monitoring.fragments.SyncLoginFragment;
 import com.nextgis.ngm_clink_monitoring.map.FoclProject;
 import com.nextgis.ngm_clink_monitoring.util.FoclConstants;
+import com.nextgis.ngm_clink_monitoring.util.FoclFileUtil;
 import com.nextgis.ngm_clink_monitoring.util.FoclLocationUtil;
 import com.nextgis.ngm_clink_monitoring.util.FoclSettingsConstantsUI;
 import com.nextgis.ngm_clink_monitoring.util.SntpClient;
@@ -93,8 +94,10 @@ import static com.nextgis.maplib.util.GeoConstants.CRS_WGS84;
 
 public class MainActivity
         extends AppCompatActivity
-        implements GISApplication.OnReloadMapListener, GISApplication.OnAccountAddedListener,
-                   GISApplication.OnAccountDeletedListener, GpsEventListener
+        implements GISApplication.OnReloadMapListener,
+                   GISApplication.OnAccountAddedListener,
+                   GISApplication.OnAccountDeletedListener,
+                   GpsEventListener
 
 {
     protected static final int VIEW_STATE_UNKNOWN  = 0;
@@ -168,6 +171,17 @@ public class MainActivity
         }
 
         final GISApplication app = (GISApplication) getApplication();
+
+        // check recording capabilities to photo dir
+        if (app.isOriginalPhotoSaving()) {
+            try {
+                FoclFileUtil.getDirWithCreate(app.getPhotoPath());
+            } catch (IOException e) {
+                Toast.makeText(
+                        this, getString(R.string.can_not_create_photo_dir), Toast.LENGTH_LONG)
+                        .show();
+            }
+        }
 
         mGpsEventSource = app.getGpsEventSource();
         if (null != mGpsEventSource) {
@@ -598,8 +612,8 @@ public class MainActivity
         mSyncStatusObserver.onStatusChanged(0);
 
         // Watch for synchronization status changes
-        final int mask = ContentResolver.SYNC_OBSERVER_TYPE_PENDING |
-                ContentResolver.SYNC_OBSERVER_TYPE_ACTIVE;
+        final int mask = ContentResolver.SYNC_OBSERVER_TYPE_PENDING
+                | ContentResolver.SYNC_OBSERVER_TYPE_ACTIVE;
         mSyncHandle = ContentResolver.addStatusChangeListener(mask, mSyncStatusObserver);
 
         if (app.isAccountAdded() || app.isAccountDeleted()) {

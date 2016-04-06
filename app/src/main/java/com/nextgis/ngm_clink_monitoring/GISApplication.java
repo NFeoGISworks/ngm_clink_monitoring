@@ -659,7 +659,7 @@ public class GISApplication
             if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
                 dataParentPath = Environment.getExternalStorageDirectory().getAbsolutePath();
             } else {
-                throw new IOException("External storage is not mounted");
+                throw new IOException(getString(R.string.no_sdcard));
             }
         }
 

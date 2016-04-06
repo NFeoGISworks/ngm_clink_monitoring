@@ -242,5 +242,6 @@
 
     <string name="no_sdcard">Отсутствует SD-карта</string>
     <string name="no_sdcard_exit_app">Отсутствует SD-карта.\nПриложение будет остановлено.</string>
+    <string name="can_not_create_photo_dir">Невозможно создать папку для записи фото.\nВ настройках укажите другую папку для записи фото.</string>
 
 </resources>
